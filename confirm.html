@@ -3,55 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FixOps — Audit Running</title>
+<title>FixOps — Auditing Your Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Outfit',sans-serif;background:#000;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased;}
+body{font-family:'Outfit',sans-serif;background:#000;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased;overflow:hidden;}
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
 .star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,4s) ease-in-out infinite var(--dl,0s);}
 @keyframes tw{0%,100%{opacity:.04}50%{opacity:.55}}
-.bg-orb{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);width:600px;height:500px;background:radial-gradient(ellipse,rgba(124,58,237,.18) 0%,transparent 70%);filter:blur(40px);pointer-events:none;}
+.bg-orb{position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);width:700px;height:600px;background:radial-gradient(ellipse,rgba(124,58,237,.16) 0%,transparent 70%);filter:blur(50px);pointer-events:none;animation:orb 5s ease-in-out infinite;}
+@keyframes orb{0%,100%{opacity:.7;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+
 nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05);}
 .nl{font-size:19px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
-.ni{width:30px;height:30px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.wrap{position:relative;z-index:1;text-align:center;max-width:540px;padding:24px;}
+.ni{width:30px;height:30px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 18px rgba(124,58,237,.4);}
 
-/* Pulse ring */
-.pulse-wrap{position:relative;width:120px;height:120px;margin:0 auto 36px;}
-.pulse-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(124,58,237,.3);animation:expand 2s ease-out infinite;}
-.pulse-ring:nth-child(2){animation-delay:.6s;}
-.pulse-ring:nth-child(3){animation-delay:1.2s;}
-@keyframes expand{0%{transform:scale(.8);opacity:.6}100%{transform:scale(1.5);opacity:0}}
-.pulse-core{position:absolute;inset:20px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.5),rgba(124,58,237,.15));border:1px solid rgba(124,58,237,.4);display:flex;align-items:center;justify-content:center;font-size:28px;animation:glow 2s ease-in-out infinite;}
-@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,58,237,.2)}50%{box-shadow:0 0 50px rgba(124,58,237,.5)}}
+.wrap{position:relative;z-index:1;width:100%;max-width:560px;padding:24px;text-align:center;}
 
-.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;font-family:'JetBrains Mono',monospace;padding:4px 12px;border-radius:999px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);margin-bottom:18px;}
-h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-bottom:14px;}
-.sub{font-size:15px;font-weight:300;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:32px;}
-.email-box{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:#0c0c14;border:1px solid #22223a;border-radius:10px;font-size:14px;color:rgba(255,255,255,.7);margin-bottom:32px;font-family:'JetBrains Mono',monospace;}
-.steps{display:flex;flex-direction:column;gap:10px;margin-bottom:36px;text-align:left;}
-.step{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#0c0c14;border:1px solid #18182a;border-radius:12px;}
-.step-num{width:28px;height:28px;border-radius:50%;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#a78bfa;flex-shrink:0;font-family:'JetBrains Mono',monospace;}
-.step-done{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.25);color:#10b981;}
-.step-text{font-size:13.5px;color:rgba(255,255,255,.7);font-weight:300;}
-.step-text strong{color:#fff;font-weight:700;}
-.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
-.btn-v{padding:14px 26px;background:#7c3aed;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;border-radius:9px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
-.btn-v:hover{background:#8b5cf6;transform:translateY(-2px);box-shadow:0 12px 36px rgba(124,58,237,.4);}
-.btn-o{padding:14px 26px;background:transparent;color:rgba(255,255,255,.5);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;border-radius:9px;border:1px solid rgba(255,255,255,.12);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
-.btn-o:hover{color:#fff;border-color:rgba(255,255,255,.25);}
-.note{font-size:11px;color:rgba(255,255,255,.2);font-family:'JetBrains Mono',monospace;margin-top:20px;}
+/* Orb */
+.orb-wrap{position:relative;width:100px;height:100px;margin:0 auto 32px;}
+.orb-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(124,58,237,.25);animation:expand 3s ease-out infinite;}
+.orb-ring:nth-child(2){animation-delay:1s;}
+.orb-ring:nth-child(3){animation-delay:2s;}
+@keyframes expand{0%{transform:scale(.75);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+.orb-core{position:absolute;inset:18px;border-radius:50%;background:radial-gradient(circle at 38% 35%,rgba(124,58,237,.6),rgba(124,58,237,.15));border:1px solid rgba(124,58,237,.45);display:flex;align-items:center;justify-content:center;font-size:26px;animation:glow 3s ease-in-out infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,58,237,.25)}50%{box-shadow:0 0 60px rgba(124,58,237,.6)}}
 
-/* Progress checks */
-.checks{display:flex;flex-direction:column;gap:7px;margin:0 0 28px;text-align:left;}
-.ck{display:flex;align-items:center;gap:10px;font-size:12.5px;color:rgba(255,255,255,.4);opacity:0;transform:translateX(-8px);transition:all .4s;}
-.ck.show{opacity:1;transform:translateX(0);}
-.ck.done{color:rgba(255,255,255,.65);}
-.ck-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid #22223a;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;transition:all .3s;}
-.ck.done .ck-dot{background:#10b981;border-color:#10b981;color:#000;font-weight:900;}
-.ck.active .ck-dot{border-color:#a78bfa;animation:spin .8s linear infinite;}
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#a78bfa;font-family:'JetBrains Mono',monospace;padding:4px 14px;border-radius:999px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.22);margin-bottom:16px;}
+h1{font-size:30px;font-weight:900;letter-spacing:-.8px;line-height:1.1;margin-bottom:10px;}
+.sub{font-size:14px;font-weight:300;color:rgba(255,255,255,.45);line-height:1.65;margin-bottom:8px;}
+.email-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;background:#0c0c14;border:1px solid #22223a;border-radius:999px;font-size:12px;color:rgba(255,255,255,.55);font-family:'JetBrains Mono',monospace;margin-bottom:28px;}
+
+/* Check list */
+.checks{display:flex;flex-direction:column;gap:8px;margin-bottom:28px;text-align:left;}
+.ck{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0c0c14;border:1px solid #18182a;border-radius:11px;font-size:13px;color:rgba(255,255,255,.4);opacity:0;transform:translateY(8px);transition:opacity .5s ease, transform .5s ease, border-color .3s, background .3s, color .3s;}
+.ck.show{opacity:1;transform:translateY(0);}
+.ck.active{color:rgba(255,255,255,.75);border-color:rgba(124,58,237,.25);background:rgba(124,58,237,.05);}
+.ck.done{color:rgba(255,255,255,.7);border-color:rgba(16,185,129,.2);background:rgba(16,185,129,.04);}
+.ck-ico{width:22px;height:22px;border-radius:6px;border:1.5px solid #22223a;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;transition:all .3s;}
+.ck.active .ck-ico{border-color:#a78bfa;background:rgba(124,58,237,.15);animation:spin .8s linear infinite;}
+.ck.done .ck-ico{background:#10b981;border-color:#10b981;color:#000;font-size:10px;font-weight:900;animation:none;}
 @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.ck-label{flex:1;line-height:1.4;}
+.ck-detail{font-size:10px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;margin-top:2px;}
+
+/* Progress */
+.prog-wrap{margin-bottom:10px;}
+.prog-track{height:2px;background:#111118;border-radius:2px;overflow:hidden;}
+.prog-bar{height:100%;background:linear-gradient(90deg,#7c3aed,#a78bfa);border-radius:2px;width:0%;transition:width 1.2s ease;}
+.prog-label{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.prog-msg{font-size:11px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;}
+.prog-pct{font-size:11px;color:rgba(124,58,237,.7);font-family:'JetBrains Mono',monospace;}
+
+.trust-row{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:20px;}
+.trust-item{font-size:11px;color:rgba(255,255,255,.18);font-family:'JetBrains Mono',monospace;}
+
+/* Complete state */
+.complete-state{display:none;text-align:center;padding:20px 0;}
+.complete-icon{font-size:52px;margin-bottom:16px;animation:pop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -59,114 +69,167 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-bot
 <div class="bg-orb"></div>
 
 <nav>
-  <a href="index.html" class="nl">
-    <div class="ni">⚡</div>
-    Fix<span style="color:#a78bfa">Ops</span><span style="color:rgba(255,255,255,.28);font-size:15px;font-weight:400">.io</span>
-  </a>
+  <a href="index.html" class="nl"><div class="ni">⚡</div>Fix<span style="color:#a78bfa">Ops</span><span style="color:rgba(255,255,255,.28);font-size:15px;font-weight:400">.io</span></a>
   <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="padding:8px 16px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">Book a Call ↗</a>
 </nav>
 
 <div class="wrap">
-  <div class="pulse-wrap">
-    <div class="pulse-ring"></div>
-    <div class="pulse-ring"></div>
-    <div class="pulse-ring"></div>
-    <div class="pulse-core">⚡</div>
+
+  <!-- Scanning state -->
+  <div id="scan-state">
+    <div class="orb-wrap">
+      <div class="orb-ring"></div>
+      <div class="orb-ring"></div>
+      <div class="orb-ring"></div>
+      <div class="orb-core">⚡</div>
+    </div>
+
+    <div class="tag">Audit In Progress</div>
+    <h1>Scanning Your HubSpot Portal</h1>
+    <p class="sub">Running 165 checks across 8 health dimensions.</p>
+    <div class="email-pill">📧 <span id="email-display">your inbox</span></div>
+
+    <div class="checks" id="check-list">
+      <div class="ck" id="ck0"><div class="ck-ico"></div><div><div class="ck-label">Connecting to HubSpot portal</div><div class="ck-detail">OAuth authentication · read-only access</div></div></div>
+      <div class="ck" id="ck1"><div class="ck-ico"></div><div><div class="ck-label">Reading contacts, companies & owners</div><div class="ck-detail">Contact data, lifecycle stages, ownership</div></div></div>
+      <div class="ck" id="ck2"><div class="ck-ico"></div><div><div class="ck-label">Analyzing deals & pipeline health</div><div class="ck-detail">Stalled deals, close dates, deal values</div></div></div>
+      <div class="ck" id="ck3"><div class="ck-ico"></div><div><div class="ck-label">Checking support tickets & service</div><div class="ck-detail">Ticket volume, resolution, customer health</div></div></div>
+      <div class="ck" id="ck4"><div class="ck-ico"></div><div><div class="ck-label">Running duplicate & data quality checks</div><div class="ck-detail">Fuzzy name matching, junk data, missing fields</div></div></div>
+      <div class="ck" id="ck5"><div class="ck-ico"></div><div><div class="ck-label">Checking billing tier & growth risk</div><div class="ck-detail">Contact tier projection, overage risk</div></div></div>
+      <div class="ck" id="ck6"><div class="ck-ico"></div><div><div class="ck-label">Analyzing pipeline concentration risk</div><div class="ck-detail">Rep distribution, key person risk, overdue tasks</div></div></div>
+      <div class="ck" id="ck7"><div class="ck-ico"></div><div><div class="ck-label">Scoring all 8 dimensions · generating report</div><div class="ck-detail">AI analysis · dollar impact · fix guides</div></div></div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+      <div class="prog-label">
+        <span class="prog-msg" id="prog-msg">Initializing audit…</span>
+        <span class="prog-pct" id="prog-pct">0%</span>
+      </div>
+    </div>
+
+    <div class="trust-row">
+      <span class="trust-item">🔒 Read-only</span>
+      <span class="trust-item">·</span>
+      <span class="trust-item">⚡ 165 checks</span>
+      <span class="trust-item">·</span>
+      <span class="trust-item">📧 Emailed to you</span>
+    </div>
   </div>
 
-  <div class="tag">Audit In Progress</div>
-  <h1>Your HubSpot Portal<br>Is Being Audited</h1>
-  <p class="sub">FixOps is running 165 checks across your portal right now. This takes 30–60 seconds. Your full results will be delivered to:</p>
-
-  <div class="email-box">
-    <span>📧</span>
-    <span id="email-display">your email</span>
+  <!-- Complete state -->
+  <div id="complete-state" class="complete-state">
+    <div class="complete-icon">✅</div>
+    <h1>Audit Complete!</h1>
+    <p class="sub" style="margin-bottom:20px">Loading your results now…</p>
   </div>
 
-  <div class="checks" id="check-list">
-    <div class="ck active" id="ck0"><div class="ck-dot">↻</div><span>Connecting to HubSpot and reading portal data</span></div>
-    <div class="ck" id="ck1"><div class="ck-dot"></div><span>Analyzing contacts for duplicates and data gaps</span></div>
-    <div class="ck" id="ck2"><div class="ck-dot"></div><span>Checking workflows for errors and dead automations</span></div>
-    <div class="ck" id="ck3"><div class="ck-dot"></div><span>Reviewing pipeline integrity and stalled deals</span></div>
-    <div class="ck" id="ck4"><div class="ck-dot"></div><span>Auditing forms, lists, and marketing health</span></div>
-    <div class="ck" id="ck5"><div class="ck-dot"></div><span>Checking configuration, users, and security</span></div>
-    <div class="ck" id="ck6"><div class="ck-dot"></div><span>Scoring all 8 dimensions and calculating monthly waste</span></div>
-    <div class="ck" id="ck7"><div class="ck-dot"></div><span>Generating your report and sending to your email</span></div>
-  </div>
-
-  <div class="cta-row">
-    <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="btn-o">📅 Book a Strategy Call</a>
-  </div>
-  <p class="note">Results delivered to your inbox · Matthew reviews every audit personally · fixops.io</p>
 </div>
 
 <script>
+const API     = 'https://fixops-api-production.up.railway.app';
+const params  = new URLSearchParams(window.location.search);
+const auditId = params.get('id');
+const email   = params.get('email');
+
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.15?2.5:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
 
-const params  = new URLSearchParams(window.location.search);
-const email   = params.get('email');
-const auditId = params.get('id');
+if(email) document.getElementById('email-display').textContent = decodeURIComponent(email);
+if(!auditId) window.location.href = 'index.html';
 
-if (email) document.getElementById('email-display').textContent = decodeURIComponent(email);
+// Check schedule - each check shows for a realistic duration
+// Total animation time ~55 seconds matching real audit time
+const checkSchedule = [
+  { id:'ck0', showAt:0,    doneAt:4000,  pct:8,  msg:'Connecting to HubSpot…' },
+  { id:'ck1', showAt:3000, doneAt:12000, pct:22, msg:'Reading contacts and companies…' },
+  { id:'ck2', showAt:11000,doneAt:22000, pct:40, msg:'Analyzing deals in your pipeline…' },
+  { id:'ck3', showAt:20000,doneAt:30000, pct:55, msg:'Checking tickets and service data…' },
+  { id:'ck4', showAt:28000,doneAt:38000, pct:68, msg:'Running data quality checks…' },
+  { id:'ck5', showAt:36000,doneAt:44000, pct:80, msg:'Checking billing tier risk…' },
+  { id:'ck6', showAt:42000,doneAt:50000, pct:90, msg:'Analyzing pipeline concentration…' },
+  { id:'ck7', showAt:48000,doneAt:58000, pct:97, msg:'Scoring dimensions and generating report…' },
+];
 
-// Animate checks
-const checks = ['ck0','ck1','ck2','ck3','ck4','ck5','ck6','ck7'];
-const delays = [0, 6000, 12000, 18000, 24000, 32000, 40000, 48000];
-
-checks.forEach((id, i) => {
-  const el = document.getElementById(id);
+// Animate checks based on schedule
+checkSchedule.forEach(({id, showAt, doneAt, pct, msg}) => {
+  // Show check
   setTimeout(() => {
-    el.classList.add('show');
-    if (i > 0) {
-      // Mark previous as done
-      const prev = document.getElementById(checks[i-1]);
-      prev.classList.remove('active');
-      prev.classList.add('done');
-      prev.querySelector('.ck-dot').textContent = '✓';
-    }
-    el.classList.add('active');
-    el.querySelector('.ck-dot').textContent = '↻';
-  }, delays[i]);
+    const el = document.getElementById(id);
+    el.classList.add('show', 'active');
+    el.querySelector('.ck-ico').textContent = '↻';
+    setProgress(pct, msg);
+  }, showAt);
+
+  // Mark done
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    el.classList.remove('active');
+    el.classList.add('done');
+    el.querySelector('.ck-ico').textContent = '✓';
+  }, doneAt);
 });
 
-// Poll for completion and redirect to results
-let attempts = 0;
-const API = 'https://fixops-api-production.up.railway.app';
+function setProgress(pct, msg) {
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-msg').textContent = msg;
+}
+
+// Poll for completion - start after 10 seconds, check every 5 seconds
+let pollCount = 0;
+const MAX_POLLS = 30; // 10s + 30*5s = 2.5 min max
 
 function poll() {
-  if (!auditId) return;
+  if(!auditId) return;
+  pollCount++;
+
   fetch(`${API}/audit/status/${auditId}`)
-    .then(r => r.json())
+    .then(r => {
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
     .then(data => {
-      if (data.status === 'complete') {
-        // Mark all done
-        checks.forEach(id => {
+      console.log('Poll result:', data.status, 'attempt', pollCount);
+
+      if(data.status === 'complete') {
+        // Finish animation then redirect
+        checkSchedule.forEach(({id}) => {
           const el = document.getElementById(id);
           el.classList.add('show','done');
           el.classList.remove('active');
-          el.querySelector('.ck-dot').textContent = '✓';
+          el.querySelector('.ck-ico').textContent = '✓';
         });
-        // Redirect to results after brief pause
+        setProgress(100, 'Audit complete — redirecting to results…');
+
+        setTimeout(() => {
+          document.getElementById('scan-state').style.display = 'none';
+          document.getElementById('complete-state').style.display = 'block';
+        }, 800);
+
         setTimeout(() => {
           window.location.href = `results.html?id=${auditId}`;
-        }, 1500);
-      } else if (data.status === 'error') {
-        document.querySelector('h1').textContent = 'Check Your Email';
-        document.querySelector('.sub').textContent = 'Your audit ran into an issue. Matthew has been notified and will follow up shortly.';
+        }, 2500);
+
+      } else if(data.status === 'error') {
+        setProgress(0, 'Audit encountered an error — check your email for details');
       } else {
-        attempts++;
-        if (attempts < 60) setTimeout(poll, 3000);
+        // Still running - poll again
+        if(pollCount < MAX_POLLS) {
+          setTimeout(poll, 5000);
+        } else {
+          setProgress(99, 'Almost done — check your email, results arriving shortly…');
+        }
       }
     })
-    .catch(() => {
-      attempts++;
-      if (attempts < 60) setTimeout(poll, 3000);
+    .catch(err => {
+      console.log('Poll error:', err.message, 'attempt', pollCount);
+      if(pollCount < MAX_POLLS) setTimeout(poll, 5000);
     });
 }
 
-// Start polling after 5 seconds
-setTimeout(poll, 5000);
+// Start polling after 12 seconds (give audit time to start)
+setTimeout(poll, 12000);
 </script>
 </body>
 </html>
