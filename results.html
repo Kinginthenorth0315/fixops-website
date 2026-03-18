@@ -384,14 +384,72 @@ function toggleIssue(idx) {
   if(!was) c.classList.add('open');
 }
 
-function autoFix(idx) {
+async function autoFix(idx) {
   const issue = AUDIT_DATA?.issues?.[idx];
-  showToast('⚡','Auto-Fix Requested',`Matthew will apply the fix for "${(issue?.title||'').substring(0,50)}…" — matthew@fixops.io`);
+  if(!issue) return;
+
+  showToast('⚡','Sending Auto-Fix Request…','Notifying Matthew');
+
+  try {
+    const res = await fetch(`${API}/fix-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        issueTitle:     '⚡ AUTO-FIX: ' + issue.title,
+        issueImpact:    issue.impact,
+        issueDimension: issue.dimension,
+        portalCompany:  AUDIT_DATA?.portalInfo?.company,
+        portalEmail:    AUDIT_DATA?.portalInfo?.email,
+        auditId:        AUDIT_DATA?.auditId
+      })
+    });
+    const data = await res.json();
+    if(data.success) {
+      showToast('⚡','Auto-Fix Requested!','Matthew will apply this fix within 24 hours · matthew@fixops.io');
+      const card = document.getElementById(`ic-${idx}`);
+      const btn = card?.querySelector('.btn-autofix');
+      if(btn) { btn.textContent = '✅ Fix Requested'; btn.disabled = true; btn.style.opacity = '0.6'; }
+    } else {
+      throw new Error(data.error);
+    }
+  } catch(e) {
+    showToast('📧','Email Matthew',`matthew@fixops.io — Auto-Fix: ${(issue.title||'').substring(0,40)}`);
+  }
 }
 
-function fixItForMe(idx) {
+async function fixItForMe(idx) {
   const issue = AUDIT_DATA?.issues?.[idx];
-  showToast('🛠','Fix It For Me — Sent',`Matthew will scope and quote "${(issue?.title||'').substring(0,45)}…" — reply to your audit email`);
+  if(!issue) return;
+
+  showToast('🛠','Sending Request…','Notifying Matthew about this issue');
+
+  try {
+    const res = await fetch(`${API}/fix-request`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        issueTitle:     issue.title,
+        issueImpact:    issue.impact,
+        issueDimension: issue.dimension,
+        portalCompany:  AUDIT_DATA?.portalInfo?.company,
+        portalEmail:    AUDIT_DATA?.portalInfo?.email,
+        auditId:        AUDIT_DATA?.auditId
+      })
+    });
+    const data = await res.json();
+    if(data.success) {
+      showToast('✅','Request Sent!',`Matthew has been notified and will scope and quote within 4 hours · matthew@fixops.io`);
+      // Update button to show sent
+      const card = document.getElementById(`ic-${idx}`);
+      const btn = card?.querySelector('.btn-fixme');
+      if(btn) { btn.textContent = '✅ Request Sent'; btn.disabled = true; btn.style.opacity = '0.6'; }
+    } else {
+      throw new Error(data.error || 'Request failed');
+    }
+  } catch(e) {
+    console.error('Fix request error:', e);
+    showToast('📧','Email Matthew Directly',`matthew@fixops.io — subject: Fix It For Me: ${(issue.title||'').substring(0,40)}`);
+  }
 }
 
 function bookCall(idx) {
