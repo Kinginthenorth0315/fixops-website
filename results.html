@@ -182,48 +182,62 @@ const API_BASE = 'https://fixops-api-production.up.railway.app';
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.15?2.5:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
 
-// Get params
+// Get params from URL
 const params   = new URLSearchParams(window.location.search);
 const auditId  = params.get('audit_id');
 const email    = params.get('email');
 const auditErr = params.get('audit_error');
+const summaryP = params.get('summary');
+const scoresP  = params.get('scores');
+const issuesP  = params.get('issues');
+const statusP  = params.get('status');
 
 if (auditErr) {
-  showError(auditErr === 'invalid_state'
-    ? 'Session expired. Please try connecting again.'
-    : auditErr === 'token_failed'
-    ? 'HubSpot authorization failed. Please try again.'
-    : 'Connection was cancelled or failed.');
-} else if (!auditId) {
-  showError('No audit ID found. Please start a new audit from fixops.io');
-} else {
+  showError('HubSpot authorization failed. Please try connecting again.');
+} else if (statusP === 'error') {
+  showError('Audit encountered an error. Matthew has been notified and will follow up within 24 hours.');
+} else if (summaryP && scoresP && issuesP) {
+  // Data passed directly in URL - no polling needed
+  try {
+    const data = {
+      status:  'complete',
+      summary: JSON.parse(decodeURIComponent(summaryP)),
+      scores:  JSON.parse(decodeURIComponent(scoresP)),
+      issues:  JSON.parse(decodeURIComponent(issuesP))
+    };
+    // Brief loading animation then show results
+    document.getElementById('prog').style.width = '100%';
+    document.getElementById('load-msg').textContent = 'Audit complete — loading your results…';
+    setTimeout(() => renderResults(data), 1200);
+  } catch(e) {
+    console.error('Parse error:', e);
+    showError('Could not load results. Please contact matthew@fixops.io');
+  }
+} else if (auditId) {
+  // Fall back to polling if no data in URL
   pollAudit();
+} else {
+  showError('No audit found. Please start a new audit from fixops.io');
 }
 
 let pollInterval;
 function pollAudit() {
+  let attempts = 0;
   pollInterval = setInterval(async () => {
+    attempts++;
+    if (attempts > 60) {
+      clearInterval(pollInterval);
+      showError('Audit is taking longer than expected. Matthew has been notified and will email your results within 24 hours.');
+      return;
+    }
     try {
       const res  = await fetch(`${API_BASE}/audit/status/${auditId}`);
       const data = await res.json();
-
-      if (data.progress) {
-        document.getElementById('prog').style.width = data.progress + '%';
-      }
-      if (data.currentTask) {
-        document.getElementById('load-msg').textContent = data.currentTask;
-      }
-
-      if (data.status === 'complete') {
-        clearInterval(pollInterval);
-        renderResults(data);
-      } else if (data.status === 'error') {
-        clearInterval(pollInterval);
-        showError(data.message || 'Audit failed. Matthew has been notified.');
-      }
-    } catch (err) {
-      console.error('Poll error:', err);
-    }
+      if (data.progress) document.getElementById('prog').style.width = data.progress + '%';
+      if (data.currentTask) document.getElementById('load-msg').textContent = data.currentTask;
+      if (data.status === 'complete') { clearInterval(pollInterval); renderResults(data); }
+      else if (data.status === 'error') { clearInterval(pollInterval); showError(data.message || 'Audit failed.'); }
+    } catch (err) { console.error('Poll error:', err); }
   }, 2000);
 }
 
