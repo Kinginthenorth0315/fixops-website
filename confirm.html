@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixOps — Audit Running</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:#000;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased;}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,4s) ease-in-out infinite var(--dl,0s);}
+@keyframes tw{0%,100%{opacity:.04}50%{opacity:.55}}
+.bg-orb{position:fixed;top:40%;left:50%;transform:translate(-50%,-50%);width:600px;height:500px;background:radial-gradient(ellipse,rgba(124,58,237,.18) 0%,transparent 70%);filter:blur(40px);pointer-events:none;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(0,0,0,.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05);}
+.nl{font-size:19px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.ni{width:30px;height:30px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;}
+.wrap{position:relative;z-index:1;text-align:center;max-width:540px;padding:24px;}
+
+/* Pulse ring */
+.pulse-wrap{position:relative;width:120px;height:120px;margin:0 auto 36px;}
+.pulse-ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(124,58,237,.3);animation:expand 2s ease-out infinite;}
+.pulse-ring:nth-child(2){animation-delay:.6s;}
+.pulse-ring:nth-child(3){animation-delay:1.2s;}
+@keyframes expand{0%{transform:scale(.8);opacity:.6}100%{transform:scale(1.5);opacity:0}}
+.pulse-core{position:absolute;inset:20px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.5),rgba(124,58,237,.15));border:1px solid rgba(124,58,237,.4);display:flex;align-items:center;justify-content:center;font-size:28px;animation:glow 2s ease-in-out infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 20px rgba(124,58,237,.2)}50%{box-shadow:0 0 50px rgba(124,58,237,.5)}}
+
+.tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;font-family:'JetBrains Mono',monospace;padding:4px 12px;border-radius:999px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);margin-bottom:18px;}
+h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.1;margin-bottom:14px;}
+.sub{font-size:15px;font-weight:300;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:32px;}
+.email-box{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;background:#0c0c14;border:1px solid #22223a;border-radius:10px;font-size:14px;color:rgba(255,255,255,.7);margin-bottom:32px;font-family:'JetBrains Mono',monospace;}
+.steps{display:flex;flex-direction:column;gap:10px;margin-bottom:36px;text-align:left;}
+.step{display:flex;align-items:center;gap:14px;padding:14px 18px;background:#0c0c14;border:1px solid #18182a;border-radius:12px;}
+.step-num{width:28px;height:28px;border-radius:50%;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#a78bfa;flex-shrink:0;font-family:'JetBrains Mono',monospace;}
+.step-done{background:rgba(16,185,129,.12);border-color:rgba(16,185,129,.25);color:#10b981;}
+.step-text{font-size:13.5px;color:rgba(255,255,255,.7);font-weight:300;}
+.step-text strong{color:#fff;font-weight:700;}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-v{padding:14px 26px;background:#7c3aed;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;border-radius:9px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
+.btn-v:hover{background:#8b5cf6;transform:translateY(-2px);box-shadow:0 12px 36px rgba(124,58,237,.4);}
+.btn-o{padding:14px 26px;background:transparent;color:rgba(255,255,255,.5);font-family:'Outfit',sans-serif;font-size:14px;font-weight:500;border-radius:9px;border:1px solid rgba(255,255,255,.12);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
+.btn-o:hover{color:#fff;border-color:rgba(255,255,255,.25);}
+.note{font-size:11px;color:rgba(255,255,255,.2);font-family:'JetBrains Mono',monospace;margin-top:20px;}
+
+/* Progress checks */
+.checks{display:flex;flex-direction:column;gap:7px;margin:0 0 28px;text-align:left;}
+.ck{display:flex;align-items:center;gap:10px;font-size:12.5px;color:rgba(255,255,255,.4);opacity:0;transform:translateX(-8px);transition:all .4s;}
+.ck.show{opacity:1;transform:translateX(0);}
+.ck.done{color:rgba(255,255,255,.65);}
+.ck-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid #22223a;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;transition:all .3s;}
+.ck.done .ck-dot{background:#10b981;border-color:#10b981;color:#000;font-weight:900;}
+.ck.active .ck-dot{border-color:#a78bfa;animation:spin .8s linear infinite;}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="bg-orb"></div>
+
+<nav>
+  <a href="index.html" class="nl">
+    <div class="ni">⚡</div>
+    Fix<span style="color:#a78bfa">Ops</span><span style="color:rgba(255,255,255,.28);font-size:15px;font-weight:400">.io</span>
+  </a>
+  <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="padding:8px 16px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">Book a Call ↗</a>
+</nav>
+
+<div class="wrap">
+  <div class="pulse-wrap">
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-ring"></div>
+    <div class="pulse-core">⚡</div>
+  </div>
+
+  <div class="tag">Audit In Progress</div>
+  <h1>Your HubSpot Portal<br>Is Being Audited</h1>
+  <p class="sub">FixOps is running 165 checks across your portal right now. This takes 30–60 seconds. Your full results will be delivered to:</p>
+
+  <div class="email-box">
+    <span>📧</span>
+    <span id="email-display">your email</span>
+  </div>
+
+  <div class="checks" id="check-list">
+    <div class="ck active" id="ck0"><div class="ck-dot">↻</div><span>Connecting to HubSpot and reading portal data</span></div>
+    <div class="ck" id="ck1"><div class="ck-dot"></div><span>Analyzing contacts for duplicates and data gaps</span></div>
+    <div class="ck" id="ck2"><div class="ck-dot"></div><span>Checking workflows for errors and dead automations</span></div>
+    <div class="ck" id="ck3"><div class="ck-dot"></div><span>Reviewing pipeline integrity and stalled deals</span></div>
+    <div class="ck" id="ck4"><div class="ck-dot"></div><span>Auditing forms, lists, and marketing health</span></div>
+    <div class="ck" id="ck5"><div class="ck-dot"></div><span>Checking configuration, users, and security</span></div>
+    <div class="ck" id="ck6"><div class="ck-dot"></div><span>Scoring all 8 dimensions and calculating monthly waste</span></div>
+    <div class="ck" id="ck7"><div class="ck-dot"></div><span>Generating your report and sending to your email</span></div>
+  </div>
+
+  <div class="cta-row">
+    <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="btn-o">📅 Book a Strategy Call</a>
+  </div>
+  <p class="note">Results delivered to your inbox · Matthew reviews every audit personally · fixops.io</p>
+</div>
+
+<script>
+// Stars
+(()=>{const c=document.getElementById('stars');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.15?2.5:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
+
+const params  = new URLSearchParams(window.location.search);
+const email   = params.get('email');
+const auditId = params.get('id');
+
+if (email) document.getElementById('email-display').textContent = decodeURIComponent(email);
+
+// Animate checks
+const checks = ['ck0','ck1','ck2','ck3','ck4','ck5','ck6','ck7'];
+const delays = [0, 6000, 12000, 18000, 24000, 32000, 40000, 48000];
+
+checks.forEach((id, i) => {
+  const el = document.getElementById(id);
+  setTimeout(() => {
+    el.classList.add('show');
+    if (i > 0) {
+      // Mark previous as done
+      const prev = document.getElementById(checks[i-1]);
+      prev.classList.remove('active');
+      prev.classList.add('done');
+      prev.querySelector('.ck-dot').textContent = '✓';
+    }
+    el.classList.add('active');
+    el.querySelector('.ck-dot').textContent = '↻';
+  }, delays[i]);
+});
+
+// Poll for completion and redirect to results
+let attempts = 0;
+const API = 'https://fixops-api-production.up.railway.app';
+
+function poll() {
+  if (!auditId) return;
+  fetch(`${API}/audit/status/${auditId}`)
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'complete') {
+        // Mark all done
+        checks.forEach(id => {
+          const el = document.getElementById(id);
+          el.classList.add('show','done');
+          el.classList.remove('active');
+          el.querySelector('.ck-dot').textContent = '✓';
+        });
+        // Redirect to results after brief pause
+        setTimeout(() => {
+          window.location.href = `results.html?id=${auditId}`;
+        }, 1500);
+      } else if (data.status === 'error') {
+        document.querySelector('h1').textContent = 'Check Your Email';
+        document.querySelector('.sub').textContent = 'Your audit ran into an issue. Matthew has been notified and will follow up shortly.';
+      } else {
+        attempts++;
+        if (attempts < 60) setTimeout(poll, 3000);
+      }
+    })
+    .catch(() => {
+      attempts++;
+      if (attempts < 60) setTimeout(poll, 3000);
+    });
+}
+
+// Start polling after 5 seconds
+setTimeout(poll, 5000);
+</script>
+</body>
+</html>
