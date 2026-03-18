@@ -51,8 +51,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .score-hero::before{content:'';position:absolute;top:-80px;left:-60px;width:300px;height:260px;background:radial-gradient(ellipse,rgba(124,58,237,.12),transparent 70%);pointer-events:none;}
 .score-ring-wrap{text-align:center;}
 .score-ring{width:124px;height:124px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto 10px;}
-.score-ring::before{content:'';position:absolute;inset:0;border-radius:50%;}
-.score-inner{position:relative;z-index:1;text-align:center;}
+.score-ring::before{content:'';position:absolute;inset:14px;border-radius:50%;background:#0c0c14;}
+.score-inner{position:relative;z-index:2;text-align:center;}
 .score-num{font-size:44px;font-weight:900;letter-spacing:-2px;line-height:1;}
 .score-denom{font-size:14px;color:var(--t2);}
 .score-grade-badge{display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;margin-top:8px;}
@@ -211,7 +211,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
           <button class="cta-primary" onclick="downloadPDF()">📄 Download Full PDF Report</button>
           <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="cta-secondary">📅 Book a Free Strategy Call ↗</a>
         </div>
-        <p style="font-size:12px;color:rgba(255,255,255,.2);font-family:var(--mono);margin-top:16px">matthew@fixops.io · fixops.io · HubSpot Systems. Fixed.</p>
+        <p style="font-size:12px;color:rgba(255,255,255,.2);font-family:var(--mono);margin-top:16px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0f626e7b7b676a784f696677607f7c216660">[email&#160;protected]</a> · fixops.io · HubSpot Systems. Fixed.</p>
       </div>
 
     </div>
@@ -229,7 +229,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="toast-x" onclick="hideToast()">✕</div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Stars
 (()=>{
   const c = document.getElementById('stars');
@@ -302,6 +302,25 @@ function renderResults(data) {
   gradeEl.style.cssText += `;background:${col}18;color:${col};border:1px solid ${col}44;`;
 
   // Stats
+  // Show portal stats bar
+  const ps = data.portalInfo?.portalStats || {};
+  const statsHtml = [
+    ps.contacts && `<span>${ps.contacts.toLocaleString()} contacts</span>`,
+    ps.companies && `<span>${ps.companies.toLocaleString()} companies</span>`,
+    ps.deals && `<span>${ps.deals.toLocaleString()} deals</span>`,
+    ps.workflows !== undefined && `<span>${ps.workflows} workflows</span>`,
+    ps.forms && `<span>${ps.forms} forms</span>`,
+    ps.users && `<span>${ps.users} users</span>`,
+    ps.tickets !== undefined && `<span>${ps.tickets} tickets</span>`,
+    ps.tasks && `<span>${ps.tasks} tasks</span>`,
+  ].filter(Boolean).join('<span style="color:var(--t3)"> · </span>');
+  if (statsHtml) {
+    const statsBar = document.createElement('div');
+    statsBar.style.cssText = 'font-size:11px;color:rgba(255,255,255,.25);font-family:var(--mono);margin-bottom:18px;padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.05);';
+    statsBar.innerHTML = '📊 Portal snapshot: ' + statsHtml;
+    document.querySelector('.score-right h1').before(statsBar);
+  }
+
   document.getElementById('stats-row').innerHTML = `
     <div class="stat-box" style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18)">
       <div class="stat-n" style="color:#f43f5e">${summary.criticalCount}</div>
@@ -362,6 +381,11 @@ function renderResults(data) {
         <div class="step-num">${i + 1}</div>
         <div>${step}</div>
       </div>`).join('');
+    const detailBlock = issue.detail ? `
+      <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:9px;padding:12px 14px;margin-bottom:12px;">
+        <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:7px;">🔍 Why This Matters</div>
+        <div style="font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.6;font-weight:300;">${issue.detail}</div>
+      </div>` : '';
 
     const autoFixBtn = issue.autoFixable ? `
       <button class="action-btn btn-autofix" onclick="event.stopPropagation();autoFix('${escQ(issue.title)}')">
@@ -387,6 +411,7 @@ function renderResults(data) {
           <div class="issue-arrow">▾</div>
         </div>
         <div class="issue-expand">
+          ${detailBlock}
           ${guideSteps ? `
           <div class="guide-block">
             <div class="guide-title">✓ Best Practice Fix Guide</div>
@@ -530,11 +555,4 @@ function showToast(ico, title, sub) {
   document.getElementById('t-ico').textContent   = ico;
   document.getElementById('t-title').textContent = title;
   document.getElementById('t-sub').textContent   = sub;
-  document.getElementById('toast').classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(hideToast, 7000);
-}
-function hideToast() { document.getElementById('toast').classList.remove('show'); }
-</script>
-</body>
-</html>
+  document.get
