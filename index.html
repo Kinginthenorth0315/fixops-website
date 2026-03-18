@@ -817,7 +817,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <li><a href="#services">Services</a></li>
           <li><a href="#pricing">Pricing</a></li>
           <li><a href="https://calendly.com/matthew-fixops/30min" target="_blank">Book a Call</a></li>
-          <li><a href="mailto:matthew@fixops.io">Contact Us</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#9af7fbeeeef2ffeddafcf3e2f5eae9b4f3f5">Contact Us</a></li>
         </ul>
       </div>
     </div>
@@ -835,7 +835,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
 
 
 <!-- ═══════════ AUDIT / PLAN SELECTOR MODAL ═══════════ -->
-<div id="audit-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;align-items:center;justify-content:center;padding:20px;">
+<div id="audit-modal" class="audit-modal-wrap">
   <div id="audit-modal-inner" style="background:#0c0c14;border:1px solid #22223a;border-radius:22px;padding:40px;max-width:680px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:fu .3s ease;">
     <button onclick="closeAuditModal()" style="position:absolute;top:16px;right:18px;background:none;border:none;color:rgba(255,255,255,.3);font-size:22px;cursor:pointer;line-height:1;">✕</button>
 
@@ -909,7 +909,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         </div>
 
       </div>
-      <p style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;text-align:center;">All paid plans quoted and onboarded by Matthew personally · matthew@fixops.io</p>
+      <p style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;text-align:center;">All paid plans quoted and onboarded by Matthew personally · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d606c797965687a4d6b6475627d7e236462">[email&#160;protected]</a></p>
     </div>
 
     <!-- STEP 2a: Free audit — HubSpot connect -->
@@ -968,7 +968,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="width:100%;padding:15px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">
         Book Your Setup Call ↗
       </a>
-      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;">matthew@fixops.io · response within 4 hours</p>
+      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d0bdb1a4a4b8b5a790b6b9a8bfa0a3feb9bf">[email&#160;protected]</a> · response within 4 hours</p>
     </div>
 
     <!-- STEP 3: Connecting / Demo result -->
@@ -1082,11 +1082,13 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
 
 <style>
 .plan-opt:hover{border-color:rgba(124,58,237,.4)!important;background:rgba(124,58,237,.06)!important;}
+.audit-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.audit-modal-wrap.open{display:flex;}
 .plan-opt.selected{border-color:rgba(124,58,237,.5)!important;background:rgba(124,58,237,.1)!important;box-shadow:0 0 0 2px rgba(124,58,237,.2);}
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 </style>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<105;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.12?2.5:Math.random()<.4?2:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
 
@@ -1130,15 +1132,15 @@ function selRep(el,key){
 let chosenPlan = '';
 
 function openAuditModal(e){
-  if(e)e.preventDefault();
+  if(e){e.preventDefault();e.stopPropagation();}
   const m=document.getElementById('audit-modal');
-  m.style.display='flex';
+  m.classList.add('open');
   document.body.style.overflow='hidden';
   showStep('plans');
 }
 
 function closeAuditModal(){
-  document.getElementById('audit-modal').style.display='none';
+  document.getElementById('audit-modal').classList.remove('open');
   document.body.style.overflow='';
 }
 
@@ -1211,7 +1213,6 @@ function startFreeAudit(){
     document.getElementById('conn-sub').textContent=sub;
     document.getElementById('conn-bar').style.width=pct+'%';
     i++;
-    setTimeout(next,620);
   }
   setTimeout(next,300);
 }
@@ -1221,8 +1222,10 @@ let tt2;
 function toast(title,sub){
   document.getElementById('tt').textContent=title;
   document.getElementById('ts').textContent=sub;
-  document.getElementById('toast').classList.add('show');
-  clearTimeout(tt2);tt2=setTimeout(hideT,6000);
+  const el=document.getElementById('toast');
+  el.classList.add('show');
+  clearTimeout(tt2);
+  tt2=setTimeout(hideT,6000);
 }
 function hideT(){document.getElementById('toast').classList.remove('show');}
 </script>

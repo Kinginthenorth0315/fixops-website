@@ -2122,4 +2122,34 @@ function fromGuideToSvc(){
 function openEmailModal(){document.getElementById('email-modal').classList.add('open');}
 
 // ── Modals ──
-function closeIfBg(e,id){if(e.target===document.getElementById(id))document.getElementByI
+d(id).classList.remove('open');}
+
+// ── Quick fixes ──
+function qfTog(el){
+  el.classList.toggle('done');
+  el.querySelector('.qf-cb').textContent=el.classList.contains('done')?'✓':'';
+  if(el.classList.contains('done'))toast('✓','Fix Complete','Portal health score recalculating…');
+}
+
+// ── Rescan ──
+function rescan(btn){
+  const orig=btn.innerHTML;
+  btn.innerHTML='<span class="spin">⟳</span> Scanning…';
+  btn.disabled=true;
+  setTimeout(()=>{btn.innerHTML=orig;btn.disabled=false;toast('🔍','Scan Complete','165 checks run · 2 new findings');},3000);
+}
+
+// ── Toast ──
+let toastTimer;
+function toast(ico,title,sub){
+  document.getElementById('t-i').textContent=ico;
+  document.getElementById('t-t').textContent=title;
+  document.getElementById('t-s').textContent=sub;
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(hideToast,5500);
+}
+function hideToast(){document.getElementById('toast').classList.remove('show');}
+</script>
+</body>
+</html>
