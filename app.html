@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixOps.io — HubSpot Intelligence Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════
+   FIXOPS.IO BRAND SYSTEM
+   Extracted from fixops.io live site
+   Black + Violet/Purple + White
+═══════════════════════════════════ */
+:root {
+  /* Exact brand colors from site */
+  --black:    #000000;
+  --bg:       #04040a;
+  --bg2:      #08080f;
+  --s1:       #0d0d17;
+  --s2:       #111120;
+  --s3:       #161626;
+  --s4:       #1c1c30;
+  --b1:       #1e1e35;
+  --b2:       #252540;
+  --b3:       #2e2e50;
+
+  /* Violet — matched from site purple glow & buttons */
+  --violet:   #7c3aed;
+  --violet2:  #8b5cf6;
+  --violet3:  #a78bfa;
+  --violet4:  #c4b5fd;
+  --vdim:     rgba(124,58,237,0.12);
+  --vglow:    rgba(124,58,237,0.35);
+  --vsoft:    rgba(124,58,237,0.06);
+  --vborder:  rgba(124,58,237,0.2);
+
+  --white:    #ffffff;
+  --t1:       rgba(255,255,255,0.9);
+  --t2:       rgba(255,255,255,0.5);
+  --t3:       rgba(255,255,255,0.25);
+  --t4:       rgba(255,255,255,0.1);
+
+  --red:      #f43f5e;
+  --rdim:     rgba(244,63,94,0.12);
+  --amber:    #f59e0b;
+  --adim:     rgba(245,158,11,0.12);
+  --emerald:  #10b981;
+  --edim:     rgba(16,185,129,0.12);
+  --sky:      #0ea5e9;
+  --sdim:     rgba(14,165,233,0.12);
+
+  --r:        10px;
+  --rlg:      16px;
+  --rxl:      22px;
+
+  --font:     'Outfit', sans-serif;
+  --mono:     'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--black);
+  color: var(--t1);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Stars — matches fixops.io hero ── */
+#stars { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: white;
+  animation: twinkle var(--d,4s) ease-in-out infinite var(--dl,0s);
+}
+@keyframes twinkle {
+  0%,100% { opacity:.06; transform:scale(1); }
+  50%      { opacity:.65; transform:scale(1.5); }
+}
+
+/* ── Pages ── */
+.page { display:none; min-height:100vh; position:relative; z-index:1; }
+.page.active { display:flex; flex-direction:column; }
+
+/* ════════════════════════════════════
+   CONNECT PAGE
+   Matches fixops.io hero exactly:
+   black bg, purple radial glow, stars,
+   bold Outfit heading, purple CTA
+════════════════════════════════════ */
+#pg-connect {
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  overflow: hidden;
+}
+
+/* The purple radial glow — matches site hero */
+.hero-glow {
+  position: absolute;
+  top: -180px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 700px;
+  background: radial-gradient(ellipse,
+    rgba(109,40,217,0.45) 0%,
+    rgba(124,58,237,0.2) 25%,
+    rgba(139,92,246,0.06) 55%,
+    transparent 72%);
+  filter: blur(30px);
+  pointer-events: none;
+}
+
+.connect-inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 500px;
+  animation: fadeUp 0.7s ease both;
+}
+
+/* Logo — matches nav brand style */
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  justify-content: center;
+  margin-bottom: 48px;
+  font-family: var(--font);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--white);
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--violet), #5b21b6);
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px var(--vglow), inset 0 1px 0 rgba(255,255,255,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.brand-icon::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 50%;
+  background: rgba(255,255,255,0.08);
+}
+
+.brand-icon svg { position: relative; z-index: 1; }
+
+.brand-name { color: var(--white); }
+.brand-name .ops { color: var(--violet3); }
+.brand-name .io  { color: var(--t3); font-weight: 400; font-size: 18px; }
+
+/* "New" badge — exact match from fixops.io */
+.new-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px 5px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 24px;
+}
+
+.new-pill {
+  background: var(--violet);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 11px;
+  border-radius: 999px;
+  letter-spacing: 0.3px;
+  font-family: var(--font);
+}
+
+/* Hero heading — matches "HubSpot Systems. Fixed." */
+.hero-h1 {
+  font-family: var(--font);
+  font-size: 52px;
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: -2.5px;
+  text-align: center;
+  margin-bottom: 18px;
+  color: var(--white);
+}
+
+.hero-h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--violet3), var(--violet2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 16px;
+  color: var(--t2);
+  line-height: 1.7;
+  text-align: center;
+  margin-bottom: 36px;
+  font-weight: 300;
+}
+
+.feat-list { display:flex; flex-direction:column; gap:9px; margin-bottom:32px; }
+.feat-row  { display:flex; align-items:center; gap:10px; font-size:14px; color:var(--t2); }
+.fcheck {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: var(--emerald);
+  font-weight: 900; flex-shrink: 0;
+}
+
+/* Purple CTA — exact match from site */
+.btn-violet {
+  width: 100%;
+  padding: 17px 22px;
+  background: var(--violet);
+  color: #fff;
+  border: none;
+  border-radius: var(--r);
+  font-family: var(--font);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: all 0.2s;
+  letter-spacing: -0.2px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 var(--vglow);
+}
+
+.btn-violet::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, transparent 100%);
+}
+
+.btn-violet:hover {
+  background: var(--violet2);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px var(--vglow);
+}
+
+.hs-chip {
+  width: 24px; height: 24px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900;
+  flex-shrink: 0;
+}
+
+.or-div {
+  display: flex; align-items: center; gap: 12px;
+  margin: 18px 0;
+  color: var(--t4);
+  font-size: 12px;
+}
+.or-div::before,.or-div::after { content:''; flex:1; height:1px; background:var(--b1); }
+
+/* Dark secondary — matches "View services" */
+.btn-outline {
+  width: 100%;
+  padding: 15px 22px;
+  background: rgba(255,255,255,0.04);
+  color: var(--t2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r);
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--white);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.trust-strip {
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  margin-top: 22px;
+}
+.trust-item {
+  font-size: 11px; color: var(--t3);
+  font-family: var(--mono);
+}
+
+/* ════════════════════════════════════
+   SCAN PAGE
+════════════════════════════════════ */
+#pg-scan { align-items:center; justify-content:center; overflow:hidden; }
+
+.scan-glow {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px; height: 400px;
+  background: radial-gradient(ellipse, rgba(109,40,217,0.2) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.scan-wrap {
+  position: relative; z-index: 2;
+  text-align: center;
+  max-width: 520px;
+  padding: 24px;
+  animation: fadeUp 0.4s ease;
+}
+
+.scan-orb {
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%,
+    rgba(109,40,217,0.6),
+    rgba(124,58,237,0.15) 65%);
+  border: 1px solid rgba(124,58,237,0.35);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px;
+  margin: 0 auto 32px;
+  animation: orb 2.5s ease-in-out infinite;
+  position: relative;
+}
+
+.scan-orb::before {
+  content: '';
+  position: absolute; inset: -12px;
+  border-radius: 50%;
+  border: 1px solid rgba(124,58,237,0.15);
+  animation: ring 2.5s ease-in-out infinite;
+}
+
+.scan-orb::after {
+  content: '';
+  position: absolute; inset: -26px;
+  border-radius: 50%;
+  border: 1px solid rgba(124,58,237,0.06);
+  animation: ring 2.5s ease-in-out infinite 0.5s;
+}
+
+@keyframes orb {
+  0%,100% { box-shadow: 0 0 20px rgba(124,58,237,0.2); }
+  50%      { box-shadow: 0 0 70px rgba(124,58,237,0.5); }
+}
+@keyframes ring {
+  0%,100% { transform:scale(1); opacity:0.5; }
+  50%      { transform:scale(1.07); opacity:1; }
+}
+
+.scan-h    { font-size:26px; font-weight:800; letter-spacing:-0.5px; margin-bottom:7px; }
+.scan-stat { font-size:13px; color:var(--t3); font-family:var(--mono); margin-bottom:32px; }
+
+.ck-list { display:flex; flex-direction:column; gap:7px; text-align:left; margin-bottom:24px; }
+
+.ck {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 16px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  font-size: 13px; color: var(--t2);
+  opacity: 0; transform: translateX(-10px);
+  transition: all 0.3s;
+}
+.ck.show  { opacity:1; transform:translateX(0); }
+.ck.done  { border-color:rgba(16,185,129,0.25); background:rgba(16,185,129,0.04); color:var(--t1); }
+
+.ck-ico {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  border: 1.5px solid var(--b2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; flex-shrink: 0;
+  transition: all 0.2s;
+}
+.ck.done    .ck-ico { background:var(--emerald); border-color:var(--emerald); color:#000; font-weight:900; }
+.ck.running .ck-ico { border-color:var(--violet3); background:var(--vdim); animation:spin 0.7s linear infinite; }
+
+.ck-count { margin-left:auto; font-size:10.5px; color:var(--t4); font-family:var(--mono); }
+.ck.done  .ck-count { color:var(--emerald); }
+
+.scanprog      { height:2px; background:var(--s2); border-radius:1px; overflow:hidden; }
+.scanprog-fill { height:100%; background:linear-gradient(90deg,var(--violet),var(--violet2)); border-radius:1px; width:0%; transition:width 0.5s ease; }
+
+/* ════════════════════════════════════
+   APP NAV — matches fixops.io nav
+════════════════════════════════════ */
+.app-nav {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 56px;
+  background: rgba(0,0,0,0.94);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--b1);
+  flex-shrink: 0;
+}
+
+.nav-brand {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 19px; font-weight: 800; letter-spacing: -0.5px;
+  cursor: pointer; color: var(--white);
+  font-family: var(--font);
+}
+
+.nav-brand-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--violet), #5b21b6);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 16px var(--vglow);
+}
+
+.nav-brand-icon svg { width:16px; height:16px; }
+
+.nav-brand .ops { color: var(--violet3); }
+.nav-brand .io  { color: var(--t3); font-size:15px; font-weight:400; }
+
+.nav-mods { display:flex; gap:3px; }
+
+.nmod {
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  color: var(--t2);
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none; background: none;
+  font-family: var(--font);
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.nmod:hover  { color:var(--t1); background:var(--s1); }
+.nmod.active { color:var(--white); background:var(--s1); border:1px solid var(--b2); }
+
+.nb {
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px; font-weight: 700;
+  font-family: var(--mono);
+}
+.nb-r  { background:var(--rdim); color:var(--red); }
+.nb-a  { background:var(--adim); color:var(--amber); }
+.nb-v  { background:var(--vdim); color:var(--violet3); }
+
+.nav-right { display:flex; align-items:center; gap:10px; }
+
+.portal-badge {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 14px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: 999px;
+  font-size: 12px; color: var(--t2);
+  font-family: var(--mono);
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--emerald);
+  border-radius: 50%;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* Nav buttons — matches site nav */
+.btn-nav-ghost {
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  background: transparent;
+  color: var(--t2);
+  border: 1px solid var(--b1);
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+}
+.btn-nav-ghost:hover { border-color:var(--b2); color:var(--t1); }
+
+/* "Book a call" style button — matches site CTA */
+.btn-nav-cta {
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-size: 13px; font-weight: 700;
+  background: var(--violet);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.btn-nav-cta:hover { background:var(--violet2); transform:translateY(-1px); }
+
+/* ════════════════════════════════════
+   DASHBOARD LAYOUT
+════════════════════════════════════ */
+#pg-app { flex-direction:column; }
+
+.dash-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 258px 1fr 310px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  border-right: 1px solid var(--b1);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  padding: 14px 10px;
+  gap: 2px;
+  background: var(--bg);
+}
+
+.sb-score-card {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--rlg);
+  padding: 20px 16px;
+  text-align: center;
+  margin-bottom: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sb-score-card::before {
+  content: '';
+  position: absolute;
+  top: -50px; left: 50%;
+  transform: translateX(-50%);
+  width: 180px; height: 140px;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.sb-ring {
+  width: 82px; height: 82px;
+  border-radius: 50%;
+  background: conic-gradient(var(--violet) 0% 73%, var(--s3) 73% 100%);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  position: relative;
+}
+.sb-ring::before {
+  content: '';
+  position: absolute; inset: 12px;
+  background: var(--s1);
+  border-radius: 50%;
+}
+.sb-ring-n {
+  position: relative; z-index: 1;
+  font-family: var(--font);
+  font-size: 26px; font-weight: 900;
+  color: var(--violet3);
+  letter-spacing: -1px;
+}
+.sb-score-lbl {
+  font-size: 10px; color: var(--t3);
+  font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.sb-grade {
+  display: inline-block;
+  padding: 3px 12px;
+  background: var(--adim);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  color: var(--amber);
+  font-family: var(--font);
+}
+
+.sb-sec {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--t4);
+  font-family: var(--mono);
+  padding: 14px 10px 5px;
+}
+
+.sbi {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  font-size: 13px; color: var(--t2); font-weight: 500;
+}
+.sbi:hover  { background:var(--s2); color:var(--t1); }
+.sbi.active { background:var(--vsoft); border-color:var(--vborder); color:var(--violet3); }
+
+.sbi-ico {
+  width: 27px; height: 27px;
+  border-radius: 7px;
+  background: var(--s2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+.sbi.active .sbi-ico { background:var(--vdim); }
+.sbi-lbl { flex:1; }
+
+.sbi-cnt {
+  font-size: 10px; font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-family: var(--mono);
+}
+.cnt-r { background:var(--rdim); color:var(--red); }
+.cnt-a { background:var(--adim); color:var(--amber); }
+.cnt-g { background:var(--edim); color:var(--emerald); }
+
+/* ── Main content ── */
+.main-area {
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+  background: var(--black);
+}
+
+.mod-view {
+  display: none;
+  flex-direction: column;
+  gap: 22px;
+  padding: 26px;
+  animation: fadeUp 0.35s ease;
+}
+.mod-view.active { display:flex; }
+
+/* ── Stat cards ── */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+
+.stat-card {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--rlg);
+  padding: 18px 20px;
+  position: relative; overflow: hidden;
+  transition: all 0.15s;
+}
+.stat-card:hover { border-color:var(--b2); transform:translateY(-1px); }
+.stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+.sc-r::before  { background:var(--red); }
+.sc-a::before  { background:var(--amber); }
+.sc-g::before  { background:var(--emerald); }
+.sc-v::before  { background:var(--violet); }
+.sc-s::before  { background:var(--sky); }
+
+.sc-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.sc-lbl  { font-size:10.5px; color:var(--t3); font-family:var(--mono); text-transform:uppercase; letter-spacing:0.8px; }
+.sc-val  { font-size:34px; font-weight:900; letter-spacing:-1.5px; line-height:1; margin-bottom:5px; font-family:var(--font); }
+.sc-r  .sc-val { color:var(--red); }
+.sc-a  .sc-val { color:var(--amber); }
+.sc-g  .sc-val { color:var(--emerald); }
+.sc-v  .sc-val { color:var(--violet3); }
+.sc-s  .sc-val { color:var(--sky); }
+.sc-sub { font-size:11px; color:var(--t3); font-family:var(--mono); }
+.sc-sub.up { color:var(--emerald); }
+.sc-sub.dn { color:var(--red); }
+
+/* ── Section headers ── */
+.sh { display:flex; align-items:center; justify-content:space-between; margin-bottom:13px; }
+.sh-title { font-size:14px; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px; font-family:var(--font); }
+.sh-link  { font-size:11.5px; color:var(--violet3); cursor:pointer; font-family:var(--mono); transition:opacity 0.15s; }
+.sh-link:hover { opacity:0.7; }
+
+/* ── Dimension grid ── */
+.dim-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:11px; }
+
+.dim {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--rlg);
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.dim:hover { border-color:var(--b2); transform:translateY(-2px); box-shadow:0 12px 32px rgba(0,0,0,0.5); }
+.dim.sel   { border-color:rgba(124,58,237,0.45); background:var(--vsoft); }
+
+.dim-top  { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+.dim-emo  { font-size:20px; }
+.dim-num  { font-family:var(--font); font-size:24px; font-weight:900; letter-spacing:-1px; line-height:1; }
+.dim-name { font-size:12px; font-weight:700; color:var(--t1); margin-bottom:3px; }
+.dim-sub  { font-size:10.5px; color:var(--t3); font-family:var(--mono); line-height:1.4; margin-bottom:10px; }
+.dim-bar  { height:3px; background:var(--s3); border-radius:2px; overflow:hidden; }
+.dim-fill { height:100%; border-radius:2px; width:0%; transition:width 1.3s cubic-bezier(0.16,1,0.3,1); }
+
+/* ════════════════════════════════════
+   ISSUE CARDS — the anti-139-pages
+════════════════════════════════════ */
+.issues-panel {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--rlg);
+  overflow: hidden;
+}
+
+.issues-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--b1);
+  flex-wrap: wrap; gap: 10px;
+}
+
+.issues-title {
+  font-family: var(--font);
+  font-size: 14px; font-weight: 800;
+  display: flex; align-items: center; gap: 9px;
+}
+
+.i-badge {
+  padding: 2px 8px;
+  background: var(--rdim);
+  border: 1px solid rgba(244,63,94,0.2);
+  border-radius: 5px;
+  font-size: 10px; font-weight: 700;
+  color: var(--red);
+  font-family: var(--mono);
+}
+
+.ftabs { display:flex; gap:4px; }
+.ft {
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--b1);
+  background: transparent;
+  font-family: var(--mono);
+  color: var(--t3);
+  transition: all 0.15s;
+}
+.ft:hover { color:var(--t2); }
+.ft.fa    { color:var(--t1); background:var(--s2); border-color:var(--b2); }
+.ft.fr.fa { color:var(--red); background:var(--rdim); border-color:rgba(244,63,94,0.2); }
+.ft.fa2.fa { color:var(--amber); background:var(--adim); border-color:rgba(245,158,11,0.2); }
+
+.issue {
+  border-bottom: 1px solid var(--b1);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.issue:last-child { border-bottom:none; }
+.issue:hover  { background:var(--s2); }
+.issue.open   { background:var(--s2); }
+
+.issue-top {
+  display: grid;
+  grid-template-columns: 3px 1fr auto;
+  gap: 17px;
+  padding: 17px 22px;
+  align-items: start;
+}
+
+.i-bar  { width:3px; border-radius:2px; min-height:48px; margin-top:2px; }
+.i-body { min-width:0; }
+
+.i-title {
+  font-family: var(--font);
+  font-size: 13.5px; font-weight: 700;
+  color: var(--t1);
+  margin-bottom: 5px; line-height: 1.3;
+}
+
+.i-desc {
+  font-size: 12.5px; color: var(--t2);
+  line-height: 1.6; margin-bottom: 9px;
+  font-weight: 300;
+}
+
+.chips { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+.chip  { padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; font-family:var(--mono); }
+.ch-d  { background:var(--vdim); color:var(--violet3); }
+.ch-a  { background:rgba(251,146,60,0.12); color:#fb923c; }
+.ch-p  { background:var(--edim); color:var(--emerald); }
+.ch-r  { background:rgba(192,132,252,0.1); color:#c084fc; }
+.ch-b  { background:var(--sdim); color:var(--sky); }
+.ch-$  { color:var(--amber); font-weight:700; background:transparent; padding-left:0; }
+
+/* Three-button fix system */
+.i-actions { display:flex; flex-direction:column; gap:5px; flex-shrink:0; }
+
+.iact {
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 11px; font-weight: 700;
+  cursor: pointer; border: none;
+  font-family: var(--mono);
+  white-space: nowrap;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 5px;
+}
+
+.ia-auto  { background:var(--vdim); color:var(--violet3); border:1px solid var(--vborder); }
+.ia-auto:hover  { background:rgba(124,58,237,0.22); transform:translateY(-1px); }
+.ia-auto.done   { background:var(--edim); color:var(--emerald); border-color:rgba(16,185,129,0.2); cursor:default; }
+
+.ia-guide { background:var(--edim); color:var(--emerald); border:1px solid rgba(16,185,129,0.18); }
+.ia-guide:hover { background:rgba(16,185,129,0.18); transform:translateY(-1px); }
+
+.ia-svc   { background:var(--s3); color:var(--t2); border:1px solid var(--b2); }
+.ia-svc:hover   { border-color:var(--vborder); color:var(--violet3); transform:translateY(-1px); }
+
+/* Expanded AI insight + Best Practice — unique to FixOps */
+.issue-expand { display:none; padding:0 22px 20px; }
+.issue.open .issue-expand { display:block; }
+
+.ai-block {
+  padding: 15px 18px;
+  background: rgba(124,58,237,0.06);
+  border: 1px solid rgba(124,58,237,0.16);
+  border-radius: var(--r);
+  margin-bottom: 12px;
+}
+.ai-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--violet3);
+  font-family: var(--mono);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.ai-text { font-size: 13px; color: var(--t2); line-height: 1.7; font-weight: 300; }
+.ai-text strong { color:var(--t1); font-weight:600; }
+
+.bp-block {
+  padding: 15px 18px;
+  background: rgba(16,185,129,0.05);
+  border: 1px solid rgba(16,185,129,0.14);
+  border-radius: var(--r);
+}
+.bp-label {
+  font-size: 10px; font-weight: 700;
+  color: var(--emerald);
+  font-family: var(--mono);
+  letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.bp-steps { display:flex; flex-direction:column; gap:9px; }
+.bp-step  { display:flex; align-items:flex-start; gap: 11px; font-size:12.5px; color:var(--t2); line-height:1.55; font-weight:300; }
+.bp-n {
+  width:22px; height:22px; border-radius:50%;
+  background:rgba(16,185,129,0.12);
+  border: 1px solid rgba(16,185,129,0.22);
+  display:flex; align-items:center; justify-content:center;
+  font-size:10px; font-weight:700; color:var(--emerald);
+  flex-shrink:0; font-family:var(--mono);
+}
+
+/* ── Right panel ── */
+.right-panel {
+  border-left: 1px solid var(--b1);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  background: var(--bg);
+}
+
+.rp-block { padding:16px 15px; border-bottom:1px solid var(--b1); }
+.rp-block:last-child { border-bottom:none; }
+.rp-h { display:flex; align-items:center; justify-content:space-between; font-family:var(--font); font-size:13px; font-weight:700; margin-bottom:12px; }
+.rp-link { font-size:11px; color:var(--violet3); cursor:pointer; font-family:var(--mono); font-weight:400; }
+
+.alert-feed { display:flex; flex-direction:column; gap:6px; }
+
+.al {
+  display: flex; align-items: flex-start; gap: 9px;
+  padding: 10px 11px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.al:hover      { border-color:var(--b2); }
+.al.al-r       { border-left:2.5px solid var(--red); padding-left:10px; }
+.al.al-a       { border-left:2.5px solid var(--amber); padding-left:10px; }
+
+.al-ico { width:28px; height:28px; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+.al-ico.r { background:var(--rdim); }
+.al-ico.a { background:var(--adim); }
+.al-ico.g { background:var(--edim); }
+
+.al-body  { flex:1; min-width:0; }
+.al-t     { font-size:12px; font-weight:600; color:var(--t1); line-height:1.3; margin-bottom:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.al-time  { font-size:10px; color:var(--t4); font-family:var(--mono); }
+
+.qfix { display:flex; flex-direction:column; }
+.qf   { display:flex; align-items:center; gap:9px; padding:8px 5px; border-bottom:1px solid var(--b1); cursor:pointer; border-radius:6px; transition:background 0.1s; }
+.qf:last-child { border-bottom:none; }
+.qf:hover { background:var(--s2); }
+
+.qf-cb { width:16px; height:16px; border-radius:4px; border:1.5px solid var(--b2); display:flex; align-items:center; justify-content:center; font-size:9px; flex-shrink:0; transition:all 0.15s; }
+.qf.done .qf-cb { background:var(--emerald); border-color:var(--emerald); color:#000; font-weight:900; }
+.qf-t   { flex:1; font-size:11.5px; color:var(--t2); line-height:1.35; font-weight:400; }
+.qf.done .qf-t  { text-decoration:line-through; color:var(--t4); }
+.qf-tag { font-size:9px; font-weight:700; padding:1px 6px; border-radius:4px; font-family:var(--mono); flex-shrink:0; }
+.qt-v   { background:var(--vdim); color:var(--violet3); }
+.qt-g   { background:var(--edim); color:var(--emerald); }
+.qt-a   { background:var(--adim); color:var(--amber); }
+
+.trend-bars { display:flex; align-items:flex-end; gap:5px; height:48px; margin-top:13px; }
+.tr-col { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:5px; height:100%; }
+.tr-bar { width:100%; border-radius:3px 3px 0 0; min-height:3px; }
+.tr-lbl { font-size:9px; color:var(--t4); font-family:var(--mono); }
+
+/* ════════════════════════════════════
+   SENTINEL MODULE
+════════════════════════════════════ */
+.sentinel-card {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--rlg);
+  padding: 28px 30px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  position: relative; overflow: hidden;
+}
+.sentinel-card::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: -60px;
+  width: 240px; height: 200px;
+  background: radial-gradient(ellipse, rgba(124,58,237,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.s-live {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  background: var(--edim);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  color: var(--emerald);
+  font-family: var(--mono);
+  margin-bottom: 10px;
+}
+.s-h { font-family:var(--font); font-size:26px; font-weight:900; letter-spacing:-.5px; margin-bottom:7px; }
+.s-p { font-size:13px; color:var(--t2); line-height:1.55; max-width:480px; font-weight:300; }
+.s-nums { display:flex; gap:30px; flex-shrink:0; }
+.sn-v { font-family:var(--font); font-size:32px; font-weight:900; letter-spacing:-1px; line-height:1; margin-bottom:4px; }
+.sn-l { font-size:10px; color:var(--t3); text-transform:uppercase; letter-spacing:1px; font-family:var(--mono); }
+
+.alert-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+
+.acard {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--rlg);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.acard:hover { transform:translateY(-2px); box-shadow:0 14px 40px rgba(0,0,0,0.5); }
+.acard.crit  { border-top:2px solid var(--red); }
+.acard.warn  { border-top:2px solid var(--amber); }
+.acard.res   { border-top:2px solid var(--emerald); opacity:0.7; }
+
+.acard-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
+.acard-ico { width:38px; height:38px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.acard.crit .acard-ico { background:var(--rdim); }
+.acard.warn .acard-ico { background:var(--adim); }
+.acard.res  .acard-ico { background:var(--edim); }
+
+.ab { font-size:9px; font-weight:700; padding:2px 8px; border-radius:4px; font-family:var(--mono); text-transform:uppercase; letter-spacing:.5px; }
+.ab-r { background:var(--rdim); color:var(--red); border:1px solid rgba(244,63,94,0.2); }
+.ab-a { background:var(--adim); color:var(--amber); border:1px solid rgba(245,158,11,0.2); }
+.ab-g { background:var(--edim); color:var(--emerald); border:1px solid rgba(16,185,129,0.2); }
+
+.acard-h { font-family:var(--font); font-size:13.5px; font-weight:800; margin-bottom:6px; line-height:1.3; }
+.acard-p { font-size:12px; color:var(--t2); line-height:1.55; margin-bottom:14px; font-weight:300; }
+.acard-foot { display:flex; align-items:center; justify-content:space-between; }
+.acard-time { font-size:10px; color:var(--t4); font-family:var(--mono); }
+.acard-cta  {
+  font-size:11px; font-weight:700; color:var(--violet3);
+  cursor:pointer; font-family:var(--mono);
+  padding:3px 10px; border-radius:5px;
+  background:var(--vdim); border:1px solid var(--vborder);
+  transition:all 0.15s;
+}
+.acard-cta:hover { background:rgba(124,58,237,0.22); }
+
+/* ════════════════════════════════════
+   AUTODOC MODULE
+════════════════════════════════════ */
+.doc-hero {
+  background: var(--s1);
+  border: 1px solid rgba(16,185,129,0.15);
+  border-radius: var(--rlg);
+  padding: 28px 30px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+.doc-hero::before {
+  content: '';
+  position: absolute;
+  top: -50px; left: -50px;
+  width: 220px; height: 180px;
+  background: radial-gradient(ellipse, rgba(16,185,129,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.doc-list { display:flex; flex-direction:column; gap:8px; }
+.doc-item {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.doc-item:hover { border-color:var(--b2); background:var(--s2); }
+.doc-item-top   { display:flex; align-items:center; justify-content:space-between; margin-bottom:7px; }
+.doc-item-name  { font-family:var(--font); font-size:13.5px; font-weight:700; }
+.doc-badges     { display:flex; gap:5px; }
+.doc-badge      { font-size:9px; font-weight:700; padding:2px 7px; border-radius:4px; font-family:var(--mono); }
+.doc-item-desc  { font-size:12px; color:var(--t2); line-height:1.55; font-weight:300; }
+.doc-meta       { display:flex; gap:14px; margin-top:9px; }
+.doc-meta-item  { font-size:10px; color:var(--t4); font-family:var(--mono); }
+
+/* ════════════════════════════════════
+   REVSIGNAL MODULE
+════════════════════════════════════ */
+.rev-hero {
+  background: var(--s1);
+  border: 1px solid rgba(14,165,233,0.15);
+  border-radius: var(--rlg);
+  padding: 28px 30px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; overflow: hidden;
+}
+.rev-hero::before {
+  content: '';
+  position: absolute;
+  top: -50px; left: -50px;
+  width: 220px; height: 180px;
+  background: radial-gradient(ellipse, rgba(14,165,233,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.rev-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.rev-card { background:var(--s1); border:1px solid var(--b1); border-radius:var(--rlg); padding:22px; }
+.rev-card-h { font-family:var(--font); font-size:13.5px; font-weight:800; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+.rct { font-size:9px; padding:2px 7px; border-radius:4px; font-family:var(--mono); font-weight:700; }
+.rct-g { background:var(--edim); color:var(--emerald); }
+.rct-a { background:var(--adim); color:var(--amber); }
+.rct-r { background:var(--rdim); color:var(--red); }
+.rct-v { background:var(--vdim); color:var(--violet3); }
+.rct-s { background:var(--sdim); color:var(--sky); }
+.big-n  { font-family:var(--font); font-size:38px; font-weight:900; letter-spacing:-2px; line-height:1; margin-bottom:5px; }
+.m-sub  { font-size:11px; color:var(--t3); font-family:var(--mono); }
+.m-sub.up { color:var(--emerald); }
+.m-sub.dn { color:var(--red); }
+.minibars { display:flex; align-items:flex-end; gap:4px; height:52px; margin-top:13px; }
+.mb { flex:1; border-radius:3px 3px 0 0; min-height:3px; }
+.vel-row { display:flex; align-items:center; justify-content:space-between; padding:7px 0; border-bottom:1px solid var(--b1); font-size:12px; }
+.vel-row:last-child { border-bottom:none; }
+.vel-name { color:var(--t2); font-weight:300; }
+.vel-bar  { flex:1; height:4px; background:var(--s3); border-radius:2px; margin:0 10px; overflow:hidden; }
+.vel-fill { height:100%; border-radius:2px; }
+.vel-pct  { font-family:var(--mono); font-size:10px; color:var(--t2); width:28px; text-align:right; }
+.rep-row  { display:flex; align-items:center; gap:10px; padding:6px 0; }
+.rep-av   { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; }
+
+/* ════════════════════════════════════
+   PRICING — matches site pricing style
+════════════════════════════════════ */
+.price-intro { text-align:center; margin-bottom:32px; }
+.price-h { font-family:var(--font); font-size:36px; font-weight:900; letter-spacing:-1.5px; margin-bottom:12px; }
+.price-sub { font-size:15px; color:var(--t2); font-weight:300; }
+
+.price-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+
+.price-card {
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--rlg);
+  padding: 26px;
+  position: relative; overflow: hidden;
+  transition: all 0.2s;
+}
+.price-card:hover { transform:translateY(-3px); box-shadow:0 18px 50px rgba(0,0,0,0.4); border-color:var(--b2); }
+.price-card.featured { border-color:var(--vborder); background:linear-gradient(180deg,rgba(124,58,237,0.06) 0%,var(--s1) 100%); }
+.price-card.featured::before { content:'Most Popular'; position:absolute; top:14px; right:14px; background:var(--violet); color:#fff; font-size:9px; font-weight:700; padding:3px 9px; border-radius:5px; font-family:var(--mono); letter-spacing:.5px; }
+
+.p-tier  { font-size:10px; font-weight:700; color:var(--violet3); font-family:var(--mono); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.p-name  { font-family:var(--font); font-size:22px; font-weight:900; margin-bottom:7px; }
+.p-desc  { font-size:12px; color:var(--t2); line-height:1.55; margin-bottom:20px; min-height:40px; font-weight:300; }
+.p-price { font-family:var(--font); font-size:40px; font-weight:900; letter-spacing:-2px; line-height:1; margin-bottom:4px; }
+.p-price span { font-size:16px; color:var(--t2); font-weight:400; letter-spacing:0; }
+.p-per   { font-size:11px; color:var(--t3); font-family:var(--mono); margin-bottom:22px; }
+
+.p-feats { display:flex; flex-direction:column; gap:8px; margin-bottom:22px; }
+.p-feat  { display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--t2); font-weight:300; }
+.p-feat-ico { font-size:12px; flex-shrink:0; }
+
+.p-btn { width:100%; padding:13px; border-radius:var(--r); font-family:var(--font); font-size:13px; font-weight:700; cursor:pointer; border:none; transition:all 0.15s; }
+.pb-o { background:transparent; color:var(--t1); border:1px solid var(--b2); }
+.pb-o:hover { border-color:var(--violet3); color:var(--violet3); }
+.pb-f { background:var(--violet); color:#fff; }
+.pb-f:hover { background:var(--violet2); transform:translateY(-1px); }
+
+/* Services grid */
+.svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.svc-card {
+  padding: 18px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: var(--r);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.svc-card:hover { border-color:var(--b2); transform:translateY(-1px); }
+.svc-name  { font-family:var(--font); font-weight:700; font-size:14px; margin-bottom:5px; }
+.svc-desc  { font-size:12px; color:var(--t2); margin-bottom:12px; font-weight:300; line-height:1.5; }
+.svc-price { font-family:var(--font); font-size:20px; font-weight:900; color:var(--violet3); }
+
+/* ════════════════════════════════════
+   MODALS
+════════════════════════════════════ */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.88);
+  z-index: 500;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
+}
+.overlay.open { display:flex; }
+
+.modal {
+  background: var(--s1);
+  border: 1px solid var(--b2);
+  border-radius: var(--rxl);
+  padding: 34px;
+  max-width: 600px; width: 100%;
+  max-height: 84vh; overflow-y: auto;
+  animation: fadeUp 0.3s ease;
+}
+
+.modal-h   { font-family:var(--font); font-size:22px; font-weight:900; letter-spacing:-.3px; margin-bottom:7px; }
+.modal-sub { font-size:13px; color:var(--t2); margin-bottom:26px; line-height:1.55; font-weight:300; }
+
+.modal-steps { display:flex; flex-direction:column; gap:16px; margin-bottom:26px; }
+.m-step { display:flex; gap:14px; align-items:flex-start; }
+.m-step-n {
+  width:30px; height:30px; border-radius:8px;
+  background:var(--vdim); border:1px solid var(--vborder);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:12px; font-weight:700;
+  color:var(--violet3); flex-shrink:0;
+}
+.m-step-t { font-weight:700; font-size:13.5px; color:var(--t1); margin-bottom:4px; font-family:var(--font); }
+.m-step-d { font-size:12.5px; color:var(--t2); line-height:1.65; font-weight:300; }
+
+.modal-btns { display:flex; gap:10px; }
+.mb-v { flex:1; padding:13px; background:var(--violet); color:#fff; border:none; border-radius:var(--r); font-family:var(--font); font-size:14px; font-weight:700; cursor:pointer; transition:all 0.15s; }
+.mb-v:hover { background:var(--violet2); }
+.mb-g { flex:1; padding:13px; background:transparent; color:var(--t2); border:1px solid var(--b2); border-radius:var(--r); font-family:var(--font); font-size:14px; cursor:pointer; transition:all 0.15s; }
+.mb-g:hover { border-color:var(--b3); color:var(--t1); }
+
+/* ════════════════════════════════════
+   TOAST
+════════════════════════════════════ */
+.toast {
+  position: fixed; bottom:22px; right:22px; z-index:9999;
+  background: var(--s2);
+  border: 1px solid var(--b2);
+  border-radius: var(--rlg);
+  padding: 13px 17px;
+  display: flex; align-items: center; gap: 11px;
+  max-width: 380px;
+  transform: translateY(80px); opacity:0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+}
+.toast.show { transform:translateY(0); opacity:1; }
+.t-ico { font-size:19px; }
+.t-msg { flex:1; }
+.t-msg strong { display:block; font-size:13px; font-weight:700; color:var(--white); margin-bottom:2px; font-family:var(--font); }
+.t-msg span   { font-size:11px; color:var(--t2); font-family:var(--mono); }
+.t-x { color:var(--t4); cursor:pointer; font-size:15px; padding:4px; transition:color 0.15s; }
+.t-x:hover { color:var(--t1); }
+
+/* ════════════════════════════════════
+   ANIMATIONS
+════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(18px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+.spin { display:inline-block; animation:spin 0.75s linear infinite; }
+
+.a1 { animation:fadeUp 0.4s ease 0.05s both; }
+.a2 { animation:fadeUp 0.4s ease 0.12s both; }
+.a3 { animation:fadeUp 0.4s ease 0.2s both; }
+
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--b2); border-radius:3px; }
+
+/* ── Responsive ── */
+@media (max-width:1120px) {
+  .dash-layout { grid-template-columns:220px 1fr; }
+  .right-panel { display:none; }
+}
+@media (max-width:820px) {
+  .dash-layout { grid-template-columns:1fr; }
+  .sidebar { display:none; }
+  .nav-mods { display:none; }
+  .dim-grid,.stats-row,.alert-cards,.rev-grid,.price-grid { grid-template-columns:repeat(2,1fr); }
+  .hero-h1 { font-size:36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Stars — matches fixops.io hero -->
+<div id="stars"></div>
+
+<!-- ═══════════ CONNECT PAGE ═══════════ -->
+<div id="pg-connect" class="page active">
+  <div class="hero-glow"></div>
+  <div class="connect-inner">
+
+    <!-- Logo -->
+    <div class="brand-mark">
+      <div class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" width="20" height="20">
+          <path d="M13 2L4.5 13H11L10 22L19.5 11H13L13 2Z" fill="white" stroke="white" stroke-width="0.5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="brand-name">Fix<span class="ops">Ops</span><span class="io">.io</span></span>
+    </div>
+
+    <!-- Badge — matches site "New" pill -->
+    <div style="text-align:center">
+      <div class="new-badge">
+        <span class="new-pill">New</span>
+        Portal Intelligence — Now Available
+      </div>
+    </div>
+
+    <!-- Heading — matches "HubSpot Systems. Fixed." weight and feel -->
+    <h1 class="hero-h1">HubSpot Systems.<br><em>Intelligently Fixed.</em></h1>
+    <p class="hero-sub">Connect your portal. FixOps runs 165 checks across 8 dimensions, scores every area of your HubSpot health, and tells you exactly what's broken — in plain English, not 139 pages.</p>
+
+    <div class="feat-list">
+      <div class="feat-row"><div class="fcheck">✓</div>8-dimension health score with AI analysis & dollar impact</div>
+      <div class="feat-row"><div class="fcheck">✓</div>Sentinel — real-time alerts for workflow failures & integration errors</div>
+      <div class="feat-row"><div class="fcheck">✓</div>One-click auto-fixes with preview, confirm & 30-day rollback</div>
+      <div class="feat-row"><div class="fcheck">✓</div>AutoDoc — living plain-English documentation of every automation</div>
+      <div class="feat-row"><div class="fcheck">✓</div>RevSignal — revenue dashboards HubSpot's reporting can't produce</div>
+      <div class="feat-row"><div class="fcheck">✓</div>Weekly digest + monthly board-ready PDF emailed automatically</div>
+    </div>
+
+    <button class="btn-violet" onclick="startScan()">
+      <div class="hs-chip">H</div>
+      Connect HubSpot Portal
+      <span style="margin-left:auto;opacity:.6">→</span>
+    </button>
+    <div class="or-div">or</div>
+    <button class="btn-outline" onclick="startScan()">▶ &nbsp;Run Demo with Sample Portal Data</button>
+
+    <div class="trust-strip">
+      <span class="trust-item">🔒 Read-only OAuth</span>
+      <span class="trust-item">·</span>
+      <span class="trust-item">🚫 No data stored</span>
+      <span class="trust-item">·</span>
+      <span class="trust-item">⚡ Free scan</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SCAN PAGE ═══════════ -->
+<div id="pg-scan" class="page">
+  <div class="scan-glow"></div>
+  <div class="scan-wrap">
+    <div class="scan-orb">⚡</div>
+    <div class="scan-h">Scanning your portal…</div>
+    <div class="scan-stat" id="scan-msg">Connecting to HubSpot API</div>
+    <div class="ck-list" id="ck-list">
+      <div class="ck" data-n="OAuth verified"><div class="ck-ico"></div><span>Authenticating HubSpot OAuth connection</span><span class="ck-count"></span></div>
+      <div class="ck" data-n="48,291 contacts"><div class="ck-ico"></div><span>Auditing contacts, companies & data integrity</span><span class="ck-count"></span></div>
+      <div class="ck" data-n="87 workflows"><div class="ck-ico"></div><span>Analyzing workflows, automation health & conflicts</span><span class="ck-count"></span></div>
+      <div class="ck" data-n="$2.4M pipeline"><div class="ck-ico"></div><span>Scanning pipeline integrity & deal health</span><span class="ck-count"></span></div>
+      <div class="ck" data-n="12 integrations"><div class="ck-ico"></div><span>Checking API integrations & connection health</span><span class="ck-count"></span></div>
+      <div class="ck" data-n="9 dashboards"><div class="ck-ico"></div><span>Auditing reporting reliability & attribution</span><span class="ck-count"></span></div>
+      <div class="ck" data-n="100 users scanned"><div class="ck-ico"></div><span>Checking team adoption & AI readiness</span><span class="ck-count"></span></div>
+      <div class="ck" data-n="165 checks complete"><div class="ck-ico"></div><span>Running AI analysis & generating insights</span><span class="ck-count"></span></div>
+    </div>
+    <div class="scanprog"><div class="scanprog-fill" id="spf"></div></div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="pg-app" class="page">
+
+  <!-- Nav -->
+  <nav class="app-nav">
+    <div class="nav-brand" onclick="goHome()">
+      <div class="nav-brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16">
+          <path d="M13 2L4.5 13H11L10 22L19.5 11H13L13 2Z" fill="white"/>
+        </svg>
+      </div>
+      Fix<span class="ops">Ops</span><span class="io">.io</span>
+    </div>
+    <div class="nav-mods">
+      <button class="nmod active" data-mod="pulse">⚡ Pulse <span class="nb nb-r">14</span></button>
+      <button class="nmod" data-mod="sentinel">🛡 Sentinel <span class="nb nb-a">5</span></button>
+      <button class="nmod" data-mod="autodoc">📄 AutoDoc <span class="nb nb-v">New</span></button>
+      <button class="nmod" data-mod="revsignal">📊 RevSignal</button>
+      <button class="nmod" data-mod="pricing">💳 Pricing</button>
+    </div>
+    <div class="nav-right">
+      <div class="portal-badge"><div class="live-dot"></div>acme-corp · Pro</div>
+      <button class="btn-nav-ghost" onclick="openEmailModal()">✉ Email Reports</button>
+      <button class="btn-nav-cta" onclick="rescan(this)"><span>⟳</span> Rescan</button>
+    </div>
+  </nav>
+
+  <div class="dash-layout" id="dash">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sb-score-card">
+        <div class="sb-score-lbl">FixOps Score</div>
+        <div class="sb-ring"><div class="sb-ring-n">73</div></div>
+        <div class="sb-grade">⚠ Needs Attention</div>
+      </div>
+      <div class="sb-sec">Health Dimensions</div>
+      <div class="sbi active" onclick="sbSel(this)"><div class="sbi-ico">🗄️</div><div class="sbi-lbl">Data Integrity</div><div class="sbi-cnt cnt-r">61</div></div>
+      <div class="sbi" onclick="sbSel(this)"><div class="sbi-ico">⚙️</div><div class="sbi-lbl">Automation Health</div><div class="sbi-cnt cnt-r">54</div></div>
+      <div class="sbi" onclick="sbSel(this)"><div class="sbi-ico">📊</div><div class="sbi-lbl">Pipeline Integrity</div><div class="sbi-cnt cnt-a">71</div></div>
+      <div class="sbi" onclick="sbSel(this)"><div class="sbi-ico">🔧</div><div class="sbi-lbl">Configuration</div><div class="sbi-cnt cnt-g">88</div></div>
+      <div class="sbi" onclick="sbSel(this)"><div class="sbi-ico">📧</div><div class="sbi-lbl">Marketing Health</div><div class="sbi-cnt cnt-a">68</div></div>
+      <div class="sbi" onclick="sbSel(this)"><div class="sbi-ico">📈</div><div class="sbi-lbl">Reporting</div><div class="sbi-cnt cnt-r">44</div></div>
+      <div class="sbi" onclick="sbSel(this)"><div class="sbi-ico">🤖</div><div class="sbi-lbl">AI Readiness</div><div class="sbi-cnt cnt-a">59</div></div>
+      <div class="sbi" onclick="sbSel(this)"><div class="sbi-ico">👥</div><div class="sbi-lbl">Team Adoption</div><div class="sbi-cnt cnt-a">76</div></div>
+      <div class="sb-sec">Quick Actions</div>
+      <div class="sbi" onclick="toast('⚡','Auto-Fixes Queued','4 safe fixes ready · Preview before applying')"><div class="sbi-ico">⚡</div><div class="sbi-lbl">Run All Auto-Fixes</div></div>
+      <div class="sbi" onclick="toast('📄','Generating PDF','Board-ready report ready in ~10s')"><div class="sbi-ico">📄</div><div class="sbi-lbl">Export PDF Report</div></div>
+      <div class="sbi" onclick="openEmailModal()"><div class="sbi-ico">✉</div><div class="sbi-lbl">Email Reports Setup</div></div>
+      <div class="sbi" onclick="switchMod('pricing')"><div class="sbi-ico">💳</div><div class="sbi-lbl">View Pricing & Services</div></div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main-area">
+
+      <!-- ── PULSE ── -->
+      <div id="mod-pulse" class="mod-view active">
+        <div class="stats-row a1">
+          <div class="stat-card sc-r">
+            <div class="sc-head"><div class="sc-lbl">Critical Issues</div><span>🔴</span></div>
+            <div class="sc-val">14</div>
+            <div class="sc-sub dn">▲ 2 new since yesterday</div>
+          </div>
+          <div class="stat-card sc-a">
+            <div class="sc-head"><div class="sc-lbl">Warnings</div><span>🟡</span></div>
+            <div class="sc-val">23</div>
+            <div class="sc-sub">unchanged from last scan</div>
+          </div>
+          <div class="stat-card sc-g">
+            <div class="sc-head"><div class="sc-lbl">Fixed This Week</div><span>✅</span></div>
+            <div class="sc-val">8</div>
+            <div class="sc-sub up">▲ 3 auto-fixed by FixOps</div>
+          </div>
+          <div class="stat-card sc-v">
+            <div class="sc-head"><div class="sc-lbl">Est. Monthly Waste</div><span>💸</span></div>
+            <div class="sc-val">$840</div>
+            <div class="sc-sub">addressable cost</div>
+          </div>
+        </div>
+
+        <div class="a2">
+          <div class="sh"><div class="sh-title">⬡ Health Dimensions</div><div class="sh-link">View All →</div></div>
+          <div class="dim-grid">
+            <div class="dim sel" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">🗄️</div><div class="dim-num" style="color:var(--red)">61</div></div><div class="dim-name">Data Integrity</div><div class="dim-sub">847 dupes · 2,341 missing fields</div><div class="dim-bar"><div class="dim-fill" data-w="61" style="background:var(--red)"></div></div></div>
+            <div class="dim" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">⚙️</div><div class="dim-num" style="color:var(--red)">54</div></div><div class="dim-name">Automation Health</div><div class="dim-sub">11 errors · 23 dead workflows</div><div class="dim-bar"><div class="dim-fill" data-w="54" style="background:var(--red)"></div></div></div>
+            <div class="dim" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">📊</div><div class="dim-num" style="color:var(--amber)">71</div></div><div class="dim-name">Pipeline Integrity</div><div class="dim-sub">34 stalled · $847K at risk</div><div class="dim-bar"><div class="dim-fill" data-w="71" style="background:var(--amber)"></div></div></div>
+            <div class="dim" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">🔧</div><div class="dim-num" style="color:var(--emerald)">88</div></div><div class="dim-name">Configuration</div><div class="dim-sub">3 issues · 2 security alerts</div><div class="dim-bar"><div class="dim-fill" data-w="88" style="background:var(--emerald)"></div></div></div>
+            <div class="dim" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">📧</div><div class="dim-num" style="color:var(--amber)">68</div></div><div class="dim-name">Marketing Health</div><div class="dim-sub">Bounce 4.2% · 6 broken forms</div><div class="dim-bar"><div class="dim-fill" data-w="68" style="background:var(--amber)"></div></div></div>
+            <div class="dim" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">📈</div><div class="dim-num" style="color:var(--red)">44</div></div><div class="dim-name">Reporting</div><div class="dim-sub">9 broken dashboards</div><div class="dim-bar"><div class="dim-fill" data-w="44" style="background:var(--red)"></div></div></div>
+            <div class="dim" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">🤖</div><div class="dim-num" style="color:var(--amber)">59</div></div><div class="dim-name">AI Readiness</div><div class="dim-sub">Breeze not ready · low data quality</div><div class="dim-bar"><div class="dim-fill" data-w="59" style="background:var(--amber)"></div></div></div>
+            <div class="dim" onclick="dimSel(this)"><div class="dim-top"><div class="dim-emo">👥</div><div class="dim-num" style="color:var(--amber)">76</div></div><div class="dim-name">Team Adoption</div><div class="dim-sub">4 inactive seats · 3 unused features</div><div class="dim-bar"><div class="dim-fill" data-w="76" style="background:var(--amber)"></div></div></div>
+          </div>
+        </div>
+
+        <!-- Issue cards -->
+        <div class="a3">
+          <div class="issues-panel">
+            <div class="issues-bar">
+              <div class="issues-title">Priority Fix Queue <span class="i-badge">14 critical</span></div>
+              <div class="ftabs">
+                <div class="ft fa"  onclick="fsel(this)">All</div>
+                <div class="ft fr"  onclick="fsel(this)">🔴 Critical</div>
+                <div class="ft fa2" onclick="fsel(this)">🟡 Warning</div>
+              </div>
+            </div>
+
+            <!-- Issue 1 -->
+            <div class="issue" onclick="toggleIssue(this)">
+              <div class="issue-top">
+                <div class="i-bar" style="background:var(--red)"></div>
+                <div class="i-body">
+                  <div class="i-title">847 duplicate contacts — costing you money and corrupting pipeline data</div>
+                  <div class="i-desc">Fuzzy matching found duplicates Portal-iQ misses — phone + company + name combinations. 23% have received conflicting messages from different reps.</div>
+                  <div class="chips"><span class="chip ch-d">DATA</span><span class="chip ch-$">~$284/mo excess tier fees</span></div>
+                </div>
+                <div class="i-actions">
+                  <button class="iact ia-auto" onclick="autoFix(event,this)">⚡ Auto-Fix</button>
+                  <button class="iact ia-guide" onclick="openGuide(event,'dupes')">📋 Best Practice</button>
+                  <button class="iact ia-svc" onclick="svcReq(event,'Duplicate Contact Cleanup — 847 records')">🛠 Fix It For Me</button>
+                </div>
+              </div>
+              <div class="issue-expand">
+                <div class="ai-block">
+                  <div class="ai-label">✦ FixOps AI Analysis</div>
+                  <div class="ai-text">These <strong>847 duplicates originate from 3 sources</strong>: a Zapier integration lacking dedup logic (412), a March CSV import (287), and a form missing hidden tracking (148). Beyond billing cost, <strong>23% received conflicting sequences</strong> from different reps with different messaging. CRM attribution cannot be trusted until this is resolved. FixOps shows you a full merge preview before touching any record.</div>
+                </div>
+                <div class="bp-block">
+                  <div class="bp-label">✓ Best Practice Guide</div>
+                  <div class="bp-steps">
+                    <div class="bp-step"><div class="bp-n">1</div><div>Go to Contacts → Actions → Manage Duplicates. Review high-confidence matches first — these are safe to merge immediately.</div></div>
+                    <div class="bp-step"><div class="bp-n">2</div><div>In your Zapier integration, add a "Find Contact" step before "Create Contact." If found, update; if not, create. Eliminates 412 duplicates at the source.</div></div>
+                    <div class="bp-step"><div class="bp-n">3</div><div>Add a hidden "Form Source" field to all HubSpot forms so every contact has a trackable origin. Prevents future duplicates from forms.</div></div>
+                    <div class="bp-step"><div class="bp-n">4</div><div>Schedule a monthly dedup review. FixOps can automate this so duplicates never accumulate to 847 again.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Issue 2 -->
+            <div class="issue" onclick="toggleIssue(this)">
+              <div class="issue-top">
+                <div class="i-bar" style="background:var(--red)"></div>
+                <div class="i-body">
+                  <div class="i-title">11 workflows silently failing — 340 leads received zero follow-up</div>
+                  <div class="i-desc">HubSpot shows these as "active" but they fail on branch actions. No native alert exists. Leads enter your funnel and disappear with no notification to your team.</div>
+                  <div class="chips"><span class="chip ch-a">AUTOMATION</span><span class="chip ch-$">340 leads lost since Tuesday</span></div>
+                </div>
+                <div class="i-actions">
+                  <button class="iact ia-guide" onclick="openGuide(event,'wf-errors')">📋 Best Practice</button>
+                  <button class="iact ia-svc" onclick="svcReq(event,'Workflow Error Repair — 11 broken workflows')">🛠 Fix It For Me</button>
+                </div>
+              </div>
+              <div class="issue-expand">
+                <div class="ai-block">
+                  <div class="ai-label">✦ FixOps AI Analysis</div>
+                  <div class="ai-text"><strong>Root cause: deleted property "Lead Source Category"</strong> referenced as a branch condition in 7 workflows. HubSpot silently skips the branch — <strong>340 leads received no follow-up</strong>. The other 4 are Salesforce API timeouts hitting rate limits between 1–3am. FixOps Sentinel monitors for this 24/7 so you know within minutes.</div>
+                </div>
+                <div class="bp-block">
+                  <div class="bp-label">✓ Best Practice Guide</div>
+                  <div class="bp-steps">
+                    <div class="bp-step"><div class="bp-n">1</div><div>Before deleting any property, check its "Used in" tab in Settings → Properties. Shows every workflow, form, and report referencing it.</div></div>
+                    <div class="bp-step"><div class="bp-n">2</div><div>Add an "If/Then" branch with "Property is unknown" as a catch-all in every workflow that branches on a custom property. Prevents silent skips.</div></div>
+                    <div class="bp-step"><div class="bp-n">3</div><div>Enable FixOps Sentinel to alert you within minutes of any workflow error — before leads are lost.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Issue 3 -->
+            <div class="issue" onclick="toggleIssue(this)">
+              <div class="issue-top">
+                <div class="i-bar" style="background:var(--red)"></div>
+                <div class="i-body">
+                  <div class="i-title">9 dashboards referencing deleted properties — leadership decisions based on corrupt data</div>
+                  <div class="i-desc">Reports run without error but return empty or wrong results. This has been happening for 6 weeks. Portal-iQ would flag this in a 139-page PDF. FixOps fixes it now.</div>
+                  <div class="chips"><span class="chip ch-r">REPORTING</span><span class="chip ch-$">6 weeks of bad attribution</span></div>
+                </div>
+                <div class="i-actions">
+                  <button class="iact ia-guide" onclick="openGuide(event,'reporting')">📋 Best Practice</button>
+                  <button class="iact ia-svc" onclick="svcReq(event,'Reporting Rebuild — 9 broken dashboards')">🛠 Fix It For Me</button>
+                </div>
+              </div>
+              <div class="issue-expand">
+                <div class="ai-block">
+                  <div class="ai-label">✦ FixOps AI Analysis</div>
+                  <div class="ai-text">Your <strong>"Pipeline by Lead Source" dashboard</strong> pulls from a property deleted 6 weeks ago. Every deal since shows "Unknown Source." A replacement property <strong>"Original Lead Source"</strong> was created at the same time but never mapped to reports. The fix takes 20 minutes — FixOps walks you through it step by step.</div>
+                </div>
+                <div class="bp-block">
+                  <div class="bp-label">✓ Best Practice Guide</div>
+                  <div class="bp-steps">
+                    <div class="bp-step"><div class="bp-n">1</div><div>Before deleting a property, search in Reports → Custom Reports for any report using that property name.</div></div>
+                    <div class="bp-step"><div class="bp-n">2</div><div>Use HubSpot's "Clone report" when updating — keep the old version until the new one is confirmed working.</div></div>
+                    <div class="bp-step"><div class="bp-n">3</div><div>Set a quarterly "reporting audit" reminder. Review all dashboards for stale data, deleted property references, and outdated date filters.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Issue 4 -->
+            <div class="issue" onclick="toggleIssue(this)">
+              <div class="issue-top">
+                <div class="i-bar" style="background:var(--amber)"></div>
+                <div class="i-body">
+                  <div class="i-title">23 workflows with zero enrollments in 90+ days — dead automation bloat</div>
+                  <div class="i-desc">Active but dormant. Creating confusion, consuming API quota, and making your portal harder to manage. Portal-iQ flags this but can't fix it. FixOps archives them in one click.</div>
+                  <div class="chips"><span class="chip ch-a">AUTOMATION</span><span class="chip ch-$">+18% portal complexity</span></div>
+                </div>
+                <div class="i-actions">
+                  <button class="iact ia-auto" onclick="autoFix(event,this)">⚡ Auto-Archive</button>
+                  <button class="iact ia-guide" onclick="openGuide(event,'dead-wf')">📋 Best Practice</button>
+                </div>
+              </div>
+              <div class="issue-expand">
+                <div class="ai-block">
+                  <div class="ai-label">✦ FixOps AI Analysis</div>
+                  <div class="ai-text"><strong>12 legacy workflows</strong> from a discontinued product. <strong>6 test duplicates</strong> never deleted. <strong>5 genuine orphans</strong> from ended campaigns. All 23 are safe to archive. FixOps creates a complete backup first — restore any of them within 30 days with one click.</div>
+                </div>
+                <div class="bp-block">
+                  <div class="bp-label">✓ Best Practice Guide</div>
+                  <div class="bp-steps">
+                    <div class="bp-step"><div class="bp-n">1</div><div>Organize workflows into folders by campaign, team, or lifecycle stage. Makes orphans easy to spot immediately.</div></div>
+                    <div class="bp-step"><div class="bp-n">2</div><div>Add a "Last reviewed" date in every workflow description. Set a 90-day calendar reminder to review inactive workflows.</div></div>
+                    <div class="bp-step"><div class="bp-n">3</div><div>Before archiving, check for currently enrolled contacts — HubSpot shows this on the workflow detail page.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Issue 5 -->
+            <div class="issue" onclick="toggleIssue(this)">
+              <div class="issue-top">
+                <div class="i-bar" style="background:var(--amber)"></div>
+                <div class="i-body">
+                  <div class="i-title">34 deals with zero activity in 21+ days — $847K going dark in your pipeline</div>
+                  <div class="i-desc">Your own close rate data: deals untouched 21 days in Proposal Sent close at 11% vs 67% for deals touched weekly. This pipeline is quietly dying.</div>
+                  <div class="chips"><span class="chip ch-p">PIPELINE</span><span class="chip ch-$">$847K at risk</span></div>
+                </div>
+                <div class="i-actions">
+                  <button class="iact ia-auto" onclick="autoFix(event,this)">⚡ Notify Reps</button>
+                  <button class="iact ia-guide" onclick="openGuide(event,'pipeline')">📋 Best Practice</button>
+                  <button class="iact ia-svc" onclick="svcReq(event,'Pipeline Review & Deal Revival')">🛠 Fix It For Me</button>
+                </div>
+              </div>
+              <div class="issue-expand">
+                <div class="ai-block">
+                  <div class="ai-label">✦ FixOps AI Analysis</div>
+                  <div class="ai-text">Of 34 stalled deals, <strong>19 are owned by just 2 reps</strong> under-logging activity. FixOps creates an immediate task for each deal owner today and sets up a <strong>recurring 14-day activity alert via Sentinel</strong> — so this never accumulates silently again.</div>
+                </div>
+                <div class="bp-block">
+                  <div class="bp-label">✓ Best Practice Guide</div>
+                  <div class="bp-steps">
+                    <div class="bp-step"><div class="bp-n">1</div><div>In Pipeline settings, set "Deal goes inactive after 14 days." Fades deals on the board so reps see them immediately.</div></div>
+                    <div class="bp-step"><div class="bp-n">2</div><div>Create a workflow: If deal stage = Proposal Sent AND last activity > 14 days → create task for deal owner + notify manager.</div></div>
+                    <div class="bp-step"><div class="bp-n">3</div><div>Add a required "Next Step" property when moving deals to Proposal Sent. Forces reps to log a commitment before the stage advances.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Issue 6 — unique vs Portal-iQ -->
+            <div class="issue" onclick="toggleIssue(this)">
+              <div class="issue-top">
+                <div class="i-bar" style="background:var(--amber)"></div>
+                <div class="i-body">
+                  <div class="i-title">0 of 87 workflows have goals — no way to measure automation effectiveness</div>
+                  <div class="i-desc">Portal-iQ flagged this in your actual report. But they just showed you the number. FixOps identifies which workflows need goals first and generates suggested criteria for each one.</div>
+                  <div class="chips"><span class="chip ch-a">AUTOMATION</span><span class="chip ch-b">BEST PRACTICE</span></div>
+                </div>
+                <div class="i-actions">
+                  <button class="iact ia-guide" onclick="openGuide(event,'wf-goals')">📋 Best Practice</button>
+                  <button class="iact ia-svc" onclick="svcReq(event,'Workflow Goals Setup — AI-generated criteria for top 12')">🛠 Fix It For Me</button>
+                </div>
+              </div>
+              <div class="issue-expand">
+                <div class="ai-block">
+                  <div class="ai-label">✦ FixOps AI Analysis</div>
+                  <div class="ai-text">Without goals, workflows run indefinitely even after contacts convert — causing <strong>over-emailing, unsubscribes, and inflated engagement metrics</strong>. FixOps analyzed your 87 workflows and identified the top 12 to fix first: highest-enrollment workflows with no exit condition currently running.</div>
+                </div>
+                <div class="bp-block">
+                  <div class="bp-label">✓ Best Practice Guide</div>
+                  <div class="bp-steps">
+                    <div class="bp-step"><div class="bp-n">1</div><div>In each workflow, click "Set goal" — define success criteria. For a lead nurture: lifecycle stage changes to MQL. For a welcome series: first login or feature used.</div></div>
+                    <div class="bp-step"><div class="bp-n">2</div><div>Contacts who meet the goal are automatically unenrolled — preventing converted leads from receiving irrelevant emails.</div></div>
+                    <div class="bp-step"><div class="bp-n">3</div><div>Sort workflows by "Enrolled" count descending and start with the top 12 — highest impact, fastest win.</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SENTINEL ── -->
+      <div id="mod-sentinel" class="mod-view">
+        <div class="sentinel-card a1">
+          <div>
+            <div class="s-live"><div class="live-dot"></div>MONITORING LIVE — checks every hour</div>
+            <div class="s-h">🛡 FixOps Sentinel</div>
+            <p class="s-p">Real-time detection for workflow failures, integration errors, billing risks, and data anomalies. The alert system HubSpot never built. Delivered to email, Slack, or SMS.</p>
+          </div>
+          <div class="s-nums">
+            <div><div class="sn-v" style="color:var(--red)">2</div><div class="sn-l">Critical</div></div>
+            <div><div class="sn-v" style="color:var(--amber)">3</div><div class="sn-l">Warnings</div></div>
+            <div><div class="sn-v" style="color:var(--emerald)">47</div><div class="sn-l">Resolved</div></div>
+          </div>
+        </div>
+        <div class="sh a2"><div class="sh-title">Active Alerts</div><div class="sh-link" onclick="toast('⚙️','Alert Settings','Configure thresholds, delivery & escalation')">Configure →</div></div>
+        <div class="alert-cards a2">
+          <div class="acard crit" onclick="toast('🔴','Salesforce Sync Down','Token expired · 23 records queued · Auto-fix available')">
+            <div class="acard-top"><div class="acard-ico">🔌</div><div class="ab ab-r">P0 · CRITICAL</div></div>
+            <div class="acard-h">Salesforce sync stopped</div>
+            <div class="acard-p">OAuth token expired. 23 updates queued. New deals not syncing to Salesforce.</div>
+            <div class="acard-foot"><div class="acard-time">6 minutes ago</div><div class="acard-cta" onclick="event.stopPropagation();toast('⚡','Reconnecting…','Auth refreshed · Sync resuming')">Auto-Fix →</div></div>
+          </div>
+          <div class="acard crit" onclick="toast('🔴','Workflow Error','47 leads not assigned to reps')">
+            <div class="acard-top"><div class="acard-ico">⚙️</div><div class="ab ab-r">P0 · CRITICAL</div></div>
+            <div class="acard-h">Workflow "Lead Router v2" failing</div>
+            <div class="acard-p">47 Google Ads leads not assigned. Branch references deleted property.</div>
+            <div class="acard-foot"><div class="acard-time">14 minutes ago</div><div class="acard-cta" onclick="event.stopPropagation();openGuide(event,'wf-errors')">Fix Guide →</div></div>
+          </div>
+          <div class="acard warn" onclick="toast('🟡','Bounce Rate','4.2% — rising 5 days straight')">
+            <div class="acard-top"><div class="acard-ico">📧</div><div class="ab ab-a">P1 · WARNING</div></div>
+            <div class="acard-h">Email bounce rate elevated</div>
+            <div class="acard-p">At 4.2%, crossed 3.5% threshold. Deliverability risk if trend continues.</div>
+            <div class="acard-foot"><div class="acard-time">2 hours ago</div><div class="acard-cta" onclick="event.stopPropagation();toast('📊','Analyzing…','Identifying affected domains and lists')">Analyze →</div></div>
+          </div>
+          <div class="acard warn" onclick="toast('🟡','Billing Risk','~9 days until tier limit at current rate')">
+            <div class="acard-top"><div class="acard-ico">💳</div><div class="ab ab-a">P1 · WARNING</div></div>
+            <div class="acard-h">Contacts at 91% of billing tier</div>
+            <div class="acard-p">At current growth you'll hit your contact tier limit in ~9 days.</div>
+            <div class="acard-foot"><div class="acard-time">4 hours ago</div><div class="acard-cta" onclick="event.stopPropagation();toast('🧹','Freeing Space…','Removing inactive contacts from marketing tier')">Free Up →</div></div>
+          </div>
+          <div class="acard warn" onclick="toast('🟡','Security','2 new super admins — review recommended')">
+            <div class="acard-top"><div class="acard-ico">🔑</div><div class="ab ab-a">P2 · WARNING</div></div>
+            <div class="acard-h">2 new super admins added</div>
+            <div class="acard-p">Two users granted super admin this week. Super admins can delete records and export all data.</div>
+            <div class="acard-foot"><div class="acard-time">Yesterday</div><div class="acard-cta" onclick="event.stopPropagation();toast('👥','Permissions Review','Opening user access audit')">Review →</div></div>
+          </div>
+          <div class="acard res">
+            <div class="acard-top"><div class="acard-ico">✅</div><div class="ab ab-g">RESOLVED</div></div>
+            <div class="acard-h">Country fields standardized</div>
+            <div class="acard-p">3,847 records updated. US/USA → United States. Auto-fixed by FixOps 2 days ago.</div>
+            <div class="acard-foot"><div class="acard-time">2 days ago · Auto-fixed</div></div>
+          </div>
+        </div>
+        <div class="sh a3"><div class="sh-title">Alert Delivery Channels</div></div>
+        <div class="stats-row a3">
+          <div class="stat-card sc-g" style="cursor:pointer" onclick="toast('✅','Email Active','Sending to matthew@fixops.io')"><div class="sc-head"><div class="sc-lbl">Email Alerts</div><span>📧</span></div><div class="sc-val" style="font-size:20px;letter-spacing:0">Active</div><div class="sc-sub up"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="86ebe7f2f2eee3f1c6e0effee9f6f5a8efe9">[email&#160;protected]</a></div></div>
+          <div class="stat-card sc-a" style="cursor:pointer" onclick="toast('🔧','Connect Slack','Add webhook URL in Settings → Integrations')"><div class="sc-head"><div class="sc-lbl">Slack Alerts</div><span>💬</span></div><div class="sc-val" style="font-size:20px;letter-spacing:0">Setup</div><div class="sc-sub">Click to connect</div></div>
+          <div class="stat-card sc-v" style="cursor:pointer" onclick="toast('📱','SMS Alerts','Available on FixOps Pro — $299/mo')"><div class="sc-head"><div class="sc-lbl">SMS Alerts</div><span>📱</span></div><div class="sc-val" style="font-size:20px;letter-spacing:0">Pro</div><div class="sc-sub">Upgrade to unlock</div></div>
+          <div class="stat-card sc-s" style="cursor:pointer" onclick="openEmailModal()"><div class="sc-head"><div class="sc-lbl">Weekly Digest</div><span>📅</span></div><div class="sc-val" style="font-size:20px;letter-spacing:0">On</div><div class="sc-sub up">Monday 8am</div></div>
+        </div>
+      </div>
+
+      <!-- ── AUTODOC ── -->
+      <div id="mod-autodoc" class="mod-view">
+        <div class="doc-hero a1">
+          <div>
+            <div class="s-live" style="background:rgba(16,185,129,.08);border-color:rgba(16,185,129,.2)"><div class="live-dot"></div>87 WORKFLOWS DOCUMENTED</div>
+            <div class="s-h">📄 FixOps AutoDoc</div>
+            <p class="s-p">Every workflow, sequence, and automation documented in plain English — automatically. Updated in real time. The onboarding doc every new hire and agency needs, built while you sleep.</p>
+          </div>
+          <div class="s-nums">
+            <div><div class="sn-v" style="color:var(--emerald)">87</div><div class="sn-l">Documented</div></div>
+            <div><div class="sn-v" style="color:var(--amber)">23</div><div class="sn-l">Conflicts</div></div>
+            <div><div class="sn-v" style="color:var(--violet3)">14</div><div class="sn-l">Changed</div></div>
+          </div>
+        </div>
+        <div class="sh a2"><div class="sh-title">Workflow Library</div><div class="sh-link" onclick="toast('📦','Exporting…','Full Workflow Bible PDF ready in ~30s')">Export Workflow Bible →</div></div>
+        <div class="doc-list a2">
+          <div class="doc-item">
+            <div class="doc-item-top"><div class="doc-item-name">Lead Nurture — New Website Demo Requests</div><div class="doc-badges"><span class="doc-badge" style="background:var(--edim);color:var(--emerald)">ACTIVE</span><span class="doc-badge" style="background:var(--rdim);color:var(--red)">CONFLICT</span></div></div>
+            <div class="doc-item-desc">Enrolls contacts who submit the demo form. Waits 1 day, sends follow-up. If no reply in 3 days, creates rep task. <strong style="color:var(--red)">CONFLICT: Overlaps with "Lead Router v2" — both enrolling from same form.</strong></div>
+            <div class="doc-meta"><span class="doc-meta-item">📊 847 enrolled</span><span class="doc-meta-item">👤 Marketing</span><span class="doc-meta-item">⏱ Last run: 4 hrs ago</span><span class="doc-meta-item">✏️ Changed: 3 days ago</span></div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-item-top"><div class="doc-item-name">MQL to SQL Handoff — Lifecycle Transition</div><div class="doc-badges"><span class="doc-badge" style="background:var(--edim);color:var(--emerald)">ACTIVE</span><span class="doc-badge" style="background:var(--vdim);color:var(--violet3)">NO GOAL SET</span></div></div>
+            <div class="doc-item-desc">Triggers when lifecycle changes to MQL. Assigns to rep via round-robin. Creates 24hr follow-up task. <strong style="color:var(--amber)">Contacts remain enrolled after converting — no exit condition set.</strong></div>
+            <div class="doc-meta"><span class="doc-meta-item">📊 234 enrolled</span><span class="doc-meta-item">👤 RevOps</span><span class="doc-meta-item">⏱ Last run: 1 hr ago</span><span class="doc-meta-item">✏️ Unchanged: 47 days</span></div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-item-top"><div class="doc-item-name">Onboarding Series — New Customers (Legacy)</div><div class="doc-badges"><span class="doc-badge" style="background:var(--rdim);color:var(--red)">DEAD — 0 enrollments</span></div></div>
+            <div class="doc-item-desc">5-email onboarding for a discontinued product line. Zero enrollments in 127 days. Safe to archive. <strong style="color:var(--emerald)">FixOps can auto-archive with full backup →</strong></div>
+            <div class="doc-meta"><span class="doc-meta-item">📊 0 enrolled</span><span class="doc-meta-item">👤 Unknown owner</span><span class="doc-meta-item">⏱ Last run: 127 days ago</span></div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-item-top"><div class="doc-item-name">Deal Stage Notification — Proposal Sent</div><div class="doc-badges"><span class="doc-badge" style="background:var(--edim);color:var(--emerald)">ACTIVE</span></div></div>
+            <div class="doc-item-desc">Triggers when deal moves to "Proposal Sent." Notifies owner and manager. Creates 14-day follow-up task. Updates deal activity timestamp.</div>
+            <div class="doc-meta"><span class="doc-meta-item">📊 34 enrolled</span><span class="doc-meta-item">👤 Sales Ops</span><span class="doc-meta-item">⏱ Last run: 2 hrs ago</span><span class="doc-meta-item">✏️ Changed: 8 days ago</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REVSIGNAL ── -->
+      <div id="mod-revsignal" class="mod-view">
+        <div class="rev-hero a1">
+          <div>
+            <div class="s-live" style="background:rgba(14,165,233,.08);border-color:rgba(14,165,233,.2);color:var(--sky)"><div class="live-dot" style="background:var(--sky)"></div>LIVE REVENUE DATA</div>
+            <div class="s-h">📊 FixOps RevSignal</div>
+            <p class="s-p">The reporting layer HubSpot can't produce natively. Board-ready MRR tracking, pipeline velocity, rep performance, and churn signals — emailed to your team automatically each week.</p>
+          </div>
+          <div class="s-nums">
+            <div><div class="sn-v" style="color:var(--emerald)">$2.4M</div><div class="sn-l">Pipeline</div></div>
+            <div><div class="sn-v" style="color:var(--sky)">$82K</div><div class="sn-l">MRR</div></div>
+            <div><div class="sn-v" style="color:var(--amber)">67%</div><div class="sn-l">Forecast Acc.</div></div>
+          </div>
+        </div>
+        <div class="rev-grid a2">
+          <div class="rev-card">
+            <div class="rev-card-h">MRR Trend <span class="rct rct-g">+12% MoM</span></div>
+            <div class="big-n" style="color:var(--emerald)">$82,400</div>
+            <div class="m-sub up">▲ $8,900 from last month</div>
+            <div class="minibars">
+              <div class="mb" style="height:55%;background:rgba(16,185,129,.3)"></div>
+              <div class="mb" style="height:60%;background:rgba(16,185,129,.3)"></div>
+              <div class="mb" style="height:58%;background:rgba(16,185,129,.3)"></div>
+              <div class="mb" style="height:65%;background:rgba(16,185,129,.35)"></div>
+              <div class="mb" style="height:70%;background:rgba(16,185,129,.4)"></div>
+              <div class="mb" style="height:68%;background:rgba(16,185,129,.45)"></div>
+              <div class="mb" style="height:82%;background:var(--emerald)"></div>
+            </div>
+          </div>
+          <div class="rev-card">
+            <div class="rev-card-h">Pipeline Velocity <span class="rct rct-a">34 days avg</span></div>
+            <div class="big-n" style="color:var(--amber)">34d</div>
+            <div class="m-sub dn">▲ 6 days slower than last month</div>
+            <div style="margin-top:12px">
+              <div class="vel-row"><span class="vel-name">Lead → MQL</span><div class="vel-bar"><div class="vel-fill" style="width:40%;background:var(--emerald)"></div></div><span class="vel-pct">7d</span></div>
+              <div class="vel-row"><span class="vel-name">MQL → SQL</span><div class="vel-bar"><div class="vel-fill" style="width:25%;background:var(--amber)"></div></div><span class="vel-pct">5d</span></div>
+              <div class="vel-row"><span class="vel-name">SQL → Proposal</span><div class="vel-bar"><div class="vel-fill" style="width:60%;background:var(--amber)"></div></div><span class="vel-pct">12d</span></div>
+              <div class="vel-row"><span class="vel-name">Proposal → Close</span><div class="vel-bar"><div class="vel-fill" style="width:50%;background:var(--red)"></div></div><span class="vel-pct">10d</span></div>
+            </div>
+          </div>
+          <div class="rev-card">
+            <div class="rev-card-h">Churn Signals <span class="rct rct-r">3 at risk</span></div>
+            <div class="big-n" style="color:var(--red)">3</div>
+            <div class="m-sub dn">accounts showing disengagement</div>
+            <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">
+              <div style="padding:10px;background:var(--rdim);border:1px solid rgba(244,63,94,.15);border-radius:8px;font-size:12px"><strong>Acme Corp</strong> <span style="color:var(--t2)">— No login 47 days, ticket unresolved</span></div>
+              <div style="padding:10px;background:var(--adim);border:1px solid rgba(245,158,11,.15);border-radius:8px;font-size:12px"><strong>TechStart Inc</strong> <span style="color:var(--t2)">— Email engagement down 80% last 30 days</span></div>
+              <div style="padding:10px;background:var(--adim);border:1px solid rgba(245,158,11,.15);border-radius:8px;font-size:12px"><strong>GlobalOps LLC</strong> <span style="color:var(--t2)">— Usage down 60%, renewal in 45 days</span></div>
+            </div>
+          </div>
+          <div class="rev-card">
+            <div class="rev-card-h">Rep Performance <span class="rct rct-v">This Quarter</span></div>
+            <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
+              <div class="rep-row"><div class="rep-av" style="background:rgba(16,185,129,.12);color:var(--emerald)">SJ</div><div style="flex:1"><div style="font-size:12.5px;font-weight:600;margin-bottom:4px">Sarah Johnson</div><div style="height:4px;background:var(--s3);border-radius:2px;overflow:hidden"><div style="height:100%;width:82%;background:var(--emerald);border-radius:2px"></div></div></div><div style="font-size:11px;font-family:var(--mono);color:var(--emerald)">82%</div></div>
+              <div class="rep-row"><div class="rep-av" style="background:rgba(14,165,233,.12);color:var(--sky)">MR</div><div style="flex:1"><div style="font-size:12.5px;font-weight:600;margin-bottom:4px">Mike Roberts</div><div style="height:4px;background:var(--s3);border-radius:2px;overflow:hidden"><div style="height:100%;width:71%;background:var(--sky);border-radius:2px"></div></div></div><div style="font-size:11px;font-family:var(--mono);color:var(--sky)">71%</div></div>
+              <div class="rep-row"><div class="rep-av" style="background:var(--adim);color:var(--amber)">AK</div><div style="flex:1"><div style="font-size:12.5px;font-weight:600;margin-bottom:4px">Alex Kim</div><div style="height:4px;background:var(--s3);border-radius:2px;overflow:hidden"><div style="height:100%;width:48%;background:var(--amber);border-radius:2px"></div></div></div><div style="font-size:11px;font-family:var(--mono);color:var(--amber)">48%</div></div>
+              <div class="rep-row"><div class="rep-av" style="background:var(--rdim);color:var(--red)">TW</div><div style="flex:1"><div style="font-size:12.5px;font-weight:600;margin-bottom:4px">Tom Wilson</div><div style="height:4px;background:var(--s3);border-radius:2px;overflow:hidden"><div style="height:100%;width:31%;background:var(--red);border-radius:2px"></div></div></div><div style="font-size:11px;font-family:var(--mono);color:var(--red)">31%</div></div>
+            </div>
+          </div>
+          <div class="rev-card">
+            <div class="rev-card-h">Lead Attribution <span class="rct rct-g">Last 90 Days</span></div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+              <div class="vel-row"><span class="vel-name">Organic Search</span><div class="vel-bar"><div class="vel-fill" style="width:72%;background:var(--emerald)"></div></div><span class="vel-pct">34%</span></div>
+              <div class="vel-row"><span class="vel-name">Paid Ads</span><div class="vel-bar"><div class="vel-fill" style="width:50%;background:var(--sky)"></div></div><span class="vel-pct">24%</span></div>
+              <div class="vel-row"><span class="vel-name">Direct / Referral</span><div class="vel-bar"><div class="vel-fill" style="width:38%;background:var(--violet3)"></div></div><span class="vel-pct">18%</span></div>
+              <div class="vel-row"><span class="vel-name">Email Campaign</span><div class="vel-bar"><div class="vel-fill" style="width:25%;background:var(--amber)"></div></div><span class="vel-pct">12%</span></div>
+              <div class="vel-row"><span class="vel-name">Unknown Source</span><div class="vel-bar"><div class="vel-fill" style="width:25%;background:var(--red)"></div></div><span class="vel-pct" style="color:var(--red)">12%</span></div>
+            </div>
+            <div style="margin-top:10px;padding:9px;background:var(--rdim);border:1px solid rgba(244,63,94,.15);border-radius:7px;font-size:11px;color:var(--t2)">⚠ 12% Unknown — broken reporting <span style="color:var(--violet3);cursor:pointer" onclick="toast('🔧','Fixing Attribution','Rebuilding dashboard…')">fix now →</span></div>
+          </div>
+          <div class="rev-card">
+            <div class="rev-card-h">Forecast vs Actual <span class="rct rct-a">Q4 2024</span></div>
+            <div class="big-n" style="color:var(--amber)">67%</div>
+            <div class="m-sub dn">forecast accuracy this quarter</div>
+            <div style="margin-top:14px;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);font-family:var(--mono);padding:7px 0;border-bottom:1px solid var(--b1)"><span>Forecasted</span><span style="color:var(--t1)">$340,000</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);font-family:var(--mono);padding:7px 0;border-bottom:1px solid var(--b1)"><span>Closed Won</span><span style="color:var(--emerald)">$228,000</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);font-family:var(--mono);padding:7px 0"><span>Variance</span><span style="color:var(--red)">-$112,000</span></div>
+            </div>
+            <div style="margin-top:10px;font-size:11.5px;color:var(--t2)">Top issue: <span style="color:var(--amber)">Tom Wilson's pipeline 68% overforecast</span></div>
+          </div>
+        </div>
+        <!-- Weekly digest CTA — matches site style -->
+        <div class="a3" style="padding:20px 24px;background:var(--s1);border:1px solid var(--b1);border-radius:var(--rlg);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+          <div>
+            <div style="font-family:var(--font);font-size:15px;font-weight:800;margin-bottom:5px">✉ Weekly RevSignal Digest</div>
+            <div style="font-size:13px;color:var(--t2);font-weight:300">Board-ready revenue summary every Monday — MRR trend, pipeline health, churn signals, and top 3 actions.</div>
+          </div>
+          <button class="btn-nav-cta" onclick="openEmailModal()" style="flex-shrink:0;padding:10px 20px;font-size:14px">Enable Weekly Digest →</button>
+        </div>
+      </div>
+
+      <!-- ── PRICING ── -->
+      <div id="mod-pricing" class="mod-view">
+        <div class="price-intro a1">
+          <div class="price-h">Simple, Transparent Pricing</div>
+          <p class="price-sub">Start free. Upgrade when you need more. Cancel anytime.</p>
+        </div>
+        <div class="price-grid a2">
+          <div class="price-card">
+            <div class="p-tier">Free Forever</div>
+            <div class="p-name">Snapshot</div>
+            <div class="p-desc">Instant portal health check in 60 seconds.</div>
+            <div class="p-price">$0<span>/mo</span></div>
+            <div class="p-per">Free forever · no credit card</div>
+            <div class="p-feats">
+              <div class="p-feat"><span class="p-feat-ico">✓</span>20-check instant scan</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Overall FixOps Score</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Top 3 critical findings</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>PDF summary emailed</div>
+              <div class="p-feat" style="color:var(--t3)"><span>✗</span> AI explanations & guides</div>
+            </div>
+            <button class="p-btn pb-o" onclick="toast('⚡','Current Plan','You are on the free Snapshot tier')">Current Plan</button>
+          </div>
+          <div class="price-card featured">
+            <div class="p-tier">Most Popular</div>
+            <div class="p-name">Pulse</div>
+            <div class="p-desc">Full audit, AI insights, fix guides & weekly monitoring.</div>
+            <div class="p-price">$149<span>/mo</span></div>
+            <div class="p-per">Billed monthly · cancel anytime</div>
+            <div class="p-feats">
+              <div class="p-feat"><span class="p-feat-ico">✓</span>All 165 audit checks</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>AI analysis + dollar impact</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Best practice guides per issue</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Weekly email digest</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Daily monitoring + alerts</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>"Fix It For Me" requests</div>
+            </div>
+            <button class="p-btn pb-f" onclick="toast('🚀','Upgrading to Pulse','Redirecting to checkout…')">Get Started →</button>
+          </div>
+          <div class="price-card">
+            <div class="p-tier">Power Users</div>
+            <div class="p-name">Pro</div>
+            <div class="p-desc">Real-time Sentinel monitoring, auto-fixes & AutoDoc.</div>
+            <div class="p-price">$299<span>/mo</span></div>
+            <div class="p-per">Billed monthly · cancel anytime</div>
+            <div class="p-feats">
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Everything in Pulse</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Sentinel hourly monitoring</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Slack + SMS alerts</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Safe auto-fixes + rollback</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>AutoDoc workflow documentation</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Monthly board-ready PDF</div>
+            </div>
+            <button class="p-btn pb-o" onclick="toast('🚀','Upgrade to Pro','Redirecting to checkout…')">Upgrade to Pro →</button>
+          </div>
+          <div class="price-card">
+            <div class="p-tier">Revenue Teams</div>
+            <div class="p-name">Command</div>
+            <div class="p-desc">Full platform with RevSignal dashboards & priority service.</div>
+            <div class="p-price">$499<span>/mo</span></div>
+            <div class="p-per">Billed monthly · cancel anytime</div>
+            <div class="p-feats">
+              <div class="p-feat"><span class="p-feat-ico">✓</span>Everything in Pro</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>RevSignal revenue dashboards</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>MRR/ARR + churn signals</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>AI Readiness for HubSpot Breeze</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>3 connected portals</div>
+              <div class="p-feat"><span class="p-feat-ico">✓</span>4-hour priority response</div>
+            </div>
+            <button class="p-btn pb-o" onclick="toast('🚀','Upgrade to Command','Redirecting to checkout…')">Upgrade to Command →</button>
+          </div>
+        </div>
+        <div class="a3">
+          <div class="sh" style="margin-top:8px"><div class="sh-title">🛠 Done-For-You Services</div><div class="sh-link">All triggered from inside the platform · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="402d213434282537002629382f30336e292f">[email&#160;protected]</a></div></div>
+          <div class="svc-grid">
+            <div class="svc-card" onclick="toast('🛠','Quick Fix Pack','Request sent · Scoped quote within 4 hours')"><div class="svc-name">Quick Fix Pack</div><div class="svc-desc">Up to 5 auto-fixable issues resolved by the FixOps team</div><div class="svc-price">$299</div></div>
+            <div class="svc-card" onclick="toast('🛠','Data CleanUp','Request sent · Scoped quote within 4 hours')"><div class="svc-name">Data CleanUp</div><div class="svc-desc">Full duplicate merge + field standardization across all records</div><div class="svc-price">$499–$999</div></div>
+            <div class="svc-card" onclick="toast('🛠','Workflow Repair','Request sent · Scoped quote within 4 hours')"><div class="svc-name">Workflow Repair</div><div class="svc-desc">Fix errors, resolve conflicts, archive dead, add goals</div><div class="svc-price">$750–$1,500</div></div>
+            <div class="svc-card" onclick="toast('🛠','Reporting Rebuild','Request sent · Scoped quote within 4 hours')"><div class="svc-name">Reporting Rebuild</div><div class="svc-desc">Fix broken dashboards, rebuild attribution, clean up reports</div><div class="svc-price">$750–$2,000</div></div>
+            <div class="svc-card" onclick="toast('🛠','Full Portal Remediation','Request sent · Discovery call will be scheduled')"><div class="svc-name">Full Portal Remediation</div><div class="svc-desc">Data + automation + pipeline + reporting — complete overhaul</div><div class="svc-price">$2,500–$5,000</div></div>
+            <div class="svc-card" onclick="toast('🛠','Monthly Retainer','Request sent · Scoped retainer quote within 24 hours')"><div class="svc-name">Monthly Retainer</div><div class="svc-desc">Ongoing portal management, fixes, monitoring oversight</div><div class="svc-price">$1,000–$3,000/mo</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-area -->
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="rp-block">
+        <div class="rp-h">🛡 Live Alerts <span class="rp-link" onclick="switchMod('sentinel')">View All →</span></div>
+        <div class="alert-feed">
+          <div class="al al-r" onclick="toast('🔴','Salesforce Down','Token expired · 23 records queued')"><div class="al-ico r">🔌</div><div class="al-body"><div class="al-t">Salesforce sync stopped</div><div class="al-time">6 min ago · Integration</div></div></div>
+          <div class="al al-r" onclick="toast('🔴','Workflow Error','47 leads unassigned')"><div class="al-ico r">⚙️</div><div class="al-body"><div class="al-t">Lead Router v2 failing</div><div class="al-time">14 min ago · Automation</div></div></div>
+          <div class="al al-a" onclick="toast('🟡','Bounce Rate','4.2% — above threshold')"><div class="al-ico a">📧</div><div class="al-body"><div class="al-t">Bounce rate at 4.2%</div><div class="al-time">2 hrs ago · Email</div></div></div>
+          <div class="al al-a" onclick="toast('🟡','Billing Risk','91% of tier used')"><div class="al-ico a">💳</div><div class="al-body"><div class="al-t">Contacts at 91% of tier</div><div class="al-time">4 hrs ago · Billing</div></div></div>
+        </div>
+      </div>
+      <div class="rp-block">
+        <div class="rp-h">⚡ Quick Wins <span style="font-size:10px;color:var(--t4);font-weight:400;font-family:var(--mono)">3/8 done</span></div>
+        <div class="qfix">
+          <div class="qf done" onclick="qfTog(this)"><div class="qf-cb">✓</div><div class="qf-t">Standardize country field values</div><div class="qf-tag qt-v">AUTO</div></div>
+          <div class="qf done" onclick="qfTog(this)"><div class="qf-cb">✓</div><div class="qf-t">Archive 6 unused static lists</div><div class="qf-tag qt-v">AUTO</div></div>
+          <div class="qf done" onclick="qfTog(this)"><div class="qf-cb">✓</div><div class="qf-t">Reassign 14 unowned contacts</div><div class="qf-tag qt-v">AUTO</div></div>
+          <div class="qf" onclick="qfTog(this)"><div class="qf-cb"></div><div class="qf-t">Fix phone formatting (847 records)</div><div class="qf-tag qt-v">AUTO</div></div>
+          <div class="qf" onclick="qfTog(this)"><div class="qf-cb"></div><div class="qf-t">Archive 23 dead workflows</div><div class="qf-tag qt-v">AUTO</div></div>
+          <div class="qf" onclick="qfTog(this)"><div class="qf-cb"></div><div class="qf-t">Rebuild 3 broken dashboards</div><div class="qf-tag qt-g">30 min</div></div>
+          <div class="qf" onclick="qfTog(this)"><div class="qf-cb"></div><div class="qf-t">Add goals to top 12 workflows</div><div class="qf-tag qt-a">1 hr</div></div>
+          <div class="qf" onclick="qfTog(this)"><div class="qf-cb"></div><div class="qf-t">Resolve Lead Router conflict</div><div class="qf-tag qt-a">1-2 hrs</div></div>
+        </div>
+      </div>
+      <div class="rp-block">
+        <div class="rp-h">📈 7-Day Score Trend</div>
+        <div class="trend-bars">
+          <div class="tr-col"><div class="tr-bar" style="height:63%;background:rgba(244,63,94,.5)"></div><div class="tr-lbl">M</div></div>
+          <div class="tr-col"><div class="tr-bar" style="height:65%;background:rgba(245,158,11,.45)"></div><div class="tr-lbl">T</div></div>
+          <div class="tr-col"><div class="tr-bar" style="height:68%;background:rgba(245,158,11,.45)"></div><div class="tr-lbl">W</div></div>
+          <div class="tr-col"><div class="tr-bar" style="height:70%;background:rgba(245,158,11,.5)"></div><div class="tr-lbl">T</div></div>
+          <div class="tr-col"><div class="tr-bar" style="height:70%;background:rgba(245,158,11,.5)"></div><div class="tr-lbl">F</div></div>
+          <div class="tr-col"><div class="tr-bar" style="height:72%;background:rgba(124,58,237,.65)"></div><div class="tr-lbl">S</div></div>
+          <div class="tr-col"><div class="tr-bar" style="height:73%;background:var(--violet)"></div><div class="tr-lbl">S</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:9px">
+          <span style="font-size:11px;color:var(--t4);font-family:var(--mono)">70 → 73</span>
+          <span style="font-size:11px;color:var(--emerald);font-family:var(--mono);font-weight:700">▲ +3 this week</span>
+        </div>
+      </div>
+      <div class="rp-block">
+        <div class="rp-h">📅 Report Schedule</div>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px;padding:9px 0;border-bottom:1px solid var(--b1)"><div><div style="font-weight:600;margin-bottom:2px">Weekly Digest</div><div style="font-size:10px;color:var(--t4);font-family:var(--mono)">Mondays 8am</div></div><div style="width:8px;height:8px;border-radius:50%;background:var(--emerald)"></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px;padding:9px 0;border-bottom:1px solid var(--b1)"><div><div style="font-weight:600;margin-bottom:2px">Monthly Board Report</div><div style="font-size:10px;color:var(--t4);font-family:var(--mono)">1st of month</div></div><div style="width:8px;height:8px;border-radius:50%;background:var(--emerald)"></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;font-size:12.5px;padding:9px 0;cursor:pointer" onclick="toast('📊','RevSignal Digest','Enable in RevSignal → Weekly Digest')"><div><div style="font-weight:600;margin-bottom:2px;color:var(--t2)">RevSignal Digest</div><div style="font-size:10px;color:var(--t4);font-family:var(--mono)">Not enabled</div></div><div style="font-size:10px;color:var(--violet3);font-family:var(--mono);cursor:pointer">Enable →</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════ GUIDE MODAL ════════════ -->
+<div class="overlay" id="guide-modal" onclick="closeIfBg(event,'guide-modal')">
+  <div class="modal">
+    <div class="modal-h" id="g-h">Best Practice Guide</div>
+    <div class="modal-sub" id="g-sub">Follow these steps to resolve this issue and prevent recurrence.</div>
+    <div class="modal-steps" id="g-steps"></div>
+    <div class="modal-btns">
+      <button class="mb-v" onclick="fromGuideToSvc()">🛠 Have FixOps Do This For Me</button>
+      <button class="mb-g" onclick="document.getElementById('guide-modal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ EMAIL MODAL ════════════ -->
+<div class="overlay" id="email-modal" onclick="closeIfBg(event,'email-modal')">
+  <div class="modal">
+    <div class="modal-h">✉ Email Reports Setup</div>
+    <div class="modal-sub">Choose what gets emailed and how often. Professional, clean reports sent directly to you and your team.</div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+      <div style="padding:14px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-weight:700;font-size:14px">Weekly Pulse Digest</span><span style="font-size:10px;background:var(--edim);color:var(--emerald);padding:2px 8px;border-radius:4px;font-family:var(--mono)">ACTIVE</span></div><div style="font-size:12.5px;color:var(--t2);font-weight:300">Every Monday 8am — FixOps score, new issues, fixes completed, top 3 actions for the week.</div></div>
+      <div style="padding:14px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-weight:700;font-size:14px">Sentinel Critical Alerts</span><span style="font-size:10px;background:var(--edim);color:var(--emerald);padding:2px 8px;border-radius:4px;font-family:var(--mono)">ACTIVE</span></div><div style="font-size:12.5px;color:var(--t2);font-weight:300">Immediate email for P0/P1 issues — workflow failures, integration errors, billing risks.</div></div>
+      <div style="padding:14px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-weight:700;font-size:14px">Monthly Board PDF Report</span><span style="font-size:10px;background:var(--edim);color:var(--emerald);padding:2px 8px;border-radius:4px;font-family:var(--mono)">ACTIVE</span></div><div style="font-size:12.5px;color:var(--t2);font-weight:300">First of each month — 90-day trend, revenue risk summary, fixes completed, FixOps ROI.</div></div>
+      <div style="padding:14px;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);cursor:pointer" onclick="toast('🚀','Upgrade to Pro','RevSignal digest available on Pro — $299/mo')"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-weight:700;font-size:14px">RevSignal Weekly Digest</span><span style="font-size:10px;background:var(--vdim);color:var(--violet3);padding:2px 8px;border-radius:4px;font-family:var(--mono);cursor:pointer">PRO FEATURE</span></div><div style="font-size:12.5px;color:var(--t2);font-weight:300">Weekly revenue summary — MRR trend, pipeline health, churn signals, rep snapshot.</div></div>
+    </div>
+    <div style="margin-bottom:18px">
+      <div style="font-size:12px;color:var(--t2);margin-bottom:8px;font-weight:300">Sending reports to:</div>
+      <div style="padding:11px 15px;background:var(--s3);border:1px solid var(--b2);border-radius:var(--r);font-size:13px;color:var(--t1);font-family:var(--mono)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fd909c898995988abd9b9485928d8ed39492">[email&#160;protected]</a></div>
+    </div>
+    <div class="modal-btns">
+      <button class="mb-v" onclick="toast('✅','Reports Configured','Schedule saved');document.getElementById('email-modal').classList.remove('open')">Save Settings</button>
+      <button class="mb-g" onclick="document.getElementById('email-modal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="t-ico" id="t-i">⚡</div>
+  <div class="t-msg"><strong id="t-t">Done</strong><span id="t-s">Applied</span></div>
+  <div class="t-x" onclick="hideToast()">✕</div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ── Stars — exact match to fixops.io hero density ──
+(()=>{
+  const c=document.getElementById('stars');
+  for(let i=0;i<95;i++){
+    const s=document.createElement('div');
+    s.className='star';
+    const sz=Math.random()<.2?3:Math.random()<.5?2:1.5;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*5}s;--dl:-${Math.random()*5}s;opacity:${.08+Math.random()*.55}`;
+    c.appendChild(s);
+  }
+})();
+
+// ── Guide content ──
+const GUIDES={
+  dupes:{h:'Fix Duplicate Contacts',sub:'847 duplicates detected. Follow these steps to clean your database and prevent recurrence.',steps:[{t:'Enable HubSpot Duplicate Manager',d:'Go to Contacts → Actions → Manage Duplicates. Review high-confidence matches first — safe to merge immediately.'},{t:'Fix the root cause in Zapier',d:'Add a "Find Contact" step before "Create Contact." If found, update; if not found, create. Eliminates 412 duplicates at the source.'},{t:'Add hidden Source Form field',d:'Create a hidden property "Form Source" on all HubSpot forms. Gives every contact a trackable origin and prevents form-based duplication.'},{t:'Schedule monthly dedup reviews',d:'FixOps can run automated dedup checks monthly and flag new duplicates before they accumulate to 847 again.'}]},
+  'wf-errors':{h:'Fix Silently Failing Workflows',sub:'11 workflows running but failing on branch actions. 340 leads received zero follow-up.',steps:[{t:'Locate the deleted property',d:'Go to Settings → Properties → search "Lead Source Category." Recreate it with the same internal name, or reroute the branch.'},{t:'Add catch-all branches to workflows',d:'Add an If/Then branch: "If property is unknown → [fallback action]." This prevents silent skips when properties are deleted.'},{t:'Check "Used in" before deleting',d:'In Settings → Properties, click any property → "Used in" tab shows every workflow, form, and report referencing it. Always check before deleting.'},{t:'Enable Sentinel monitoring',d:'FixOps Sentinel alerts you within minutes of any workflow error so you never lose leads silently again.'}]},
+  reporting:{h:'Fix Broken Dashboards',sub:'9 dashboards referencing a deleted property. 6 weeks of attribution data is corrupt.',steps:[{t:'Locate the replacement property',d:'Go to Settings → Properties → search "Original Lead Source." This was created as a replacement but never mapped to reports.'},{t:'Rebuild the Pipeline by Lead Source report',d:'In Reports → Custom Reports, find the report, click Edit, and swap the old property for "Original Lead Source."'},{t:'Create a property deletion checklist',d:'Before deleting: (1) Check "Used in" tab, (2) Update all dependent reports, (3) Run a workflow to migrate data to the replacement property.'}]},
+  'dead-wf':{h:'Archive Dead Workflows',sub:'23 workflows with zero enrollments in 90+ days. Safe to archive with full backup.',steps:[{t:'Review the auto-archive preview',d:'FixOps shows you each workflow, its last enrollment date, and its original purpose before archiving anything.'},{t:'Check for enrolled contacts',d:'Even with zero new enrollments, check if any contacts are currently mid-workflow. HubSpot shows this on the workflow detail page.'},{t:'Archive, never delete',d:'Always archive rather than delete. Archived workflows can be restored. Deleted ones cannot.'}]},
+  pipeline:{h:'Rescue Stalled Pipeline',sub:'34 deals with no activity in 21+ days. $847K at risk based on your historical data.',steps:[{t:'Send immediate rep notifications',d:'FixOps creates a task for each deal owner right now — "Follow up on stalled deal" with deal name and amount pre-filled.'},{t:'Create an automated stall alert',d:'Workflow: If stage = Proposal Sent AND days since last activity > 14 → create task for deal owner + notify manager.'},{t:'Set deal inactivity visualization',d:'In Pipeline settings, set "Deal goes inactive after 14 days" — deals fade on the board so reps see them without needing a report.'}]},
+  'wf-goals':{h:'Add Goals to Your Workflows',sub:'0 of 87 workflows have goals. Contacts remain enrolled indefinitely after converting.',steps:[{t:'Start with highest-enrollment workflows',d:'Sort by "Enrolled" count descending. The top 12 high-enrollment workflows without goals are the biggest risk for over-messaging.'},{t:'Set the right goal per workflow type',d:'Nurture workflows: goal = lifecycle stage changed to MQL. Onboarding: goal = first feature used. Sales follow-up: goal = meeting booked.'},{t:'Goal met = auto-unenroll',d:'Contacts who meet the goal are automatically removed — preventing converted leads from receiving irrelevant follow-ups.'},{t:'Make goals mandatory for new workflows',d:'Add "What is the goal of this workflow?" as a required question in your team\'s creation process. Document it in the workflow description.'}]}
+};
+
+let toastT, currentSvc='';
+
+// ── Navigation ──
+function startScan(){showPg('pg-scan');runScan();}
+function goHome(){showPg('pg-connect');resetScan();}
+function showPg(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+
+// ── Scan animation ──
+function resetScan(){
+  document.querySelectorAll('.ck').forEach(c=>{c.classList.remove('show','done','running');c.querySelector('.ck-ico').textContent='';c.querySelector('.ck-count').textContent='';});
+  document.getElementById('spf').style.width='0%';
+}
+
+function runScan(){
+  const items=document.querySelectorAll('.ck');
+  const fill=document.getElementById('spf');
+  const msg=document.getElementById('scan-msg');
+  const msgs=['Connecting to HubSpot API…','Reading 48,291 contacts & companies…','Analyzing 87 workflows for errors & conflicts…','Scanning $2.4M deal pipeline…','Checking 12 integrations & API health…','Auditing 9 dashboards & reporting quality…','Checking 100 users & AI readiness…','Running AI analysis & generating insights…'];
+  let i=0;
+  function next(){
+    if(i>=items.length){setTimeout(()=>{showPg('pg-app');setTimeout(animFills,300);},600);return;}
+    const item=items[i];
+    item.classList.add('show','running');
+    item.querySelector('.ck-ico').textContent='↻';
+    msg.textContent=msgs[i]||'Scanning…';
+    fill.style.width=((i+.5)/items.length*100)+'%';
+    setTimeout(()=>{
+      item.classList.remove('running');item.classList.add('done');
+      item.querySelector('.ck-ico').textContent='✓';
+      item.querySelector('.ck-count').textContent=item.dataset.n||'';
+      fill.style.width=((i+1)/items.length*100)+'%';
+      i++;setTimeout(next,i<items.length?500:200);
+    },970);
+  }
+  setTimeout(next,400);
+}
+
+function animFills(){document.querySelectorAll('.dim-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});}
+
+// ── Module switching ──
+function switchMod(name){
+  document.querySelectorAll('.nmod').forEach(m=>m.classList.remove('active'));
+  document.querySelector(`[data-mod="${name}"]`)?.classList.add('active');
+  document.querySelectorAll('.mod-view').forEach(v=>v.classList.remove('active'));
+  const v=document.getElementById('mod-'+name);
+  if(v)v.classList.add('active');
+}
+document.querySelectorAll('.nmod').forEach(m=>m.addEventListener('click',function(){switchMod(this.dataset.mod);}));
+
+// ── UI interactions ──
+function sbSel(el){document.querySelectorAll('.sbi').forEach(i=>i.classList.remove('active'));el.classList.add('active');}
+function dimSel(el){document.querySelectorAll('.dim').forEach(d=>d.classList.remove('sel'));el.classList.add('sel');}
+function fsel(el){document.querySelectorAll('.ft').forEach(f=>f.classList.remove('fa'));el.classList.add('fa');}
+
+function toggleIssue(row){
+  const wasOpen=row.classList.contains('open');
+  document.querySelectorAll('.issue').forEach(r=>r.classList.remove('open'));
+  if(!wasOpen)row.classList.add('open');
+}
+
+function autoFix(e,btn){
+  e.stopPropagation();
+  if(btn.classList.contains('done'))return;
+  btn.innerHTML='<span class="spin">⟳</span> Fixing…';
+  btn.style.opacity='.7';btn.disabled=true;
+  setTimeout(()=>{
+    btn.classList.add('done');btn.innerHTML='✓ Fixed';
+    btn.style.opacity='1';btn.disabled=false;
+    toast('⚡','Auto-Fix Applied','Full rollback available 30 days · Score recalculating');
+  },2000);
+}
+
+function svcReq(e,svc){
+  e.stopPropagation();currentSvc=svc;
+  toast('🛠','Service Request Sent',`"${svc}" — Scoped quote from FixOps within 4 hours`);
+}
+
+function qfTog(el){
+  el.classList.toggle('done');
+  el.querySelector('.qf-cb').textContent=el.classList.contains('done')?'✓':'';
+  if(el.classList.contains('done'))toast('✓','Fix Complete','Portal health score recalculating…');
+}
+
+function rescan(btn){
+  const orig=btn.innerHTML;
+  btn.innerHTML='<span class="spin">⟳</span> Scanning…';btn.disabled=true;
+  setTimeout(()=>{btn.innerHTML=orig;btn.disabled=false;toast('🔍','Scan Complete','165 checks run · 2 new findings');},3000);
+}
+
+// ── Guide modal ──
+function openGuide(e,key){
+  e.stopPropagation();
+  const g=GUIDES[key];if(!g)return;
+  document.getElementById('g-h').textContent=g.h;
+  document.getElementById('g-sub').textContent=g.sub;
+  document.getElementById('g-steps').innerHTML=g.steps.map((s,i)=>`
+    <div class="m-step">
+      <div class="m-step-n">${i+1}</div>
+      <div><div class="m-step-t">${s.t}</div><div class="m-step-d">${s.d}</div></div>
+    </div>`).join('');
+  document.getElementById('guide-modal').classList.add('open');
+}
+
+function fromGuideToSvc(){
+  document.getElementById('guide-modal').classList.remove('open');
+  toast('🛠','Service Request Sent','FixOps team notified — scoped quote within 4 hours · Check matthew@fixops.io');
+}
+
+// ── Email modal ──
+function openEmailModal(){document.getElementById('email-modal').classList.add('open');}
+
+// ── Modals ──
+function closeIfBg(e,id){if(e.target===document.getElementById(id))document.getElementByI

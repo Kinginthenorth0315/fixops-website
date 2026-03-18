@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixOps.io — HubSpot Systems. Fixed.</title>
+<meta name="description" content="Stop guessing what's wrong with your HubSpot. FixOps audits 165 checkpoints, shows you exactly what's broken, and fixes it — with or without you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#000;--bg:#04040a;--s1:#0c0c14;--s2:#10101a;--b1:#18182a;--b2:#22223a;
+  --v:#7c3aed;--v2:#8b5cf6;--v3:#a78bfa;--vg:rgba(124,58,237,.38);--vd:rgba(124,58,237,.1);--vb:rgba(124,58,237,.2);
+  --w:#fff;--t1:rgba(255,255,255,.9);--t2:rgba(255,255,255,.52);--t3:rgba(255,255,255,.25);--t4:rgba(255,255,255,.07);
+  --g:#10b981;--r:#f43f5e;--a:#f59e0b;--bl:#3b82f6;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--black);color:var(--t1);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+a{text-decoration:none;color:inherit;}
+
+/* Stars */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,4s) ease-in-out infinite var(--dl,0s);}
+@keyframes tw{0%,100%{opacity:.04;transform:scale(1)}50%{opacity:.62;transform:scale(1.5)}}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:66px;background:rgba(0,0,0,.65);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.04);transition:all .3s;}
+nav.scrolled{background:rgba(0,0,0,.96);border-bottom-color:var(--b1);}
+.nav-logo{font-size:19px;font-weight:800;letter-spacing:-.5px;color:var(--w);display:flex;align-items:center;gap:9px;}
+.nav-icon{width:33px;height:33px;background:linear-gradient(135deg,var(--v),#5b21b6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 22px var(--vg);}
+.nav-links{display:flex;align-items:center;gap:4px;list-style:none;}
+.nav-links a{padding:6px 14px;border-radius:8px;font-size:14px;font-weight:500;color:var(--t2);transition:color .2s;}
+.nav-links a:hover{color:var(--w);}
+.nav-cta{padding:9px 20px;background:var(--v);color:#fff;font-size:14px;font-weight:700;border-radius:8px;transition:all .2s;display:inline-flex;align-items:center;gap:6px;}
+.nav-cta:hover{background:var(--v2);transform:translateY(-1px);box-shadow:0 8px 28px var(--vg);}
+
+/* Globals */
+section{position:relative;z-index:1;}
+.wrap{max-width:1120px;margin:0 auto;padding:0 52px;}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--v3);font-family:var(--mono);padding:4px 14px;border-radius:999px;background:var(--vd);border:1px solid var(--vb);margin-bottom:18px;}
+.h2{font-size:clamp(36px,5vw,58px);font-weight:900;letter-spacing:-2.5px;color:var(--w);line-height:1.02;margin-bottom:16px;}
+.lead{font-size:17px;font-weight:300;color:var(--t2);line-height:1.75;}
+.btn-v{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;background:var(--v);color:#fff;font-family:var(--font);font-size:15px;font-weight:700;border-radius:9px;border:none;cursor:pointer;transition:all .2s;}
+.btn-v:hover{background:var(--v2);transform:translateY(-2px);box-shadow:0 12px 36px var(--vg);}
+.btn-o{display:inline-flex;align-items:center;gap:8px;padding:14px 26px;background:transparent;color:var(--t2);font-family:var(--font);font-size:15px;font-weight:500;border-radius:9px;border:1px solid rgba(255,255,255,.14);cursor:pointer;transition:all .2s;}
+.btn-o:hover{color:var(--w);border-color:rgba(255,255,255,.28);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;overflow:hidden;}
+.orb{position:absolute;top:50%;left:50%;transform:translate(-50%,-64%);width:680px;height:560px;background:radial-gradient(ellipse,rgba(109,40,217,.55) 0%,rgba(124,58,237,.22) 30%,rgba(139,92,246,.06) 58%,transparent 74%);filter:blur(14px);animation:op 7s ease-in-out infinite;pointer-events:none;}
+@keyframes op{0%,100%{transform:translate(-50%,-64%) scale(1)}50%{transform:translate(-50%,-64%) scale(1.07)}}
+.hero-inner{position:relative;z-index:2;max-width:800px;}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:5px 6px 5px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;font-size:13px;color:rgba(255,255,255,.58);margin-bottom:30px;animation:fu .7s ease both;}
+.badge-pill{background:var(--v);color:#fff;font-size:11px;font-weight:700;padding:3px 11px;border-radius:999px;}
+.h1{font-size:clamp(56px,9vw,100px);font-weight:900;line-height:1.0;letter-spacing:-4px;color:var(--w);margin-bottom:22px;animation:fu .7s .08s ease both;}
+.h1 em{font-style:normal;color:var(--v3);}
+.hero-sub{font-size:19px;font-weight:300;color:var(--t2);line-height:1.7;max-width:580px;margin:0 auto 40px;animation:fu .7s .16s ease both;}
+.hero-btns{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;animation:fu .7s .24s ease both;}
+.trust{display:flex;justify-content:center;gap:22px;margin-top:26px;flex-wrap:wrap;animation:fu .7s .32s ease both;}
+.trust-item{font-size:12px;color:var(--t3);font-family:var(--mono);}
+
+/* PROBLEMS */
+.problems{padding:100px 0;background:var(--bg);border-top:1px solid var(--b1);}
+.prob-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--b1);border:1px solid var(--b1);border-radius:20px;overflow:hidden;margin-top:60px;}
+.prob{padding:32px 28px;background:var(--s1);transition:background .2s;}
+.prob:hover{background:var(--s2);}
+.prob-ico{font-size:26px;margin-bottom:14px;}
+.prob-h{font-size:15px;font-weight:800;color:var(--w);margin-bottom:8px;}
+.prob-p{font-size:13px;font-weight:300;color:var(--t2);line-height:1.65;}
+.prob-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:var(--mono);margin-top:12px;}
+.pb-r{background:rgba(244,63,94,.1);color:var(--r);}
+.pb-a{background:rgba(245,158,11,.1);color:var(--a);}
+.pb-v{background:var(--vd);color:var(--v3);}
+
+/* FEATURES */
+.features{padding:120px 0;}
+.feat-row{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-bottom:100px;}
+.feat-row:last-child{margin-bottom:0;}
+.feat-row.flip{direction:rtl;}
+.feat-row.flip>*{direction:ltr;}
+.feat-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--v3);font-family:var(--mono);padding:4px 12px;border-radius:999px;background:var(--vd);border:1px solid var(--vb);margin-bottom:16px;}
+.feat-h{font-size:34px;font-weight:900;letter-spacing:-1px;color:var(--w);line-height:1.08;margin-bottom:14px;}
+.feat-p{font-size:15px;font-weight:300;color:var(--t2);line-height:1.75;margin-bottom:16px;}
+.caveat{font-size:12px;color:var(--t3);font-family:var(--mono);padding:10px 14px;background:var(--s1);border:1px solid var(--b1);border-radius:8px;margin-bottom:20px;line-height:1.6;}
+.caveat strong{color:var(--t2);}
+.mock-ui{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:24px;min-height:280px;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;}
+.mock-ui::before{content:'';position:absolute;bottom:-50px;left:50%;transform:translateX(-50%);width:300px;height:180px;background:radial-gradient(ellipse,rgba(124,58,237,.1) 0%,transparent 70%);pointer-events:none;}
+.mock-head{font-size:10px;color:var(--t3);font-family:var(--mono);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;}
+.mock-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;font-size:12.5px;color:var(--t2);}
+.mk{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:var(--mono);}
+.mk-r{background:rgba(244,63,94,.1);color:var(--r);}
+.mk-g{background:rgba(16,185,129,.1);color:var(--g);}
+.mk-a{background:rgba(245,158,11,.1);color:var(--a);}
+.mk-v{background:var(--vd);color:var(--v3);}
+
+/* SERVICES */
+.services{padding:120px 0;background:var(--bg);border-top:1px solid var(--b1);}
+.svc-filter{display:flex;gap:8px;flex-wrap:wrap;margin:36px 0 28px;}
+.svc-btn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--b1);background:var(--s1);color:var(--t2);transition:all .15s;font-family:var(--mono);}
+.svc-btn:hover{color:var(--t1);border-color:var(--b2);}
+.svc-btn.on{background:var(--vd);border-color:var(--vb);color:var(--v3);}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.svc-card{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:28px;transition:all .2s;position:relative;overflow:hidden;}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--v3),transparent);opacity:0;transition:opacity .2s;}
+.svc-card:hover{border-color:var(--b2);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.5);}
+.svc-card:hover::before{opacity:1;}
+.svc-ico{width:44px;height:44px;border-radius:12px;background:var(--vd);border:1px solid var(--vb);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px;}
+.svc-h{font-size:17px;font-weight:800;color:var(--w);margin-bottom:9px;}
+.svc-p{font-size:13.5px;font-weight:300;color:var(--t2);line-height:1.68;margin-bottom:16px;}
+.svc-price{font-size:21px;font-weight:900;color:var(--v3);}
+.svc-note{font-size:11px;color:var(--t3);font-family:var(--mono);margin-top:3px;}
+.svc-link{margin-top:14px;font-size:12px;font-weight:700;color:var(--v3);font-family:var(--mono);cursor:pointer;display:flex;align-items:center;gap:4px;transition:gap .2s;}
+.svc-card:hover .svc-link{gap:8px;}
+
+/* REPORTING */
+.reporting{padding:120px 0;}
+.rep-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;margin-top:60px;}
+.rep-items{display:flex;flex-direction:column;gap:10px;}
+.rep-item{padding:16px 18px;background:var(--s1);border:1px solid var(--b1);border-radius:12px;cursor:pointer;transition:all .15s;}
+.rep-item:hover,.rep-item.on{border-color:var(--vb);background:rgba(124,58,237,.06);}
+.ri-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.ri-h{font-size:14px;font-weight:700;color:var(--w);}
+.ri-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:var(--mono);}
+.ri-p{font-size:12.5px;color:var(--t2);font-weight:300;line-height:1.5;}
+.ri-caveat{font-size:11px;color:var(--t3);font-family:var(--mono);margin-top:7px;padding:6px 9px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.12);border-radius:6px;}
+.rep-preview{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:22px;position:sticky;top:90px;}
+.rep-prev-h{font-size:14px;font-weight:700;color:var(--w);margin-bottom:3px;}
+.rep-prev-sub{font-size:10px;color:var(--t3);font-family:var(--mono);margin-bottom:16px;}
+.rep-bars{display:flex;align-items:flex-end;gap:6px;height:78px;margin-bottom:16px;}
+.rep-bar-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
+.rep-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;}
+.rep-bar-l{font-size:9px;color:var(--t3);font-family:var(--mono);}
+.rep-metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--b1);font-size:12.5px;}
+.rep-metric:last-child{border-bottom:none;}
+.rm-l{color:var(--t2);font-weight:300;}
+.rm-v{font-weight:700;}
+.email-note{margin-top:16px;padding:12px 14px;background:var(--vd);border:1px solid var(--vb);border-radius:10px;font-size:12px;color:var(--t2);}
+
+/* PULSE */
+.pulse{padding:120px 0;background:var(--bg);border-top:1px solid var(--b1);}
+.pulse-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:60px;}
+.pulse-feats{display:flex;flex-direction:column;gap:9px;margin:22px 0 28px;}
+.pf{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--t2);}
+.pf-c{width:20px;height:20px;border-radius:50%;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--g);font-weight:900;flex-shrink:0;}
+.score-box{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:24px;}
+.score-ring{width:96px;height:96px;border-radius:50%;background:conic-gradient(var(--v) 0% 73%,var(--s2) 73% 100%);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;position:relative;}
+.score-ring::before{content:'';position:absolute;inset:13px;background:var(--s1);border-radius:50%;}
+.score-n{position:relative;z-index:1;font-size:28px;font-weight:900;color:var(--v3);}
+.score-issues{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+.si{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.05);border-radius:9px;font-size:12px;color:var(--t2);}
+.si-bar{width:3px;height:32px;border-radius:2px;flex-shrink:0;}
+
+/* COMPARE */
+.compare{padding:120px 0;}
+.cmp-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--b1);border-radius:20px;overflow:hidden;margin-top:56px;}
+.cmp-col{padding:44px 40px;}
+.cmp-bad{background:var(--s1);border-right:1px solid var(--b1);}
+.cmp-good{background:linear-gradient(180deg,rgba(124,58,237,.07) 0%,var(--s1) 100%);position:relative;}
+.cmp-good::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--v),var(--v2));}
+.cmp-h{font-size:20px;font-weight:900;margin-bottom:24px;color:var(--w);}
+.cmp-list{display:flex;flex-direction:column;gap:13px;}
+.cmp-item{display:flex;align-items:flex-start;gap:11px;font-size:14px;color:var(--t2);font-weight:300;line-height:1.5;}
+
+/* PRICING */
+.pricing{padding:120px 0;background:var(--bg);border-top:1px solid var(--b1);}
+.price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:52px;}
+.price-card{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:26px;position:relative;overflow:hidden;transition:all .2s;}
+.price-card:hover{transform:translateY(-3px);box-shadow:0 20px 56px rgba(0,0,0,.4);border-color:var(--b2);}
+.price-card.best{border-color:var(--vb);background:linear-gradient(180deg,rgba(124,58,237,.07),var(--s1));}
+.price-card.best::before{content:'Most Popular';position:absolute;top:14px;right:14px;background:var(--v);color:#fff;font-size:9px;font-weight:700;padding:3px 9px;border-radius:5px;font-family:var(--mono);}
+.pc-tier{font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.pc-name{font-size:22px;font-weight:900;margin-bottom:7px;}
+.pc-desc{font-size:12.5px;color:var(--t2);line-height:1.55;margin-bottom:18px;font-weight:300;min-height:40px;}
+.pc-price{font-size:40px;font-weight:900;letter-spacing:-2px;line-height:1;margin-bottom:4px;}
+.pc-price span{font-size:16px;color:var(--t2);font-weight:400;letter-spacing:0;}
+.pc-per{font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:20px;}
+.pc-feats{display:flex;flex-direction:column;gap:8px;margin-bottom:22px;}
+.pc-feat{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--t2);font-weight:300;}
+.pc-feat.no{color:var(--t3);}
+.pc-btn{width:100%;padding:13px;border-radius:9px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s;}
+.pcb-o{background:transparent;color:var(--t1);border:1px solid var(--b2);}
+.pcb-o:hover{border-color:var(--v3);color:var(--v3);}
+.pcb-f{background:var(--v);color:#fff;}
+.pcb-f:hover{background:var(--v2);}
+.price-note{text-align:center;font-size:13px;color:var(--t3);font-family:var(--mono);margin-top:20px;}
+
+/* FAQ */
+.faq{padding:120px 0;}
+.faq-wrap{max-width:760px;margin:0 auto;}
+.faq-list{margin-top:52px;}
+.faq-item{border-bottom:1px solid var(--b1);}
+.faq-item:first-child{border-top:1px solid var(--b1);}
+.faq-q{width:100%;text-align:left;background:none;border:none;color:var(--t1);font-family:var(--font);font-size:16px;font-weight:600;padding:22px 0;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:color .2s;}
+.faq-q:hover{color:var(--w);}
+.faq-arr{font-size:18px;color:var(--t3);flex-shrink:0;transition:transform .3s;}
+.faq-item.open .faq-arr{transform:rotate(45deg);color:var(--v3);}
+.faq-a{font-size:14px;font-weight:300;color:var(--t2);line-height:1.8;padding:0 0 22px;display:none;}
+.faq-item.open .faq-a{display:block;}
+
+/* CTA */
+.cta-s{padding:0 52px 120px;}
+.cta-box{max-width:1120px;margin:0 auto;background:linear-gradient(135deg,rgba(109,40,217,.5),rgba(91,33,182,.28) 55%,transparent);border:1px solid rgba(124,58,237,.32);border-radius:24px;padding:76px 52px;text-align:center;position:relative;overflow:hidden;}
+.cta-box::before{content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:500px;height:320px;background:radial-gradient(ellipse,rgba(124,58,237,.28),transparent 70%);filter:blur(32px);pointer-events:none;}
+.cta-h{font-size:clamp(30px,4.5vw,54px);font-weight:900;letter-spacing:-2px;color:var(--w);margin-bottom:16px;position:relative;z-index:1;line-height:1.05;}
+.cta-p{font-size:16px;font-weight:300;color:var(--t2);margin-bottom:36px;position:relative;z-index:1;}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44px;position:relative;z-index:1;}
+.ft-wrap{max-width:1120px;margin:0 auto;}
+.ft-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:56px;margin-bottom:52px;}
+.ft-logo{font-size:19px;font-weight:800;color:var(--w);display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.ft-tag{font-size:14px;color:var(--t3);margin-bottom:22px;font-weight:300;}
+.nl-lbl{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:9px;}
+.nl-form{display:flex;gap:7px;}
+.nl-in{flex:1;padding:10px 14px;background:var(--s1);border:1px solid var(--b1);border-radius:8px;color:var(--t1);font-family:var(--font);font-size:13px;outline:none;transition:border-color .2s;}
+.nl-in:focus{border-color:var(--v);}
+.nl-in::placeholder{color:var(--t3);}
+.nl-btn{padding:10px 16px;background:var(--v);color:#fff;border:none;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.nl-btn:hover{background:var(--v2);}
+.ft-col h4{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);font-family:var(--mono);margin-bottom:16px;}
+.ft-col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.ft-col a{font-size:14px;color:var(--t2);transition:color .2s;font-weight:300;}
+.ft-col a:hover{color:var(--w);}
+.ft-bottom{border-top:1px solid var(--b1);padding-top:24px;display:flex;align-items:center;justify-content:space-between;}
+.ft-copy,.ft-email{font-size:13px;color:var(--t3);font-weight:300;}
+
+/* Toast */
+#toast{position:fixed;bottom:22px;right:22px;z-index:9999;background:var(--s2);border:1px solid var(--b2);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:10px;max-width:360px;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(0,0,0,.6);}
+#toast.show{transform:translateY(0);opacity:1;}
+.t-body{flex:1;}
+.t-title{display:block;font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;}
+.t-sub{font-size:11px;color:var(--t2);font-family:var(--mono);}
+.t-x{color:var(--t3);cursor:pointer;font-size:15px;padding:4px;transition:color .15s;}
+.t-x:hover{color:var(--w);}
+
+/* Reveal */
+.r{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease;}
+.r.v{opacity:1;transform:translateY(0);}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
+@keyframes fu{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:1000px){
+  nav{padding:0 24px;}.nav-links{display:none;}
+  .wrap,.cta-s{padding:0 24px;}
+  .prob-grid{grid-template-columns:1fr 1fr;}
+  .feat-row,.feat-row.flip,.pulse-grid,.rep-layout,.cmp-grid{grid-template-columns:1fr;}
+  .feat-row.flip{direction:ltr;}
+  .svc-grid,.price-grid{grid-template-columns:1fr}
+  .cmp-bad{border-right:none;border-bottom:1px solid var(--b1);}
+  .ft-grid{grid-template-columns:1fr;gap:32px;}
+  footer{padding:48px 24px 36px;}
+  .cta-s{padding:0 24px 80px;}
+  .cta-box{padding:48px 24px;}
+}
+@media(max-width:640px){
+  .prob-grid{grid-template-columns:1fr;}
+  .h1{letter-spacing:-2.5px;}
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo"><div class="nav-icon">⚡</div>FixOps.io</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#pulse">Platform</a></li>
+    <li><a href="#reporting">Reporting</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="https://cal.com" class="nav-cta" target="_blank">Book a call ↗</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="orb"></div>
+  <div class="hero-inner">
+    <div class="badge"><span class="badge-pill">New</span>FixOps Pulse — Free Portal Audit Now Live</div>
+    <h1 class="h1">HubSpot Systems.<br><em>Fixed.</em></h1>
+    <p class="hero-sub">Most HubSpot portals are quietly bleeding revenue. Broken workflows nobody knows about. Duplicates eating your billing tier. Dashboards showing wrong data for months. FixOps finds it all — and fixes it.</p>
+    <div class="hero-btns">
+      <a href="app.html" class="btn-v">Run Free Portal Audit ↗</a>
+      <a href="#services" class="btn-o">View Services</a>
+    </div>
+    <div class="trust">
+      <span class="trust-item">🔒 Read-only OAuth</span>
+      <span class="trust-item">·</span>
+      <span class="trust-item">⚡ Results in 60 seconds</span>
+      <span class="trust-item">·</span>
+      <span class="trust-item">🚫 No data stored</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="problems">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <span class="tag">What's Actually Broken Right Now</span>
+      <h2 class="h2">The Problems Living Inside<br>Most HubSpot Portals</h2>
+      <p class="lead" style="max-width:600px;margin:0 auto">HubSpot doesn't tell you when things go wrong. No alerts for silent failures. No warning before you hit your billing tier. No flag when a dashboard starts pulling corrupt data. That's what FixOps is for.</p>
+    </div>
+    <div class="prob-grid r d1">
+      <div class="prob">
+        <div class="prob-ico">⚙️</div>
+        <div class="prob-h">Workflows failing silently</div>
+        <p class="prob-p">HubSpot marks a workflow "Active" even when actions are failing. Leads disappear. Reps don't get tasks. Nobody finds out until someone complains. This is the #1 revenue leak we find every audit.</p>
+        <span class="prob-badge pb-r">Critical — affects revenue</span>
+      </div>
+      <div class="prob">
+        <div class="prob-ico">👥</div>
+        <div class="prob-h">Duplicates bleeding your billing tier</div>
+        <p class="prob-p">HubSpot's native dedup only catches exact email matches. Fuzzy duplicates — same person, different formats — pile up and push you into the next contact tier every month.</p>
+        <span class="prob-badge pb-a">Billing risk</span>
+      </div>
+      <div class="prob">
+        <div class="prob-ico">📊</div>
+        <div class="prob-h">Dashboards built on deleted properties</div>
+        <p class="prob-p">Delete a property, and every report referencing it silently returns zero or wrong data. Leadership makes decisions on numbers that haven't been accurate in weeks — nobody knows.</p>
+        <span class="prob-badge pb-r">Data integrity</span>
+      </div>
+      <div class="prob">
+        <div class="prob-ico">🔌</div>
+        <div class="prob-h">Integrations dying without warning</div>
+        <p class="prob-p">OAuth tokens expire. Salesforce sync stops. Zapier webhooks time out. HubSpot has zero native alerting for any of it. Your integrations can be down all weekend before anyone notices Monday.</p>
+        <span class="prob-badge pb-r">Integration failure</span>
+      </div>
+      <div class="prob">
+        <div class="prob-ico">🗃️</div>
+        <div class="prob-h">Dead automation bloating everything</div>
+        <p class="prob-p">Most portals have 20+ workflows with zero enrollments in 90+ days. Still "Active." Still consuming API quota. Making the real automations harder to find, manage, and trust.</p>
+        <span class="prob-badge pb-a">Portal complexity</span>
+      </div>
+      <div class="prob">
+        <div class="prob-ico">💸</div>
+        <div class="prob-h">No MRR, velocity, or churn data</div>
+        <p class="prob-p">HubSpot doesn't natively calculate MRR, pipeline velocity by stage, or churn signals. The reports that actually run your business require custom builds most teams never create.</p>
+        <span class="prob-badge pb-v">Reporting gap</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="wrap">
+
+    <div class="feat-row r">
+      <div>
+        <span class="feat-tag">⚡ Portal Audit</span>
+        <h3 class="feat-h">165 checks. Every corner of your portal. Plain English results.</h3>
+        <p class="feat-p">FixOps connects via read-only OAuth and audits 8 health dimensions — data integrity, automation health, pipeline integrity, configuration, marketing health, reporting quality, AI readiness, and team adoption. Every issue gets an AI explanation, a dollar impact estimate, and a numbered best practice guide you can actually follow.</p>
+        <p class="feat-p">Not a 139-page PDF. Expandable issue cards. Three buttons on every finding: Auto-Fix, Best Practice Guide, or Fix It For Me.</p>
+        <div class="caveat"><strong>What we actually read via API:</strong> contacts, companies, deals, workflows (structure, errors, enrollment counts), properties, reports, dashboards, integrations, email campaigns, forms, lists, users, and teams. All read-only. You can revoke access instantly from HubSpot.</div>
+        <a href="app.html" class="btn-v" style="font-size:14px;padding:12px 22px">Run Free Audit ↗</a>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-head"><span>FixOps Score · your-portal</span><span style="color:var(--a)">73 / 100</span></div>
+        <div class="mock-row"><span>🗄 Data Integrity</span><span class="mk mk-r">61 — Critical</span></div>
+        <div class="mock-row"><span>⚙️ Automation Health</span><span class="mk mk-r">54 — Critical</span></div>
+        <div class="mock-row"><span>📊 Pipeline Integrity</span><span class="mk mk-a">71 — Warning</span></div>
+        <div class="mock-row"><span>🔧 Configuration</span><span class="mk mk-g">88 — Good</span></div>
+        <div class="mock-row"><span>📈 Reporting Quality</span><span class="mk mk-r">44 — Critical</span></div>
+        <div class="mock-row"><span>🤖 AI Readiness</span><span class="mk mk-a">59 — Warning</span></div>
+      </div>
+    </div>
+
+    <div class="feat-row flip r">
+      <div>
+        <span class="feat-tag">🛡 Sentinel Monitoring</span>
+        <h3 class="feat-h">The alert system HubSpot forgot to build.</h3>
+        <p class="feat-p">Sentinel runs checks on your portal every hour — scanning for workflow errors, expired OAuth tokens, integration failures, email bounce rate spikes, billing tier risks, and new super admin additions.</p>
+        <p class="feat-p">When something breaks, you know within the hour. Via email. Via Slack. Before your team feels the impact, not after.</p>
+        <div class="caveat"><strong>Honest note:</strong> Monitoring uses scheduled API polling (every 60 min — within HubSpot's 5-min minimum guidelines). True real-time push alerts for workflow events require HubSpot Professional or Enterprise webhooks, which we configure if your plan supports it.</div>
+        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px">See Plans ↗</a>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-head"><span>🛡 Sentinel — Live</span><div style="display:flex;gap:4px"><span class="mk mk-r">2 Critical</span><span class="mk mk-a">3 Warning</span></div></div>
+        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
+          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px">Salesforce sync stopped</div>
+          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">OAuth expired · 23 records queued · 6 min ago</div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
+          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px">Lead Router v2 failing</div>
+          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">340 leads unassigned · deleted property · 14 min ago</div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px">
+          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px">Contacts at 91% of billing tier</div>
+          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">~9 days until overage · cleanup available</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feat-row r">
+      <div>
+        <span class="feat-tag">📄 AutoDoc</span>
+        <h3 class="feat-h">Every automation documented. Automatically. Always current.</h3>
+        <p class="feat-p">AutoDoc reads your workflows via API and generates plain-English documentation for every automation — what it does, who it affects, what triggers it, what it conflicts with, and whether it has a goal set.</p>
+        <p class="feat-p">New hire onboarding. Agency handoff. RevOps audit. The Workflow Bible exports to PDF in one click and updates itself every time a workflow changes.</p>
+        <div class="caveat"><strong>What's included:</strong> Workflow name, type, status, enrollment triggers, actions (type and sequence), enrollment count, last modified date, conflict detection, and goal status. All readable via the HubSpot Workflows API.</div>
+        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px">See Plans ↗</a>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-head"><span>📄 Workflow Library</span><span style="color:var(--g)">87 documented</span></div>
+        <div style="padding:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px">
+          <div style="display:flex;gap:5px;margin-bottom:6px"><span class="mk mk-g">ACTIVE</span><span class="mk mk-r">CONFLICT</span></div>
+          <div style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:3px">Lead Nurture — Demo Requests</div>
+          <div style="font-size:12px;color:var(--t2)">Enrolls demo form contacts → 1-day wait → follow-up email → rep task</div>
+          <div style="font-size:11px;color:var(--r);margin-top:5px;font-family:var(--mono)">⚠ Overlaps with Lead Router v2 on same form trigger</div>
+        </div>
+        <div style="padding:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px">
+          <div style="display:flex;gap:5px;margin-bottom:6px"><span class="mk mk-r">DEAD — 0 enrollments</span></div>
+          <div style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:3px">Onboarding Series (Legacy)</div>
+          <div style="font-size:11px;color:var(--g);font-family:var(--mono)">✓ Safe to archive with backup</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <span class="tag">Done-For-You Services</span>
+      <h2 class="h2">Every HubSpot Problem<br>We Actually Fix</h2>
+      <p class="lead" style="max-width:620px;margin:0 auto">The platform finds the issues. Our team fixes them. Request directly from inside the app — we scope and quote within 4 hours. No discovery calls for common fixes. No open-ended billing. Ever.</p>
+    </div>
+    <div class="svc-filter r d1">
+      <div class="svc-btn on" onclick="filterSvc(this,'all')">All Services</div>
+      <div class="svc-btn" onclick="filterSvc(this,'data')">Data & CRM</div>
+      <div class="svc-btn" onclick="filterSvc(this,'automation')">Automation</div>
+      <div class="svc-btn" onclick="filterSvc(this,'reporting')">Reporting</div>
+      <div class="svc-btn" onclick="filterSvc(this,'integration')">Integrations</div>
+      <div class="svc-btn" onclick="filterSvc(this,'retainer')">Retainer</div>
+    </div>
+    <div class="svc-grid r d2">
+      <div class="svc-card" data-cat="automation">
+        <div class="svc-ico">⚡</div>
+        <h3 class="svc-h">Quick Fix Pack</h3>
+        <p class="svc-p">Up to 5 issues from your FixOps audit resolved by our team within 48 hours. Perfect for clearing critical findings without a full engagement. Field standardization, dead workflow archiving, unowned contact reassignment, and similar targeted fixes.</p>
+        <div class="svc-price">$299</div>
+        <div class="svc-note">Flat rate · 48-hour turnaround guaranteed</div>
+        <div class="svc-link" onclick="requestSvc('Quick Fix Pack')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="data">
+        <div class="svc-ico">🧹</div>
+        <h3 class="svc-h">Data CleanUp</h3>
+        <p class="svc-p">Full fuzzy-match deduplication (beyond HubSpot's exact-email-only native dedup), field standardization across country, phone, job title, and company fields, plus dead contact cleanup. Full merge preview — you approve before we touch anything.</p>
+        <div class="svc-price">$499–$999</div>
+        <div class="svc-note">Based on contact volume · preview required</div>
+        <div class="svc-link" onclick="requestSvc('Data CleanUp')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="automation">
+        <div class="svc-ico">⚙️</div>
+        <h3 class="svc-h">Workflow Repair</h3>
+        <p class="svc-p">Fix failing workflows, resolve conflicts between overlapping automations, archive dead workflows with backup, add goals to every workflow missing one, and rebuild any broken enrollment logic. Every change documented before and after.</p>
+        <div class="svc-price">$750–$1,500</div>
+        <div class="svc-note">Based on workflow count and complexity</div>
+        <div class="svc-link" onclick="requestSvc('Workflow Repair')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="reporting">
+        <div class="svc-ico">📊</div>
+        <h3 class="svc-h">Reporting Rebuild</h3>
+        <p class="svc-p">Fix broken dashboards, rebuild attribution reports, and create the pipeline velocity, MRR trend, rep performance, and forecast accuracy dashboards your leadership actually needs — then set them up to email your team on a schedule.</p>
+        <div class="svc-price">$750–$2,000</div>
+        <div class="svc-note">Based on dashboard count and complexity</div>
+        <div class="svc-link" onclick="requestSvc('Reporting Rebuild')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="integration">
+        <div class="svc-ico">🔌</div>
+        <h3 class="svc-h">Integration Build & Fix</h3>
+        <p class="svc-p">Connect HubSpot to Salesforce, Slack, ERPs, quoting tools, or custom systems. Fix broken OAuth connections and webhook failures. Add proper error handling so integrations stop dying silently over weekends.</p>
+        <div class="svc-price">$1,000–$3,500</div>
+        <div class="svc-note">Based on integration complexity</div>
+        <div class="svc-link" onclick="requestSvc('Integration Build & Fix')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="automation">
+        <div class="svc-ico">🏗️</div>
+        <h3 class="svc-h">HubSpot Build or Rebuild</h3>
+        <p class="svc-p">Scalable CRM architecture from scratch or a ground-up rebuild of a broken portal. Custom properties, pipeline design, lifecycle stages, automation maps, integration setup, and team training — all documented before go-live.</p>
+        <div class="svc-price">$2,000–$6,000</div>
+        <div class="svc-note">Based on scope · discovery call required</div>
+        <div class="svc-link" onclick="requestSvc('HubSpot Build/Rebuild')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="data">
+        <div class="svc-ico">🔄</div>
+        <h3 class="svc-h">CRM Migration</h3>
+        <p class="svc-p">Moving from Salesforce, Zoho, Pipedrive, or another CRM? We map your data model, migrate contacts, companies, deals, notes, and activity history, validate everything, and document the full process. Zero data loss, zero guesswork.</p>
+        <div class="svc-price">$3,000–$8,000</div>
+        <div class="svc-note">Based on record volume · discovery call required</div>
+        <div class="svc-link" onclick="requestSvc('CRM Migration')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="reporting">
+        <div class="svc-ico">📈</div>
+        <h3 class="svc-h">RevOps Strategy Build</h3>
+        <p class="svc-p">Full revenue operations architecture — lifecycle stage mapping, pipeline design, KPI framework, forecasting process, and the reporting stack to track it all. Built for teams ready to scale with clean, reliable data driving every decision.</p>
+        <div class="svc-price">$2,500–$5,000</div>
+        <div class="svc-note">Includes 90-day support · discovery call required</div>
+        <div class="svc-link" onclick="requestSvc('RevOps Strategy Build')">Request this → </div>
+      </div>
+      <div class="svc-card" data-cat="retainer">
+        <div class="svc-ico">🛡</div>
+        <h3 class="svc-h">Monthly Retainer</h3>
+        <p class="svc-p">Ongoing portal management — monthly health reviews, proactive fixes before issues compound, priority response on service requests, and strategic RevOps support as your business evolves. Your HubSpot admin on call.</p>
+        <div class="svc-price">$1,000–$3,000<span style="font-size:14px;font-weight:400">/mo</span></div>
+        <div class="svc-note">Based on portal size · minimum 3-month commitment</div>
+        <div class="svc-link" onclick="requestSvc('Monthly Retainer')">Request this → </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REPORTING -->
+<section class="reporting" id="reporting">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <span class="tag">RevSignal — Advanced Reporting</span>
+      <h2 class="h2">The Reports Your Business<br>Runs On. That HubSpot<br>Can't Build Natively.</h2>
+      <p class="lead" style="max-width:640px;margin:0 auto">HubSpot's native reporting is solid — but it has hard gaps. No MRR tracking. No true pipeline velocity. No churn signals. No forecast accuracy by rep. FixOps builds these on top of your existing data and delivers them automatically.</p>
+    </div>
+    <div class="rep-layout r d1">
+      <div class="rep-items">
+        <div class="rep-item on" onclick="selRep(this,'mrr')">
+          <div class="ri-top"><div class="ri-h">MRR & ARR Tracking</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
+          <p class="ri-p">Calculated from closed-won deal amounts and close dates. Tracks new MRR, expansion, churn, and net revenue month-over-month.</p>
+          <div class="ri-caveat">⚠ Requires consistent use of deal Amount + Close Date fields. Subscription MRR requires recurring revenue properties set up in your portal.</div>
+        </div>
+        <div class="rep-item" onclick="selRep(this,'velocity')">
+          <div class="ri-top"><div class="ri-h">Pipeline Velocity by Stage</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
+          <p class="ri-p">Average days deals spend in each stage. Shows exactly where revenue is stalling — and what fixing it is worth.</p>
+        </div>
+        <div class="rep-item" onclick="selRep(this,'forecast')">
+          <div class="ri-top"><div class="ri-h">Forecast vs. Actual by Rep</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
+          <p class="ri-p">Deal close date predictions vs. actual outcomes. Surfaces which reps over-forecast and by how much, before it hits your board numbers.</p>
+        </div>
+        <div class="rep-item" onclick="selRep(this,'churn')">
+          <div class="ri-top"><div class="ri-h">Churn & Retention Signals</div><span class="ri-tag" style="background:rgba(245,158,11,.1);color:var(--a)">REQUIRES SETUP</span></div>
+          <p class="ri-p">Accounts showing disengagement — declining email opens, unresolved tickets, no activity — before they cancel.</p>
+          <div class="ri-caveat">⚠ Login activity signals require Service Hub. Email engagement available on all plans. Ticket data requires Service Hub Starter+.</div>
+        </div>
+        <div class="rep-item" onclick="selRep(this,'attribution')">
+          <div class="ri-top"><div class="ri-h">Revenue Attribution</div><span class="ri-tag" style="background:rgba(245,158,11,.1);color:var(--a)">PRO+ REQUIRED</span></div>
+          <p class="ri-p">Which marketing channels actually drive closed revenue — not just leads. First/last touch on all plans; multi-touch requires Marketing Hub Pro/Enterprise.</p>
+        </div>
+        <div class="rep-item" onclick="selRep(this,'rep')">
+          <div class="ri-top"><div class="ri-h">Rep Performance Dashboard</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
+          <p class="ri-p">Quota attainment, win rate, average deal size, activity volume, and response time — by rep, by team, by month.</p>
+        </div>
+      </div>
+      <div class="rep-preview r d2">
+        <div class="rep-prev-h" id="rh">MRR & ARR Tracking</div>
+        <div class="rep-prev-sub" id="rs">Monthly recurring revenue · calculated from closed-won deals</div>
+        <div class="rep-bars">
+          <div class="rep-bar-w"><div class="rep-bar" style="height:55%;background:rgba(16,185,129,.3)"></div><div class="rep-bar-l">Sep</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:62%;background:rgba(16,185,129,.35)"></div><div class="rep-bar-l">Oct</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:58%;background:rgba(16,185,129,.35)"></div><div class="rep-bar-l">Nov</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:68%;background:rgba(16,185,129,.4)"></div><div class="rep-bar-l">Dec</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:72%;background:rgba(16,185,129,.45)"></div><div class="rep-bar-l">Jan</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:70%;background:rgba(16,185,129,.45)"></div><div class="rep-bar-l">Feb</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:82%;background:var(--g)"></div><div class="rep-bar-l">Mar</div></div>
+        </div>
+        <div id="rm">
+          <div class="rep-metric"><span class="rm-l">Current MRR</span><span class="rm-v" style="color:var(--g)">$82,400</span></div>
+          <div class="rep-metric"><span class="rm-l">MoM Growth</span><span class="rm-v" style="color:var(--g)">+12.1%</span></div>
+          <div class="rep-metric"><span class="rm-l">New MRR this month</span><span class="rm-v">$9,200</span></div>
+          <div class="rep-metric"><span class="rm-l">Churned MRR</span><span class="rm-v" style="color:var(--r)">-$1,400</span></div>
+          <div class="rep-metric"><span class="rm-l">Net ARR Run Rate</span><span class="rm-v">$988,800</span></div>
+        </div>
+        <div class="email-note">📧 <strong style="color:var(--w)">Weekly digest</strong> — Emailed every Monday with revenue trend, top risks, and deals to watch.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PULSE PLATFORM -->
+<section class="pulse" id="pulse">
+  <div class="wrap">
+    <div class="pulse-grid">
+      <div class="r">
+        <span class="tag">FixOps Pulse — The Platform</span>
+        <h2 class="h2">Your HubSpot<br>Control Center</h2>
+        <p class="lead">The only platform that audits, monitors, documents, and fixes your HubSpot — all in one place. Not a static report. A live intelligence layer working 24/7 so you don't have to.</p>
+        <div class="pulse-feats">
+          <div class="pf"><div class="pf-c">✓</div>165-point audit with AI analysis and dollar impact per issue</div>
+          <div class="pf"><div class="pf-c">✓</div>Sentinel — hourly monitoring, instant alerts to email and Slack</div>
+          <div class="pf"><div class="pf-c">✓</div>Safe auto-fixes with full preview and 30-day rollback</div>
+          <div class="pf"><div class="pf-c">✓</div>AutoDoc — living plain-English workflow documentation</div>
+          <div class="pf"><div class="pf-c">✓</div>RevSignal dashboards emailed to your team every week</div>
+          <div class="pf"><div class="pf-c">✓</div>"Fix It For Me" — one click routes directly to our team</div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="app.html" class="btn-v">Launch Free Audit ↗</a>
+          <a href="#pricing" class="btn-o">View Pricing</a>
+        </div>
+      </div>
+      <div class="r d2">
+        <div class="score-box">
+          <div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-align:center;margin-bottom:12px">FixOps Score · acme-corp · last scan 4 hrs ago</div>
+          <div class="score-ring"><div class="score-n">73</div></div>
+          <div style="text-align:center;margin-bottom:16px"><span style="display:inline-block;padding:3px 12px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:999px;font-size:11px;font-weight:700;color:var(--a)">⚠ Needs Attention</span></div>
+          <div class="score-issues">
+            <div class="si"><div class="si-bar" style="background:var(--r)"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:2px">847 duplicate contacts</div><div style="font-size:10.5px;color:var(--t3)">~$284/mo excess billing · auto-fix available</div></div><div style="font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);background:var(--vd);padding:3px 9px;border-radius:5px;cursor:pointer">FIX →</div></div>
+            <div class="si"><div class="si-bar" style="background:var(--r)"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:2px">11 workflows failing silently</div><div style="font-size:10.5px;color:var(--t3)">340 leads lost · 14 days undetected</div></div><div style="font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);background:var(--vd);padding:3px 9px;border-radius:5px;cursor:pointer">FIX →</div></div>
+            <div class="si"><div class="si-bar" style="background:var(--a)"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:2px">9 dashboards on deleted properties</div><div style="font-size:10.5px;color:var(--t3)">6 weeks of corrupt attribution data</div></div><div style="font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);background:var(--vd);padding:3px 9px;border-radius:5px;cursor:pointer">FIX →</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARE -->
+<section class="compare">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <span class="tag">Why FixOps</span>
+      <h2 class="h2">With FixOps vs. Without</h2>
+      <p class="lead" style="max-width:560px;margin:0 auto">The gap between a HubSpot portal that runs itself and one that quietly drains your team isn't strategy — it's maintenance. We handle the maintenance.</p>
+    </div>
+    <div class="cmp-grid r d1">
+      <div class="cmp-col cmp-bad">
+        <div class="cmp-h">❌ Without FixOps</div>
+        <div class="cmp-list">
+          <div class="cmp-item"><span>✗</span>Workflows fail silently — you find out when a rep asks where their leads went</div>
+          <div class="cmp-item"><span>✗</span>Duplicates pile up until billing jumps a tier unexpectedly mid-quarter</div>
+          <div class="cmp-item"><span>✗</span>Dashboards return wrong data for weeks before anyone notices</div>
+          <div class="cmp-item"><span>✗</span>Integrations die over a weekend — nobody knows until Monday morning</div>
+          <div class="cmp-item"><span>✗</span>MRR, velocity, and churn signals tracked manually in a spreadsheet somewhere</div>
+          <div class="cmp-item"><span>✗</span>New team members inherit a portal with zero documentation</div>
+          <div class="cmp-item"><span>✗</span>Portal cleanup is a once-a-year panic when it's too painful to ignore</div>
+        </div>
+      </div>
+      <div class="cmp-col cmp-good">
+        <div class="cmp-h">✅ With FixOps</div>
+        <div class="cmp-list">
+          <div class="cmp-item"><span style="color:var(--g)">✓</span>Workflow failures caught within the hour — before leads go cold</div>
+          <div class="cmp-item"><span style="color:var(--g)">✓</span>Duplicates caught and merged before they hit your billing tier</div>
+          <div class="cmp-item"><span style="color:var(--g)">✓</span>Dashboard issues flagged automatically — every report stays accurate</div>
+          <div class="cmp-item"><span style="color:var(--g)">✓</span>Integration failures trigger an alert before they cause downstream damage</div>
+          <div class="cmp-item"><span style="color:var(--g)">✓</span>Revenue dashboards emailed automatically every week — no spreadsheets</div>
+          <div class="cmp-item"><span style="color:var(--g)">✓</span>Full workflow documentation auto-generated and kept current</div>
+          <div class="cmp-item"><span style="color:var(--g)">✓</span>Continuous monitoring — your portal gets healthier every single week</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <span class="tag">Pricing</span>
+      <h2 class="h2">Transparent Pricing.<br>No Surprises.</h2>
+      <p class="lead" style="max-width:520px;margin:0 auto">Start free. Upgrade when you're ready. Every plan includes "Fix It For Me" — see the issue in the platform, one click sends it to our team for a scoped quote.</p>
+    </div>
+    <div class="price-grid r d1">
+      <div class="price-card">
+        <div class="pc-tier">Free Forever</div>
+        <div class="pc-name">Snapshot</div>
+        <div class="pc-desc">See what's broken in 60 seconds. No credit card required.</div>
+        <div class="pc-price">$0<span>/mo</span></div>
+        <div class="pc-per">Free forever</div>
+        <div class="pc-feats">
+          <div class="pc-feat"><span>✓</span>20-checkpoint portal scan</div>
+          <div class="pc-feat"><span>✓</span>Overall FixOps Health Score</div>
+          <div class="pc-feat"><span>✓</span>Top 3 critical findings</div>
+          <div class="pc-feat"><span>✓</span>One-page PDF summary emailed</div>
+          <div class="pc-feat no"><span>–</span>AI explanations & guides</div>
+          <div class="pc-feat no"><span>–</span>Fix actions</div>
+        </div>
+        <button class="pc-btn pcb-o" onclick="window.location.href='app.html'">Run Free Audit →</button>
+      </div>
+      <div class="price-card best">
+        <div class="pc-tier">Most Popular</div>
+        <div class="pc-name">Pulse</div>
+        <div class="pc-desc">Full audit, AI insights, fix guides, and weekly monitoring.</div>
+        <div class="pc-price">$149<span>/mo</span></div>
+        <div class="pc-per">Billed monthly · cancel anytime</div>
+        <div class="pc-feats">
+          <div class="pc-feat"><span>✓</span>All 165 audit checkpoints</div>
+          <div class="pc-feat"><span>✓</span>AI analysis + dollar impact per issue</div>
+          <div class="pc-feat"><span>✓</span>Best practice guides per finding</div>
+          <div class="pc-feat"><span>✓</span>Daily monitoring + email alerts</div>
+          <div class="pc-feat"><span>✓</span>Weekly digest emailed to your team</div>
+          <div class="pc-feat"><span>✓</span>"Fix It For Me" service requests</div>
+        </div>
+        <button class="pc-btn pcb-f" onclick="window.location.href='app.html'">Get Started →</button>
+      </div>
+      <div class="price-card">
+        <div class="pc-tier">Power Users</div>
+        <div class="pc-name">Pro</div>
+        <div class="pc-desc">Real-time Sentinel monitoring, auto-fixes, and AutoDoc.</div>
+        <div class="pc-price">$299<span>/mo</span></div>
+        <div class="pc-per">Billed monthly · cancel anytime</div>
+        <div class="pc-feats">
+          <div class="pc-feat"><span>✓</span>Everything in Pulse</div>
+          <div class="pc-feat"><span>✓</span>Sentinel hourly monitoring</div>
+          <div class="pc-feat"><span>✓</span>Slack + SMS alerts</div>
+          <div class="pc-feat"><span>✓</span>Safe auto-fixes + 30-day rollback</div>
+          <div class="pc-feat"><span>✓</span>AutoDoc workflow documentation</div>
+          <div class="pc-feat"><span>✓</span>Monthly board-ready PDF report</div>
+        </div>
+        <button class="pc-btn pcb-o" onclick="toast('Upgrade to Pro','Email us to get started: matthew@fixops.io')">Upgrade to Pro →</button>
+      </div>
+      <div class="price-card">
+        <div class="pc-tier">Revenue Teams</div>
+        <div class="pc-name">Command</div>
+        <div class="pc-desc">Full platform with RevSignal dashboards and priority service.</div>
+        <div class="pc-price">$499<span>/mo</span></div>
+        <div class="pc-per">Billed monthly · cancel anytime</div>
+        <div class="pc-feats">
+          <div class="pc-feat"><span>✓</span>Everything in Pro</div>
+          <div class="pc-feat"><span>✓</span>RevSignal revenue dashboards</div>
+          <div class="pc-feat"><span>✓</span>MRR/ARR + churn signals</div>
+          <div class="pc-feat"><span>✓</span>Forecast accuracy by rep</div>
+          <div class="pc-feat"><span>✓</span>3 connected portals</div>
+          <div class="pc-feat"><span>✓</span>4-hour priority service response</div>
+        </div>
+        <button class="pc-btn pcb-o" onclick="toast('Upgrade to Command','Email us to get started: matthew@fixops.io')">Upgrade to Command →</button>
+      </div>
+    </div>
+    <p class="price-note">All plans include Fix It For Me service requests — scoped and quoted within 4 hours. No auto-charges ever.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="wrap">
+    <div class="faq-wrap">
+      <div class="r" style="text-align:center">
+        <span class="tag">FAQs</span>
+        <h2 class="h2">Good Questions.<br>Honest Answers.</h2>
+      </div>
+      <div class="faq-list r d1">
+        <div class="faq-item">
+          <button class="faq-q" onclick="doFaq(this)">What can FixOps actually read from my HubSpot portal?<span class="faq-arr">+</span></button>
+          <div class="faq-a">Via read-only OAuth, FixOps reads: contacts, companies, deals, tickets, notes, tasks, calls, emails, meetings, properties, property groups, workflows (structure, actions, enrollment counts, error logs), pipelines, lists, forms, email campaign stats, integrations, users, and teams. We cannot read private note content or access data your HubSpot plan doesn't expose via the API. You can revoke our access from your HubSpot portal at any time.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="doFaq(this)">Can FixOps actually fix things automatically, and is it safe?<span class="faq-arr">+</span></button>
+          <div class="faq-a">Yes — for specific, well-defined fixes: archiving dead workflows, standardizing field values (country, phone format, job title), reassigning unowned contacts, and removing junk records. Every auto-fix shows you a full preview of what will change before anything is touched. Every change has a 30-day rollback window. We never auto-fix workflow logic, delete properties, modify pipelines, or make structural changes — those always go through our team with explicit approval from you.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="doFaq(this)">How does the reporting work — what data can you actually calculate?<span class="faq-arr">+</span></button>
+          <div class="faq-a">RevSignal pulls from HubSpot's Deals, Contacts, Engagements, and Properties APIs to calculate: MRR trends (from closed-won deal amounts and close dates), pipeline velocity (time per stage), rep performance (activity and deal data), and forecast accuracy. Churn signals use email engagement and ticket data. Multi-touch attribution requires Marketing Hub Professional or Enterprise — we're transparent about this in the platform. You'll never see a metric we can't calculate from your actual data.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="doFaq(this)">What HubSpot plans do you support?<span class="faq-arr">+</span></button>
+          <div class="faq-a">FixOps works with all HubSpot plans — Free, Starter, Professional, and Enterprise. The audit depth scales with your plan since some API endpoints are only available on Professional and Enterprise. We clearly show in the platform what's available at your tier. The core audit — data integrity, workflow health, pipeline gaps, configuration, and reporting quality — works on all plans.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="doFaq(this)">How does the Fix It For Me service work exactly?<span class="faq-arr">+</span></button>
+          <div class="faq-a">Every issue card in the platform has a "Fix It For Me" button. Clicking it sends a pre-filled request to our team with the full context — what the issue is, what it's costing you, and what needs to happen. We review it, scope the work, and send a flat-rate quote within 4 hours. You approve the quote, we do the work. No open-ended billing, no surprise charges. Larger projects (builds, migrations, RevOps strategy) start with a discovery call to scope properly.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="doFaq(this)">What kind of businesses get the most value from FixOps?<span class="faq-arr">+</span></button>
+          <div class="faq-a">FixOps works best for growth-stage and scaling businesses — SaaS, professional services, agencies, manufacturing, e-commerce — that are already using HubSpot and want it to work harder. If you have more than 2,000 contacts, any active workflows, or a sales team using the CRM daily, you'll find things in your audit that surprise you. We've yet to run an audit that came back clean.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-s">
+  <div class="cta-box r">
+    <h2 class="cta-h">Let's Build the HubSpot<br>System You've Been Missing</h2>
+    <p class="cta-p">Start with a free audit. See exactly what's broken in 60 seconds. No credit card, no commitment — just clarity on what's actually happening inside your portal right now.</p>
+    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1">
+      <a href="app.html" class="btn-v">Run Free Portal Audit ↗</a>
+      <a href="https://cal.com" class="btn-o" target="_blank">Book a Free Call</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-wrap">
+    <div class="ft-grid">
+      <div>
+        <a href="index.html" class="ft-logo"><div class="nav-icon" style="width:28px;height:28px;font-size:14px">⚡</div>FixOps.io</a>
+        <div class="ft-tag">HubSpot Systems. Fixed.</div>
+        <div class="nl-lbl">Join our newsletter</div>
+        <div class="nl-form">
+          <input class="nl-in" type="email" placeholder="name@email.com">
+          <button class="nl-btn" onclick="toast('Subscribed!','You\'re on the list — weekly HubSpot tips every Monday')">Subscribe</button>
+        </div>
+      </div>
+      <div class="ft-col">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="app.html">Free Audit</a></li>
+          <li><a href="#pulse">FixOps Pulse</a></li>
+          <li><a href="#reporting">RevSignal</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Data CleanUp</a></li>
+          <li><a href="#services">Workflow Repair</a></li>
+          <li><a href="#services">HubSpot Build</a></li>
+          <li><a href="#services">Monthly Retainer</a></li>
+        </ul>
+      </div>
+      <div class="ft-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="https://cal.com" target="_blank">Book a Call</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2025 FixOps.io · All rights reserved.</span>
+      <span class="ft-email">matthew@fixops.io</span>
+    </div>
+  </div>
+</footer>
+
+<div id="toast">
+  <div class="t-body"><span class="t-title" id="tt"></span><span class="t-sub" id="ts"></span></div>
+  <div class="t-x" onclick="hideT()">✕</div>
+</div>
+
+<script>
+// Stars
+(()=>{const c=document.getElementById('stars');for(let i=0;i<105;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.12?2.5:Math.random()<.4?2:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
+
+// Nav
+window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50);});
+
+// Reveal
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');});},{threshold:.1});
+document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+
+// FAQ
+function doFaq(btn){const it=btn.closest('.faq-item');const was=it.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!was)it.classList.add('open');}
+
+// Service filter
+function filterSvc(tab,cat){
+  document.querySelectorAll('.svc-btn').forEach(t=>t.classList.remove('on'));
+  tab.classList.add('on');
+  document.querySelectorAll('.svc-card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.cat===cat)?'block':'none';});
+}
+
+function requestSvc(name){toast(name,'Request received — we\'ll scope and quote within 4 hours · matthew@fixops.io');}
+
+// Reporting preview
+const repD={
+  mrr:{h:'MRR & ARR Tracking',s:'Monthly recurring revenue · calculated from closed-won deals',m:[['Current MRR','$82,400','var(--g)'],['MoM Growth','+12.1%','var(--g)'],['New MRR','$9,200','var(--w)'],['Churned MRR','-$1,400','var(--r)'],['ARR Run Rate','$988,800','var(--w)']]},
+  velocity:{h:'Pipeline Velocity by Stage',s:'Average days deals spend per stage · where revenue is stalling',m:[['Lead → MQL','7 days','var(--g)'],['MQL → SQL','5 days','var(--g)'],['SQL → Proposal','12 days','var(--a)'],['Proposal → Close','10 days','var(--r)'],['Avg total cycle','34 days','var(--a)']]},
+  forecast:{h:'Forecast vs. Actual by Rep',s:'Predicted close dates vs. actual outcomes this quarter',m:[['Forecasted (Q4)','$340,000','var(--w)'],['Closed Won','$228,000','var(--g)'],['Variance','-$112,000','var(--r)'],['Forecast Accuracy','67%','var(--a)'],['Biggest gap','Tom W. +68% over','var(--r)']]},
+  churn:{h:'Churn & Retention Signals',s:'Accounts showing disengagement signals before cancellation',m:[['At-risk accounts','3','var(--r)'],['No login >30 days','1 account','var(--r)'],['Engagement -60%','2 accounts','var(--a)'],['Renewals in 60 days','5 accounts','var(--a)'],['Avg health (at-risk)','34/100','var(--r)']]},
+  attribution:{h:'Revenue Attribution',s:'Which channels drive closed revenue · requires Marketing Pro+',m:[['Organic Search','34% of revenue','var(--g)'],['Paid Ads','24% of revenue','var(--bl)'],['Direct/Referral','18% of revenue','var(--v3)'],['Email Campaigns','12% of revenue','var(--a)'],['Unknown Source','12% — fixable','var(--r)']]},
+  rep:{h:'Rep Performance Dashboard',s:'Quota attainment, win rate and activity by rep and team',m:[['Sarah Johnson','82% · $218K closed','var(--g)'],['Mike Roberts','71% · $178K closed','var(--bl)'],['Alex Kim','48% · $112K closed','var(--a)'],['Tom Wilson','31% · $68K closed','var(--r)'],['Team Average','58% attainment','var(--a)']]}
+};
+function selRep(el,key){
+  document.querySelectorAll('.rep-item').forEach(i=>i.classList.remove('on'));
+  el.classList.add('on');
+  const d=repD[key];
+  document.getElementById('rh').textContent=d.h;
+  document.getElementById('rs').textContent=d.s;
+  document.getElementById('rm').innerHTML=d.m.map(m=>`<div class="rep-metric"><span class="rm-l">${m[0]}</span><span class="rm-v" style="color:${m[2]}">${m[1]}</span></div>`).join('');
+}
+
+// Toast
+let tt2;
+function toast(title,sub){
+  document.getElementById('tt').textContent=title;
+  document.getElementById('ts').textContent=sub;
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(tt2);tt2=setTimeout(hideT,6000);
+}
+function hideT(){document.getElementById('toast').classList.remove('show');}
+</script>
+</body>
+</html>
