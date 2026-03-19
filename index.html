@@ -670,7 +670,6 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <div id="monthly-plans" class="r d1">
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
 
-        <!-- Free -->
         <div class="price-card">
           <div class="pc-tier">Always Free</div>
           <div class="pc-name">Snapshot</div>
@@ -690,7 +689,6 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <button class="pc-btn pcb-o" onclick="openAuditModal(event)">Run Free Audit →</button>
         </div>
 
-        <!-- Pulse -->
         <div class="price-card best">
           <div class="pc-name">Pulse</div>
           <div class="pc-desc">Full scan + weekly monitoring. Know the moment something breaks.</div>
@@ -706,10 +704,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Integration status alerts</div>
             <div class="pc-feat"><span>✓</span>Results stored 90 days</div>
           </div>
-          <button class="pc-btn pcb-f" onclick="toast('Pulse Plan','Email matthew@fixops.io to get started — we will set up your portal and send a payment link same day')">Get Pulse →</button>
+          <button class="pc-btn pcb-f" onclick="goStripe('pulse')">Get Pulse →</button>
         </div>
 
-        <!-- Pro -->
         <div class="price-card">
           <div class="pc-tier">Teams</div>
           <div class="pc-name">Pro</div>
@@ -725,10 +722,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Custom report builder</div>
             <div class="pc-feat"><span>✓</span>ROI + revenue forecasting</div>
           </div>
-          <button class="pc-btn pcb-o" onclick="toast('Pro Plan','Email matthew@fixops.io to get started — we will set up your portals and send a payment link same day')">Get Pro →</button>
+          <button class="pc-btn pcb-o" onclick="goStripe('pro')">Get Pro →</button>
         </div>
 
-        <!-- Command -->
         <div class="price-card">
           <div class="pc-tier">Agencies</div>
           <div class="pc-name">Command</div>
@@ -744,7 +740,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Dedicated support + SLA</div>
             <div class="pc-feat"><span>✓</span>Onboarding call included</div>
           </div>
-          <button class="pc-btn pcb-o" onclick="toast('Command Plan','Email matthew@fixops.io to discuss Command pricing for your agency — we will get you set up same day')">Get Command →</button>
+          <button class="pc-btn pcb-o" onclick="goStripe('command')">Get Command →</button>
         </div>
 
       </div>
@@ -755,7 +751,6 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <div id="onetime-plans" class="r d1" style="display:none;">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;">
 
-        <!-- Free -->
         <div class="price-card">
           <div class="pc-tier">Always Free</div>
           <div class="pc-name">Snapshot Audit</div>
@@ -775,7 +770,6 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <button class="pc-btn pcb-o" onclick="openAuditModal(event)">Run Free Audit →</button>
         </div>
 
-        <!-- Deep Audit -->
         <div class="price-card best">
           <div class="pc-name">Deep Audit</div>
           <div class="pc-desc">Full audit of every object + written action plan + 30-min call with Matthew.</div>
@@ -790,10 +784,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>30-min strategy call with Matthew</div>
             <div class="pc-feat"><span>✓</span>Integration + API health check</div>
           </div>
-          <button class="pc-btn pcb-f" onclick="toast('Deep Audit — $299','Email matthew@fixops.io to book — we will run your full audit and schedule your strategy call same day')">Book Deep Audit →</button>
+          <button class="pc-btn pcb-f" onclick="goStripe('deep')">Book Deep Audit →</button>
         </div>
 
-        <!-- Pro Audit -->
         <div class="price-card">
           <div class="pc-tier">Most Comprehensive</div>
           <div class="pc-name">Pro Audit</div>
@@ -809,7 +802,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>90-day fix roadmap + ROI report</div>
             <div class="pc-feat"><span>✓</span>Results stored 1 year</div>
           </div>
-          <button class="pc-btn pcb-o" onclick="toast('Pro Audit — $599','Email matthew@fixops.io to book — we will run your full audit and schedule your 60-min strategy call same day')">Book Pro Audit →</button>
+          <button class="pc-btn pcb-o" onclick="goStripe('pro_audit')">Book Pro Audit →</button>
         </div>
 
       </div>
@@ -817,67 +810,93 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <!-- Services -->
       <div>
         <div style="text-align:center;margin-bottom:20px;">
-          <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);font-family:JetBrains Mono,monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Done-for-you fix services · flat rate · any portal size</div>
-          <div style="font-size:14px;color:rgba(255,255,255,.45);font-weight:300;">Found an issue in your audit? One click sends it to Matthew — scoped and quoted same day.</div>
+          <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.3);font-family:JetBrains Mono,monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Done-for-you fix services · custom scoped · any portal size</div>
+          <div style="font-size:14px;color:rgba(255,255,255,.45);font-weight:300;">Found an issue in your audit? Book a free discovery call — we scope the work and send a flat-rate quote same day.</div>
         </div>
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+
           <div style="background:#0c0c14;border:1px solid #18182a;border-radius:12px;padding:18px 20px;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
               <div style="font-size:14px;font-weight:700;color:#fff;">Data CleanUp</div>
-              <div style="font-size:16px;font-weight:900;color:#a78bfa;">$799</div>
+              <div style="font-size:15px;font-weight:900;color:#a78bfa;">From $500</div>
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Duplicates, junk data, missing fields, unowned contacts — full data layer fixed</div>
-            <button onclick="toast('Data CleanUp — $799','Email matthew@fixops.io to get started — scoped and quoted same day')" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Get This Fixed →</button>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Duplicates merged, junk data removed, missing fields corrected, unowned contacts assigned.</div>
+            <button onclick="goCalendly()" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Book Discovery Call →</button>
           </div>
+
           <div style="background:#0c0c14;border:1px solid #18182a;border-radius:12px;padding:18px 20px;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
               <div style="font-size:14px;font-weight:700;color:#fff;">Workflow Repair</div>
-              <div style="font-size:16px;font-weight:900;color:#a78bfa;">$999</div>
+              <div style="font-size:15px;font-weight:900;color:#a78bfa;">From $800</div>
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Dead automations, missing goals, enrollment errors — your entire workflow stack fixed</div>
-            <button onclick="toast('Workflow Repair — $999','Email matthew@fixops.io to get started — scoped and quoted same day')" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Get This Fixed →</button>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Dead automations fixed, missing goals added, error contacts cleared, logic documented.</div>
+            <button onclick="goCalendly()" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Book Discovery Call →</button>
           </div>
+
           <div style="background:#0c0c14;border:1px solid #18182a;border-radius:12px;padding:18px 20px;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
               <div style="font-size:14px;font-weight:700;color:#fff;">Pipeline Fix</div>
-              <div style="font-size:16px;font-weight:900;color:#a78bfa;">$799</div>
+              <div style="font-size:15px;font-weight:900;color:#a78bfa;">From $500</div>
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Stalled deals, missing close dates, zero-dollar pipeline — revenue reporting restored</div>
-            <button onclick="toast('Pipeline Fix — $799','Email matthew@fixops.io to get started — scoped and quoted same day')" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Get This Fixed →</button>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Stalled deals actioned, close dates added, zero-dollar values corrected, rep accountability restored.</div>
+            <button onclick="goCalendly()" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Book Discovery Call →</button>
           </div>
+
           <div style="background:#0c0c14;border:1px solid #18182a;border-radius:12px;padding:18px 20px;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
               <div style="font-size:14px;font-weight:700;color:#fff;">Revenue Reporting Fix</div>
-              <div style="font-size:16px;font-weight:900;color:#a78bfa;">$1,199</div>
+              <div style="font-size:15px;font-weight:900;color:#a78bfa;">From $900</div>
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Deal values, forecast accuracy, board-ready dashboards — leadership gets real numbers</div>
-            <button onclick="toast('Revenue Reporting Fix — $1,199','Email matthew@fixops.io to get started — scoped and quoted same day')" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Get This Fixed →</button>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Deal values corrected, forecast accuracy restored, board-ready dashboards delivered.</div>
+            <button onclick="goCalendly()" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Book Discovery Call →</button>
           </div>
+
           <div style="background:#0c0c14;border:1px solid #18182a;border-radius:12px;padding:18px 20px;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
               <div style="font-size:14px;font-weight:700;color:#fff;">Full Portal Rebuild</div>
-              <div style="font-size:16px;font-weight:900;color:#a78bfa;">$2,499</div>
+              <div style="font-size:15px;font-weight:900;color:#a78bfa;">From $2,000</div>
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">3+ critical issues fixed — data, pipeline, workflows, reporting all rebuilt correctly</div>
-            <button onclick="toast('Full Portal Rebuild — $2,499','Email matthew@fixops.io to get started — scoped and quoted same day')" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Get This Fixed →</button>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Everything fixed end to end — data, pipeline, workflows, reporting all rebuilt. Agencies charge $3,000–$7,000.</div>
+            <button onclick="goCalendly()" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Book Discovery Call →</button>
           </div>
+
           <div style="background:#0c0c14;border:1px solid #18182a;border-radius:12px;padding:18px 20px;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
               <div style="font-size:14px;font-weight:700;color:#fff;">Monthly Retainer</div>
-              <div style="font-size:16px;font-weight:900;color:#a78bfa;">$799<span style="font-size:12px;font-weight:400;">/mo</span></div>
+              <div style="font-size:15px;font-weight:900;color:#a78bfa;">From $600<span style="font-size:12px;font-weight:400;">/mo</span></div>
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Ongoing fixes + Pulse monitoring included — your HubSpot admin on call every month</div>
-            <button onclick="toast('Monthly Retainer — $799/mo','Email matthew@fixops.io to get started — we will set up your retainer and begin same week')" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Get Started →</button>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Ongoing fixes + Pulse monitoring included. Your HubSpot admin on call. Cancel anytime.</div>
+            <button onclick="goCalendly()" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Book Discovery Call →</button>
           </div>
+
         </div>
       </div>
-      <p class="price-note" style="margin-top:20px;">All services · scoped quote before any work begins · flat rate · no hourly billing · any portal size</p>
+      <p class="price-note" style="margin-top:20px;">All services · free discovery call · flat-rate quote before any work begins · no hourly billing · any portal size</p>
     </div>
 
   </div>
 </section>
 
 <script>
+var STRIPE_LINKS = {
+  'deep':     'https://buy.stripe.com/28E7sL7LQfDs8POcxD8Ra05',
+  'pro_audit':'https://buy.stripe.com/cNi9AT7LQ3UKc20fJP8Ra04',
+  'pulse':    'https://buy.stripe.com/9B614n2rw8b02rq7dj8Ra03',
+  'pro':      'https://buy.stripe.com/8x29AT8PUbncfeccxD8Ra02',
+  'command':  'https://buy.stripe.com/dRmfZh4zEcrg6HG1SZ8Ra01'
+};
+
+function goStripe(plan) {
+  var link = STRIPE_LINKS[plan];
+  if (link) {
+    window.open(link, '_blank');
+  }
+}
+
+function goCalendly() {
+  window.open('https://calendly.com/matthew-fixops/30min', '_blank');
+}
+
 function showMonthly() {
   document.getElementById('monthly-plans').style.display = 'block';
   document.getElementById('onetime-plans').style.display = 'none';
@@ -886,6 +905,7 @@ function showMonthly() {
   document.getElementById('toggle-onetime').style.background = 'transparent';
   document.getElementById('toggle-onetime').style.color = 'rgba(255,255,255,.45)';
 }
+
 function showOnetime() {
   document.getElementById('monthly-plans').style.display = 'none';
   document.getElementById('onetime-plans').style.display = 'block';
@@ -895,6 +915,8 @@ function showOnetime() {
   document.getElementById('toggle-monthly').style.color = 'rgba(255,255,255,.45)';
 }
 </script>
+
+/script>
 
 <!-- FAQ -->
 <section class="faq" id="faq">
