@@ -130,6 +130,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 @media(max-width:900px){nav{padding:0 20px;}.page{padding:90px 20px 60px;}.score-hero{grid-template-columns:1fr;}.dim-grid{grid-template-columns:repeat(2,1fr);}}
 </style>
+<!-- cf-email-obfuscation: disable -->
 </head>
 <body>
 <div id="stars"></div>
@@ -196,7 +197,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
         <button class="cta-primary" onclick="downloadPDF()">📄 Download PDF Report</button>
         <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="cta-secondary">📅 Book a Free Strategy Call ↗</a>
       </div>
-      <p style="font-size:12px;color:rgba(255,255,255,.2);font-family:var(--mono);margin-top:16px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="99f4f8ededf1fceed9fff0e1f6e9eab7f0f6">[email&#160;protected]</a> · fixops.io · HubSpot Systems. Fixed.</p>
+      <p style="font-size:12px;color:rgba(255,255,255,.2);font-family:var(--mono);margin-top:16px">matthew [at] fixops.io · fixops.io · HubSpot Systems. Fixed.</p>
     </div>
   </div>
 </div>
@@ -210,7 +211,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div onclick="hideToast()" style="color:var(--t3);cursor:pointer;font-size:16px;padding:4px">✕</div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false">
 const API = 'https://fixops-api-production.up.railway.app';
 const P = new URLSearchParams(window.location.search);
 const auditId = P.get('id');
@@ -267,20 +268,27 @@ function loadWithRetry(id, attempt) {
 
   fetch(API + '/audit/status/' + id, {cache:'no-store'})
     .then(function(r) {
+      // 404 means audit expired or not found - stop retrying immediately
+      if(r.status === 404) {
+        showError('This audit link has expired (results are stored for 7 days). Please run a new audit at fixops.io or contact matthew@fixops.io');
+        return null;
+      }
       if(!r.ok) throw new Error('HTTP ' + r.status);
       return r.json();
     })
     .then(function(data) {
+      if(!data) return; // 404 handled above
       console.log('Status:', data.status, 'attempt:', attempt);
       if(data.status === 'complete') {
         showResults(data);
       } else if(data.status === 'error') {
         showError(data.message || 'Audit failed. Please contact matthew@fixops.io');
       } else {
+        // Still running
         if(attempt < maxAttempts) {
           setTimeout(function(){ loadWithRetry(id, attempt + 1); }, 8000);
         } else {
-          showError('Your audit is still running. You will receive an email when complete. Contact matthew@fixops.io with questions.');
+          showError('Audit is taking longer than expected. You will receive an email when complete. Contact matthew@fixops.io');
         }
       }
     })
