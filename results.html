@@ -526,270 +526,300 @@ function bookCall(idx) {
 }
 
 function downloadPDF() {
-  try {
   if(!AUDIT_DATA){ showToast('⚠️','No data','Please wait for results to load'); return; }
   var jsPDF = window.jspdf && window.jspdf.jsPDF;
   if(!jsPDF){ showToast('⚠️','PDF Error','Please refresh and try again'); return; }
   showToast('📄','Generating PDF...','Building your full branded report');
+  try {
+    var doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    var d = AUDIT_DATA, sum = d.summary||{}, sc = d.scores||{};
+    var issues = (d.issues||[]).slice().sort(function(a,b){var o={critical:0,warning:1,info:2};return(o[a.severity]||3)-(o[b.severity]||3);});
+    var pi = d.portalInfo||{}, ps = pi.portalStats||{};
+    var W=210, M=16, PW=178, pg=1;
+    var ovr = sum.overallScore||0;
+    var scoreRGB = ovr>=80?[16,185,129]:ovr>=60?[245,158,11]:[244,63,94];
+    var grade = ovr>=85?'Excellent':ovr>=70?'Good':ovr>=55?'Needs Attention':'Critical';
+    var co = pi.company||'Your Portal';
+    var dt = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    var fname = 'FixOps-Report-'+co.replace(/[^a-zA-Z0-9]/g,'-')+'-'+new Date().toISOString().split('T')[0]+'.pdf';
 
-  var doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
-  var data = AUDIT_DATA;
-  var summary = data.summary || {};
-  var scores  = data.scores || {};
-  var issues  = (data.issues || []).slice().sort(function(a,b){
-    var o={critical:0,warning:1,info:2}; return (o[a.severity]||3)-(o[b.severity]||3);
-  });
-  var portalInfo = data.portalInfo || {};
-  var ps = portalInfo.portalStats || {};
-  var W=210, M=18, PW=174; // page width, margin, printable width
-  var pageNum = 1;
-
-  var scoreColor = summary.overallScore>=80?[16,185,129]:summary.overallScore>=60?[245,158,11]:[244,63,94];
-  var grade = summary.overallScore>=85?'Excellent':summary.overallScore>=70?'Good':summary.overallScore>=55?'Needs Attention':'Critical';
-  var dateStr = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  var company = portalInfo.company || 'Your Portal';
-  var filename = 'FixOps-Report-' + company.replace(/[^a-zA-Z0-9]/g,'-') + '-' + new Date().toISOString().split('T')[0] + '.pdf';
-
-  // ── Helpers ──────────────────────────────────────────────────────────────────
-  function bg(){ doc.setFillColor(4,4,12); doc.rect(0,0,W,297,'F'); }
-  function addPageHeader() {
-    doc.setFillColor(10,10,22); doc.rect(0,0,W,14,'F');
-    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(124,58,237); doc.text('FIXOPS.IO',M,9);
-    doc.setFont('helvetica','normal'); doc.setTextColor(60,60,90); doc.text('CONFIDENTIAL PORTAL AUDIT REPORT · '+company.toUpperCase(), M+22, 9);
-    doc.setTextColor(60,60,90); doc.text('PAGE '+pageNum, W-M, 9, {align:'right'});
-    doc.setDrawColor(30,20,50); doc.setLineWidth(0.3); doc.line(0,14,W,14);
-  }
-  function addPageFooter() {
-    doc.setDrawColor(30,20,50); doc.setLineWidth(0.3); doc.line(M,285,W-M,285);
-    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(60,60,90);
-    doc.text('matthew@fixops.io · fixops.io · HubSpot Systems. Fixed.', M, 291);
-    doc.text(dateStr, W-M, 291, {align:'right'});
-  }
-  function newPage() {
-    addPageFooter();
-    doc.addPage(); pageNum++;
-    bg(); addPageHeader();
-    return 22;
-  }
-  function checkY(y, needed) { return y + needed > 280 ? newPage() : y; }
-  function sectionLabel(y, text) {
-    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(124,58,237);
-    doc.text(text, M, y);
-    doc.setDrawColor(40,20,70); doc.setLineWidth(0.3); doc.line(M+doc.getTextWidth(text)+3, y-1, W-M, y-1);
-    return y+7;
-  }
-
-  // ════════════════════════════════════════════════════
-  // PAGE 1 — Cover
-  // ════════════════════════════════════════════════════
-  bg();
-
-  // Top accent bar
-  doc.setFillColor(124,58,237); doc.rect(0,0,W,3,'F');
-
-  // Logo area
-  doc.setFillColor(18,14,36); doc.roundedRect(M,18,PW,32,4,4,'F');
-  doc.setFillColor(124,58,237); doc.roundedRect(M+8,23,22,22,3,3,'F');
-  doc.setFontSize(12); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255); doc.text('FO',M+12,37);
-  doc.setFontSize(20); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255); doc.text('FixOps.io',M+36,31);
-  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(167,139,250); doc.text('HubSpot Portal Intelligence Platform',M+36,40);
-  doc.setFontSize(8); doc.setTextColor(80,70,120); doc.text(dateStr,W-M,31,{align:'right'}); doc.text(company,W-M,40,{align:'right'});
-
-  // Score hero box
-  var sy = 60;
-  doc.setFillColor(14,12,30); doc.roundedRect(M,sy,PW,56,5,5,'F');
-  doc.setFillColor(124,58,237); doc.roundedRect(M,sy,3,56,2,2,'F');
-
-  // Big score
-  doc.setFontSize(52); doc.setFont('helvetica','bold'); doc.setTextColor(scoreColor[0],scoreColor[1],scoreColor[2]);
-  doc.text(String(summary.overallScore||0),M+14,sy+38);
-  doc.setFontSize(14); doc.setTextColor(60,60,100); doc.text('/100',M+40,sy+38);
-
-  // Grade + label
-  doc.setFontSize(16); doc.setFont('helvetica','bold'); doc.setTextColor(scoreColor[0],scoreColor[1],scoreColor[2]);
-  doc.text(grade,M+65,sy+16);
-  doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(180,180,220);
-  doc.text('Overall Portal Health Score',M+65,sy+25);
-
-  // Stats row
-  doc.setFontSize(8); doc.setFont('helvetica','bold');
-  doc.setTextColor(244,63,94); doc.text((summary.criticalCount||0)+' Critical',M+65,sy+38);
-  doc.setTextColor(245,158,11); doc.text((summary.warningCount||0)+' Warnings',M+100,sy+38);
-  doc.setTextColor(167,139,250); doc.text('$'+Number(summary.monthlyWaste||0).toLocaleString()+'/mo Est. Waste',M+65,sy+47);
-  doc.setTextColor(16,185,129); doc.text(Number(summary.recordsScanned||0).toLocaleString()+' Records Scanned',M+65,sy+54);
-
-  // Portal snapshot
-  var snap = [];
-  if(ps.contacts) snap.push(Number(ps.contacts).toLocaleString()+' contacts');
-  if(ps.companies) snap.push(Number(ps.companies).toLocaleString()+' companies');
-  if(ps.deals) snap.push(Number(ps.deals).toLocaleString()+' deals');
-  if(ps.tickets) snap.push(ps.tickets+' tickets');
-  if(ps.workflows!==undefined) snap.push(ps.workflows+' workflows');
-  if(ps.users) snap.push(ps.users+' users');
-  if(snap.length){
-    var snapY = sy+66;
-    doc.setFillColor(12,10,26); doc.roundedRect(M,snapY,PW,12,2,2,'F');
-    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(80,80,120);
-    doc.text('Portal: '+snap.join(' · '), M+4, snapY+8, {maxWidth:PW-8});
-  }
-
-  // ── Dimension scores grid ──
-  var dy = sy+90;
-  dy = sectionLabel(dy,'HEALTH DIMENSION SCORES');
-  var dimKeys = Object.keys(scores);
-  var dimNames = {dataIntegrity:'Data Integrity',automationHealth:'Automation Health',pipelineIntegrity:'Pipeline',marketingHealth:'Marketing Health',configSecurity:'Configuration',reportingQuality:'Reporting Quality',teamAdoption:'Team Adoption',serviceHealth:'Service Health'};
-  var cols=2, cellW=(PW-4)/cols, cellH=16;
-  for(var di=0; di<dimKeys.length; di++){
-    var dk=dimKeys[di], dv=scores[dk]||0;
-    var dc=dv>=80?[16,185,129]:dv>=60?[245,158,11]:[244,63,94];
-    var col=di%cols, row=Math.floor(di/cols);
-    var cx=M+(col*(cellW+4)), cy=dy+(row*cellH);
-    doc.setFillColor(14,12,28); doc.roundedRect(cx,cy,cellW,cellH-2,2,2,'F');
-    // Score bar bg
-    doc.setFillColor(24,20,48); doc.roundedRect(cx+46,cy+4,cellW-50,5,1,1,'F');
-    // Score bar fill
-    doc.setFillColor(dc[0],dc[1],dc[2]); doc.roundedRect(cx+46,cy+4,(cellW-50)*(dv/100),5,1,1,'F');
-    // Labels
-    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(180,180,220); doc.text(dimNames[dk]||dk,cx+4,cy+8);
-    doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(dc[0],dc[1],dc[2]); doc.text(String(dv),cx+35,cy+10,{align:'right'});
-    doc.setFontSize(6); doc.setFont('helvetica','normal'); doc.setTextColor(60,60,100); doc.text('/100',cx+44,cy+10);
-  }
-
-  // CTA teaser at bottom of cover
-  var ctaY = dy + (Math.ceil(dimKeys.length/cols)*cellH) + 12;
-  if(ctaY < 245){ ctaY = 245; }
-  doc.setFillColor(20,12,40); doc.roundedRect(M,ctaY,PW,28,4,4,'F');
-  doc.setFillColor(124,58,237); doc.roundedRect(M,ctaY,3,28,2,2,'F');
-  doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255); doc.text('Ready to fix these issues?',M+8,ctaY+10);
-  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(167,139,250); doc.text('Book a free 30-min strategy call: calendly.com/matthew-fixops/30min',M+8,ctaY+18);
-  doc.setTextColor(80,80,120); doc.text('matthew@fixops.io · HubSpot Systems. Fixed.',M+8,ctaY+24);
-
-  addPageFooter();
-
-  // ════════════════════════════════════════════════════
-  // PAGE 2+ — Full Issue Detail Pages
-  // ════════════════════════════════════════════════════
-  var y = newPage();
-  y = sectionLabel(y, 'DETAILED FINDINGS — '+issues.length+' ISSUES ('+( summary.criticalCount||0)+' CRITICAL, '+(summary.warningCount||0)+' WARNINGS)');
-
-  for(var i=0; i<issues.length; i++){
-    var iss = issues[i];
-    var sv = iss.severity==='critical'?[244,63,94]:iss.severity==='warning'?[245,158,11]:[167,139,250];
-    var guide = iss.guide || [];
-
-    // Estimate height needed for this issue
-    var titleLines = doc.setFontSize(9) || doc.splitTextToSize(iss.title||'', PW-16);
-    doc.setFontSize(9);
-    titleLines = doc.splitTextToSize(iss.title||'', PW-16);
-    var descLines = doc.setFontSize(7.5) || [];
-    doc.setFontSize(7.5);
-    descLines = doc.splitTextToSize(iss.description||'', PW-16);
-    var detailLines = [];
-    if(iss.detail){ doc.setFontSize(7); detailLines = doc.splitTextToSize(iss.detail||'', PW-20); }
-    var neededH = 14 + (titleLines.length*5) + (descLines.length*4.5) + (detailLines.length*4) + (guide.length*10) + 20;
-    y = checkY(y, Math.min(neededH, 60)); // at least check for 60mm
-
-    // Issue card background
-    var cardStart = y;
-    doc.setFillColor(12,10,24); doc.roundedRect(M,y,PW,8,1,1,'F');
-    // Severity accent
-    doc.setFillColor(sv[0],sv[1],sv[2]); doc.rect(M,y,3,8,'F');
-    // Severity tag
-    doc.setFontSize(6); doc.setFont('helvetica','bold'); doc.setTextColor(sv[0],sv[1],sv[2]);
-    doc.text((iss.severity||'').toUpperCase(), M+5, y+5.5);
-    // Issue number
-    doc.setTextColor(60,60,100); doc.text('#'+(i+1)+' of '+issues.length, W-M, y+5.5, {align:'right'});
-    y+=10;
-
-    // Title
-    y = checkY(y,10);
-    doc.setFontSize(9.5); doc.setFont('helvetica','bold'); doc.setTextColor(240,238,255);
-    titleLines = doc.splitTextToSize(iss.title||'', PW-6);
-    doc.text(titleLines, M+3, y);
-    y += titleLines.length*5.5 + 3;
-
-    // Description
-    y = checkY(y,12);
-    doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(140,135,180);
-    descLines = doc.splitTextToSize(iss.description||'', PW-6);
-    doc.text(descLines, M+3, y);
-    y += descLines.length*4.5 + 4;
-
-    // Impact line
-    if(iss.impact){
-      y = checkY(y,8);
-      doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(245,158,11);
-      var impactLines = doc.splitTextToSize('Impact: '+(iss.impact||''), PW-6);
-      doc.text(impactLines, M+3, y);
-      y += impactLines.length*4 + 4;
+    // ── Utilities ──────────────────────────────────────────────
+    function fill(r,g,b){doc.setFillColor(r,g,b);}
+    function stroke(r,g,b){doc.setDrawColor(r,g,b);}
+    function rgb(r,g,b){return[r,g,b];}
+    function rr(x,y,w,h,r,style){doc.roundedRect(x,y,w,h,r,r,style||'F');}
+    function ft(size,bold,r,g,b){doc.setFontSize(size);doc.setFont('helvetica',bold?'bold':'normal');if(r!==undefined)doc.setTextColor(r,g,b);}
+    function txt(t,x,y,opts){doc.text(String(t),x,y,opts||{});}
+    function wrap(t,x,y,maxW,lineH,r,g,b){
+      if(r!==undefined)doc.setTextColor(r,g,b);
+      var lines=doc.splitTextToSize(String(t),maxW);
+      doc.text(lines,x,y);
+      return y+lines.length*lineH;
+    }
+    function hdr(){
+      // Top gradient bar - purple to dark
+      fill(8,4,20);doc.rect(0,0,W,12,'F');
+      fill(124,58,237);doc.rect(0,0,W,2,'F');
+      // Logo mark
+      fill(124,58,237);rr(M,3,7,7,1,'F');
+      ft(5,true,255,255,255);txt('FO',M+1.2,8.5);
+      ft(6.5,true,200,190,240);txt('FIXOPS.IO',M+9.5,8.5);
+      ft(6,false,80,70,120);
+      txt('CONFIDENTIAL AUDIT REPORT',M+38,8.5);
+      txt('PAGE '+pg,W-M,8.5,{align:'right'});
+      stroke(40,25,80);doc.setLineWidth(0.2);doc.line(0,12,W,12);
+    }
+    function ftr(){
+      stroke(30,20,55);doc.setLineWidth(0.2);doc.line(M,284,W-M,284);
+      ft(6.5,false,70,60,110);
+      txt('matthew@fixops.io  ·  fixops.io  ·  HubSpot Systems. Fixed.',M,290);
+      txt(dt,W-M,290,{align:'right'});
+    }
+    function newPg(){ftr();doc.addPage();pg++;fill(6,4,16);doc.rect(0,0,W,297,'F');hdr();return 18;}
+    function chk(y,need){return(y+need>278)?newPg():y;}
+    function secHdr(y,label){
+      ft(6.5,true,124,58,237);txt(label,M,y);
+      stroke(60,30,100);doc.setLineWidth(0.3);
+      doc.line(M+doc.getTextWidth(label)+4,y-0.5,W-M,y-0.5);
+      return y+8;
     }
 
-    // Why this matters (detail)
-    if(iss.detail){
-      y = checkY(y,14);
-      doc.setFillColor(16,10,32); doc.roundedRect(M+3,y-2,PW-6,6,1,1,'F');
-      doc.setFontSize(6.5); doc.setFont('helvetica','bold'); doc.setTextColor(167,139,250); doc.text('WHY THIS MATTERS',M+5,y+3);
-      y+=7;
-      doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(120,115,160);
-      detailLines = doc.splitTextToSize(iss.detail, PW-10);
-      for(var dl=0; dl<detailLines.length; dl++){
-        y = checkY(y,5);
-        doc.text(detailLines[dl], M+5, y); y+=4;
+    // ══════════════════════════════════════════════════════════
+    // PAGE 1 — COVER
+    // ══════════════════════════════════════════════════════════
+    fill(6,4,16);doc.rect(0,0,W,297,'F');
+    // Left accent stripe
+    fill(124,58,237);doc.rect(0,0,4,297,'F');
+    // Top bar
+    fill(10,7,24);doc.rect(4,0,W-4,18,'F');
+    stroke(50,25,90);doc.setLineWidth(0.3);doc.line(4,18,W,18);
+
+    // Logo in top bar
+    fill(124,58,237);rr(M+4,3,13,13,2,'F');
+    ft(8,true,255,255,255);txt('FO',M+6.5,12.5);
+    ft(14,true,255,255,255);txt('FixOps.io',M+22,13);
+    ft(7,false,140,120,200);txt('HubSpot Portal Intelligence Platform',M+22,19.5); // below bar slightly
+
+    ft(7.5,false,80,70,130);
+    txt(dt,W-M,10,{align:'right'});
+    txt(co,W-M,17,{align:'right'});
+
+    // ── HERO SCORE BLOCK ──────────────────────────────────────
+    var hy=26;
+    // Background card
+    fill(12,8,28);rr(M+4,hy,PW-4,62,4,'F');
+    // Accent left bar on card
+    fill(scoreRGB[0],scoreRGB[1],scoreRGB[2]);doc.rect(M+4,hy,4,62,'F');
+    // Score ring simulation — concentric arcs as filled circles
+    var cx2=M+30, cy2=hy+31;
+    // Outer ring bg
+    fill(20,14,40);doc.ellipse(cx2,cy2,16,'F');
+    // Score arc (filled sector approximation with colored circle)
+    fill(scoreRGB[0],scoreRGB[1],scoreRGB[2]);
+    var pct=ovr/100;
+    // Draw colored ring using a donut approach
+    doc.ellipse(cx2,cy2,16,'F');
+    fill(12,8,28);doc.ellipse(cx2,cy2,11,'F');
+    // Score number in center
+    ft(18,true,scoreRGB[0],scoreRGB[1],scoreRGB[2]);
+    txt(String(ovr),cx2,cy2+2.5,{align:'center'});
+    ft(6,false,120,100,180);txt('/100',cx2,cy2+8.5,{align:'center'});
+
+    // Grade + headline right of ring
+    var tx=M+55;
+    ft(18,true,255,255,255);txt(grade,tx,hy+16);
+    ft(8,false,150,140,200);txt('Overall Portal Health Score',tx,hy+24);
+    // Divider
+    fill(30,20,55);doc.rect(tx,hy+27,PW-55,0.4,'F');
+
+    // Stats row
+    var stats=[
+      {v:(sum.criticalCount||0)+' Critical',c:[244,63,94]},
+      {v:(sum.warningCount||0)+' Warnings',c:[245,158,11]},
+      {v:'$'+Number(sum.monthlyWaste||0).toLocaleString()+'/mo Waste',c:[167,139,250]},
+      {v:Number(sum.recordsScanned||0).toLocaleString()+' Scanned',c:[16,185,129]}
+    ];
+    var sw=(PW-55)/4;
+    for(var si=0;si<stats.length;si++){
+      var sx=tx+si*sw;
+      ft(8,true,stats[si].c[0],stats[si].c[1],stats[si].c[2]);
+      txt(stats[si].v,sx,hy+38);
+    }
+
+    // Portal snapshot pill
+    var snap=[];
+    if(ps.contacts)snap.push(Number(ps.contacts).toLocaleString()+' contacts');
+    if(ps.companies)snap.push(Number(ps.companies).toLocaleString()+' companies');
+    if(ps.deals)snap.push(Number(ps.deals).toLocaleString()+' deals');
+    if(ps.tickets)snap.push(Number(ps.tickets).toLocaleString()+' tickets');
+    if(ps.workflows!==undefined)snap.push(ps.workflows+' workflows');
+    if(ps.users)snap.push(ps.users+' users');
+    if(snap.length){
+      fill(16,10,36);rr(M+4,hy+47,PW-4,12,2,'F');
+      ft(6.5,false,90,80,140);
+      doc.text('Portal:  '+snap.join('  ·  '),M+10,hy+55,{maxWidth:PW-14});
+    }
+
+    // ── DIMENSION SCORES ─────────────────────────────────────
+    var dy=hy+74;
+    dy=secHdr(dy,'HEALTH DIMENSIONS');
+    var dkeys=Object.keys(sc);
+    var dnames={dataIntegrity:'Data Integrity',automationHealth:'Automation Health',pipelineIntegrity:'Pipeline',marketingHealth:'Marketing Health',configSecurity:'Configuration',reportingQuality:'Reporting Quality',teamAdoption:'Team Adoption',serviceHealth:'Service Health'};
+    var demoji={dataIntegrity:'DB',automationHealth:'WF',pipelineIntegrity:'PL',marketingHealth:'MK',configSecurity:'CF',reportingQuality:'RP',teamAdoption:'TA',serviceHealth:'SV'};
+    var cw2=(PW-4)/2, ch2=17;
+    for(var di=0;di<dkeys.length;di++){
+      var dk=dkeys[di],dv=sc[dk]||0;
+      var dc=dv>=80?[16,185,129]:dv>=60?[245,158,11]:[244,63,94];
+      var col2=di%2, row2=Math.floor(di/2);
+      var cx3=M+4+(col2*(cw2+4)), cy3=dy+row2*ch2;
+      // Card bg
+      fill(12,9,26);rr(cx3,cy3,cw2,ch2-2,2,'F');
+      // Left color indicator
+      fill(dc[0],dc[1],dc[2]);doc.rect(cx3,cy3,2.5,ch2-2,'F');
+      // Label badge
+      fill(20,14,40);rr(cx3+5,cy3+3,8,8,1,'F');
+      ft(4.5,true,dc[0],dc[1],dc[2]);txt(demoji[dk]||'--',cx3+6.2,cy3+7.8);
+      // Name
+      ft(7,true,180,170,220);txt(dnames[dk]||dk,cx3+16,cy3+8.5);
+      // Score
+      ft(11,true,dc[0],dc[1],dc[2]);txt(String(dv),cx3+cw2-18,cy3+9,{align:'right'});
+      ft(5.5,false,80,70,120);txt('/100',cx3+cw2-5,cy3+9);
+      // Bar track
+      fill(20,16,44);doc.rect(cx3+16,cy3+11,cw2-28,2.5,'F');
+      // Bar fill
+      fill(dc[0],dc[1],dc[2]);doc.rect(cx3+16,cy3+11,(cw2-28)*(dv/100),2.5,'F');
+    }
+
+    // ── CTA FOOTER BLOCK ─────────────────────────────────────
+    var ctaY=Math.max(dy+Math.ceil(dkeys.length/2)*ch2+10,248);
+    fill(18,10,40);rr(M+4,ctaY,PW-4,32,3,'F');
+    fill(124,58,237);doc.rect(M+4,ctaY,3,32,'F');
+    ft(11,true,255,255,255);txt("Let's Fix Your Portal",M+12,ctaY+11);
+    ft(7.5,false,160,140,210);txt('Matthew will review your audit and send a prioritized fix plan.',M+12,ctaY+20);
+    ft(7.5,true,16,185,129);txt('Book a free call: ',M+12,ctaY+28);
+    ft(7.5,false,255,255,255);txt('calendly.com/matthew-fixops/30min',M+12+doc.getTextWidth('Book a free call: ')*0.85,ctaY+28);
+    ftr();
+
+    // ══════════════════════════════════════════════════════════
+    // PAGE 2+ — ISSUE DETAIL PAGES
+    // ══════════════════════════════════════════════════════════
+    var y=newPg();
+    y=secHdr(y,'DETAILED FINDINGS  —  '+issues.length+' TOTAL  ·  '+(sum.criticalCount||0)+' CRITICAL  ·  '+(sum.warningCount||0)+' WARNINGS');
+
+    for(var i=0;i<issues.length;i++){
+      var iss=issues[i];
+      var sev=iss.severity||'info';
+      var sRGB=sev==='critical'?[244,63,94]:sev==='warning'?[245,158,11]:[167,139,250];
+      var guide=iss.guide||[];
+
+      // Space check
+      y=chk(y,16);
+
+      // ── Issue header strip ──────────────────────────────────
+      fill(14,10,30);rr(M,y,PW,10,2,'F');
+      fill(sRGB[0],sRGB[1],sRGB[2]);doc.rect(M,y,4,10,'F');
+      // Severity pill
+      fill(sRGB[0],sRGB[1],sRGB[2],0.15);
+      doc.setFillColor(Math.min(255,sRGB[0]+180),Math.min(255,sRGB[1]+30),Math.min(255,sRGB[2]+30),0.08);
+      rr(M+7,y+2,22,6,1,'F');
+      ft(5.5,true,sRGB[0],sRGB[1],sRGB[2]);txt(sev.toUpperCase(),M+8.5,y+6.5);
+      ft(6,false,70,60,110);txt('ISSUE '+(i+1)+' / '+issues.length,W-M,y+6.5,{align:'right'});
+      y+=13;
+
+      // ── Title ──────────────────────────────────────────────
+      y=chk(y,10);
+      ft(10,true,240,235,255);
+      var tlines=doc.splitTextToSize(iss.title||'',PW-4);
+      doc.text(tlines,M+4,y);
+      y+=tlines.length*5.5+4;
+
+      // ── Description ────────────────────────────────────────
+      y=chk(y,10);
+      ft(7.5,false,130,120,175);
+      var dlines=doc.splitTextToSize(iss.description||'',PW-4);
+      doc.text(dlines,M+4,y);
+      y+=dlines.length*4.5+4;
+
+      // ── Impact badge ───────────────────────────────────────
+      if(iss.impact){
+        y=chk(y,10);
+        fill(40,28,8);rr(M+4,y-2,PW-8,9,1.5,'F');
+        fill(245,158,11);doc.rect(M+4,y-2,3,9,'F');
+        ft(6.5,true,245,158,11);txt('IMPACT',M+10,y+4.5);
+        ft(6.5,false,200,165,80);
+        var ilines=doc.splitTextToSize(iss.impact,PW-30);
+        doc.text(ilines[0],M+28,y+4.5);
+        y+=12;
       }
-      y+=3;
-    }
 
-    // Fix guide steps
-    if(guide.length){
-      y = checkY(y,14);
-      doc.setFillColor(8,20,16); doc.roundedRect(M+3,y-2,PW-6,6,1,1,'F');
-      doc.setFontSize(6.5); doc.setFont('helvetica','bold'); doc.setTextColor(16,185,129); doc.text('BEST PRACTICE FIX GUIDE',M+5,y+3);
-      y+=7;
-      for(var gi=0; gi<guide.length; gi++){
-        var stepLines = doc.splitTextToSize(guide[gi], PW-22);
-        var stepH = stepLines.length*4.5 + 4;
-        y = checkY(y, stepH);
-        // Step number circle
-        doc.setFillColor(8,30,20); doc.ellipse(M+8,y+1.5,3,3,'F');
-        doc.setFontSize(6); doc.setFont('helvetica','bold'); doc.setTextColor(16,185,129);
-        doc.text(String(gi+1), M+8, y+3.5, {align:'center'});
-        // Step text
-        doc.setFontSize(7.5); doc.setFont('helvetica','normal'); doc.setTextColor(130,160,140);
-        doc.text(stepLines, M+13, y+2);
-        y += stepH;
+      // ── Why this matters ───────────────────────────────────
+      if(iss.detail){
+        y=chk(y,14);
+        fill(14,8,32);rr(M+4,y-1,PW-8,7,1.5,'F');
+        fill(124,58,237);doc.rect(M+4,y-1,3,7,'F');
+        ft(6,true,167,139,250);txt('WHY THIS MATTERS',M+10,y+4);
+        y+=9;
+        ft(7,false,110,100,155);
+        var wtlines=doc.splitTextToSize(iss.detail,PW-12);
+        for(var wt=0;wt<wtlines.length;wt++){y=chk(y,5);doc.text(wtlines[wt],M+8,y);y+=4.2;}
+        y+=4;
+      }
+
+      // ── Fix guide ──────────────────────────────────────────
+      if(guide.length){
+        y=chk(y,14);
+        fill(6,20,14);rr(M+4,y-1,PW-8,7,1.5,'F');
+        fill(16,185,129);doc.rect(M+4,y-1,3,7,'F');
+        ft(6,true,16,185,129);txt('FIX GUIDE',M+10,y+4);
+        y+=9;
+        for(var g=0;g<guide.length;g++){
+          var glines=doc.splitTextToSize(guide[g],PW-20);
+          var gh=glines.length*4.5+5;
+          y=chk(y,gh);
+          // Step circle
+          fill(10,32,22);doc.ellipse(M+9,y+2,3.5,'F');
+          ft(6,true,16,185,129);txt(String(g+1),M+9,y+4,{align:'center'});
+          // Step text
+          ft(7.5,false,120,160,135);
+          doc.text(glines,M+15,y+2);
+          y+=gh;
+        }
+        y+=3;
+      }
+
+      // ── Divider between issues ─────────────────────────────
+      if(i<issues.length-1){
+        y=chk(y,8);
+        stroke(30,20,55);doc.setLineWidth(0.2);doc.line(M,y,W-M,y);
+        y+=8;
       }
     }
 
-    // Divider between issues
-    y+=6;
-    if(i < issues.length-1){
-      y = checkY(y,4);
-      doc.setDrawColor(25,18,50); doc.setLineWidth(0.3); doc.line(M,y,W-M,y);
-      y+=8;
-    }
-  }
+    // ── Final page CTA ────────────────────────────────────────
+    y=chk(y,55);
+    y=secHdr(y,'NEXT STEPS');
+    fill(16,10,36);rr(M,y,PW,50,4,'F');
+    fill(124,58,237);doc.rect(M,y,4,50,'F');
+    // Decorative score echo
+    fill(20,14,42);doc.ellipse(W-M-12,y+25,18,'F');
+    ft(20,true,scoreRGB[0],scoreRGB[1],scoreRGB[2]);txt(String(ovr),W-M-12,y+28,{align:'center'});
+    ft(6.5,false,100,80,160);txt('/100',W-M-12,y+36,{align:'center'});
+    // Text
+    ft(13,true,255,255,255);txt("Let's Fix Your Portal",M+10,y+15);
+    ft(8,false,160,140,210);
+    var ctxt='Every issue in this report has a solution. Matthew will personally review your findings and build a prioritized fix plan.';
+    var clines=doc.splitTextToSize(ctxt,PW-50);
+    doc.text(clines,M+10,y+24);
+    ft(8,true,16,185,129);txt('Book your free 30-min call:',M+10,y+38);
+    ft(8,false,255,255,255);txt('calendly.com/matthew-fixops/30min',M+10,y+45);
+    ftr();
 
-  // ── Final CTA page ────────────────────────────────────────────────────────
-  y = checkY(y, 60);
-  y = sectionLabel(y, 'NEXT STEPS');
+    doc.save(fname);
+    showToast('✅','PDF Ready — '+issues.length+' issues · '+pg+' pages','Saved to your downloads folder');
 
-  doc.setFillColor(20,12,40); doc.roundedRect(M,y,PW,52,5,5,'F');
-  doc.setFillColor(124,58,237); doc.rect(M,y,3,52,'F');
-  doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255); doc.text('Let\'s Fix Your Portal',M+10,y+14);
-  doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(167,139,250);
-  doc.text('Every issue in this report has a solution. Matthew will personally review',M+10,y+23);
-  doc.text('your findings and build a prioritized fix plan with flat-rate pricing.',M+10,y+30);
-  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.setTextColor(16,185,129);
-  doc.text('Book a free 30-min strategy call:',M+10,y+40);
-  doc.setTextColor(255,255,255); doc.text('calendly.com/matthew-fixops/30min',M+10,y+48);
-
-  addPageFooter();
-
-  doc.save(filename);
-  showToast('✅','PDF Downloaded','Full '+issues.length+'-issue report saved');
   } catch(err) {
-    console.error('PDF generation error:', err);
-    showToast('❌','PDF Error — check console',String(err.message||err).substring(0,80));
+    console.error('PDF error:',err);
+    showToast('❌','PDF Error',String(err.message||err).substring(0,80));
   }
 }
 
