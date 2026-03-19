@@ -295,6 +295,7 @@ function san(str) {
 }
 
 function showResults(data) {
+  try {
   AUDIT_DATA = data;
   document.getElementById('loading').style.display = 'none';
   document.getElementById('results').style.display = 'block';
@@ -389,6 +390,16 @@ function showResults(data) {
       </div>
     </div>`;
   }).join('');
+  } catch(err) {
+    console.error('showResults error:', err);
+    // Show error with details
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+    var errDiv = document.createElement('div');
+    errDiv.style.cssText = 'background:#1a0a0a;border:1px solid #f43f5e;border-radius:12px;padding:24px;margin:20px 0;color:#f43f5e;font-family:monospace;font-size:13px;';
+    errDiv.innerHTML = '<strong>Render error — please share this with matthew@fixops.io:</strong><br><br>' + err.toString();
+    document.getElementById('issue-list').before(errDiv);
+  }
 }
 
 function toggleIssue(idx) {
