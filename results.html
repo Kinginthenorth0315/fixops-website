@@ -613,13 +613,13 @@ function downloadPDF() {
     // Score ring simulation — concentric arcs as filled circles
     var cx2=M+30, cy2=hy+31;
     // Outer ring bg
-    fill(20,14,40);doc.ellipse(cx2,cy2,16,'F');
+    fill(20,14,40);doc.ellipse(cx2,cy2,16,16,'F');
     // Score arc (filled sector approximation with colored circle)
     fill(scoreRGB[0],scoreRGB[1],scoreRGB[2]);
     var pct=ovr/100;
     // Draw colored ring using a donut approach
-    doc.ellipse(cx2,cy2,16,'F');
-    fill(12,8,28);doc.ellipse(cx2,cy2,11,'F');
+    doc.ellipse(cx2,cy2,16,16,'F');
+    fill(12,8,28);doc.ellipse(cx2,cy2,11,11,'F');
     // Score number in center
     ft(18,true,scoreRGB[0],scoreRGB[1],scoreRGB[2]);
     txt(String(ovr),cx2,cy2+2.5,{align:'center'});
@@ -777,7 +777,7 @@ function downloadPDF() {
           var gh=glines.length*4.5+5;
           y=chk(y,gh);
           // Step circle
-          fill(10,32,22);doc.ellipse(M+9,y+2,3.5,'F');
+          fill(10,32,22);doc.ellipse(M+9,y+2,3.5,3.5,'F');
           ft(6,true,16,185,129);txt(String(g+1),M+9,y+4,{align:'center'});
           // Step text
           ft(7.5,false,120,160,135);
@@ -801,7 +801,7 @@ function downloadPDF() {
     fill(16,10,36);rr(M,y,PW,50,4,'F');
     fill(124,58,237);doc.rect(M,y,4,50,'F');
     // Decorative score echo
-    fill(20,14,42);doc.ellipse(W-M-12,y+25,18,'F');
+    fill(20,14,42);doc.ellipse(W-M-12,y+25,18,18,'F');
     ft(20,true,scoreRGB[0],scoreRGB[1],scoreRGB[2]);txt(String(ovr),W-M-12,y+28,{align:'center'});
     ft(6.5,false,100,80,160);txt('/100',W-M-12,y+36,{align:'center'});
     // Text
