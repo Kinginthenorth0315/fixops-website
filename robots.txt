@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+User-agent: HubSpot Crawler
+Allow: /
+
+Sitemap: https://fixops.io/sitemap.xml
