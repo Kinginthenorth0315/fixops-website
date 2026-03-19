@@ -529,295 +529,304 @@ function downloadPDF() {
   if(!AUDIT_DATA){ showToast('⚠️','No data','Please wait for results to load'); return; }
   var jsPDF = window.jspdf && window.jspdf.jsPDF;
   if(!jsPDF){ showToast('⚠️','PDF Error','Please refresh and try again'); return; }
-  showToast('📄','Generating PDF...','Building your full branded report');
+  showToast('📄','Generating PDF...','Building your report');
   try {
     var doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
     var d = AUDIT_DATA, sum = d.summary||{}, sc = d.scores||{};
-    var issues = (d.issues||[]).slice().sort(function(a,b){var o={critical:0,warning:1,info:2};return(o[a.severity]||3)-(o[b.severity]||3);});
+    var issues = (d.issues||[]).slice().sort(function(a,b){
+      var o={critical:0,warning:1,info:2}; return(o[a.severity]||3)-(o[b.severity]||3);
+    });
     var pi = d.portalInfo||{}, ps = pi.portalStats||{};
-    var W=210, M=16, PW=178, pg=1;
-    var ovr = sum.overallScore||0;
-    var scoreRGB = ovr>=80?[16,185,129]:ovr>=60?[245,158,11]:[244,63,94];
-    var grade = ovr>=85?'Excellent':ovr>=70?'Good':ovr>=55?'Needs Attention':'Critical';
-    var co = pi.company||'Your Portal';
-    var dt = new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-    var fname = 'FixOps-Report-'+co.replace(/[^a-zA-Z0-9]/g,'-')+'-'+new Date().toISOString().split('T')[0]+'.pdf';
+    var W=210, M=15, CW=180, pg=1;
+    var ovr=sum.overallScore||0;
+    var sRGB=ovr>=80?[16,185,129]:ovr>=60?[245,158,11]:[244,63,94];
+    var grade=ovr>=85?'Excellent':ovr>=70?'Good':ovr>=55?'Needs Attention':'Critical';
+    var company=pi.company||'Your Portal';
+    var dt=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+    var fname='FixOps-Audit-'+company.replace(/[^a-zA-Z0-9]/g,'-')+'-'+new Date().toISOString().split('T')[0]+'.pdf';
 
-    // ── Utilities ──────────────────────────────────────────────
-    function fill(r,g,b){doc.setFillColor(r,g,b);}
-    function stroke(r,g,b){doc.setDrawColor(r,g,b);}
-    function rgb(r,g,b){return[r,g,b];}
-    function rr(x,y,w,h,r,style){doc.roundedRect(x,y,w,h,r,r,style||'F');}
-    function ft(size,bold,r,g,b){doc.setFontSize(size);doc.setFont('helvetica',bold?'bold':'normal');if(r!==undefined)doc.setTextColor(r,g,b);}
-    function txt(t,x,y,opts){doc.text(String(t),x,y,opts||{});}
-    function wrap(t,x,y,maxW,lineH,r,g,b){
-      if(r!==undefined)doc.setTextColor(r,g,b);
-      var lines=doc.splitTextToSize(String(t),maxW);
-      doc.text(lines,x,y);
-      return y+lines.length*lineH;
+    // ── Color palette ──────────────────────────────────────────────────────────
+    var BG=[8,6,20], CARD=[15,12,32], CARD2=[20,16,40], BORDER=[35,25,65];
+    var PURPLE=[124,58,237], PURPLE_L=[167,139,250];
+    var GREEN=[16,185,129], AMBER=[245,158,11], RED=[244,63,94];
+    var WHITE=[255,255,255], GREY=[120,110,160], LGREY=[180,170,210];
+
+    // ── Helpers ────────────────────────────────────────────────────────────────
+    function bg(){doc.setFillColor(BG[0],BG[1],BG[2]);doc.rect(0,0,W,297,'F');}
+    function fill(rgb){doc.setFillColor(rgb[0],rgb[1],rgb[2]);}
+    function stroke(rgb,w){doc.setDrawColor(rgb[0],rgb[1],rgb[2]);doc.setLineWidth(w||0.2);}
+    function ft(size,bold,rgb){
+      doc.setFontSize(size);
+      doc.setFont('helvetica',bold?'bold':'normal');
+      if(rgb)doc.setTextColor(rgb[0],rgb[1],rgb[2]);
     }
+    function rr(x,y,w,h,r,style){doc.roundedRect(x,y,w,h,r||2,r||2,style||'F');}
+    function ln(x1,y1,x2,y2){doc.line(x1,y1,x2,y2);}
+
     function hdr(){
-      // Top gradient bar - purple to dark
-      fill(8,4,20);doc.rect(0,0,W,12,'F');
-      fill(124,58,237);doc.rect(0,0,W,2,'F');
-      // Logo mark
-      fill(124,58,237);rr(M,3,7,7,1,'F');
-      ft(5,true,255,255,255);txt('FO',M+1.2,8.5);
-      ft(6.5,true,200,190,240);txt('FIXOPS.IO',M+9.5,8.5);
-      ft(6,false,80,70,120);
-      txt('CONFIDENTIAL AUDIT REPORT',M+38,8.5);
-      txt('PAGE '+pg,W-M,8.5,{align:'right'});
-      stroke(40,25,80);doc.setLineWidth(0.2);doc.line(0,12,W,12);
+      // Top bar
+      fill(CARD);doc.rect(0,0,W,13,'F');
+      fill(PURPLE);doc.rect(0,0,W,2,'F');
+      // Logo pill
+      fill(PURPLE);rr(M,3.5,8,7,1.5,'F');
+      ft(5,true,WHITE);doc.text('FO',M+1.5,8.5);
+      ft(7,true,[200,190,240]);doc.text('FIXOPS.IO',M+11,8.5);
+      ft(6,false,GREY);doc.text('CONFIDENTIAL PORTAL AUDIT',M+42,8.5);
+      ft(6,false,GREY);doc.text('PAGE '+pg,W-M,8.5,{align:'right'});
+      stroke(BORDER);ln(0,13,W,13);
     }
     function ftr(){
-      stroke(30,20,55);doc.setLineWidth(0.2);doc.line(M,284,W-M,284);
-      ft(6.5,false,70,60,110);
-      txt('matthew@fixops.io  ·  fixops.io  ·  HubSpot Systems. Fixed.',M,290);
-      txt(dt,W-M,290,{align:'right'});
+      stroke(BORDER);ln(M,283,W-M,283);
+      ft(6,false,GREY);
+      doc.text('matthew@fixops.io  ·  fixops.io  ·  HubSpot Systems. Fixed.',M,289);
+      doc.text(dt,W-M,289,{align:'right'});
     }
-    function newPg(){ftr();doc.addPage();pg++;fill(6,4,16);doc.rect(0,0,W,297,'F');hdr();return 18;}
+    function newPg(){
+      ftr();doc.addPage();pg++;
+      bg();hdr();return 20;
+    }
     function chk(y,need){return(y+need>278)?newPg():y;}
-    function secHdr(y,label){
-      ft(6.5,true,124,58,237);txt(label,M,y);
-      stroke(60,30,100);doc.setLineWidth(0.3);
-      doc.line(M+doc.getTextWidth(label)+4,y-0.5,W-M,y-0.5);
+    function secLabel(y,label){
+      ft(6.5,true,PURPLE_L);doc.text(label,M,y);
+      stroke([50,35,90],0.3);
+      ln(M+doc.getTextWidth(label)+3,y-0.5,W-M,y-0.5);
       return y+8;
     }
+    function scoreColor(v){return v>=80?GREEN:v>=60?AMBER:RED;}
 
-    // ══════════════════════════════════════════════════════════
-    // PAGE 1 — COVER
-    // ══════════════════════════════════════════════════════════
-    fill(6,4,16);doc.rect(0,0,W,297,'F');
+    // ══════════════════════════════════════════════════════════════════
+    // PAGE 1 — EXECUTIVE SUMMARY
+    // ══════════════════════════════════════════════════════════════════
+    bg();
     // Left accent stripe
-    fill(124,58,237);doc.rect(0,0,4,297,'F');
-    // Top bar
-    fill(10,7,24);doc.rect(4,0,W-4,18,'F');
-    stroke(50,25,90);doc.setLineWidth(0.3);doc.line(4,18,W,18);
+    fill(PURPLE);doc.rect(0,0,3,297,'F');
+    // Top header bar
+    fill([10,8,24]);doc.rect(3,0,W-3,16,'F');
+    stroke(BORDER);ln(3,16,W,16);
+    // Logo
+    fill(PURPLE);rr(M+2,3,10,10,2,'F');
+    ft(6.5,true,WHITE);doc.text('FO',M+3.8,9.8);
+    ft(13,true,WHITE);doc.text('FixOps.io',M+16,10);
+    ft(7,false,GREY);doc.text('HubSpot Portal Intelligence Platform',M+16,15);
+    ft(7,false,GREY);doc.text(dt,W-M,8,{align:'right'});
+    ft(7,false,LGREY);doc.text(company,W-M,14,{align:'right'});
 
-    // Logo in top bar
-    fill(124,58,237);rr(M+4,3,13,13,2,'F');
-    ft(8,true,255,255,255);txt('FO',M+6.5,12.5);
-    ft(14,true,255,255,255);txt('FixOps.io',M+22,13);
-    ft(7,false,140,120,200);txt('HubSpot Portal Intelligence Platform',M+22,19.5); // below bar slightly
+    // ── Score Hero ─────────────────────────────────────────────────────────────
+    var hy=22;
+    // Hero card background
+    fill(CARD);rr(M,hy,CW,55,3,'F');
+    // Left color bar
+    fill(sRGB);doc.rect(M,hy,4,55,'F');
+    // Score circle bg
+    fill(CARD2);doc.ellipse(M+24,hy+27,14,14,'F');
+    // Score circle colored ring (outer)
+    stroke(sRGB,2);doc.ellipse(M+24,hy+27,13,13,'S');
+    // Score number
+    ft(22,true,sRGB);doc.text(String(ovr),M+24,hy+30,{align:'center'});
+    ft(6,false,GREY);doc.text('/100',M+24,hy+37,{align:'center'});
 
-    ft(7.5,false,80,70,130);
-    txt(dt,W-M,10,{align:'right'});
-    txt(co,W-M,17,{align:'right'});
-
-    // ── HERO SCORE BLOCK ──────────────────────────────────────
-    var hy=26;
-    // Background card
-    fill(12,8,28);rr(M+4,hy,PW-4,62,4,'F');
-    // Accent left bar on card
-    fill(scoreRGB[0],scoreRGB[1],scoreRGB[2]);doc.rect(M+4,hy,4,62,'F');
-    // Score ring simulation — concentric arcs as filled circles
-    var cx2=M+30, cy2=hy+31;
-    // Outer ring bg
-    fill(20,14,40);doc.ellipse(cx2,cy2,16,16,'F');
-    // Score arc (filled sector approximation with colored circle)
-    fill(scoreRGB[0],scoreRGB[1],scoreRGB[2]);
-    var pct=ovr/100;
-    // Draw colored ring using a donut approach
-    doc.ellipse(cx2,cy2,16,16,'F');
-    fill(12,8,28);doc.ellipse(cx2,cy2,11,11,'F');
-    // Score number in center
-    ft(18,true,scoreRGB[0],scoreRGB[1],scoreRGB[2]);
-    txt(String(ovr),cx2,cy2+2.5,{align:'center'});
-    ft(6,false,120,100,180);txt('/100',cx2,cy2+8.5,{align:'center'});
-
-    // Grade + headline right of ring
-    var tx=M+55;
-    ft(18,true,255,255,255);txt(grade,tx,hy+16);
-    ft(8,false,150,140,200);txt('Overall Portal Health Score',tx,hy+24);
+    // Right content
+    var tx=M+45;
+    ft(16,true,WHITE);doc.text(grade,tx,hy+13);
+    ft(7.5,false,LGREY);doc.text('Portal Health Score — '+dt,tx,hy+20);
     // Divider
-    fill(30,20,55);doc.rect(tx,hy+27,PW-55,0.4,'F');
+    fill(BORDER);doc.rect(tx,hy+23,CW-35,0.5,'F');
 
     // Stats row
-    var stats=[
-      {v:(sum.criticalCount||0)+' Critical',c:[244,63,94]},
-      {v:(sum.warningCount||0)+' Warnings',c:[245,158,11]},
-      {v:'$'+Number(sum.monthlyWaste||0).toLocaleString()+'/mo Waste',c:[167,139,250]},
-      {v:Number(sum.recordsScanned||0).toLocaleString()+' Scanned',c:[16,185,129]}
+    var statData=[
+      {v:String(sum.criticalCount||0),l:'CRITICAL',c:RED},
+      {v:String(sum.warningCount||0),l:'WARNINGS',c:AMBER},
+      {v:'$'+Number(sum.monthlyWaste||0).toLocaleString(),l:'EST. WASTE/MO',c:PURPLE_L},
+      {v:Number(sum.recordsScanned||0).toLocaleString(),l:'RECORDS SCANNED',c:GREEN}
     ];
-    var sw=(PW-55)/4;
-    for(var si=0;si<stats.length;si++){
-      var sx=tx+si*sw;
-      ft(8,true,stats[si].c[0],stats[si].c[1],stats[si].c[2]);
-      txt(stats[si].v,sx,hy+38);
+    var sw2=(CW-35)/4;
+    for(var si=0;si<statData.length;si++){
+      var sx=tx+si*sw2;
+      ft(11,true,statData[si].c);doc.text(statData[si].v,sx,hy+35);
+      ft(5.5,false,GREY);doc.text(statData[si].l,sx,hy+41);
     }
 
-    // Portal snapshot pill
+    // Portal snapshot
     var snap=[];
     if(ps.contacts)snap.push(Number(ps.contacts).toLocaleString()+' contacts');
     if(ps.companies)snap.push(Number(ps.companies).toLocaleString()+' companies');
     if(ps.deals)snap.push(Number(ps.deals).toLocaleString()+' deals');
     if(ps.tickets)snap.push(Number(ps.tickets).toLocaleString()+' tickets');
-    if(ps.workflows!==undefined)snap.push(ps.workflows+' workflows');
-    if(ps.users)snap.push(ps.users+' users');
+    if(ps.workflows!==undefined&&ps.workflows>0)snap.push(ps.workflows+' workflows');
+    if(ps.users&&ps.users>0)snap.push(ps.users+' users');
     if(snap.length){
-      fill(16,10,36);rr(M+4,hy+47,PW-4,12,2,'F');
-      ft(6.5,false,90,80,140);
-      doc.text('Portal:  '+snap.join('  ·  '),M+10,hy+55,{maxWidth:PW-14});
+      fill(CARD2);rr(M,hy+58,CW,11,2,'F');
+      ft(6.5,false,GREY);
+      doc.text('Portal: '+snap.join('  ·  '),M+5,hy+65,{maxWidth:CW-10});
     }
 
-    // ── DIMENSION SCORES ─────────────────────────────────────
-    var dy=hy+74;
-    dy=secHdr(dy,'HEALTH DIMENSIONS');
+    // ── Dimension Scores Grid ──────────────────────────────────────────────────
+    var dy=hy+78;
+    dy=secLabel(dy,'HEALTH DIMENSION SCORES');
     var dkeys=Object.keys(sc);
-    var dnames={dataIntegrity:'Data Integrity',automationHealth:'Automation Health',pipelineIntegrity:'Pipeline',marketingHealth:'Marketing Health',configSecurity:'Configuration',reportingQuality:'Reporting Quality',teamAdoption:'Team Adoption',serviceHealth:'Service Health'};
-    var demoji={dataIntegrity:'DB',automationHealth:'WF',pipelineIntegrity:'PL',marketingHealth:'MK',configSecurity:'CF',reportingQuality:'RP',teamAdoption:'TA',serviceHealth:'SV'};
-    var cw2=(PW-4)/2, ch2=17;
+    var dnames={
+      dataIntegrity:'Data Integrity',automationHealth:'Automation Health',
+      pipelineIntegrity:'Pipeline Integrity',marketingHealth:'Marketing Health',
+      configSecurity:'Configuration & Security',reportingQuality:'Reporting Quality',
+      teamAdoption:'Team Adoption',serviceHealth:'Service Health'
+    };
+    var dcw=(CW-4)/2, dch=16;
     for(var di=0;di<dkeys.length;di++){
       var dk=dkeys[di],dv=sc[dk]||0;
-      var dc=dv>=80?[16,185,129]:dv>=60?[245,158,11]:[244,63,94];
-      var col2=di%2, row2=Math.floor(di/2);
-      var cx3=M+4+(col2*(cw2+4)), cy3=dy+row2*ch2;
-      // Card bg
-      fill(12,9,26);rr(cx3,cy3,cw2,ch2-2,2,'F');
-      // Left color indicator
-      fill(dc[0],dc[1],dc[2]);doc.rect(cx3,cy3,2.5,ch2-2,'F');
-      // Label badge
-      fill(20,14,40);rr(cx3+5,cy3+3,8,8,1,'F');
-      ft(4.5,true,dc[0],dc[1],dc[2]);txt(demoji[dk]||'--',cx3+6.2,cy3+7.8);
+      var dc=scoreColor(dv);
+      var col=di%2,row=Math.floor(di/2);
+      var cx=M+(col*(dcw+4)),cy=dy+row*dch;
+      // Card
+      fill(CARD);rr(cx,cy,dcw,dch-2,2,'F');
+      // Left indicator
+      fill(dc);doc.rect(cx,cy,3,dch-2,'F');
       // Name
-      ft(7,true,180,170,220);txt(dnames[dk]||dk,cx3+16,cy3+8.5);
+      ft(7,true,LGREY);doc.text(dnames[dk]||dk,cx+6,cy+8);
       // Score
-      ft(11,true,dc[0],dc[1],dc[2]);txt(String(dv),cx3+cw2-18,cy3+9,{align:'right'});
-      ft(5.5,false,80,70,120);txt('/100',cx3+cw2-5,cy3+9);
+      ft(10,true,dc);doc.text(String(dv),cx+dcw-16,cy+9,{align:'right'});
+      ft(5.5,false,GREY);doc.text('/100',cx+dcw-5,cy+9);
       // Bar track
-      fill(20,16,44);doc.rect(cx3+16,cy3+11,cw2-28,2.5,'F');
+      fill(CARD2);doc.rect(cx+6,cy+11,dcw-26,2.5,'F');
       // Bar fill
-      fill(dc[0],dc[1],dc[2]);doc.rect(cx3+16,cy3+11,(cw2-28)*(dv/100),2.5,'F');
+      fill(dc);doc.rect(cx+6,cy+11,(dcw-26)*(dv/100),2.5,'F');
     }
 
-    // ── CTA FOOTER BLOCK ─────────────────────────────────────
-    var ctaY=Math.max(dy+Math.ceil(dkeys.length/2)*ch2+10,248);
-    fill(18,10,40);rr(M+4,ctaY,PW-4,32,3,'F');
-    fill(124,58,237);doc.rect(M+4,ctaY,3,32,'F');
-    ft(11,true,255,255,255);txt("Let's Fix Your Portal",M+12,ctaY+11);
-    ft(7.5,false,160,140,210);txt('Matthew will review your audit and send a prioritized fix plan.',M+12,ctaY+20);
-    ft(7.5,true,16,185,129);txt('Book a free call: ',M+12,ctaY+28);
-    ft(7.5,false,255,255,255);txt('calendly.com/matthew-fixops/30min',M+12+doc.getTextWidth('Book a free call: ')*0.85,ctaY+28);
+    // ── CTA Block ─────────────────────────────────────────────────────────────
+    var ctaY=Math.max(dy+Math.ceil(dkeys.length/2)*dch+10,250);
+    fill([20,12,42]);rr(M,ctaY,CW,30,3,'F');
+    fill(PURPLE);doc.rect(M,ctaY,4,30,'F');
+    ft(11,true,WHITE);doc.text("Let's Fix Your Portal",M+9,ctaY+11);
+    ft(7.5,false,LGREY);doc.text('Matthew reviews every audit personally and builds a prioritized fix plan.',M+9,ctaY+19);
+    ft(7.5,true,GREEN);doc.text('Book your free 30-min call: ',M+9,ctaY+27);
+    ft(7.5,false,WHITE);doc.text('calendly.com/matthew-fixops/30min',M+9+doc.getTextWidth('Book your free 30-min call: ')*0.85,ctaY+27);
     ftr();
 
-    // ══════════════════════════════════════════════════════════
-    // PAGE 2+ — ISSUE DETAIL PAGES
-    // ══════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════
+    // PAGE 2+ — DETAILED FINDINGS
+    // ══════════════════════════════════════════════════════════════════
     var y=newPg();
-    y=secHdr(y,'DETAILED FINDINGS  —  '+issues.length+' TOTAL  ·  '+(sum.criticalCount||0)+' CRITICAL  ·  '+(sum.warningCount||0)+' WARNINGS');
+    y=secLabel(y,'DETAILED FINDINGS  —  '+issues.length+' ISSUES  ·  '+(sum.criticalCount||0)+' CRITICAL  ·  '+(sum.warningCount||0)+' WARNINGS');
 
     for(var i=0;i<issues.length;i++){
       var iss=issues[i];
       var sev=iss.severity||'info';
-      var sRGB=sev==='critical'?[244,63,94]:sev==='warning'?[245,158,11]:[167,139,250];
+      var oc=sev==='critical'?RED:sev==='warning'?AMBER:PURPLE_L;
       var guide=iss.guide||[];
 
-      // Space check
-      y=chk(y,16);
+      y=chk(y,18);
 
-      // ── Issue header strip ──────────────────────────────────
-      fill(14,10,30);rr(M,y,PW,10,2,'F');
-      fill(sRGB[0],sRGB[1],sRGB[2]);doc.rect(M,y,4,10,'F');
-      // Severity pill
-      fill(sRGB[0],sRGB[1],sRGB[2],0.15);
-      doc.setFillColor(Math.min(255,sRGB[0]+180),Math.min(255,sRGB[1]+30),Math.min(255,sRGB[2]+30),0.08);
-      rr(M+7,y+2,22,6,1,'F');
-      ft(5.5,true,sRGB[0],sRGB[1],sRGB[2]);txt(sev.toUpperCase(),M+8.5,y+6.5);
-      ft(6,false,70,60,110);txt('ISSUE '+(i+1)+' / '+issues.length,W-M,y+6.5,{align:'right'});
-      y+=13;
+      // ── Issue number badge + severity ──────────────────────────────────────
+      // Background strip
+      fill(CARD);rr(M,y,CW,9,2,'F');
+      fill(oc);doc.rect(M,y,4,9,'F');
+      // Severity label
+      ft(5.5,true,oc);doc.text(sev.toUpperCase(),M+7,y+6);
+      // Issue counter
+      ft(5.5,false,GREY);doc.text('ISSUE '+(i+1)+' OF '+issues.length,W-M,y+6,{align:'right'});
+      // Dimension tag
+      if(iss.dimension){
+        var dtag=iss.dimension.toUpperCase();
+        var dtagW=doc.getTextWidth(dtag)*0.7+8;
+        fill(CARD2);rr(W-M-dtagW-22,y+1.5,dtagW,6,1,'F');
+        ft(5,false,PURPLE_L);doc.text(dtag,W-M-dtagW/2-22,y+6,{align:'center'});
+      }
+      y+=12;
 
-      // ── Title ──────────────────────────────────────────────
+      // ── Title ──────────────────────────────────────────────────────────────
       y=chk(y,10);
-      ft(10,true,240,235,255);
-      var tlines=doc.splitTextToSize(iss.title||'',PW-4);
-      doc.text(tlines,M+4,y);
-      y+=tlines.length*5.5+4;
+      ft(10,true,WHITE);
+      var tlines=doc.splitTextToSize(iss.title||'',CW-4);
+      doc.text(tlines,M,y);
+      y+=tlines.length*5.8+3;
 
-      // ── Description ────────────────────────────────────────
+      // ── Description ────────────────────────────────────────────────────────
       y=chk(y,10);
-      ft(7.5,false,130,120,175);
-      var dlines=doc.splitTextToSize(iss.description||'',PW-4);
-      doc.text(dlines,M+4,y);
+      ft(7.5,false,LGREY);
+      var dlines=doc.splitTextToSize(iss.description||'',CW-4);
+      doc.text(dlines,M,y);
       y+=dlines.length*4.5+4;
 
-      // ── Impact badge ───────────────────────────────────────
+      // ── Impact pill ────────────────────────────────────────────────────────
       if(iss.impact){
         y=chk(y,10);
-        fill(40,28,8);rr(M+4,y-2,PW-8,9,1.5,'F');
-        fill(245,158,11);doc.rect(M+4,y-2,3,9,'F');
-        ft(6.5,true,245,158,11);txt('IMPACT',M+10,y+4.5);
-        ft(6.5,false,200,165,80);
-        var ilines=doc.splitTextToSize(iss.impact,PW-30);
-        doc.text(ilines[0],M+28,y+4.5);
-        y+=12;
+        fill([42,28,8]);rr(M,y-2,CW,9,2,'F');
+        fill(AMBER);doc.rect(M,y-2,3,9,'F');
+        ft(6,true,AMBER);doc.text('IMPACT',M+5,y+4);
+        ft(6.5,false,[200,165,80]);
+        var ilines=doc.splitTextToSize(iss.impact,CW-35);
+        doc.text(ilines[0],M+22,y+4);
+        y+=11;
       }
 
-      // ── Why this matters ───────────────────────────────────
+      // ── Why this matters ───────────────────────────────────────────────────
       if(iss.detail){
         y=chk(y,14);
-        fill(14,8,32);rr(M+4,y-1,PW-8,7,1.5,'F');
-        fill(124,58,237);doc.rect(M+4,y-1,3,7,'F');
-        ft(6,true,167,139,250);txt('WHY THIS MATTERS',M+10,y+4);
-        y+=9;
-        ft(7,false,110,100,155);
-        var wtlines=doc.splitTextToSize(iss.detail,PW-12);
-        for(var wt=0;wt<wtlines.length;wt++){y=chk(y,5);doc.text(wtlines[wt],M+8,y);y+=4.2;}
-        y+=4;
-      }
-
-      // ── Fix guide ──────────────────────────────────────────
-      if(guide.length){
-        y=chk(y,14);
-        fill(6,20,14);rr(M+4,y-1,PW-8,7,1.5,'F');
-        fill(16,185,129);doc.rect(M+4,y-1,3,7,'F');
-        ft(6,true,16,185,129);txt('FIX GUIDE',M+10,y+4);
-        y+=9;
-        for(var g=0;g<guide.length;g++){
-          var glines=doc.splitTextToSize(guide[g],PW-20);
-          var gh=glines.length*4.5+5;
-          y=chk(y,gh);
-          // Step circle
-          fill(10,32,22);doc.ellipse(M+9,y+2,3.5,3.5,'F');
-          ft(6,true,16,185,129);txt(String(g+1),M+9,y+4,{align:'center'});
-          // Step text
-          ft(7.5,false,120,160,135);
-          doc.text(glines,M+15,y+2);
-          y+=gh;
+        fill([16,10,34]);rr(M,y,CW,7,2,'F');
+        fill(PURPLE);doc.rect(M,y,3,7,'F');
+        ft(6,true,PURPLE_L);doc.text('WHY THIS MATTERS',M+6,y+5);
+        y+=10;
+        ft(7,false,[110,100,155]);
+        var wlines=doc.splitTextToSize(iss.detail,CW-8);
+        for(var wi=0;wi<wlines.length;wi++){
+          y=chk(y,5);doc.text(wlines[wi],M+4,y);y+=4.3;
         }
         y+=3;
       }
 
-      // ── Divider between issues ─────────────────────────────
+      // ── Fix guide ──────────────────────────────────────────────────────────
+      if(guide.length){
+        y=chk(y,14);
+        fill([8,20,14]);rr(M,y,CW,7,2,'F');
+        fill(GREEN);doc.rect(M,y,3,7,'F');
+        ft(6,true,GREEN);doc.text('FIX GUIDE',M+6,y+5);
+        y+=10;
+        for(var g=0;g<guide.length;g++){
+          var glines=doc.splitTextToSize(guide[g],CW-16);
+          var gh=glines.length*4.5+5;
+          y=chk(y,gh);
+          // Step number
+          fill([10,30,20]);rr(M,y-1,5.5,5.5,1,'F');
+          ft(6,true,GREEN);doc.text(String(g+1),M+2.75,y+3.5,{align:'center'});
+          // Step text
+          ft(7.5,false,[120,160,135]);
+          doc.text(glines,M+8,y+2);
+          y+=gh;
+        }
+        y+=2;
+      }
+
+      // ── Divider ────────────────────────────────────────────────────────────
       if(i<issues.length-1){
         y=chk(y,8);
-        stroke(30,20,55);doc.setLineWidth(0.2);doc.line(M,y,W-M,y);
+        stroke([30,22,55],0.2);ln(M,y,W-M,y);
         y+=8;
       }
     }
 
-    // ── Final page CTA ────────────────────────────────────────
+    // ── Final CTA Page ────────────────────────────────────────────────────────
     y=chk(y,55);
-    y=secHdr(y,'NEXT STEPS');
-    fill(16,10,36);rr(M,y,PW,50,4,'F');
-    fill(124,58,237);doc.rect(M,y,4,50,'F');
-    // Decorative score echo
-    fill(20,14,42);doc.ellipse(W-M-12,y+25,18,18,'F');
-    ft(20,true,scoreRGB[0],scoreRGB[1],scoreRGB[2]);txt(String(ovr),W-M-12,y+28,{align:'center'});
-    ft(6.5,false,100,80,160);txt('/100',W-M-12,y+36,{align:'center'});
+    y=secLabel(y,'NEXT STEPS');
+    fill([18,12,38]);rr(M,y,CW,48,3,'F');
+    fill(PURPLE);doc.rect(M,y,4,48,'F');
+    // Score echo (right side visual)
+    fill(CARD2);doc.ellipse(W-M-16,y+24,14,14,'F');
+    stroke(sRGB,1.5);doc.ellipse(W-M-16,y+24,13,13,'S');
+    ft(14,true,sRGB);doc.text(String(ovr),W-M-16,y+27,{align:'center'});
+    ft(5.5,false,GREY);doc.text('/100',W-M-16,y+34,{align:'center'});
     // Text
-    ft(13,true,255,255,255);txt("Let's Fix Your Portal",M+10,y+15);
-    ft(8,false,160,140,210);
-    var ctxt='Every issue in this report has a solution. Matthew will personally review your findings and build a prioritized fix plan.';
-    var clines=doc.splitTextToSize(ctxt,PW-50);
-    doc.text(clines,M+10,y+24);
-    ft(8,true,16,185,129);txt('Book your free 30-min call:',M+10,y+38);
-    ft(8,false,255,255,255);txt('calendly.com/matthew-fixops/30min',M+10,y+45);
+    ft(13,true,WHITE);doc.text("Let's Fix Your Portal",M+9,y+14);
+    ft(7.5,false,LGREY);
+    var ctxt='Every issue in this report has a clear solution. Matthew will personally review your results and send a prioritized action plan with flat-rate pricing — no surprise costs.';
+    var clines2=doc.splitTextToSize(ctxt,CW-42);
+    doc.text(clines2,M+9,y+23);
+    ft(8,true,GREEN);doc.text('Book your free 30-min strategy call:',M+9,y+38);
+    ft(8,false,WHITE);doc.text('calendly.com/matthew-fixops/30min',M+9,y+45);
     ftr();
 
     doc.save(fname);
-    showToast('✅','PDF Ready — '+issues.length+' issues · '+pg+' pages','Saved to your downloads folder');
+    showToast('✅','PDF Ready — '+issues.length+' issues · '+pg+' pages','Saved to downloads');
 
-  } catch(err) {
+  } catch(err){
     console.error('PDF error:',err);
     showToast('❌','PDF Error',String(err.message||err).substring(0,80));
   }
