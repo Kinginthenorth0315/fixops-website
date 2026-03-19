@@ -114,30 +114,6 @@ section{position:relative;z-index:1;}
 .svc-link{margin-top:14px;font-size:12px;font-weight:700;color:var(--v3);font-family:var(--mono);cursor:pointer;display:flex;align-items:center;gap:4px;transition:gap .2s;}
 .svc-card:hover .svc-link{gap:8px;}
 
-/* REPORTING */
-.reporting{padding:120px 0;}
-.rep-layout{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;margin-top:60px;}
-.rep-items{display:flex;flex-direction:column;gap:10px;}
-.rep-item{padding:16px 18px;background:var(--s1);border:1px solid var(--b1);border-radius:12px;cursor:pointer;transition:all .15s;}
-.rep-item:hover,.rep-item.on{border-color:var(--vb);background:rgba(124,58,237,.06);}
-.ri-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
-.ri-h{font-size:14px;font-weight:700;color:var(--w);}
-.ri-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:var(--mono);}
-.ri-p{font-size:12.5px;color:var(--t2);font-weight:300;line-height:1.5;}
-.ri-caveat{font-size:11px;color:var(--t3);font-family:var(--mono);margin-top:7px;padding:6px 9px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.12);border-radius:6px;}
-.rep-preview{background:var(--s1);border:1px solid var(--b1);border-radius:20px;padding:22px;position:sticky;top:90px;}
-.rep-prev-h{font-size:14px;font-weight:700;color:var(--w);margin-bottom:3px;}
-.rep-prev-sub{font-size:10px;color:var(--t3);font-family:var(--mono);margin-bottom:16px;}
-.rep-bars{display:flex;align-items:flex-end;gap:6px;height:78px;margin-bottom:16px;}
-.rep-bar-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
-.rep-bar{width:100%;border-radius:3px 3px 0 0;min-height:3px;}
-.rep-bar-l{font-size:9px;color:var(--t3);font-family:var(--mono);}
-.rep-metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--b1);font-size:12.5px;}
-.rep-metric:last-child{border-bottom:none;}
-.rm-l{color:var(--t2);font-weight:300;}
-.rm-v{font-weight:700;}
-.email-note{margin-top:16px;padding:12px 14px;background:var(--vd);border:1px solid var(--vb);border-radius:10px;font-size:12px;color:var(--t2);}
-
 /* PULSE */
 .pulse{padding:120px 0;background:var(--bg);border-top:1px solid var(--b1);}
 .pulse-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;margin-top:60px;}
@@ -268,7 +244,6 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#pulse">Platform</a></li>
-    <li><a href="#reporting">Snapshot</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="setup.html">Setup Guide</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -517,63 +492,6 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
   </div>
 </section>
 
-<!-- PORTAL SNAPSHOT -->
-<section class="reporting" id="reporting">
-  <div class="wrap">
-    <div class="r" style="text-align:center;margin-bottom:48px">
-      <span class="tag">Portal Snapshot</span>
-      <h2 class="h2">See What's Actually<br>Happening Inside<br>Your HubSpot.</h2>
-      <p class="lead" style="max-width:580px;margin:0 auto">Every audit generates a visual snapshot of your portal health — pipeline distribution, contact quality, deal velocity, ticket backlog, and data completeness. All in one view, built from your real data.</p>
-    </div>
-    <div class="rep-layout r d1">
-      <div class="rep-items">
-        <div class="rep-item on" onclick="selRep(this,'pipeline')">
-          <div class="ri-top"><div class="ri-h">Pipeline Health</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
-          <p class="ri-p">Deal stage distribution, stalled deals, $0 value deals, and missing close dates — every gap costing you forecast accuracy.</p>
-        </div>
-        <div class="rep-item" onclick="selRep(this,'velocity')">
-          <div class="ri-top"><div class="ri-h">Deal Velocity</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
-          <p class="ri-p">Average days per pipeline stage, deal age heatmap, win rate, and revenue at risk from stalled opportunities.</p>
-        </div>
-        <div class="rep-item" onclick="selRep(this,'funnel')">
-          <div class="ri-top"><div class="ri-h">Lifecycle Funnel</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
-          <p class="ri-p">Full contact-to-revenue funnel with conversion rates at every stage. Shows exactly where leads are dropping off.</p>
-        </div>
-        <div class="rep-item" onclick="selRep(this,'contacts')">
-          <div class="ri-top"><div class="ri-h">Contact Intelligence</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
-          <p class="ri-p">Owner distribution, data completeness per field, uncontacted contacts, and duplicate detection.</p>
-        </div>
-        <div class="rep-item" onclick="selRep(this,'tickets')">
-          <div class="ri-top"><div class="ri-h">Service Health</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
-          <p class="ri-p">Ticket age distribution, priority breakdown, SLA breach count, and oldest open tickets by rep.</p>
-        </div>
-        <div class="rep-item" onclick="selRep(this,'ai')">
-          <div class="ri-top"><div class="ri-h">AI Report Builder</div><span class="ri-tag" style="background:rgba(124,58,237,.1);color:var(--v3)">AI POWERED</span></div>
-          <p class="ri-p">Ask any question about your audit data in plain English — get an instant chart, analysis, and recommended action.</p>
-        </div>
-      </div>
-      <div class="rep-preview r d2">
-        <div class="rep-prev-h" id="rh">Pipeline Health</div>
-        <div class="rep-prev-sub" id="rs">From your last audit · real portal data</div>
-        <div class="rep-bars" id="rep-bars-vis">
-          <div class="rep-bar-w"><div class="rep-bar" style="height:100%;background:rgba(59,130,246,.5)"></div><div class="rep-bar-l">Total</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:76%;background:rgba(59,130,246,.4)"></div><div class="rep-bar-l">Open</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:39%;background:rgba(244,63,94,.6)"></div><div class="rep-bar-l">Stalled</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:28%;background:rgba(245,158,11,.6)"></div><div class="rep-bar-l">No Date</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:22%;background:rgba(16,185,129,.6)"></div><div class="rep-bar-l">Won</div></div>
-        </div>
-        <div id="rm">
-          <div class="rep-metric"><span class="rm-l">Open deals</span><span class="rm-v" style="color:var(--w)">1,284</span></div>
-          <div class="rep-metric"><span class="rm-l">Stalled 21d+</span><span class="rm-v" style="color:var(--r)">497 deals</span></div>
-          <div class="rep-metric"><span class="rm-l">Missing close date</span><span class="rm-v" style="color:var(--a)">312 deals</span></div>
-          <div class="rep-metric"><span class="rm-l">$0 value deals</span><span class="rm-v" style="color:var(--r)">891 deals</span></div>
-          <div class="rep-metric"><span class="rm-l">Win rate</span><span class="rm-v" style="color:var(--g)">28%</span></div>
-        </div>
-        <div class="email-note">📊 <strong style="color:var(--w)">Generated from your audit</strong> — Every scan updates your snapshot automatically.</div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- PULSE PLATFORM -->
 <section class="pulse" id="pulse">
@@ -588,7 +506,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pf"><div class="pf-c">✓</div>Sentinel — hourly monitoring, instant alerts to email and Slack</div>
           <div class="pf"><div class="pf-c">✓</div>Step-by-step fix guides for every issue found</div>
           <div class="pf"><div class="pf-c">✓</div>AutoDoc — living plain-English workflow documentation</div>
-          <div class="pf"><div class="pf-c">✓</div>Portal Snapshot — visual audit summary after every scan</div>
+          <div class="pf"><div class="pf-c">✓</div>Full audit results with prioritized fix guides per issue</div>
           <div class="pf"><div class="pf-c">✓</div>"Fix It For Me" — one click routes directly to our team</div>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
@@ -933,7 +851,7 @@ function showOnetime() {
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="doFaq(this)">How does the reporting work — what data can you actually calculate?<span class="faq-arr">+</span></button>
-          <div class="faq-a">The Portal Snapshot is generated automatically from your audit data. It shows pipeline health, deal velocity, contact quality, lifecycle funnel, and service health — all pulled directly from your HubSpot portal. Every metric shown is calculated from your real data, not estimates. You get a new snapshot every time a scan runs.</div>
+          <div class="faq-a">Your audit results include a full breakdown of every issue found across 8 dimensions — with fix guides, dollar impact estimates, and a prioritized action plan. Everything is delivered by email immediately after the scan, with a PDF report you can download and share.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="doFaq(this)">What HubSpot plans do you support?<span class="faq-arr">+</span></button>
@@ -943,11 +861,7 @@ function showOnetime() {
           <button class="faq-q" onclick="doFaq(this)">How does the Fix It For Me service work exactly?<span class="faq-arr">+</span></button>
           <div class="faq-a">Every issue card in the platform has a "Fix It For Me" button. Clicking it sends a pre-filled request to our team with the full context — what the issue is, what it's costing you, and what needs to happen. We review it, scope the work, and send a flat-rate quote within 4 hours. You approve the quote, we do the work. No open-ended billing, no surprise charges. Larger projects (builds, migrations, RevOps strategy) start with a discovery call to scope properly.</div>
         </div>
-        <div class="faq-item">
-          <button class="faq-q" onclick="doFaq(this)">What kind of businesses get the most value from FixOps?<span class="faq-arr">+</span></button>
-          <div class="faq-a">FixOps works best for growth-stage and scaling businesses — SaaS, professional services, agencies, manufacturing, e-commerce — that are already using HubSpot and want it to work harder. If you have more than 2,000 contacts, any active workflows, or a sales team using the CRM daily, you'll find things in your audit that surprise you. We've yet to run an audit that came back clean.</div>
-        </div>
-      </div>
+        >
     </div>
   </div>
 </section>
@@ -982,8 +896,7 @@ function showOnetime() {
         <ul>
           <li><a href="#" onclick="openAuditModal(event)">Free Audit</a></li>
           <li><a href="#pulse">FixOps Pulse</a></li>
-          <li><a href="#reporting">Snapshot</a></li>
-          <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#pricing">Pricing</a></li>
         </ul>
       </div>
       <div class="ft-col">
@@ -1094,11 +1007,10 @@ function showOnetime() {
         <div onclick="selectPlan('command',this)" style="padding:20px;background:#10101a;border:1px solid #18182a;border-radius:14px;cursor:pointer;transition:all .2s;" class="plan-opt">
           <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Revenue Teams</div>
           <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:4px;">Command</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Pro + RevSignal revenue dashboards, churn signals, 3 portals, priority service.</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Pro + FixOps revenue dashboards, churn signals, 3 portals, priority service.</div>
           <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$499<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Everything in Pro</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Portal Snapshot after every scan</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Pulse weekly monitoring email</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>3 connected portals</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>4-hour priority response</div>
@@ -1307,59 +1219,6 @@ function filterSvc(tab,cat){
 }
 function requestSvc(name){toast(name,'Request received — we\'ll scope and quote within 4 hours · matthew@fixops.io');}
 
-// Reporting preview
-const repD={
-  pipeline:{h:'Pipeline Health',s:'Deal distribution · stalled opportunities · forecast gaps',m:[['Open deals','1,284','var(--w)'],['Stalled 21d+','497 deals','var(--r)'],['Missing close date','312 deals','var(--a)'],['$0 value deals','891 deals','var(--r)'],['Win rate','28%','var(--g)']]},
-  velocity:{h:'Deal Velocity',s:'Average days per stage · where deals slow down and die',m:[['Avg deal age','68 days','var(--r)'],['Appointment → Qualified','3 days','var(--g)'],['Qualified → Proposal','12 days','var(--a)'],['Proposal → Decision','24 days','var(--r)'],['Revenue at risk','$2.1M','var(--r)']]},
-  funnel:{h:'Lifecycle Funnel',s:'Contact to revenue · conversion at every stage',m:[['Total contacts','12,232','var(--w)'],['No lifecycle stage','91%','var(--r)'],['Lead → MQL','54%','var(--a)'],['MQL → Deal','33%','var(--a)'],['Deal → Closed Won','28%','var(--g)']]},
-  contacts:{h:'Contact Intelligence',s:'Data quality · ownership · engagement gaps',m:[['No owner assigned','22%','var(--r)'],['Never contacted','74%','var(--r)'],['Missing email','12%','var(--a)'],['Potential duplicates','1,089','var(--a)'],['Data completeness','61%','var(--a)']]},
-  tickets:{h:'Service Health',s:'Ticket backlog · SLA performance · priority breakdown',m:[['Open tickets','284','var(--w)'],['Open 3+ days','67 tickets','var(--r)'],['No priority set','40%','var(--a)'],['Critical open','8','var(--r)'],['Avg ticket age','4.2 days','var(--a)']]},
-  ai:{h:'AI Report Builder',s:'Ask any question in plain English · instant chart and analysis',m:[['Plain English questions','Any query','var(--v3)'],['Instant chart','Visual answer','var(--v3)'],['Key findings','3 per query','var(--w)'],['Recommended action','Always included','var(--g)'],['Powered by','Claude AI','var(--v3)']]}
-};
-const repBars = {
-  pipeline:[[100,'rgba(59,130,246,.5)'],[76,'rgba(59,130,246,.4)'],[39,'rgba(244,63,94,.6)'],[28,'rgba(245,158,11,.6)'],[22,'rgba(16,185,129,.6)']],
-  velocity:[[100,'rgba(244,63,94,.5)'],[44,'rgba(245,158,11,.5)'],[35,'rgba(245,158,11,.5)'],[100,'rgba(244,63,94,.6)'],[60,'rgba(245,158,11,.5)']],
-  funnel:[[100,'rgba(59,130,246,.5)'],[88,'rgba(59,130,246,.4)'],[48,'rgba(139,92,246,.5)'],[15,'rgba(245,158,11,.5)'],[4,'rgba(16,185,129,.6)']],
-  contacts:[[78,'rgba(244,63,94,.5)'],[74,'rgba(244,63,94,.6)'],[88,'rgba(245,158,11,.5)'],[61,'rgba(245,158,11,.4)'],[39,'rgba(59,130,246,.4)']],
-  tickets:[[100,'rgba(59,130,246,.4)'],[24,'rgba(244,63,94,.6)'],[40,'rgba(245,158,11,.5)'],[8,'rgba(190,18,60,.7)'],[60,'rgba(16,185,129,.4)']],
-  ai:[[80,'rgba(139,92,246,.6)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.4)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.6)']],
-};
-const repBarLabels = {
-  pipeline:['Total','Open','Stalled','No Date','Won'],
-  velocity:['Avg Age','Appt→Q','Q→Prop','Prop→Dec','Total'],
-  funnel:['All','Email','Lead','MQL','Won'],
-  contacts:['Owned','Contacted','Has Email','Complete','Engaged'],
-  tickets:['Total','Old 3d+','No Priority','Critical','Resolved'],
-  ai:['Ask','Analyze','Chart','Find','Act'],
-};
-const repBars={
-  pipeline:[[100,'rgba(59,130,246,.5)'],[76,'rgba(59,130,246,.4)'],[39,'rgba(244,63,94,.6)'],[28,'rgba(245,158,11,.6)'],[22,'rgba(16,185,129,.6)']],
-  velocity:[[100,'rgba(244,63,94,.5)'],[44,'rgba(245,158,11,.5)'],[55,'rgba(245,158,11,.5)'],[100,'rgba(244,63,94,.6)'],[60,'rgba(245,158,11,.5)']],
-  funnel:[[100,'rgba(59,130,246,.5)'],[88,'rgba(59,130,246,.4)'],[48,'rgba(139,92,246,.5)'],[15,'rgba(245,158,11,.5)'],[4,'rgba(16,185,129,.6)']],
-  contacts:[[78,'rgba(244,63,94,.5)'],[26,'rgba(244,63,94,.6)'],[88,'rgba(245,158,11,.5)'],[61,'rgba(245,158,11,.4)'],[39,'rgba(59,130,246,.4)']],
-  tickets:[[100,'rgba(59,130,246,.4)'],[24,'rgba(244,63,94,.6)'],[40,'rgba(245,158,11,.5)'],[8,'rgba(190,18,60,.7)'],[60,'rgba(16,185,129,.4)']],
-  ai:[[80,'rgba(139,92,246,.6)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.4)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.6)']],
-};
-const repLabels={
-  pipeline:['Total','Open','Stalled','No Date','Won'],
-  velocity:['Avg Age','Appt','Qual','Prop','Close'],
-  funnel:['All','Email','Lead','MQL','Won'],
-  contacts:['Owned','Contacted','Email','Complete','Active'],
-  tickets:['Total','Old 3d+','No Pri','Critical','Resolved'],
-  ai:['Ask','Analyze','Chart','Find','Act'],
-};
-function selRep(el,key){
-  document.querySelectorAll('.rep-item').forEach(i=>i.classList.remove('on'));
-  el.classList.add('on');
-  const d=repD[key];if(!d)return;
-  document.getElementById('rh').textContent=d.h;
-  document.getElementById('rs').textContent=d.s;
-  document.getElementById('rm').innerHTML=d.m.map(m=>`<div class="rep-metric"><span class="rm-l">${m[0]}</span><span class="rm-v" style="color:${m[2]}">${m[1]}</span></div>`).join('');
-  const bars=repBars[key]||repBars.pipeline;
-  const lbls=repLabels[key]||repLabels.pipeline;
-  const bw=document.getElementById('rep-bars-vis');
-  if(bw)bw.innerHTML=bars.map((b,i)=>`<div class="rep-bar-w"><div class="rep-bar" style="height:${b[0]}%;background:${b[1]};transition:height .4s ease"></div><div class="rep-bar-l">${lbls[i]||''}</div></div>`).join('');
-}
 
 // ═══ AUDIT MODAL ═══
 let chosenPlan = '';
