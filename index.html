@@ -268,7 +268,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#pulse">Platform</a></li>
-    <li><a href="#reporting">Reporting</a></li>
+    <li><a href="#reporting">Snapshot</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="setup.html">Setup Guide</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -338,8 +338,8 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       </div>
       <div class="prob">
         <div class="prob-ico">💸</div>
-        <div class="prob-h">No MRR, velocity, or churn data</div>
-        <p class="prob-p">HubSpot doesn't natively calculate MRR, pipeline velocity by stage, or churn signals. The reports that actually run your business require custom builds most teams never create.</p>
+        <div class="prob-h">No visibility into what's broken</div>
+        <p class="prob-p">Most HubSpot portals have broken workflows, duplicate contacts, stalled deals, and misconfigured pipelines that nobody knows about — until a lead falls through the cracks or a forecast is wrong.</p>
         <span class="prob-badge pb-v">Reporting gap</span>
       </div>
     </div>
@@ -517,63 +517,59 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
   </div>
 </section>
 
-<!-- REPORTING -->
+<!-- PORTAL SNAPSHOT -->
 <section class="reporting" id="reporting">
   <div class="wrap">
-    <div class="r" style="text-align:center">
-      <span class="tag">RevSignal — Advanced Reporting</span>
-      <h2 class="h2">The Reports Your Business<br>Runs On. That HubSpot<br>Can't Build Natively.</h2>
-      <p class="lead" style="max-width:640px;margin:0 auto">HubSpot's native reporting is solid — but it has hard gaps. No MRR tracking. No true pipeline velocity. No churn signals. No forecast accuracy by rep. FixOps builds these on top of your existing data and delivers them automatically.</p>
+    <div class="r" style="text-align:center;margin-bottom:48px">
+      <span class="tag">Portal Snapshot</span>
+      <h2 class="h2">See What's Actually<br>Happening Inside<br>Your HubSpot.</h2>
+      <p class="lead" style="max-width:580px;margin:0 auto">Every audit generates a visual snapshot of your portal health — pipeline distribution, contact quality, deal velocity, ticket backlog, and data completeness. All in one view, built from your real data.</p>
     </div>
     <div class="rep-layout r d1">
       <div class="rep-items">
-        <div class="rep-item on" onclick="selRep(this,'mrr')">
-          <div class="ri-top"><div class="ri-h">MRR & ARR Tracking</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
-          <p class="ri-p">Calculated from closed-won deal amounts and close dates. Tracks new MRR, expansion, churn, and net revenue month-over-month.</p>
-          <div class="ri-caveat">⚠ Requires consistent use of deal Amount + Close Date fields. Subscription MRR requires recurring revenue properties set up in your portal.</div>
+        <div class="rep-item on" onclick="selRep(this,'pipeline')">
+          <div class="ri-top"><div class="ri-h">Pipeline Health</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
+          <p class="ri-p">Deal stage distribution, stalled deals, $0 value deals, and missing close dates — every gap costing you forecast accuracy.</p>
         </div>
         <div class="rep-item" onclick="selRep(this,'velocity')">
-          <div class="ri-top"><div class="ri-h">Pipeline Velocity by Stage</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
-          <p class="ri-p">Average days deals spend in each stage. Shows exactly where revenue is stalling — and what fixing it is worth.</p>
+          <div class="ri-top"><div class="ri-h">Deal Velocity</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
+          <p class="ri-p">Average days per pipeline stage, deal age heatmap, win rate, and revenue at risk from stalled opportunities.</p>
         </div>
-        <div class="rep-item" onclick="selRep(this,'forecast')">
-          <div class="ri-top"><div class="ri-h">Forecast vs. Actual by Rep</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
-          <p class="ri-p">Deal close date predictions vs. actual outcomes. Surfaces which reps over-forecast and by how much, before it hits your board numbers.</p>
+        <div class="rep-item" onclick="selRep(this,'funnel')">
+          <div class="ri-top"><div class="ri-h">Lifecycle Funnel</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
+          <p class="ri-p">Full contact-to-revenue funnel with conversion rates at every stage. Shows exactly where leads are dropping off.</p>
         </div>
-        <div class="rep-item" onclick="selRep(this,'churn')">
-          <div class="ri-top"><div class="ri-h">Churn & Retention Signals</div><span class="ri-tag" style="background:rgba(245,158,11,.1);color:var(--a)">REQUIRES SETUP</span></div>
-          <p class="ri-p">Accounts showing disengagement — declining email opens, unresolved tickets, no activity — before they cancel.</p>
-          <div class="ri-caveat">⚠ Login activity signals require Service Hub. Email engagement available on all plans. Ticket data requires Service Hub Starter+.</div>
+        <div class="rep-item" onclick="selRep(this,'contacts')">
+          <div class="ri-top"><div class="ri-h">Contact Intelligence</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
+          <p class="ri-p">Owner distribution, data completeness per field, uncontacted contacts, and duplicate detection.</p>
         </div>
-        <div class="rep-item" onclick="selRep(this,'attribution')">
-          <div class="ri-top"><div class="ri-h">Revenue Attribution</div><span class="ri-tag" style="background:rgba(245,158,11,.1);color:var(--a)">PRO+ REQUIRED</span></div>
-          <p class="ri-p">Which marketing channels actually drive closed revenue — not just leads. First/last touch on all plans; multi-touch requires Marketing Hub Pro/Enterprise.</p>
+        <div class="rep-item" onclick="selRep(this,'tickets')">
+          <div class="ri-top"><div class="ri-h">Service Health</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">INCLUDED</span></div>
+          <p class="ri-p">Ticket age distribution, priority breakdown, SLA breach count, and oldest open tickets by rep.</p>
         </div>
-        <div class="rep-item" onclick="selRep(this,'rep')">
-          <div class="ri-top"><div class="ri-h">Rep Performance Dashboard</div><span class="ri-tag" style="background:rgba(16,185,129,.1);color:var(--g)">AVAILABLE</span></div>
-          <p class="ri-p">Quota attainment, win rate, average deal size, activity volume, and response time — by rep, by team, by month.</p>
+        <div class="rep-item" onclick="selRep(this,'ai')">
+          <div class="ri-top"><div class="ri-h">AI Report Builder</div><span class="ri-tag" style="background:rgba(124,58,237,.1);color:var(--v3)">AI POWERED</span></div>
+          <p class="ri-p">Ask any question about your audit data in plain English — get an instant chart, analysis, and recommended action.</p>
         </div>
       </div>
       <div class="rep-preview r d2">
-        <div class="rep-prev-h" id="rh">MRR & ARR Tracking</div>
-        <div class="rep-prev-sub" id="rs">Monthly recurring revenue · calculated from closed-won deals</div>
-        <div class="rep-bars">
-          <div class="rep-bar-w"><div class="rep-bar" style="height:55%;background:rgba(16,185,129,.3)"></div><div class="rep-bar-l">Sep</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:62%;background:rgba(16,185,129,.35)"></div><div class="rep-bar-l">Oct</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:58%;background:rgba(16,185,129,.35)"></div><div class="rep-bar-l">Nov</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:68%;background:rgba(16,185,129,.4)"></div><div class="rep-bar-l">Dec</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:72%;background:rgba(16,185,129,.45)"></div><div class="rep-bar-l">Jan</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:70%;background:rgba(16,185,129,.45)"></div><div class="rep-bar-l">Feb</div></div>
-          <div class="rep-bar-w"><div class="rep-bar" style="height:82%;background:var(--g)"></div><div class="rep-bar-l">Mar</div></div>
+        <div class="rep-prev-h" id="rh">Pipeline Health</div>
+        <div class="rep-prev-sub" id="rs">From your last audit · real portal data</div>
+        <div class="rep-bars" id="rep-bars-vis">
+          <div class="rep-bar-w"><div class="rep-bar" style="height:100%;background:rgba(59,130,246,.5)"></div><div class="rep-bar-l">Total</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:76%;background:rgba(59,130,246,.4)"></div><div class="rep-bar-l">Open</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:39%;background:rgba(244,63,94,.6)"></div><div class="rep-bar-l">Stalled</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:28%;background:rgba(245,158,11,.6)"></div><div class="rep-bar-l">No Date</div></div>
+          <div class="rep-bar-w"><div class="rep-bar" style="height:22%;background:rgba(16,185,129,.6)"></div><div class="rep-bar-l">Won</div></div>
         </div>
         <div id="rm">
-          <div class="rep-metric"><span class="rm-l">Current MRR</span><span class="rm-v" style="color:var(--g)">$82,400</span></div>
-          <div class="rep-metric"><span class="rm-l">MoM Growth</span><span class="rm-v" style="color:var(--g)">+12.1%</span></div>
-          <div class="rep-metric"><span class="rm-l">New MRR this month</span><span class="rm-v">$9,200</span></div>
-          <div class="rep-metric"><span class="rm-l">Churned MRR</span><span class="rm-v" style="color:var(--r)">-$1,400</span></div>
-          <div class="rep-metric"><span class="rm-l">Net ARR Run Rate</span><span class="rm-v">$988,800</span></div>
+          <div class="rep-metric"><span class="rm-l">Open deals</span><span class="rm-v" style="color:var(--w)">1,284</span></div>
+          <div class="rep-metric"><span class="rm-l">Stalled 21d+</span><span class="rm-v" style="color:var(--r)">497 deals</span></div>
+          <div class="rep-metric"><span class="rm-l">Missing close date</span><span class="rm-v" style="color:var(--a)">312 deals</span></div>
+          <div class="rep-metric"><span class="rm-l">$0 value deals</span><span class="rm-v" style="color:var(--r)">891 deals</span></div>
+          <div class="rep-metric"><span class="rm-l">Win rate</span><span class="rm-v" style="color:var(--g)">28%</span></div>
         </div>
-        <div class="email-note">📧 <strong style="color:var(--w)">Weekly digest</strong> — Emailed every Monday with revenue trend, top risks, and deals to watch.</div>
+        <div class="email-note">📊 <strong style="color:var(--w)">Generated from your audit</strong> — Every scan updates your snapshot automatically.</div>
       </div>
     </div>
   </div>
@@ -592,7 +588,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pf"><div class="pf-c">✓</div>Sentinel — hourly monitoring, instant alerts to email and Slack</div>
           <div class="pf"><div class="pf-c">✓</div>Step-by-step fix guides for every issue found</div>
           <div class="pf"><div class="pf-c">✓</div>AutoDoc — living plain-English workflow documentation</div>
-          <div class="pf"><div class="pf-c">✓</div>RevSignal dashboards emailed to your team every week</div>
+          <div class="pf"><div class="pf-c">✓</div>Portal Snapshot — visual audit summary after every scan</div>
           <div class="pf"><div class="pf-c">✓</div>"Fix It For Me" — one click routes directly to our team</div>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
@@ -632,7 +628,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="cmp-item"><span>✗</span>Duplicates pile up until billing jumps a tier unexpectedly mid-quarter</div>
           <div class="cmp-item"><span>✗</span>Dashboards return wrong data for weeks before anyone notices</div>
           <div class="cmp-item"><span>✗</span>Integrations die over a weekend — nobody knows until Monday morning</div>
-          <div class="cmp-item"><span>✗</span>MRR, velocity, and churn signals tracked manually in a spreadsheet somewhere</div>
+          <div class="cmp-item"><span>✗</span>Broken workflows running silently, stalled deals nobody is chasing, duplicates inflating your billing</div>
           <div class="cmp-item"><span>✗</span>New team members inherit a portal with zero documentation</div>
           <div class="cmp-item"><span>✗</span>Portal cleanup is a once-a-year panic when it's too painful to ignore</div>
         </div>
@@ -937,7 +933,7 @@ function showOnetime() {
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="doFaq(this)">How does the reporting work — what data can you actually calculate?<span class="faq-arr">+</span></button>
-          <div class="faq-a">RevSignal pulls from HubSpot's Deals, Contacts, Engagements, and Properties APIs to calculate: MRR trends (from closed-won deal amounts and close dates), pipeline velocity (time per stage), rep performance (activity and deal data), and forecast accuracy. Churn signals use email engagement and ticket data. Multi-touch attribution requires Marketing Hub Professional or Enterprise — we're transparent about this in the platform. You'll never see a metric we can't calculate from your actual data.</div>
+          <div class="faq-a">The Portal Snapshot is generated automatically from your audit data. It shows pipeline health, deal velocity, contact quality, lifecycle funnel, and service health — all pulled directly from your HubSpot portal. Every metric shown is calculated from your real data, not estimates. You get a new snapshot every time a scan runs.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="doFaq(this)">What HubSpot plans do you support?<span class="faq-arr">+</span></button>
@@ -986,7 +982,7 @@ function showOnetime() {
         <ul>
           <li><a href="#" onclick="openAuditModal(event)">Free Audit</a></li>
           <li><a href="#pulse">FixOps Pulse</a></li>
-          <li><a href="#reporting">RevSignal</a></li>
+          <li><a href="#reporting">Snapshot</a></li>
           <li><a href="#pricing">Pricing</a></li>
         </ul>
       </div>
@@ -1102,8 +1098,8 @@ function showOnetime() {
           <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$499<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Everything in Pro</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>RevSignal revenue dashboards</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>MRR/ARR + churn signals</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Portal Snapshot after every scan</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Pulse weekly monitoring email</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>3 connected portals</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>4-hour priority response</div>
           </div>
@@ -1313,20 +1309,56 @@ function requestSvc(name){toast(name,'Request received — we\'ll scope and quot
 
 // Reporting preview
 const repD={
-  mrr:{h:'MRR & ARR Tracking',s:'Monthly recurring revenue · calculated from closed-won deals',m:[['Current MRR','$82,400','var(--g)'],['MoM Growth','+12.1%','var(--g)'],['New MRR','$9,200','var(--w)'],['Churned MRR','-$1,400','var(--r)'],['ARR Run Rate','$988,800','var(--w)']]},
-  velocity:{h:'Pipeline Velocity by Stage',s:'Average days deals spend per stage · where revenue is stalling',m:[['Lead → MQL','7 days','var(--g)'],['MQL → SQL','5 days','var(--g)'],['SQL → Proposal','12 days','var(--a)'],['Proposal → Close','10 days','var(--r)'],['Avg total cycle','34 days','var(--a)']]},
-  forecast:{h:'Forecast vs. Actual by Rep',s:'Predicted close dates vs. actual outcomes this quarter',m:[['Forecasted (Q4)','$340,000','var(--w)'],['Closed Won','$228,000','var(--g)'],['Variance','-$112,000','var(--r)'],['Forecast Accuracy','67%','var(--a)'],['Biggest gap','Tom W. +68% over','var(--r)']]},
-  churn:{h:'Churn & Retention Signals',s:'Accounts showing disengagement signals before cancellation',m:[['At-risk accounts','3','var(--r)'],['No login >30 days','1 account','var(--r)'],['Engagement -60%','2 accounts','var(--a)'],['Renewals in 60 days','5 accounts','var(--a)'],['Avg health (at-risk)','34/100','var(--r)']]},
-  attribution:{h:'Revenue Attribution',s:'Which channels drive closed revenue · requires Marketing Pro+',m:[['Organic Search','34% of revenue','var(--g)'],['Paid Ads','24% of revenue','var(--bl)'],['Direct/Referral','18% of revenue','var(--v3)'],['Email Campaigns','12% of revenue','var(--a)'],['Unknown Source','12% — fixable','var(--r)']]},
-  rep:{h:'Rep Performance Dashboard',s:'Quota attainment, win rate and activity by rep and team',m:[['Sarah Johnson','82% · $218K closed','var(--g)'],['Mike Roberts','71% · $178K closed','var(--bl)'],['Alex Kim','48% · $112K closed','var(--a)'],['Tom Wilson','31% · $68K closed','var(--r)'],['Team Average','58% attainment','var(--a)']]}
+  pipeline:{h:'Pipeline Health',s:'Deal distribution · stalled opportunities · forecast gaps',m:[['Open deals','1,284','var(--w)'],['Stalled 21d+','497 deals','var(--r)'],['Missing close date','312 deals','var(--a)'],['$0 value deals','891 deals','var(--r)'],['Win rate','28%','var(--g)']]},
+  velocity:{h:'Deal Velocity',s:'Average days per stage · where deals slow down and die',m:[['Avg deal age','68 days','var(--r)'],['Appointment → Qualified','3 days','var(--g)'],['Qualified → Proposal','12 days','var(--a)'],['Proposal → Decision','24 days','var(--r)'],['Revenue at risk','$2.1M','var(--r)']]},
+  funnel:{h:'Lifecycle Funnel',s:'Contact to revenue · conversion at every stage',m:[['Total contacts','12,232','var(--w)'],['No lifecycle stage','91%','var(--r)'],['Lead → MQL','54%','var(--a)'],['MQL → Deal','33%','var(--a)'],['Deal → Closed Won','28%','var(--g)']]},
+  contacts:{h:'Contact Intelligence',s:'Data quality · ownership · engagement gaps',m:[['No owner assigned','22%','var(--r)'],['Never contacted','74%','var(--r)'],['Missing email','12%','var(--a)'],['Potential duplicates','1,089','var(--a)'],['Data completeness','61%','var(--a)']]},
+  tickets:{h:'Service Health',s:'Ticket backlog · SLA performance · priority breakdown',m:[['Open tickets','284','var(--w)'],['Open 3+ days','67 tickets','var(--r)'],['No priority set','40%','var(--a)'],['Critical open','8','var(--r)'],['Avg ticket age','4.2 days','var(--a)']]},
+  ai:{h:'AI Report Builder',s:'Ask any question in plain English · instant chart and analysis',m:[['Plain English questions','Any query','var(--v3)'],['Instant chart','Visual answer','var(--v3)'],['Key findings','3 per query','var(--w)'],['Recommended action','Always included','var(--g)'],['Powered by','Claude AI','var(--v3)']]}
+};
+const repBars = {
+  pipeline:[[100,'rgba(59,130,246,.5)'],[76,'rgba(59,130,246,.4)'],[39,'rgba(244,63,94,.6)'],[28,'rgba(245,158,11,.6)'],[22,'rgba(16,185,129,.6)']],
+  velocity:[[100,'rgba(244,63,94,.5)'],[44,'rgba(245,158,11,.5)'],[35,'rgba(245,158,11,.5)'],[100,'rgba(244,63,94,.6)'],[60,'rgba(245,158,11,.5)']],
+  funnel:[[100,'rgba(59,130,246,.5)'],[88,'rgba(59,130,246,.4)'],[48,'rgba(139,92,246,.5)'],[15,'rgba(245,158,11,.5)'],[4,'rgba(16,185,129,.6)']],
+  contacts:[[78,'rgba(244,63,94,.5)'],[74,'rgba(244,63,94,.6)'],[88,'rgba(245,158,11,.5)'],[61,'rgba(245,158,11,.4)'],[39,'rgba(59,130,246,.4)']],
+  tickets:[[100,'rgba(59,130,246,.4)'],[24,'rgba(244,63,94,.6)'],[40,'rgba(245,158,11,.5)'],[8,'rgba(190,18,60,.7)'],[60,'rgba(16,185,129,.4)']],
+  ai:[[80,'rgba(139,92,246,.6)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.4)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.6)']],
+};
+const repBarLabels = {
+  pipeline:['Total','Open','Stalled','No Date','Won'],
+  velocity:['Avg Age','Appt→Q','Q→Prop','Prop→Dec','Total'],
+  funnel:['All','Email','Lead','MQL','Won'],
+  contacts:['Owned','Contacted','Has Email','Complete','Engaged'],
+  tickets:['Total','Old 3d+','No Priority','Critical','Resolved'],
+  ai:['Ask','Analyze','Chart','Find','Act'],
+};
+const repBars={
+  pipeline:[[100,'rgba(59,130,246,.5)'],[76,'rgba(59,130,246,.4)'],[39,'rgba(244,63,94,.6)'],[28,'rgba(245,158,11,.6)'],[22,'rgba(16,185,129,.6)']],
+  velocity:[[100,'rgba(244,63,94,.5)'],[44,'rgba(245,158,11,.5)'],[55,'rgba(245,158,11,.5)'],[100,'rgba(244,63,94,.6)'],[60,'rgba(245,158,11,.5)']],
+  funnel:[[100,'rgba(59,130,246,.5)'],[88,'rgba(59,130,246,.4)'],[48,'rgba(139,92,246,.5)'],[15,'rgba(245,158,11,.5)'],[4,'rgba(16,185,129,.6)']],
+  contacts:[[78,'rgba(244,63,94,.5)'],[26,'rgba(244,63,94,.6)'],[88,'rgba(245,158,11,.5)'],[61,'rgba(245,158,11,.4)'],[39,'rgba(59,130,246,.4)']],
+  tickets:[[100,'rgba(59,130,246,.4)'],[24,'rgba(244,63,94,.6)'],[40,'rgba(245,158,11,.5)'],[8,'rgba(190,18,60,.7)'],[60,'rgba(16,185,129,.4)']],
+  ai:[[80,'rgba(139,92,246,.6)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.4)'],[80,'rgba(139,92,246,.5)'],[80,'rgba(139,92,246,.6)']],
+};
+const repLabels={
+  pipeline:['Total','Open','Stalled','No Date','Won'],
+  velocity:['Avg Age','Appt','Qual','Prop','Close'],
+  funnel:['All','Email','Lead','MQL','Won'],
+  contacts:['Owned','Contacted','Email','Complete','Active'],
+  tickets:['Total','Old 3d+','No Pri','Critical','Resolved'],
+  ai:['Ask','Analyze','Chart','Find','Act'],
 };
 function selRep(el,key){
   document.querySelectorAll('.rep-item').forEach(i=>i.classList.remove('on'));
   el.classList.add('on');
-  const d=repD[key];
+  const d=repD[key];if(!d)return;
   document.getElementById('rh').textContent=d.h;
   document.getElementById('rs').textContent=d.s;
   document.getElementById('rm').innerHTML=d.m.map(m=>`<div class="rep-metric"><span class="rm-l">${m[0]}</span><span class="rm-v" style="color:${m[2]}">${m[1]}</span></div>`).join('');
+  const bars=repBars[key]||repBars.pipeline;
+  const lbls=repLabels[key]||repLabels.pipeline;
+  const bw=document.getElementById('rep-bars-vis');
+  if(bw)bw.innerHTML=bars.map((b,i)=>`<div class="rep-bar-w"><div class="rep-bar" style="height:${b[0]}%;background:${b[1]};transition:height .4s ease"></div><div class="rep-bar-l">${lbls[i]||''}</div></div>`).join('');
 }
 
 // ═══ AUDIT MODAL ═══
