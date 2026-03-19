@@ -196,7 +196,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
         <button class="cta-primary" onclick="downloadPDF()">📄 Download PDF Report</button>
         <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="cta-secondary">📅 Book a Free Strategy Call ↗</a>
       </div>
-      <p style="font-size:12px;color:rgba(255,255,255,.2);font-family:var(--mono);margin-top:16px">matthew@fixops.io · fixops.io · HubSpot Systems. Fixed.</p>
+      <p style="font-size:12px;color:rgba(255,255,255,.2);font-family:var(--mono);margin-top:16px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="99f4f8ededf1fceed9fff0e1f6e9eab7f0f6">[email&#160;protected]</a> · fixops.io · HubSpot Systems. Fixed.</p>
     </div>
   </div>
 </div>
@@ -210,7 +210,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div onclick="hideToast()" style="color:var(--t3);cursor:pointer;font-size:16px;padding:4px">✕</div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API = 'https://fixops-api-production.up.railway.app';
 const P   = new URLSearchParams(window.location.search);
 const auditId = P.get('id');
@@ -310,18 +310,25 @@ function showResults(data) {
   // Portal stats bar
   const ps = data.portalInfo?.portalStats || {};
   const statsItems = [
-    ps.contacts && `${ps.contacts.toLocaleString()} contacts`,
+    ps.contacts  && `${ps.contacts.toLocaleString()} contacts`,
     ps.companies && `${ps.companies.toLocaleString()} companies`,
-    ps.deals && `${ps.deals.toLocaleString()} deals`,
+    ps.deals     && `${ps.deals.toLocaleString()} deals`,
+    ps.tickets   && ps.tickets > 0 && `${ps.tickets} tickets`,
+    ps.tasks     && ps.tasks > 0 && `${ps.tasks} tasks`,
+    ps.meetings  && ps.meetings > 0 && `${ps.meetings} meetings`,
+    ps.calls     && ps.calls > 0 && `${ps.calls} calls`,
     ps.workflows !== undefined && `${ps.workflows} workflows`,
-    ps.forms && `${ps.forms} forms`,
-    ps.users && `${ps.users} users`,
-    ps.tickets !== undefined && ps.tickets > 0 && `${ps.tickets} tickets`,
+    ps.forms     && ps.forms > 0 && `${ps.forms} forms`,
+    ps.users     && ps.users > 0 && `${ps.users} users`,
+    ps.quotes    && ps.quotes > 0 && `${ps.quotes} quotes`,
+    ps.lineItems && ps.lineItems > 0 && `${ps.lineItems} line items`,
+    ps.products  && ps.products > 0 && `${ps.products} products`,
+    ps.lists     && ps.lists > 0 && `${ps.lists} lists`,
   ].filter(Boolean);
   if(statsItems.length) {
     const bar = document.createElement('div');
-    bar.style.cssText = 'font-size:11px;color:rgba(255,255,255,.22);font-family:var(--mono);margin-bottom:16px;padding:9px 13px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.05);';
-    bar.innerHTML = '📊 ' + statsItems.join(' · ');
+    bar.style.cssText = 'font-size:11px;color:rgba(255,255,255,.22);font-family:var(--mono);margin-bottom:16px;padding:9px 13px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.05);line-height:1.8;';
+    bar.innerHTML = '📊 Portal snapshot: ' + statsItems.join(' &nbsp;·&nbsp; ');
     document.querySelector('.score-right h1').before(bar);
   }
 
@@ -330,7 +337,8 @@ function showResults(data) {
     <div class="stat" style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18)"><div class="stat-n" style="color:#f43f5e">${summary.criticalCount}</div><div class="stat-l">Critical</div></div>
     <div class="stat" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18)"><div class="stat-n" style="color:#f59e0b">${summary.warningCount}</div><div class="stat-l">Warnings</div></div>
     <div class="stat" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18)"><div class="stat-n" style="color:#a78bfa">$${(summary.monthlyWaste||0).toLocaleString()}</div><div class="stat-l">Est. Waste/mo</div></div>
-    <div class="stat" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18)"><div class="stat-n" style="color:#10b981">${summary.checksRun||165}</div><div class="stat-l">Checks Run</div></div>`;
+    <div class="stat" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18)"><div class="stat-n" style="color:#10b981">${(summary.recordsScanned||0).toLocaleString()}</div><div class="stat-l">Records Scanned</div></div>
+    <div class="stat" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)"><div class="stat-n" style="color:rgba(255,255,255,.5)">${summary.checksRun||30}</div><div class="stat-l">Checks Run</div></div>`;
 
   // Dimensions
   document.getElementById('dim-grid').innerHTML = Object.entries(scores||{}).map(([k,v])=>{
@@ -530,11 +538,4 @@ function showToast(ico,title,sub){
   document.getElementById('t-ico').textContent=ico;
   document.getElementById('t-title').textContent=title;
   document.getElementById('t-sub').textContent=sub;
-  document.getElementById('toast').classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(hideToast,7000);
-}
-function hideToast(){document.getElementById('toast').classList.remove('show');}
-</script>
-</body>
-</html>
+  docume
