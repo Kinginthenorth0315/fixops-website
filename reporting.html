@@ -661,6 +661,7 @@ nav {
 const API = 'https://fixops-api-production.up.railway.app';
 const P = new URLSearchParams(window.location.search);
 const auditId = P.get('id');
+const TOKEN = P.get('token');
 let DATA = null;
 let aiHistory = [];
 let aiChartInstance = null;
@@ -690,13 +691,37 @@ function fmtMoney(n) { return '$'+Number(n||0).toLocaleString(); }
 function fmtDays(n) { return Math.round(n||0)+'d'; }
 
 // ── Load data ────────────────────────────────────────────────────────────────
-if (!auditId) {
-  document.getElementById('loading-state').innerHTML =
-    '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
-    '<div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">No audit ID found</div>' +
-    '<div style="font-size:12px;color:var(--t3);">Use the link from your FixOps audit email, or <a href="index.html" style="color:var(--accent2)">run a new audit</a>.</div>';
-} else {
+if (TOKEN) {
+  // Token auth — verify and get latest audit data
+  loadFromToken(TOKEN);
+} else if (auditId) {
   loadData();
+} else {
+  // No auth — redirect to dashboard
+  window.location.href = 'dashboard.html';
+}
+
+async function loadFromToken(token) {
+  try {
+    const res = await fetch(API+'/auth/verify?token='+encodeURIComponent(token), {cache:'no-store'});
+    if (!res.ok) throw new Error('Invalid token');
+    const data = await res.json();
+    if (!data.valid) throw new Error(data.message || 'Link expired');
+    if (!data.latestResult) throw new Error('No audit data found');
+    DATA = data.latestResult;
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('views').style.display = 'block';
+    const company = DATA.portalInfo?.company || data.customer?.company || 'Your Portal';
+    document.getElementById('portal-badge').textContent = company;
+    document.title = 'FixOps Intelligence — '+company;
+    initAllViews();
+    setupAiSuggestions();
+  } catch(e) {
+    document.getElementById('loading-state').innerHTML =
+      '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
+      '<div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">'+e.message+'</div>' +
+      '<div style="font-size:12px;color:var(--t3);"><a href="dashboard.html" style="color:var(--accent2)">Return to dashboard</a></div>';
+  }
 }
 
 async function loadData() {

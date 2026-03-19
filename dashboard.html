@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixOps Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06040f;--s1:#0c0918;--s2:#110e22;--s3:#181430;--b1:#1e1a35;--b2:#2a2448;--purple:#7c3aed;--purple2:#8b5cf6;--purple3:#a78bfa;--green:#10b981;--amber:#f59e0b;--red:#f43f5e;--t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.55);--t3:rgba(255,255,255,.28);--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,4s) ease-in-out infinite var(--dl,0s);}
+@keyframes tw{0%,100%{opacity:.03}50%{opacity:.4}}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(6,4,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);}
+.logo{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--t1);}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--purple),#5b21b6);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.page{padding:80px 20px 60px;max-width:500px;margin:0 auto;position:relative;z-index:1;}
+
+/* ── Request form state ── */
+#request-state{text-align:center;}
+.req-eyebrow{font-size:11px;font-weight:700;color:var(--purple3);font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.req-title{font-size:32px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bottom:12px;}
+.req-sub{font-size:14px;color:var(--t2);font-weight:300;line-height:1.7;margin-bottom:32px;}
+.req-card{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:28px;text-align:left;}
+.req-label{font-size:11px;font-weight:700;color:var(--t3);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.req-input{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:13px 16px;color:var(--t1);font-family:var(--font);font-size:15px;outline:none;transition:border-color .2s;margin-bottom:16px;}
+.req-input:focus{border-color:var(--purple);}
+.req-input::placeholder{color:var(--t3);}
+.req-btn{width:100%;padding:14px;background:var(--purple);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;}
+.req-btn:hover{background:var(--purple2);transform:translateY(-1px);}
+.req-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.req-note{font-size:12px;color:var(--t3);text-align:center;margin-top:12px;line-height:1.6;}
+
+/* ── Sent state ── */
+#sent-state{display:none;text-align:center;}
+.sent-icon{font-size:52px;margin-bottom:20px;animation:pop .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes pop{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ── Dashboard state ── */
+#dashboard-state{display:none;}
+.dash-header{margin-bottom:28px;}
+.dash-greeting{font-size:13px;color:var(--t3);font-family:var(--mono);margin-bottom:6px;}
+.dash-title{font-size:28px;font-weight:900;letter-spacing:-.8px;margin-bottom:4px;}
+.dash-sub{font-size:13px;color:var(--t2);}
+.plan-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--mono);margin-top:8px;}
+.pill-pulse{background:rgba(124,58,237,.15);color:var(--purple3);border:1px solid rgba(124,58,237,.25);}
+.pill-pro{background:rgba(16,185,129,.12);color:var(--green);border:1px solid rgba(16,185,129,.2);}
+.pill-command{background:rgba(245,158,11,.12);color:var(--amber);border:1px solid rgba(245,158,11,.2);}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Score card */
+.score-card{background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(91,33,182,.05));border:1px solid rgba(124,58,237,.2);border-radius:16px;padding:24px;margin-bottom:16px;display:flex;align-items:center;gap:20px;}
+.score-ring{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;}
+.score-ring-bg{position:absolute;inset:0;border-radius:50%;border:3px solid var(--b2);}
+.score-num{font-size:30px;font-weight:900;letter-spacing:-1px;position:relative;z-index:1;}
+.score-denom{font-size:11px;color:var(--t3);position:relative;z-index:1;}
+.score-right h3{font-size:18px;font-weight:800;margin-bottom:4px;}
+.score-right p{font-size:12px;color:var(--t2);line-height:1.6;}
+.score-stats{display:flex;gap:16px;margin-top:12px;}
+.ss-item{text-align:center;}
+.ss-v{font-size:18px;font-weight:800;line-height:1;}
+.ss-l{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;margin-top:2px;}
+
+/* Action cards */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.action-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:18px;text-decoration:none;color:var(--t1);transition:all .2s;display:block;}
+.action-card:hover{border-color:var(--b2);transform:translateY(-2px);}
+.ac-icon{font-size:22px;margin-bottom:10px;}
+.ac-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+.ac-sub{font-size:11px;color:var(--t3);line-height:1.5;}
+.ac-arrow{font-size:12px;color:var(--purple3);margin-top:8px;}
+
+/* History */
+.history-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:18px;margin-bottom:16px;}
+.hc-title{font-size:13px;font-weight:700;margin-bottom:14px;}
+.hist-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.hist-item:last-child{border-bottom:none;}
+.hist-score{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;}
+.hist-info{flex:1;}
+.hist-date{font-size:12px;color:var(--t1);font-weight:600;}
+.hist-meta{font-size:11px;color:var(--t3);font-family:var(--mono);margin-top:2px;}
+.hist-trend{font-size:11px;font-weight:700;font-family:var(--mono);}
+.hist-btn{font-size:11px;padding:4px 10px;background:rgba(124,58,237,.1);color:var(--purple3);border:1px solid rgba(124,58,237,.2);border-radius:6px;text-decoration:none;transition:all .15s;}
+.hist-btn:hover{background:rgba(124,58,237,.2);}
+
+/* Error state */
+#error-state{display:none;text-align:center;padding:60px 20px;}
+
+.refresh-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:10px;color:var(--green);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;width:100%;justify-content:center;margin-bottom:16px;}
+.refresh-btn:hover{background:rgba(16,185,129,.18);}
+.refresh-btn:disabled{opacity:.5;cursor:not-allowed;}
+.reconnect-btn{display:flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:10px;color:var(--amber);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s;width:100%;justify-content:center;margin-bottom:16px;text-decoration:none;}
+.reconnect-btn:hover{background:rgba(245,158,11,.18);}
+.last-scan{font-size:11px;color:var(--t3);font-family:var(--mono);text-align:center;margin-bottom:16px;}
+/* Toast */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:10px;max-width:360px;transform:translateY(80px);opacity:0;transition:all .3s;box-shadow:0 16px 48px rgba(0,0,0,.5);}
+#toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:520px){.action-grid{grid-template-columns:1fr;}.score-card{flex-direction:column;text-align:center;}.page{padding:70px 16px 40px;} nav{padding:0 16px;}}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+
+<nav>
+  <a href="index.html" class="logo"><div class="logo-icon">⚡</div>Fix<span style="color:var(--purple3)">Ops</span><span style="color:var(--t3);font-size:14px;font-weight:400">.io</span></a>
+  <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="padding:7px 16px;background:var(--purple);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;">Book a Call ↗</a>
+</nav>
+
+<div class="page">
+
+  <!-- REQUEST STATE -->
+  <div id="request-state">
+    <div class="req-eyebrow">FixOps Intelligence</div>
+    <div class="req-title">Access Your<br>Dashboard</div>
+    <div class="req-sub">Enter your email and we'll send you a secure link to your intelligence dashboard and audit history. No password needed.</div>
+    <div class="req-card">
+      <div class="req-label">Your Email</div>
+      <input class="req-input" type="email" id="email-input" placeholder="you@company.com" />
+      <button class="req-btn" id="send-btn" onclick="requestLink()">Send My Dashboard Link →</button>
+      <div class="req-note">We'll email you a secure link · Valid for 30 days · No account needed</div>
+    </div>
+  </div>
+
+  <!-- SENT STATE -->
+  <div id="sent-state">
+    <div class="sent-icon">📬</div>
+    <div style="font-size:26px;font-weight:900;letter-spacing:-.5px;margin-bottom:10px;">Check your inbox</div>
+    <div style="font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:24px;max-width:380px;margin-left:auto;margin-right:auto;">
+      If that email is in our system, a dashboard link is on its way. Check your spam folder if it doesn't arrive within a minute.
+    </div>
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px 20px;font-size:13px;color:var(--t2);line-height:1.65;text-align:left;max-width:380px;margin:0 auto;">
+      <strong style="color:var(--t1);">What's in your dashboard:</strong><br>
+      Pipeline health · Deal velocity · Lifecycle funnel · AI report builder · Full audit history
+    </div>
+    <div style="margin-top:20px;">
+      <a href="index.html" style="font-size:13px;color:var(--purple3);text-decoration:none;">← Back to FixOps.io</a>
+    </div>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div id="error-state">
+    <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+    <div style="font-size:22px;font-weight:800;margin-bottom:8px;" id="err-title">Link expired</div>
+    <div style="font-size:14px;color:var(--t2);margin-bottom:24px;" id="err-msg">This link has expired. Request a new one below.</div>
+    <button class="req-btn" style="max-width:280px;" onclick="showRequest()">Request New Link →</button>
+  </div>
+
+  <!-- DASHBOARD STATE -->
+  <div id="dashboard-state">
+    <div class="dash-header">
+      <div class="dash-greeting" id="dash-greeting">Welcome back</div>
+      <div class="dash-title" id="dash-company">Your Portal</div>
+      <div class="dash-sub" id="dash-email"></div>
+      <div id="plan-pill"></div>
+    </div>
+
+    <!-- Refresh / reconnect button -->
+    <div id="refresh-wrap" style="display:none">
+      <button class="refresh-btn" id="refresh-btn" onclick="triggerRefresh()">
+        ↻ Refresh My Data
+      </button>
+    </div>
+    <div id="reconnect-wrap" style="display:none">
+      <a class="reconnect-btn" id="reconnect-link" href="#">
+        ⚡ Reconnect HubSpot to Enable Refresh
+      </a>
+    </div>
+    <div class="last-scan" id="last-scan"></div>
+
+    <!-- Score card -->
+    <div class="score-card" id="score-card">
+      <div class="score-ring" id="score-ring">
+        <div class="score-ring-bg"></div>
+        <div style="text-align:center;position:relative;z-index:1;">
+          <div class="score-num" id="score-num">—</div>
+          <div class="score-denom">/100</div>
+        </div>
+      </div>
+      <div class="score-right">
+        <h3 id="score-grade">Loading…</h3>
+        <p id="score-desc">Fetching your latest audit data</p>
+        <div class="score-stats" id="score-stats"></div>
+      </div>
+    </div>
+
+    <!-- Action cards -->
+    <div class="action-grid">
+      <a class="action-card" id="link-reporting" href="#">
+        <div class="ac-icon">📊</div>
+        <div class="ac-title">Intelligence Dashboard</div>
+        <div class="ac-sub">Pipeline, velocity, funnel, AI report builder</div>
+        <div class="ac-arrow">Open dashboard →</div>
+      </a>
+      <a class="action-card" id="link-results" href="#">
+        <div class="ac-icon">🔍</div>
+        <div class="ac-title">Latest Audit Results</div>
+        <div class="ac-sub">Full issue list with fix guides</div>
+        <div class="ac-arrow">View results →</div>
+      </a>
+      <a class="action-card" id="link-pulse" href="#" style="display:none">
+        <div class="ac-icon">⚡</div>
+        <div class="ac-title">Pulse Report</div>
+        <div class="ac-sub">Weekly monitoring · score history</div>
+        <div class="ac-arrow">View report →</div>
+      </a>
+      <a class="action-card" href="https://calendly.com/matthew-fixops/30min" target="_blank">
+        <div class="ac-icon">📅</div>
+        <div class="ac-title">Book a Strategy Call</div>
+        <div class="ac-sub">Review findings with Matthew · get a fix plan</div>
+        <div class="ac-arrow">Book now →</div>
+      </a>
+    </div>
+
+    <!-- Audit history -->
+    <div class="history-card" id="history-card" style="display:none">
+      <div class="hc-title">📋 Audit History</div>
+      <div id="history-list"></div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--t3);line-height:1.8;">
+      <a href="mailto:matthew@fixops.io" style="color:var(--purple3);text-decoration:none;">matthew@fixops.io</a> · 
+      <a href="index.html" style="color:var(--t3);text-decoration:none;">fixops.io</a>
+    </div>
+  </div>
+
+</div>
+
+<div id="toast">
+  <div style="font-size:18px" id="t-ico">✅</div>
+  <div><strong id="t-title" style="display:block;font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;"></strong><span id="t-sub" style="font-size:11px;color:var(--t2);font-family:var(--mono);"></span></div>
+  <div onclick="hideToast()" style="margin-left:auto;color:var(--t3);cursor:pointer;font-size:14px;">✕</div>
+</div>
+
+<script>
+const API = 'https://fixops-api-production.up.railway.app';
+const P = new URLSearchParams(window.location.search);
+const TOKEN = P.get('token');
+
+// Stars
+(function(){
+  const c = document.getElementById('stars');
+  for(let i=0;i<70;i++){
+    const s=document.createElement('div'); s.className='star';
+    const sz=Math.random()<.12?2.5:1.5;
+    s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*7}s;--dl:-${Math.random()*7}s`;
+    c.appendChild(s);
+  }
+})();
+
+// If token in URL, verify it and show dashboard
+if (TOKEN) {
+  document.getElementById('request-state').style.display = 'none';
+  verifyToken(TOKEN);
+} else {
+  // Check localStorage for saved token
+  const saved = localStorage.getItem('fixops_token');
+  if (saved) {
+    document.getElementById('request-state').style.display = 'none';
+    verifyToken(saved);
+  }
+}
+
+async function requestLink() {
+  const email = document.getElementById('email-input').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('email-input').style.borderColor = '#f43f5e';
+    document.getElementById('email-input').focus();
+    return;
+  }
+  const btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch(API + '/auth/magic-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    // Always show sent state regardless of response
+    document.getElementById('request-state').style.display = 'none';
+    document.getElementById('sent-state').style.display = 'block';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Send My Dashboard Link →';
+    showToast('⚠️', 'Connection error', 'Please try again');
+  }
+}
+
+async function verifyToken(token) {
+  try {
+    const res = await fetch(API + '/auth/verify?token=' + encodeURIComponent(token), {cache:'no-store'});
+    const data = await res.json();
+
+    if (!res.ok || !data.valid) {
+      showError(data.message || 'This link has expired.');
+      return;
+    }
+
+    // Save token for next visit
+    localStorage.setItem('fixops_token', token);
+
+    renderDashboard(data);
+  } catch(e) {
+    showError('Could not connect. Check your internet and try again.');
+  }
+}
+
+function renderDashboard(data) {
+  const { customer, history, latestAuditId, latestResult, token } = data;
+  const s = latestResult?.summary || {};
+  const score = s.overallScore || 0;
+  const scoreCol = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#f43f5e';
+  const grade = score >= 85 ? 'Excellent' : score >= 70 ? 'Good' : score >= 55 ? 'Needs Attention' : 'Critical';
+
+  document.getElementById('dashboard-state').style.display = 'block';
+
+  // Header
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('dash-greeting').textContent = greet;
+  document.getElementById('dash-company').textContent = customer.company || 'Your Portal';
+  document.getElementById('dash-email').textContent = customer.email;
+
+  // Plan pill
+  const planColors = { pulse: 'pill-pulse', pro: 'pill-pro', command: 'pill-command' };
+  const planLabels = { pulse: 'Pulse Active', pro: 'Pro Plan', command: 'Command', deep: 'Deep Audit', 'pro-audit': 'Pro Audit', free: 'Free Plan' };
+  const isMonthly = ['pulse','pro','command'].includes(customer.plan);
+  document.getElementById('plan-pill').innerHTML = `
+    <span class="plan-pill ${planColors[customer.plan]||'pill-pulse'}">
+      ${isMonthly ? '<span class="pulse-dot"></span>' : ''}
+      ${planLabels[customer.plan] || customer.plan.toUpperCase()}
+    </span>`;
+
+  // Score ring
+  if (score > 0) {
+    document.getElementById('score-ring').style.border = `3px solid ${scoreCol}`;
+    document.getElementById('score-ring').querySelector('.score-ring-bg').style.display = 'none';
+    document.getElementById('score-num').textContent = score;
+    document.getElementById('score-num').style.color = scoreCol;
+    document.getElementById('score-grade').textContent = grade;
+    document.getElementById('score-desc').textContent =
+      `${s.criticalCount||0} critical · ${s.warningCount||0} warnings · $${Number(s.monthlyWaste||0).toLocaleString()}/mo waste`;
+    document.getElementById('score-stats').innerHTML = `
+      <div class="ss-item"><div class="ss-v" style="color:#f43f5e">${s.criticalCount||0}</div><div class="ss-l">Critical</div></div>
+      <div class="ss-item"><div class="ss-v" style="color:#f59e0b">${s.warningCount||0}</div><div class="ss-l">Warnings</div></div>
+      <div class="ss-item"><div class="ss-v" style="color:#a78bfa">$${Number(s.monthlyWaste||0).toLocaleString()}</div><div class="ss-l">Waste/mo</div></div>
+      <div class="ss-item"><div class="ss-v" style="color:#10b981">${Number(s.recordsScanned||0).toLocaleString()}</div><div class="ss-l">Scanned</div></div>`;
+  } else {
+    document.getElementById('score-grade').textContent = 'No audit data yet';
+    document.getElementById('score-desc').textContent = 'Run your first audit to see your portal health score';
+  }
+
+  // Action links
+  if (latestAuditId) {
+    document.getElementById('link-reporting').href = `reporting.html?id=${latestAuditId}`;
+    document.getElementById('link-results').href = `results.html?id=${latestAuditId}`;
+  }
+
+  // Pulse link for monthly subscribers
+  if (isMonthly && token) {
+    const pulseLink = document.getElementById('link-pulse');
+    pulseLink.style.display = 'block';
+    pulseLink.href = `pulse.html?token=${token}&id=${latestAuditId||''}`;
+  }
+
+  // Refresh button
+  const hasToken = customer.has_portal_token;
+  const lastAt = customer.last_audit_at ? new Date(customer.last_audit_at) : null;
+  const minutesAgo = lastAt ? Math.round((Date.now() - lastAt.getTime()) / 60000) : null;
+  const lastScanEl = document.getElementById('last-scan');
+  if (minutesAgo !== null) {
+    lastScanEl.textContent = minutesAgo < 60
+      ? `Last scanned ${minutesAgo} minute${minutesAgo!==1?'s':''} ago`
+      : minutesAgo < 1440
+        ? `Last scanned ${Math.round(minutesAgo/60)} hour${Math.round(minutesAgo/60)!==1?'s':''} ago`
+        : `Last scanned ${Math.round(minutesAgo/1440)} day${Math.round(minutesAgo/1440)!==1?'s':''} ago`;
+  }
+  if (hasToken) {
+    document.getElementById('refresh-wrap').style.display = 'block';
+    window._dashToken = token;
+  } else {
+    // No stored token — show reconnect button
+    document.getElementById('reconnect-wrap').style.display = 'block';
+    const plan = customer.plan || 'free';
+    const reconnectUrl = `${API.replace('fixops-api-production.up.railway.app','fixops.io')}/index.html?reconnect=1`;
+    document.getElementById('reconnect-link').href = reconnectUrl;
+  }
+
+  // Audit history
+  if (history && history.length > 0) {
+    const card = document.getElementById('history-card');
+    card.style.display = 'block';
+    const prevScores = history.map(h => h.score);
+    let histHtml = '';
+    history.slice(0, 6).forEach((h, i) => {
+      const sc = h.score >= 80 ? '#10b981' : h.score >= 60 ? '#f59e0b' : '#f43f5e';
+      const prev = history[i+1]?.score;
+      const diff = prev !== undefined ? h.score - prev : null;
+      const trend = diff === null ? '' : diff > 0 ? `<span style="color:#10b981">↑${diff}</span>` : diff < 0 ? `<span style="color:#f43f5e">↓${Math.abs(diff)}</span>` : '<span style="color:var(--t3)">→</span>';
+      const dateStr = new Date(h.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      histHtml += `<div class="hist-item">
+        <div class="hist-score" style="background:${sc}18;color:${sc};border:1px solid ${sc}30">${h.score}</div>
+        <div class="hist-info">
+          <div class="hist-date">${dateStr} ${trend}</div>
+          <div class="hist-meta">${h.critical_count||0} critical · ${h.warning_count||0} warnings · ${Number(h.records_scanned||0).toLocaleString()} records</div>
+        </div>
+        <a class="hist-btn" href="results.html?id=${h.audit_id}">View →</a>
+      </div>`;
+    });
+    document.getElementById('history-list').innerHTML = histHtml;
+  }
+}
+
+async function triggerRefresh() {
+  const btn = document.getElementById('refresh-btn');
+  const token = window._dashToken;
+  if (!token) return;
+
+  btn.disabled = true;
+  btn.textContent = '↻ Scanning your portal…';
+
+  try {
+    const res = await fetch(API + '/auth/refresh', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token })
+    });
+    const data = await res.json();
+
+    if (data.requiresReconnect) {
+      document.getElementById('refresh-wrap').style.display = 'none';
+      document.getElementById('reconnect-wrap').style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '↻ Refresh My Data';
+      showToast('⚠️', 'Reconnect needed', 'Your HubSpot connection expired. Please reconnect.');
+      return;
+    }
+
+    if (data.error === 'too_soon') {
+      btn.disabled = false;
+      btn.textContent = '↻ Refresh My Data';
+      showToast('⏱', 'Too soon', data.message);
+      return;
+    }
+
+    if (data.success) {
+      showToast('⚡', 'Scan started!', 'Results ready in 5–15 min · We\'ll email you when done');
+      btn.textContent = '✓ Scan running…';
+      document.getElementById('last-scan').textContent = 'Scanning now — check back in a few minutes';
+
+      // Poll for completion
+      let polls = 0;
+      const pollInterval = setInterval(async () => {
+        polls++;
+        try {
+          const statusRes = await fetch(API + '/audit/status/' + data.auditId, {cache:'no-store'});
+          const status = await statusRes.json();
+          if (status.status === 'complete') {
+            clearInterval(pollInterval);
+            btn.disabled = false;
+            btn.textContent = '↻ Refresh My Data';
+            showToast('✅', 'Scan complete!', 'Refreshing your dashboard…');
+            setTimeout(() => window.location.reload(), 1500);
+          } else if (status.status === 'error') {
+            clearInterval(pollInterval);
+            btn.disabled = false;
+            btn.textContent = '↻ Refresh My Data';
+            const msg = status.requiresReconnect ? 'HubSpot connection expired — please reconnect' : 'Scan failed';
+            showToast('⚠️', msg, 'Check your email');
+            if (status.requiresReconnect) {
+              document.getElementById('refresh-wrap').style.display = 'none';
+              document.getElementById('reconnect-wrap').style.display = 'block';
+            }
+          }
+        } catch(e) {}
+        if (polls > 60) clearInterval(pollInterval); // 8 min timeout
+      }, 8000);
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '↻ Refresh My Data';
+    showToast('⚠️', 'Refresh failed', 'Please try again');
+  }
+}
+
+function showError(msg) {
+  document.getElementById('error-state').style.display = 'block';
+  document.getElementById('err-msg').textContent = msg;
+  // Clear bad token
+  localStorage.removeItem('fixops_token');
+}
+
+function showRequest() {
+  document.getElementById('error-state').style.display = 'none';
+  document.getElementById('request-state').style.display = 'block';
+}
+
+// Enter key on input
+document.getElementById('email-input')?.addEventListener('keypress', e => {
+  if (e.key === 'Enter') requestLink();
+});
+
+let toastT;
+function showToast(ico, title, sub) {
+  document.getElementById('t-ico').textContent = ico;
+  document.getElementById('t-title').textContent = title;
+  document.getElementById('t-sub').textContent = sub;
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(hideToast, 5000);
+}
+function hideToast() { document.getElementById('toast').classList.remove('show'); }
+</script>
+</body>
+</html>
