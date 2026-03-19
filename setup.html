@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Setup Guide — FixOps.io</title>
+<meta name="description" content="How to connect FixOps.io to your HubSpot portal and run your first audit in under 2 minutes.">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--v:#7c3aed;--v2:#8b5cf6;--v3:#a78bfa;--vg:rgba(124,58,237,.35);--s1:#0c0c14;--b1:#18182a;--b2:#22223a;--t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.52);--t3:rgba(255,255,255,.25);--g:#10b981;--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:#000;color:var(--t1);-webkit-font-smoothing:antialiased;}
+a{color:var(--v3);text-decoration:none;}a:hover{text-decoration:underline;}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 52px;height:66px;background:rgba(0,0,0,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--b1);}
+.nav-logo{font-size:19px;font-weight:800;color:#fff;display:flex;align-items:center;gap:9px;text-decoration:none;}
+.nav-icon{width:33px;height:33px;background:linear-gradient(135deg,var(--v),#5b21b6);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 0 22px var(--vg);}
+.nav-cta{padding:9px 20px;background:var(--v);color:#fff;font-size:14px;font-weight:700;border-radius:8px;text-decoration:none;transition:all .2s;}
+.nav-cta:hover{background:var(--v2);text-decoration:none;}
+.page{max-width:860px;margin:0 auto;padding:110px 48px 80px;}
+.page-tag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--v3);font-family:var(--mono);padding:4px 14px;border-radius:999px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.22);margin-bottom:20px;}
+h1{font-size:42px;font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px;}
+.hero-sub{font-size:18px;color:var(--t2);font-weight:300;line-height:1.6;margin-bottom:48px;max-width:600px;}
+/* Time estimate */
+.time-bar{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:48px;}
+.time-chip{display:flex;align-items:center;gap:8px;padding:10px 18px;background:var(--s1);border:1px solid var(--b1);border-radius:999px;font-size:13px;color:var(--t2);}
+.time-chip span{font-weight:700;color:#fff;}
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step-item{display:grid;grid-template-columns:52px 1fr;gap:0;position:relative;}
+.step-item:not(:last-child)::before{content:'';position:absolute;left:25px;top:52px;bottom:0;width:2px;background:linear-gradient(to bottom,var(--b2),transparent);}
+.step-num{width:52px;display:flex;flex-direction:column;align-items:center;padding-top:4px;}
+.step-circle{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--v),#5b21b6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;box-shadow:0 0 20px var(--vg);flex-shrink:0;z-index:1;}
+.step-body{padding:0 0 44px 20px;}
+.step-tag{font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.step-title{font-size:20px;font-weight:800;color:#fff;margin-bottom:10px;letter-spacing:-.3px;}
+.step-desc{font-size:15px;color:var(--t2);line-height:1.75;font-weight:300;margin-bottom:16px;}
+/* Step card */
+.step-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px 24px;margin-bottom:12px;}
+.step-card h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:10px;}
+.step-card ul{padding-left:18px;display:flex;flex-direction:column;gap:7px;}
+.step-card li{font-size:13.5px;color:var(--t2);line-height:1.65;font-weight:300;}
+.step-card li strong{color:#fff;font-weight:600;}
+/* Screenshot placeholder */
+.screenshot{background:var(--s1);border:1px solid var(--b2);border-radius:14px;padding:40px;text-align:center;margin-bottom:16px;}
+.screenshot-label{font-size:12px;color:var(--t3);font-family:var(--mono);margin-top:8px;}
+/* Highlight */
+.highlight{background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.18);border-radius:10px;padding:16px 20px;margin:12px 0;}
+.highlight p{margin:0;color:var(--t1);font-weight:400;font-size:14px;line-height:1.7;}
+/* Success box */
+.success{background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.18);border-radius:10px;padding:16px 20px;margin:12px 0;}
+.success p{margin:0;color:rgba(16,185,129,.9);font-weight:400;font-size:14px;line-height:1.7;}
+/* Scope table */
+.scope-table{width:100%;border-collapse:collapse;margin:16px 0;}
+.scope-table th{font-size:11px;font-weight:700;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;padding:10px 14px;border-bottom:1px solid var(--b1);text-align:left;}
+.scope-table td{font-size:13px;color:var(--t2);padding:10px 14px;border-bottom:1px solid var(--b1);vertical-align:top;line-height:1.5;}
+.scope-table td:first-child{font-family:var(--mono);color:var(--v3);font-size:12px;}
+.scope-table tr:last-child td{border-bottom:none;}
+/* FAQ */
+.faq{margin-top:64px;}
+.faq h2{font-size:28px;font-weight:900;letter-spacing:-.5px;color:#fff;margin-bottom:28px;}
+.faq-item{border:1px solid var(--b1);border-radius:12px;margin-bottom:10px;overflow:hidden;}
+.faq-q{padding:18px 20px;font-size:15px;font-weight:600;color:#fff;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+.faq-q:hover{background:rgba(255,255,255,.02);}
+.faq-a{padding:0 20px 18px;font-size:14px;color:var(--t2);line-height:1.75;font-weight:300;}
+/* CTA */
+.cta-box{background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.25);border-radius:20px;padding:40px;text-align:center;margin-top:64px;}
+.cta-box h2{font-size:26px;font-weight:900;color:#fff;margin-bottom:10px;}
+.cta-box p{font-size:15px;color:var(--t2);margin-bottom:24px;font-weight:300;}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--v);color:#fff;font-size:15px;font-weight:700;border-radius:10px;text-decoration:none;transition:all .2s;}
+.cta-btn:hover{background:var(--v2);transform:translateY(-2px);box-shadow:0 14px 40px var(--vg);text-decoration:none;}
+footer{background:#000;border-top:1px solid var(--b1);padding:40px 52px;margin-top:80px;}
+.ft-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.ft-copy{font-size:13px;color:var(--t3);}
+.ft-links{display:flex;gap:20px;}
+.ft-links a{font-size:13px;color:var(--t3);}
+.ft-links a:hover{color:var(--t2);}
+@media(max-width:768px){nav{padding:0 20px;}.page{padding:100px 24px 60px;}h1{font-size:28px;}.step-item{grid-template-columns:40px 1fr;}footer{padding:32px 24px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-icon">⚡</div>FixOps.io</a>
+  <a href="https://calendly.com/matthew-fixops/30min" class="nav-cta" target="_blank">Book a Call ↗</a>
+</nav>
+
+<div class="page">
+  <div class="page-tag">Setup Guide</div>
+  <h1>Connect FixOps to Your HubSpot Portal</h1>
+  <p class="hero-sub">Run a full 165-point audit of your HubSpot portal in under 2 minutes. No credit card required. Read-only access — we never modify your data.</p>
+
+  <div class="time-bar">
+    <div class="time-chip">⏱ <span>Under 2 minutes</span> to connect</div>
+    <div class="time-chip">🔒 <span>Read-only</span> access only</div>
+    <div class="time-chip">📧 <span>Results emailed</span> to you instantly</div>
+    <div class="time-chip">🔌 <span>No installation</span> required</div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+
+    <!-- Step 1 -->
+    <div class="step-item">
+      <div class="step-num"><div class="step-circle">1</div></div>
+      <div class="step-body">
+        <div class="step-tag">Step 1</div>
+        <div class="step-title">Go to fixops.io and start your free audit</div>
+        <p class="step-desc">Visit <a href="https://fixops.io" target="_blank">fixops.io</a> and click the <strong>"Run Free Portal Audit"</strong> button. A plan selector will appear — select the <strong>Free</strong> plan to get started at no cost.</p>
+        <div class="step-card">
+          <h4>What you'll see:</h4>
+          <ul>
+            <li>A plan comparison showing Free, Pulse, Pro, and Command tiers</li>
+            <li>Click <strong>"Start Free Audit"</strong> under the Free plan</li>
+            <li>A modal will appear asking for your email and company name</li>
+          </ul>
+        </div>
+        <div class="highlight">
+          <p>💡 <strong>Tip:</strong> Enter the email address where you want to receive your audit report. We'll send a full copy to that address when the audit completes.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-item">
+      <div class="step-num"><div class="step-circle">2</div></div>
+      <div class="step-body">
+        <div class="step-tag">Step 2</div>
+        <div class="step-title">Enter your email and company name</div>
+        <p class="step-desc">Fill in your work email address and company name, then click <strong>"Connect HubSpot"</strong>. This opens the HubSpot OAuth authorization screen.</p>
+        <div class="step-card">
+          <h4>Required fields:</h4>
+          <ul>
+            <li><strong>Email address</strong> — where your audit report will be delivered</li>
+            <li><strong>Company name</strong> — used to personalize your report</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-item">
+      <div class="step-num"><div class="step-circle">3</div></div>
+      <div class="step-body">
+        <div class="step-tag">Step 3</div>
+        <div class="step-title">Authorize FixOps in HubSpot</div>
+        <p class="step-desc">You'll be redirected to HubSpot's authorization screen. Log in to HubSpot if prompted, then select the portal you want to audit and grant FixOps read-only access.</p>
+        <div class="step-card">
+          <h4>On the HubSpot authorization screen:</h4>
+          <ul>
+            <li>Select the HubSpot portal you want to audit from the dropdown</li>
+            <li>Click <strong>"Select all"</strong> next to Optional scopes for the most comprehensive audit</li>
+            <li>Check the acknowledgment checkbox</li>
+            <li>Click <strong>"Connect app"</strong> to authorize</li>
+          </ul>
+        </div>
+        <div class="highlight">
+          <p>🔒 <strong>Security note:</strong> FixOps requests <strong>read-only</strong> access only. We cannot create, modify, or delete any data in your HubSpot portal. You can revoke access at any time from HubSpot → Settings → Integrations → Connected Apps.</p>
+        </div>
+        <div class="step-card" style="margin-top:12px">
+          <h4>Permissions requested (read-only):</h4>
+          <table class="scope-table">
+            <thead><tr><th>Scope</th><th>What it allows FixOps to read</th></tr></thead>
+            <tbody>
+              <tr><td>crm.objects.contacts.read</td><td>Contact records, names, emails, lifecycle stages</td></tr>
+              <tr><td>crm.objects.companies.read</td><td>Company records, domains, industries</td></tr>
+              <tr><td>crm.objects.deals.read</td><td>Deal records, amounts, stages, close dates</td></tr>
+              <tr><td>crm.objects.tickets.read</td><td>Support tickets, stages, creation dates</td></tr>
+              <tr><td>crm.objects.owners.read</td><td>HubSpot user/owner assignments</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step-item">
+      <div class="step-num"><div class="step-circle">4</div></div>
+      <div class="step-body">
+        <div class="step-tag">Step 4</div>
+        <div class="step-title">Watch your audit run in real time</div>
+        <p class="step-desc">After authorizing, you'll be redirected to the FixOps scanning page. You'll see a real-time checklist as FixOps analyzes your portal across 8 health dimensions.</p>
+        <div class="step-card">
+          <h4>What FixOps checks during the audit:</h4>
+          <ul>
+            <li><strong>Data Integrity</strong> — duplicates, missing emails, unowned contacts</li>
+            <li><strong>Pipeline Integrity</strong> — stalled deals, missing close dates, $0 deals</li>
+            <li><strong>Automation Health</strong> — dead workflows, missing goals</li>
+            <li><strong>Marketing Health</strong> — broken forms, empty lists</li>
+            <li><strong>Configuration & Security</strong> — excess super admins, inactive seats</li>
+            <li><strong>Reporting Quality</strong> — missing pipeline values, forecast accuracy</li>
+            <li><strong>Team Adoption</strong> — activity logging, rep engagement</li>
+            <li><strong>Service Health</strong> — ticket management and customer support health</li>
+          </ul>
+        </div>
+        <p class="step-desc">The audit typically completes in 30–60 seconds. The page will automatically redirect to your results when done.</p>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step-item">
+      <div class="step-num"><div class="step-circle">5</div></div>
+      <div class="step-body">
+        <div class="step-tag">Step 5</div>
+        <div class="step-title">Review your results and take action</div>
+        <p class="step-desc">Your results page shows a health score out of 100, dimension-by-dimension breakdown, and a prioritized list of issues with detailed fix guides and dollar impact estimates.</p>
+        <div class="step-card">
+          <h4>Your results include:</h4>
+          <ul>
+            <li><strong>Overall health score</strong> — scored 0–100 with a grade (Excellent / Good / Needs Attention / Critical)</li>
+            <li><strong>8 dimension scores</strong> — individual scores for each area of your portal</li>
+            <li><strong>Issue cards</strong> — every issue found with severity, description, and business impact</li>
+            <li><strong>Fix guides</strong> — step-by-step instructions to resolve each issue yourself</li>
+            <li><strong>Monthly waste estimate</strong> — dollar value of inefficiencies found</li>
+            <li><strong>Fix It For Me buttons</strong> — one click to request Matthew to fix it for you</li>
+            <li><strong>PDF download</strong> — branded report you can share with your team or leadership</li>
+          </ul>
+        </div>
+        <div class="success">
+          <p>✅ A copy of your full report is also emailed to the address you provided. The results link stays active for 7 days so you can revisit anytime.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step-item">
+      <div class="step-num"><div class="step-circle" style="background:linear-gradient(135deg,#10b981,#059669)">✓</div></div>
+      <div class="step-body">
+        <div class="step-tag">Complete</div>
+        <div class="step-title">Disconnect FixOps when you're done</div>
+        <p class="step-desc">FixOps only needs access during the audit. Once complete, you can revoke access at any time from your HubSpot settings. Your results remain available via your emailed link.</p>
+        <div class="step-card">
+          <h4>To revoke FixOps access from HubSpot:</h4>
+          <ul>
+            <li>Go to your HubSpot account → <strong>Settings</strong> (gear icon)</li>
+            <li>Navigate to <strong>Integrations → Connected Apps</strong></li>
+            <li>Find <strong>FixOps</strong> in the list</li>
+            <li>Click <strong>Actions → Disconnect</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end steps -->
+
+  <!-- FAQ -->
+  <div class="faq">
+    <h2>Frequently Asked Questions</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Can FixOps modify or delete my HubSpot data? <span>+</span></div>
+      <div class="faq-a">No. FixOps requests read-only OAuth access. We are technically unable to create, modify, or delete any records, properties, workflows, or any other data in your HubSpot portal. Our integration only reads data to generate your audit report.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What HubSpot plan do I need? <span>+</span></div>
+      <div class="faq-a">FixOps works with any HubSpot plan including the free CRM. The audit checks available may vary based on which HubSpot hubs and features your account has access to. You need to be a HubSpot portal admin or have admin-level permissions to authorize the connection.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How long does the audit take? <span>+</span></div>
+      <div class="faq-a">Most audits complete in 30–60 seconds. The exact time depends on the size of your HubSpot portal. Portals with tens of thousands of contacts may take slightly longer, but typically under 2 minutes.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Is my data secure? <span>+</span></div>
+      <div class="faq-a">Yes. All data transmission is encrypted via HTTPS/TLS. We never store your raw HubSpot data — only the audit findings and scores are saved, for up to 7 days. We do not sell or share your data with any third parties. See our Privacy Policy for full details.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I get the "Fix It For Me" service? <span>+</span></div>
+      <div class="faq-a">On your results page, each issue card has a "Fix It For Me" button. Clicking it sends Matthew an email with the issue details. He'll review it and reply within a few hours with a scope and flat-rate quote to fix it for you. You can also book a call directly at calendly.com/matthew-fixops/30min.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Can I run audits on multiple HubSpot portals? <span>+</span></div>
+      <div class="faq-a">Yes. Each audit runs independently. You can run the free audit on as many portals as you have admin access to. For ongoing monitoring of multiple portals, check out our Pulse or Command plans.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">How do I contact support? <span>+</span></div>
+      <div class="faq-a">Email matthew@fixops.io directly or book a call at calendly.com/matthew-fixops/30min. Matthew personally reviews every audit and responds to all inquiries.</div>
+    </div>
+
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <h2>Ready to audit your portal?</h2>
+    <p>165 checks. Under 2 minutes. Free.</p>
+    <a href="index.html" class="cta-btn">⚡ Run Free Portal Audit →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div class="ft-bottom">
+    <span class="ft-copy">© 2026 FixOps.io · All rights reserved · HubSpot Systems. Fixed.</span>
+    <div class="ft-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
+      <a href="setup.html">Setup Guide</a>
+      <a href="mailto:matthew@fixops.io">matthew@fixops.io</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
