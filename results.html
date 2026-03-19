@@ -526,6 +526,7 @@ function bookCall(idx) {
 }
 
 function downloadPDF() {
+  try {
   if(!AUDIT_DATA){ showToast('⚠️','No data','Please wait for results to load'); return; }
   var jsPDF = window.jspdf && window.jspdf.jsPDF;
   if(!jsPDF){ showToast('⚠️','PDF Error','Please refresh and try again'); return; }
@@ -690,7 +691,7 @@ function downloadPDF() {
 
     // Issue card background
     var cardStart = y;
-    doc.setFillColor(12,10,24); doc.roundedRect(M,y,PW,8,'F');
+    doc.setFillColor(12,10,24); doc.roundedRect(M,y,PW,8,1,1,'F');
     // Severity accent
     doc.setFillColor(sv[0],sv[1],sv[2]); doc.rect(M,y,3,8,'F');
     // Severity tag
@@ -726,7 +727,7 @@ function downloadPDF() {
     // Why this matters (detail)
     if(iss.detail){
       y = checkY(y,14);
-      doc.setFillColor(16,10,32); doc.roundedRect(M+3,y-2,PW-6,6,'F');
+      doc.setFillColor(16,10,32); doc.roundedRect(M+3,y-2,PW-6,6,1,1,'F');
       doc.setFontSize(6.5); doc.setFont('helvetica','bold'); doc.setTextColor(167,139,250); doc.text('WHY THIS MATTERS',M+5,y+3);
       y+=7;
       doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(120,115,160);
@@ -741,7 +742,7 @@ function downloadPDF() {
     // Fix guide steps
     if(guide.length){
       y = checkY(y,14);
-      doc.setFillColor(8,20,16); doc.roundedRect(M+3,y-2,PW-6,6,'F');
+      doc.setFillColor(8,20,16); doc.roundedRect(M+3,y-2,PW-6,6,1,1,'F');
       doc.setFontSize(6.5); doc.setFont('helvetica','bold'); doc.setTextColor(16,185,129); doc.text('BEST PRACTICE FIX GUIDE',M+5,y+3);
       y+=7;
       for(var gi=0; gi<guide.length; gi++){
@@ -749,7 +750,7 @@ function downloadPDF() {
         var stepH = stepLines.length*4.5 + 4;
         y = checkY(y, stepH);
         // Step number circle
-        doc.setFillColor(8,30,20); doc.circle(M+8,y+1.5,3,'F');
+        doc.setFillColor(8,30,20); doc.ellipse(M+8,y+1.5,3,3,'F');
         doc.setFontSize(6); doc.setFont('helvetica','bold'); doc.setTextColor(16,185,129);
         doc.text(String(gi+1), M+8, y+3.5, {align:'center'});
         // Step text
@@ -785,7 +786,11 @@ function downloadPDF() {
   addPageFooter();
 
   doc.save(filename);
-  showToast('✅','PDF Downloaded','Full '+issues.length+'-issue report saved — '+filename);
+  showToast('✅','PDF Downloaded','Full '+issues.length+'-issue report saved');
+  } catch(err) {
+    console.error('PDF generation error:', err);
+    showToast('❌','PDF Error — check console',String(err.message||err).substring(0,80));
+  }
 }
 
 var toastTimer;
