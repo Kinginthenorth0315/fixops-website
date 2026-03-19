@@ -66,6 +66,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 
 @media(max-width:600px){nav{padding:0 20px;}.wrap{padding:16px;} h1{font-size:26px;}.email-card{padding:20px;}}
 </style>
+<!-- cf-email-obfuscation: disable -->
 </head>
 <body>
 <div id="stars"></div>
@@ -89,22 +90,22 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
       <div class="ec-label">Results delivering to</div>
       <div class="ec-email"><div class="ec-email-dot"></div><span id="email-display">your inbox</span></div>
       <div class="ec-divider"></div>
-      <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)"id="time-est">5–15 minutes</strong> depending on portal size</span></div>
+      <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)">2–5 minutes</strong> depending on portal size</span></div>
       <div class="ec-row" style="margin-top:8px"><span class="ec-icon">🔒</span><span>Read-only access · your data is never modified</span></div>
-      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a9dbccd9c6dbdddae9cfc0d1c6d9da87c0c6">[email&#160;protected]</a></strong> · check spam if not received</span></div>
+      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)">reports@fixops.io</strong> · check spam if not received</span></div>
     </div>
 
     <div class="steps" id="step-list">
-      <div class="step active" id="s0"><div class="step-ico">↻</div><span>Reading all contacts — full portal pull in progress</span></div>
-      <div class="step" id="s1"><div class="step-ico"></div><span>Reading companies, deals and tickets</span></div>
-      <div class="step" id="s2"><div class="step-ico"></div><span>Reading products, quotes, orders and commerce data</span></div>
+      <div class="step active" id="s0"><div class="step-ico">↻</div><span>Reading all contacts, companies, and owners</span></div>
+      <div class="step" id="s1"><div class="step-ico"></div><span>Scanning all deals, tickets, and pipeline data</span></div>
+      <div class="step" id="s2"><div class="step-ico"></div><span>Checking tasks, meetings, calls, and activity</span></div>
       <div class="step" id="s3"><div class="step-ico"></div><span>Running 30 data quality and health checks</span></div>
       <div class="step" id="s4"><div class="step-ico"></div><span>Scoring dimensions and calculating fix priorities</span></div>
       <div class="step" id="s5"><div class="step-ico"></div><span>Generating report and sending to your inbox</span></div>
     </div>
 
     <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="cta-link">📅 Book a strategy call while you wait</a>
-    <p class="note" id="status-note">Audit running — safe to close this tab · results delivered by email when complete</p>
+    <p class="note" id="status-note">Audit running in the background · safe to close this tab · check your email for results</p>
   </div>
 
   <!-- Complete state -->
@@ -119,7 +120,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const API    = 'https://fixops-api-production.up.railway.app';
 const params = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
@@ -133,7 +134,7 @@ if(!auditId) { document.getElementById('main-sub').textContent = 'Audit started 
 
 // Step animation — advances every 30 seconds to reflect real backend progress
 // Steps match the actual audit phases: fetch contacts → fetch deals → fetch engagements → checks → scores → email
-const stepTimes = [0, 60000, 150000, 300000, 480000, 660000];
+const stepTimes = [0, 30000, 60000, 90000, 150000, 210000];
 let currentStep = 0;
 
 function advanceStep(idx) {
@@ -155,21 +156,14 @@ stepTimes.forEach((t, i) => {
   if(i > 0) setTimeout(() => advanceStep(i), t);
 });
 
-// Dynamic time estimate
-const startTime = Date.now();
-setInterval(() => {
-  const elapsed = Math.round((Date.now() - startTime) / 1000);
-  const el = document.getElementById('time-est');
-  if (!el) return;
-  if (elapsed < 90) el.textContent = '5–15 minutes depending on portal size';
-  else if (elapsed < 300) el.textContent = 'about 10 minutes — reading all records';
-  else if (elapsed < 600) el.textContent = 'almost there — large portal';
-  else el.textContent = 'still running — check your email when complete';
-}, 20000);
+// Update time estimate as audit runs
+setTimeout(() => {
+  document.querySelector('.ec-row strong').textContent = '3–8 minutes — large portal detected';
+}, 60000);
 
 // Poll for completion — every 8 seconds for up to 15 minutes
 let attempts = 0;
-const MAX = 338; // 45 min for large portals
+const MAX = 112; // 15 min
 
 function poll() {
   if(!auditId) return;
@@ -201,37 +195,6 @@ function poll() {
         document.getElementById('status-note').textContent = 'Audit encountered an error — Matthew has been notified and will follow up.';
         document.getElementById('main-sub').textContent = 'Something went wrong with this audit. Matthew has been notified and will reach out shortly.';
       } else {
-        // Show real progress from API
-        if (data && data.progress !== undefined) {
-          const pct = data.progress || 0;
-          const task = data.currentTask || 'Scanning portal…';
-          const stepAt = [0, 15, 30, 50, 70, 90];
-          let activeStep = 0;
-          for (let si = stepAt.length - 1; si >= 0; si--) {
-            if (pct >= stepAt[si]) { activeStep = si; break; }
-          }
-          for (let si = 0; si < 6; si++) {
-            const s = document.getElementById('s' + si);
-            if (!s) continue;
-            if (si < activeStep) {
-              s.classList.remove('active'); s.classList.add('done');
-              s.querySelector('.step-ico').textContent = '✓';
-            } else if (si === activeStep && !s.classList.contains('done')) {
-              s.classList.add('active');
-              s.querySelector('.step-ico').textContent = '↻';
-            }
-          }
-          document.getElementById('status-note').textContent = task + ' · ' + pct + '% complete';
-        }
+        // Still running
         if(attempts < MAX) setTimeout(poll, 8000);
-        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when complete.';
-      }
-    })
-    .catch(() => { if(attempts < MAX) setTimeout(poll, 8000); });
-}
-
-// Start polling after 20 seconds
-setTimeout(poll, 20000);
-</script>
-</body>
-</html>
+        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by

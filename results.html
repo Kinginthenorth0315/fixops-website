@@ -305,13 +305,18 @@ function loadWithRetry(id, attempt) {
     })
     .then(function(data) {
       if(!data) return; // 404 handled above
-      console.log('Status:', data.status, 'attempt:', attempt);
-      if(data.status === 'complete') {
+      console.log('Status:', data.status, 'attempt:', attempt, 'has issues:', !!(data.issues));
+      // Treat complete OR any data with issues/scores as complete
+      if(data.status === 'complete' || (data.issues && data.scores)) {
         showResults(data);
       } else if(data.status === 'error') {
         showError(data.message || 'Audit failed. Please contact matthew@fixops.io');
       } else {
-        // Still running
+        // Still running — show fallback button after 30 seconds
+        if(attempt === 4) {
+          document.getElementById('load-attempt').innerHTML =
+            'Still scanning · <a href="javascript:void(0)" onclick="loadWithRetry(\''+id+'\',0)" style="color:#a78bfa;text-decoration:underline;">Refresh now</a>';
+        }
         if(attempt < maxAttempts) {
           setTimeout(function(){ loadWithRetry(id, attempt + 1); }, 8000);
         } else {
