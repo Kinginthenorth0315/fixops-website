@@ -107,8 +107,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 /* Action buttons */
 .action-btns{display:flex;gap:8px;flex-wrap:wrap;}
 .act-btn{padding:10px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:var(--mono);transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
-.btn-autofix{background:rgba(16,185,129,.1);color:var(--g);border:1px solid rgba(16,185,129,.22);}
-.btn-autofix:hover{background:rgba(16,185,129,.18);transform:translateY(-1px);}
 .btn-fixme{background:rgba(124,58,237,.12);color:var(--v3);border:1px solid var(--vb);}
 .btn-fixme:hover{background:rgba(124,58,237,.2);transform:translateY(-1px);}
 .btn-call{background:var(--s2);color:var(--t2);border:1px solid var(--b2);}
@@ -431,7 +429,7 @@ function showResults(data) {
 
     var detailHtml = issue.detail ? '<div class="detail-block"><div class="detail-label">🔍 Why This Matters</div><div class="detail-text">' + esc(issue.detail) + '</div></div>' : '';
     var guideHtml = guidesHtml ? '<div class="guide-block"><div class="guide-label">✓ Best Practice Fix Guide</div><div class="guide-steps">' + guidesHtml + '</div></div>' : '';
-    var autoBtn = issue.autoFixable ? '<button class="act-btn btn-autofix" onclick="event.stopPropagation();autoFix(' + idx + ')">⚡ Auto-Fix Available</button>' : '';
+    var autoBtn = '';
 
     card.innerHTML =
       '<div class="issue-top">' +
@@ -471,25 +469,11 @@ function toggleIssue(idx) {
   for(var i=0;i<all.length;i++) all[i].classList.remove('open');
   if(!was) c.classList.add('open');
 }
-
-async function autoFix(idx) {
-  var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
-  if(!issue) return;
-  showToast('⚡','Sending Auto-Fix Request...','Notifying Matthew');
-  try {
-    var res = await fetch(API + '/fix-request', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        issueTitle: '⚡ AUTO-FIX: ' + issue.title,
-        issueImpact: issue.impact, issueDimension: issue.dimension,
-        portalCompany: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.company,
-        portalEmail: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.email,
-        auditId: AUDIT_DATA.auditId
-      })
+)
     });
     var d = await res.json();
     if(d.success) {
-      showToast('⚡','Auto-Fix Requested!','Matthew will apply this fix — matthew@fixops.io');
+      showToast('✅','Request Sent!','Matthew will reach out within a few hours to discuss and quote');
       var btn = document.querySelector('#ic-' + idx + ' .btn-autofix');
       if(btn){ btn.textContent='✅ Requested'; btn.disabled=true; btn.style.opacity='0.6'; }
     } else { throw new Error(d.error); }
@@ -499,7 +483,7 @@ async function autoFix(idx) {
 async function fixItForMe(idx) {
   var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
   if(!issue) return;
-  showToast('🛠','Sending Request...','Notifying Matthew about this issue');
+  showToast('🛠','Sending Fix Request...','Matthew will reach out to scope this for you');
   try {
     var res = await fetch(API + '/fix-request', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -513,7 +497,7 @@ async function fixItForMe(idx) {
     });
     var d = await res.json();
     if(d.success) {
-      showToast('✅','Request Sent!','Matthew will scope and quote within a few hours · matthew@fixops.io');
+      showToast('✅','Request Sent!','Matthew will reach out within a few hours to discuss and quote');
       var btn = document.querySelector('#ic-' + idx + ' .btn-fixme');
       if(btn){ btn.textContent='✅ Request Sent'; btn.disabled=true; btn.style.opacity='0.6'; }
     } else { throw new Error(d.error); }
