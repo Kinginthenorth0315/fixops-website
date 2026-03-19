@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FixOps Dashboard</title>
+<title>FixOps — My Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#06040f;--s1:#0c0918;--s2:#110e22;--s3:#181430;--b1:#1e1a35;--b2:#2a2448;--purple:#7c3aed;--purple2:#8b5cf6;--purple3:#a78bfa;--green:#10b981;--amber:#f59e0b;--red:#f43f5e;--t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.55);--t3:rgba(255,255,255,.28);--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;}
@@ -190,8 +190,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;ali
     <div class="action-grid">
       <a class="action-card" id="link-reporting" href="#">
         <div class="ac-icon">📊</div>
-        <div class="ac-title">Intelligence Dashboard</div>
-        <div class="ac-sub">Pipeline, velocity, funnel, AI report builder</div>
+        <div class="ac-title">Portal Snapshot</div>
+        <div class="ac-sub">Visual summary of your audit findings</div>
         <div class="ac-arrow">Open dashboard →</div>
       </a>
       <a class="action-card" id="link-results" href="#">
@@ -222,7 +222,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;ali
 
     <!-- Footer -->
     <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--t3);line-height:1.8;">
-      <a href="mailto:matthew@fixops.io" style="color:var(--purple3);text-decoration:none;">matthew@fixops.io</a> · 
+      <a href="/cdn-cgi/l/email-protection#5c313d282834392b1c3a3524332c2f723533" style="color:var(--purple3);text-decoration:none;"><span class="__cf_email__" data-cfemail="15787461617d706255737c6d7a65663b7c7a">[email&#160;protected]</span></a> · 
       <a href="index.html" style="color:var(--t3);text-decoration:none;">fixops.io</a>
     </div>
   </div>
@@ -235,7 +235,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;ali
   <div onclick="hideToast()" style="margin-left:auto;color:var(--t3);cursor:pointer;font-size:14px;">✕</div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API = 'https://fixops-api-production.up.railway.app';
 const P = new URLSearchParams(window.location.search);
 const TOKEN = P.get('token');
@@ -509,12 +509,4 @@ let toastT;
 function showToast(ico, title, sub) {
   document.getElementById('t-ico').textContent = ico;
   document.getElementById('t-title').textContent = title;
-  document.getElementById('t-sub').textContent = sub;
-  document.getElementById('toast').classList.add('show');
-  clearTimeout(toastT);
-  toastT = setTimeout(hideToast, 5000);
-}
-function hideToast() { document.getElementById('toast').classList.remove('show'); }
-</script>
-</body>
-</html>
+  document.getElementById('t-sub').textContent = 

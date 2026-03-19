@@ -18,7 +18,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .nl{font-size:19px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
 .ni{width:30px;height:30px;background:linear-gradient(135deg,var(--v),#5b21b6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 18px var(--vg);}
 .nav-r{display:flex;gap:10px;align-items:center;}
-#pdf-btn{padding:8px 16px;background:var(--s1);color:var(--t2);font-family:var(--font);font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--b1);cursor:pointer;display:none;align-items:center;gap:6px;transition:all .2s;}
+#pdf-btn,#snapshot-btn{padding:8px 16px;background:var(--s1);color:var(--t2);font-family:var(--font);font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--b1);cursor:pointer;display:none;align-items:center;gap:6px;transition:all .2s;}
+#pdf-btn:hover,#snapshot-btn:hover{border-color:var(--vb);color:var(--v3);}
+#pdf-btn.show,#snapshot-btn.show{display:flex;}
 #pdf-btn:hover{border-color:var(--vb);color:var(--v3);}
 #pdf-btn.show{display:flex;}
 .btn-book{padding:8px 16px;background:var(--v);color:#fff;font-family:var(--font);font-size:13px;font-weight:700;border-radius:8px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
@@ -173,6 +175,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <a href="index.html" class="nl"><div class="ni">⚡</div>Fix<span style="color:#a78bfa">Ops</span><span style="color:rgba(255,255,255,.28);font-size:15px;font-weight:400">.io</span></a>
   <div class="nav-r">
     <button id="pdf-btn" onclick="downloadPDF()">📄 Download PDF Report</button>
+    <a id="snapshot-btn" href="#" target="_blank">📊 View Snapshot</a>
     <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="btn-book">Book a Call ↗</a>
   </div>
 </nav>
@@ -354,6 +357,11 @@ function showResults(data) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   document.getElementById('pdf-btn').classList.add('show');
+  var snapBtn = document.getElementById('snapshot-btn');
+  if(snapBtn && auditId) {
+    snapBtn.href = 'reporting.html?id=' + auditId;
+    snapBtn.classList.add('show');
+  }
 
   var summary = data.summary || {};
   var scores = data.scores || {};

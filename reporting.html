@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FixOps Revenue Intelligence</title>
+<title>FixOps Portal Snapshot</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -340,7 +340,7 @@ nav {
   <div class="nav-left">
     <a href="index.html" class="logo"><div class="logo-mark">⚡</div>FixOps</a>
     <div class="nav-divider"></div>
-    <span class="nav-title">Revenue Intelligence</span>
+    <span class="nav-title">Portal Snapshot</span>
   </div>
   <div class="nav-right">
     <span class="nav-badge" id="portal-badge">Loading…</span>
@@ -712,7 +712,7 @@ async function loadFromToken(token) {
     document.getElementById('loading-state').style.display = 'none';
     document.getElementById('views').style.display = 'block';
     const company = DATA.portalInfo?.company || data.customer?.company || 'Your Portal';
-    document.getElementById('portal-badge').textContent = company;
+    document.getElementById('portal-badge').textContent = company + ' · Snapshot';
     document.title = 'FixOps Intelligence — '+company;
     initAllViews();
     setupAiSuggestions();
@@ -735,7 +735,7 @@ async function loadData() {
     document.getElementById('loading-state').style.display = 'none';
     document.getElementById('views').style.display = 'block';
     const company = DATA.portalInfo?.company || 'Your Portal';
-    document.getElementById('portal-badge').textContent = company;
+    document.getElementById('portal-badge').textContent = company + ' · Snapshot';
     document.title = 'FixOps Intelligence — '+company;
     initAllViews();
     setupAiSuggestions();
@@ -776,7 +776,7 @@ function buildOverview() {
   const contacts = [], deals = [], tickets = [];
 
   const company = pi.company || 'Your Portal';
-  document.getElementById('overview-title').textContent = company+' — Revenue Overview';
+  document.getElementById('overview-title').textContent = company+' — Portal Snapshot';
   document.getElementById('overview-sub').textContent =
     'Audit completed '+new Date(pi.auditDate||Date.now()).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+
     ' · '+fmt(s.recordsScanned)+' records analyzed';
