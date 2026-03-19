@@ -122,6 +122,43 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .cta-secondary{padding:15px 30px;background:transparent;color:var(--t2);font-size:15px;border-radius:10px;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
 .cta-secondary:hover{color:#fff;border-color:rgba(255,255,255,.3);}
 
+/* Fix Plan Section */
+.fix-plan{margin-top:48px;}
+.fp-header{text-align:center;margin-bottom:40px;}
+.fp-eyebrow{font-size:11px;font-weight:700;color:var(--v3);font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
+.fp-title{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.1;color:#fff;margin-bottom:12px;}
+.fp-sub{font-size:15px;color:var(--t2);font-weight:300;line-height:1.7;max-width:520px;margin:0 auto;}
+.fp-buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:32px;}
+.fp-bucket{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:all .2s;}
+.fp-bucket:hover{border-color:var(--b2);transform:translateY(-2px);}
+.fp-bucket::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.fp-bucket.data::before{background:linear-gradient(90deg,#06b6d4,#3b82f6);}
+.fp-bucket.automation::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa);}
+.fp-bucket.pipeline::before{background:linear-gradient(90deg,#f59e0b,#f97316);}
+.fp-bucket.reporting::before{background:linear-gradient(90deg,#10b981,#06b6d4);}
+.fp-bucket.config::before{background:linear-gradient(90deg,#ec4899,#8b5cf6);}
+.fp-bucket-icon{font-size:28px;margin-bottom:12px;}
+.fp-bucket-name{font-size:16px;font-weight:800;color:#fff;margin-bottom:6px;}
+.fp-bucket-desc{font-size:13px;color:var(--t2);font-weight:300;line-height:1.6;margin-bottom:16px;}
+.fp-bucket-issues{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.fp-issue-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t2);}
+.fp-issue-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.fp-impact-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:var(--mono);margin-top:8px;display:inline-block;}
+.fp-stats{display:flex;gap:16px;padding:14px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);margin-bottom:24px;}
+.fp-stat{text-align:center;flex:1;}
+.fp-stat-v{font-size:22px;font-weight:900;line-height:1;}
+.fp-stat-l{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;margin-top:3px;}
+.fp-cta-wrap{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:40px;text-align:center;position:relative;overflow:hidden;}
+.fp-cta-wrap::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(124,58,237,.15),transparent 70%);pointer-events:none;}
+.fp-cta-title{font-size:28px;font-weight:900;letter-spacing:-.8px;color:#fff;margin-bottom:10px;}
+.fp-cta-sub{font-size:14px;color:var(--t2);font-weight:300;line-height:1.7;margin-bottom:28px;max-width:500px;margin-left:auto;margin-right:auto;}
+.fp-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:var(--v);color:#fff;font-size:15px;font-weight:700;border-radius:12px;text-decoration:none;transition:all .2s;font-family:var(--font);}
+.fp-cta-btn:hover{background:var(--v2);transform:translateY(-2px);box-shadow:0 16px 48px rgba(124,58,237,.4);}
+.fp-proof{display:flex;justify-content:center;gap:28px;margin-top:20px;flex-wrap:wrap;}
+.fp-proof-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3);}
+.fp-proof-dot{color:var(--g);font-size:14px;}
+@media(max-width:700px){.fp-title{font-size:26px;}.fp-buckets{grid-template-columns:1fr;}}
+
 /* Toast */
 #toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--s2);border:1px solid var(--b2);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:400px;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(0,0,0,.6);}
 #toast.show{transform:translateY(0);opacity:1;}
@@ -188,15 +225,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="sec-h" id="issues-header">Issues Found</div>
     <div class="issue-list" id="issue-list"></div>
 
-    <div class="cta-section">
-      <div class="cta-h">Let's Fix Your Portal</div>
-      <p class="cta-p">Every issue above has a solution. Matthew will review your audit and send a prioritized fix plan with flat-rate pricing. Or book a call to go through it together right now.</p>
-      <div class="cta-btns">
-        <button class="cta-primary" onclick="downloadPDF()">📄 Download PDF Report</button>
-        <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="cta-secondary">📅 Book a Free Strategy Call ↗</a>
-      </div>
-      <p style="font-size:12px;color:rgba(255,255,255,.2);font-family:var(--mono);margin-top:16px">matthew [at] fixops.io · fixops.io · HubSpot Systems. Fixed.</p>
-    </div>
+    <div id="fix-plan-section"></div>
   </div>
 </div>
 
@@ -447,18 +476,14 @@ function showResults(data) {
       '<div class="issue-expand">' +
         detailHtml +
         guideHtml +
-        '<div class="action-btns">' +
-          autoBtn +
-          '<button class="act-btn btn-fixme" onclick="event.stopPropagation();fixItForMe(' + idx + ')">🛠 Fix It For Me</button>' +
-          '<button class="act-btn btn-call" onclick="event.stopPropagation();bookCall(' + idx + ')">📅 Discuss on a Call</button>' +
-        '</div>' +
+        (issue.severity !== 'info' ? '<div class="action-btns"><button class="act-btn btn-fixme" onclick="event.stopPropagation();fixItForMe(' + idx + ')">🛠 Fix It For Me</button></div>' : '') +
       '</div>';
 
     list.appendChild(card);
   }
 
   // CTA section
-  document.querySelector('.cta-section').style.display = 'block';
+  buildFixPlan(data);
   console.log('showResults complete - rendered ' + sorted.length + ' issues');
 }
 
@@ -504,10 +529,181 @@ async function fixItForMe(idx) {
   } catch(e) { showToast('📧','Email Matthew Directly','matthew@fixops.io'); }
 }
 
-function bookCall(idx) {
-  showToast('📅','Opening Calendly...','Book a time to discuss with Matthew');
-  setTimeout(function(){ window.open('https://calendly.com/matthew-fixops/30min','_blank'); }, 600);
+
+
+// ── Fix Plan Section ──────────────────────────────────────────────────────────
+function buildFixPlan(data) {
+  var issues = data.issues || [];
+  var summary = data.summary || {};
+  var portalInfo = data.portalInfo || {};
+  var scores = data.scores || {};
+  var company = portalInfo.company || 'Your Portal';
+  var criticalCount = summary.criticalCount || 0;
+  var warningCount = summary.warningCount || 0;
+  var waste = summary.monthlyWaste || 0;
+
+  // Map issues to project buckets
+  var buckets = {
+    data: {
+      name: 'Data & CRM Cleanup',
+      icon: '🧹',
+      cls: 'data',
+      tagline: 'Fix the foundation your entire revenue operation is built on',
+      color: '#06b6d4',
+      dimensions: ['Data Integrity'],
+      issues: [],
+      impact: 0
+    },
+    automation: {
+      name: 'Workflow & Automation Repair',
+      icon: '⚙️',
+      cls: 'automation',
+      tagline: 'Stop the silent revenue leaks from broken automations',
+      color: '#a78bfa',
+      dimensions: ['Automation Health','Team Adoption'],
+      issues: [],
+      impact: 0
+    },
+    pipeline: {
+      name: 'Pipeline & Sales Operations',
+      icon: '📊',
+      cls: 'pipeline',
+      tagline: 'Turn your pipeline from a liability into an accurate revenue forecast',
+      color: '#f59e0b',
+      dimensions: ['Pipeline Integrity'],
+      issues: [],
+      impact: 0
+    },
+    reporting: {
+      name: 'Reporting & Revenue Intelligence',
+      icon: '📈',
+      cls: 'reporting',
+      tagline: 'Give leadership dashboards they can actually trust',
+      color: '#10b981',
+      dimensions: ['Reporting Quality','Marketing Health'],
+      issues: [],
+      impact: 0
+    },
+    config: {
+      name: 'Configuration & Security',
+      icon: '🔧',
+      cls: 'config',
+      tagline: 'Lock down your portal and eliminate technical debt',
+      color: '#ec4899',
+      dimensions: ['Configuration & Security','Service Health'],
+      issues: [],
+      impact: 0
+    }
+  };
+
+  // Sort issues into buckets
+  issues.forEach(function(issue) {
+    var dim = issue.dimension || '';
+    var assigned = false;
+    Object.keys(buckets).forEach(function(key) {
+      if (!assigned && buckets[key].dimensions.some(function(d){ return dim.toLowerCase().includes(d.toLowerCase().split(' ')[0]); })) {
+        buckets[key].issues.push(issue);
+        assigned = true;
+      }
+    });
+    if (!assigned) buckets.config.issues.push(issue);
+  });
+
+  // Only show buckets with issues
+  var activeBuckets = Object.values(buckets).filter(function(b){ return b.issues.length > 0; });
+
+  // Calendly URL with context
+  var calendlyBase = 'https://calendly.com/matthew-fixops/30min';
+  var calendlyParams = '?name=' + encodeURIComponent(company) +
+    '&a1=' + encodeURIComponent('Audit Score: ' + (summary.overallScore||0) + '/100 · ' + criticalCount + ' critical · $' + Number(waste).toLocaleString() + '/mo waste · Audit ID: ' + (data.auditId||''));
+  var calendlyUrl = calendlyBase + calendlyParams;
+
+  // Build bucket cards
+  var bucketsHtml = activeBuckets.map(function(bucket) {
+    var critIssues = bucket.issues.filter(function(i){ return i.severity === 'critical'; });
+    var warnIssues = bucket.issues.filter(function(i){ return i.severity === 'warning'; });
+    var allIssues = bucket.issues.slice(0, 4);
+
+    var issueListHtml = allIssues.map(function(i) {
+      var dot_color = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+      return '<div class="fp-issue-item">' +
+        '<div class="fp-issue-dot" style="background:' + dot_color + '"></div>' +
+        '<span>' + esc(i.title.length > 60 ? i.title.substring(0,60) + '…' : i.title) + '</span>' +
+        '</div>';
+    }).join('');
+
+    if (bucket.issues.length > 4) {
+      issueListHtml += '<div class="fp-issue-item"><div class="fp-issue-dot" style="background:var(--t3)"></div><span style="color:var(--t3)">+' + (bucket.issues.length - 4) + ' more findings</span></div>';
+    }
+
+    var severityTag = critIssues.length > 0
+      ? '<span class="fp-impact-tag" style="background:rgba(244,63,94,.1);color:#f43f5e;">' + critIssues.length + ' critical issue' + (critIssues.length!==1?'s':'') + ' need immediate attention</span>'
+      : warnIssues.length > 0
+        ? '<span class="fp-impact-tag" style="background:rgba(245,158,11,.1);color:#f59e0b;">' + warnIssues.length + ' warning' + (warnIssues.length!==1?'s':'') + ' to address</span>'
+        : '';
+
+    return '<div class="fp-bucket ' + bucket.cls + '">' +
+      '<div class="fp-bucket-icon">' + bucket.icon + '</div>' +
+      '<div class="fp-bucket-name">' + bucket.name + '</div>' +
+      '<div class="fp-bucket-desc">' + bucket.tagline + '</div>' +
+      '<div class="fp-bucket-issues">' + issueListHtml + '</div>' +
+      severityTag +
+      '</div>';
+  }).join('');
+
+  // Calculate total annual waste
+  var annualWaste = waste * 12;
+
+  // Score context
+  var scoreContext = summary.overallScore >= 80
+    ? 'Your portal is in good shape — targeted fixes will push it to elite performance.'
+    : summary.overallScore >= 60
+      ? 'Your portal has real gaps costing you revenue every week. A focused engagement fixes this.'
+      : 'Your portal needs significant work. The good news: every issue here is fixable, usually within days.';
+
+  var html = '<div class="fix-plan">' +
+
+    // Header
+    '<div class="fp-header">' +
+      '<div class="fp-eyebrow">Your Personalized Fix Plan</div>' +
+      '<div class="fp-title">Here's What Fixing<br>' + esc(company) + ' Looks Like</div>' +
+      '<div class="fp-sub">' + scoreContext + ' Below is a breakdown of every area that needs work, built directly from your audit findings.</div>' +
+    '</div>' +
+
+    // Stats bar
+    '<div class="fp-stats">' +
+      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--r)">' + criticalCount + '</div><div class="fp-stat-l">Critical Issues</div></div>' +
+      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--a)">' + warningCount + '</div><div class="fp-stat-l">Warnings</div></div>' +
+      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--v3)">' + activeBuckets.length + '</div><div class="fp-stat-l">Fix Areas</div></div>' +
+      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--g)">$' + Number(annualWaste).toLocaleString() + '</div><div class="fp-stat-l">Annual Waste Est.</div></div>' +
+    '</div>' +
+
+    // Buckets grid
+    '<div class="fp-buckets">' + bucketsHtml + '</div>' +
+
+    // CTA block
+    '<div class="fp-cta-wrap">' +
+      '<div class="fp-eyebrow" style="margin-bottom:14px;">Free 30-Minute Strategy Call</div>' +
+      '<div class="fp-cta-title">Get Your Prioritized Fix Plan</div>' +
+      '<div class="fp-cta-sub">Matthew will personally review every finding in your audit, walk you through what to fix first, and send you a written action plan with flat-rate pricing for each item. No obligation, no sales pitch — just clarity on what your portal actually needs.</div>' +
+      '<a href="' + calendlyUrl + '" target="_blank" class="fp-cta-btn">📅 Book Your Free Strategy Call →</a>' +
+      '<div class="fp-proof">' +
+        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Matthew reviews before the call</div>' +
+        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Written action plan included</div>' +
+        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Flat-rate pricing, no surprises</div>' +
+        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>No commitment required</div>' +
+      '</div>' +
+      '<div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);">' +
+        '<button class="cta-primary" onclick="downloadPDF()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--t2);font-size:13px;padding:10px 22px;">📄 Download Full PDF Report</button>' +
+      '</div>' +
+    '</div>' +
+
+  '</div>';
+
+  var el = document.getElementById('fix-plan-section');
+  if (el) el.innerHTML = html;
 }
+
 
 function downloadPDF() {
   if(!AUDIT_DATA){ showToast('⚠️','No data','Please wait for results to load'); return; }
