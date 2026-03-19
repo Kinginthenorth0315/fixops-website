@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixOps Pulse Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06040f;--s1:#0c0918;--s2:#110e22;--s3:#181430;
+  --b1:#1e1a35;--b2:#2a2448;--b3:#352e5c;
+  --purple:#7c3aed;--purple2:#8b5cf6;--purple3:#a78bfa;
+  --green:#10b981;--amber:#f59e0b;--red:#f43f5e;
+  --t1:rgba(255,255,255,.92);--t2:rgba(255,255,255,.55);--t3:rgba(255,255,255,.28);--t4:rgba(255,255,255,.12);
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;background:rgba(6,4,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;padding:0 40px;}
+.logo{font-size:18px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.logo-icon{width:28px;height:28px;background:linear-gradient(135deg,var(--purple),#5b21b6);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.nav-right{display:flex;gap:10px;align-items:center;}
+.nav-plan{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;background:rgba(124,58,237,.15);color:var(--purple3);border:1px solid rgba(124,58,237,.25);font-family:var(--mono);}
+.btn-call{padding:7px 16px;background:var(--purple);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);text-decoration:none;}
+
+/* Page */
+.page{padding:80px 40px 60px;max-width:1080px;margin:0 auto;}
+
+/* Loading / Error */
+#loading,#error{text-align:center;padding:120px 20px;}
+.load-ring{width:72px;height:72px;border-radius:50%;border:3px solid var(--b2);border-top-color:var(--purple);animation:spin 1s linear infinite;margin:0 auto 20px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Week selector */
+.week-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+.week-label{font-size:13px;color:var(--t3);font-family:var(--mono);}
+.week-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.week-tab{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--b2);color:var(--t3);background:transparent;font-family:var(--mono);transition:all .2s;}
+.week-tab.active{background:var(--purple);border-color:var(--purple);color:#fff;}
+.week-tab:hover:not(.active){border-color:var(--b3);color:var(--t2);}
+
+/* Hero score */
+.hero{background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(91,33,182,.05));border:1px solid rgba(124,58,237,.2);border-radius:20px;padding:32px;display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center;margin-bottom:20px;}
+.score-ring{width:120px;height:120px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto;}
+.score-ring-inner{position:absolute;inset:12px;background:var(--s1);border-radius:50%;}
+.score-inner{position:relative;z-index:2;text-align:center;}
+.score-num{font-size:44px;font-weight:900;letter-spacing:-2px;line-height:1;}
+.score-denom{font-size:12px;color:var(--t3);}
+.score-grade{font-size:11px;font-weight:700;margin-top:6px;padding:3px 10px;border-radius:20px;display:inline-block;}
+.hero-right h2{font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:6px;}
+.hero-sub{font-size:13px;color:var(--t3);margin-bottom:18px;}
+.stats-row{display:flex;gap:12px;flex-wrap:wrap;}
+.stat-chip{padding:10px 16px;border-radius:10px;text-align:center;min-width:80px;}
+.stat-v{font-size:20px;font-weight:900;line-height:1;}
+.stat-l{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;margin-top:3px;}
+
+/* Trend summary */
+.trend-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.trend-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px;text-align:center;}
+.trend-v{font-size:26px;font-weight:900;line-height:1;margin-bottom:4px;}
+.trend-l{font-size:11px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;}
+
+/* Section */
+.sec{margin-bottom:24px;}
+.sec-h{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-h span{font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;font-family:var(--mono);}
+
+/* Issue cards */
+.issue-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.issue-card:hover{border-color:var(--b2);}
+.issue-card.open{border-color:var(--b2);}
+.issue-top{display:grid;grid-template-columns:4px 1fr auto;gap:14px;padding:14px 16px;align-items:start;}
+.sev-bar{width:4px;border-radius:2px;min-height:44px;flex-shrink:0;}
+.i-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;line-height:1.35;}
+.i-impact{font-size:11px;color:var(--amber);font-family:var(--mono);}
+.i-dim{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;background:rgba(124,58,237,.1);color:var(--purple3);font-family:var(--mono);margin-left:6px;}
+.sev-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;font-family:var(--mono);white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.tag-c{background:rgba(244,63,94,.12);color:var(--red);}
+.tag-w{background:rgba(245,158,11,.12);color:var(--amber);}
+.tag-i{background:rgba(124,58,237,.1);color:var(--purple3);}
+.i-arrow{font-size:14px;color:var(--t3);transition:transform .3s;margin-top:4px;}
+.issue-card.open .i-arrow{transform:rotate(180deg);color:var(--purple3);}
+.issue-expand{display:none;padding:0 16px 16px 30px;border-top:1px solid var(--b1);}
+.issue-card.open .issue-expand{display:block;}
+.expand-block{border-radius:8px;padding:12px 14px;margin-top:10px;}
+.expand-label{font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
+.expand-text{font-size:12px;color:var(--t2);line-height:1.65;}
+.guide-step{display:flex;gap:10px;margin-bottom:8px;font-size:12px;color:var(--t2);line-height:1.6;}
+.step-n{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.fix-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:var(--mono);transition:all .15s;margin-top:10px;text-decoration:none;}
+.fix-btn-p{background:rgba(124,58,237,.12);color:var(--purple3);border:1px solid rgba(124,58,237,.22);}
+.fix-btn-p:hover{background:rgba(124,58,237,.2);}
+
+/* NEW / RESOLVED badges */
+.new-badge{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;background:rgba(244,63,94,.15);color:var(--red);font-family:var(--mono);margin-left:6px;vertical-align:middle;}
+.resolved-badge{font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;background:rgba(16,185,129,.12);color:var(--green);font-family:var(--mono);margin-left:6px;vertical-align:middle;}
+
+/* Dimension grid */
+.dim-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.dim-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:14px;}
+.dim-name{font-size:11px;color:var(--t2);font-weight:600;margin-bottom:6px;}
+.dim-score{font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;margin-bottom:6px;}
+.dim-trend{font-size:10px;font-family:var(--mono);margin-bottom:6px;}
+.dim-bar-t{height:3px;background:var(--s2);border-radius:2px;overflow:hidden;}
+.dim-bar-f{height:100%;border-radius:2px;}
+
+/* Score history chart */
+.history-chart{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px;}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:80px;margin-bottom:8px;}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.chart-bar{width:100%;border-radius:3px 3px 0 0;min-height:4px;transition:height .5s ease;}
+.chart-label{font-size:10px;color:var(--t3);font-family:var(--mono);}
+.chart-score{font-size:11px;font-weight:700;}
+
+/* Portal snapshot */
+.snapshot-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+.snap-item{background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:12px;text-align:center;}
+.snap-v{font-size:18px;font-weight:800;color:var(--t1);}
+.snap-l{font-size:9px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;margin-top:2px;}
+
+/* Toast */
+#toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:var(--s2);border:1px solid var(--b2);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:10px;max-width:360px;transform:translateY(80px);opacity:0;transition:all .3s;box-shadow:0 16px 48px rgba(0,0,0,.5);}
+#toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:700px){
+  .page{padding:70px 16px 40px;}
+  nav{padding:0 16px;}
+  .hero{grid-template-columns:1fr;}
+  .dim-grid{grid-template-columns:repeat(2,1fr);}
+  .snapshot-grid{grid-template-columns:repeat(3,1fr);}
+  .trend-bar{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><div class="logo-icon">⚡</div>Fix<span style="color:var(--purple3)">Ops</span><span style="color:var(--t3);font-size:14px;font-weight:400">.io</span></a>
+  <div class="nav-right">
+    <span class="nav-plan" id="plan-badge">PULSE</span>
+    <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="btn-call">Book a Call ↗</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div id="loading">
+    <div class="load-ring"></div>
+    <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:6px;">Loading your Pulse report…</div>
+    <div style="font-size:12px;color:var(--t3);font-family:var(--mono);">Fetching audit history</div>
+  </div>
+
+  <div id="error" style="display:none">
+    <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+    <div style="font-size:20px;font-weight:800;margin-bottom:8px;">Report not found</div>
+    <div style="font-size:14px;color:var(--t3);margin-bottom:20px;">This link may have expired. Check your email for the latest Pulse report.</div>
+    <a href="index.html" style="padding:12px 24px;background:var(--purple);color:#fff;border-radius:9px;text-decoration:none;font-weight:700;">Go to FixOps →</a>
+  </div>
+
+  <div id="report" style="display:none"></div>
+
+</div>
+
+<div id="toast">
+  <div style="font-size:18px" id="t-ico">✅</div>
+  <div><strong id="t-title" style="display:block;font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;"></strong><span id="t-sub" style="font-size:11px;color:var(--t2);font-family:var(--mono);"></span></div>
+  <div onclick="hideToast()" style="margin-left:auto;color:var(--t3);cursor:pointer;">✕</div>
+</div>
+
+<script>
+const API = 'https://fixops-api-production.up.railway.app';
+const P = new URLSearchParams(window.location.search);
+const token = P.get('token');
+const auditId = P.get('id');
+
+let REPORT_DATA = null;
+let CURRENT_WEEK = 0; // 0 = latest
+
+if (!token) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display = 'block';
+} else {
+  loadReport();
+}
+
+async function loadReport() {
+  try {
+    const res = await fetch(`${API}/pulse/report?token=${encodeURIComponent(token)}&id=${auditId||''}`, {cache:'no-store'});
+    if (!res.ok) throw new Error('Not found');
+    REPORT_DATA = await res.json();
+    document.getElementById('loading').style.display = 'none';
+    renderReport(0);
+    document.getElementById('report').style.display = 'block';
+  } catch(e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('error').style.display = 'block';
+  }
+}
+
+function renderReport(weekIdx) {
+  CURRENT_WEEK = weekIdx;
+  const { customer, history, latestResult } = REPORT_DATA;
+  const hist = history || [];
+
+  // Plan badge
+  const planBadge = document.getElementById('plan-badge');
+  if (planBadge) planBadge.textContent = (customer.plan || 'pulse').toUpperCase();
+
+  // Current week data
+  const current = hist[weekIdx];
+  const prev = hist[weekIdx + 1] || null;
+
+  // Use latestResult for full issue data if on latest week
+  const fullResult = weekIdx === 0 ? latestResult : null;
+  const issues = fullResult ? (fullResult.issues || []).slice().sort((a,b)=>{
+    const o={critical:0,warning:1,info:2}; return(o[a.severity]||3)-(o[b.severity]||3);
+  }) : [];
+
+  const score = current ? current.score : (latestResult?.summary?.overallScore || 0);
+  const prevScore = prev ? prev.score : null;
+  const scoreDiff = prevScore !== null ? score - prevScore : null;
+  const scoreCol = score>=80?'var(--green)':score>=60?'var(--amber)':'var(--red)';
+  const grade = score>=85?'Excellent':score>=70?'Good':score>=55?'Needs Attention':'Critical';
+
+  // Week-over-week issue comparison
+  const currIssueTitles = current && current.issue_titles
+    ? (typeof current.issue_titles==='string'?JSON.parse(current.issue_titles):current.issue_titles) : [];
+  const prevIssueTitles = prev && prev.issue_titles
+    ? (typeof prev.issue_titles==='string'?JSON.parse(prev.issue_titles):prev.issue_titles) : [];
+  const prevTitles = prevIssueTitles.map(i=>i.title);
+  const currTitles = currIssueTitles.map(i=>i.title);
+  const newCount = currIssueTitles.filter(i=>!prevTitles.includes(i.title)).length;
+  const resolvedCount = prevIssueTitles.filter(i=>!currTitles.includes(i.title)).length;
+
+  // Scores
+  const scores = current && current.scores ? (typeof current.scores==='string'?JSON.parse(current.scores):current.scores) : (latestResult?.scores||{});
+  const prevScores = prev && prev.scores ? (typeof prev.scores==='string'?JSON.parse(prev.scores):prev.scores) : {};
+  const ps = current && current.portal_stats ? (typeof current.portal_stats==='string'?JSON.parse(current.portal_stats):current.portal_stats) : (latestResult?.portalInfo?.portalStats||{});
+
+  const dimNames = {dataIntegrity:'Data Integrity',automationHealth:'Automation',pipelineIntegrity:'Pipeline',marketingHealth:'Marketing',configSecurity:'Config',reportingQuality:'Reporting',teamAdoption:'Team',serviceHealth:'Service'};
+
+  // Build week tabs
+  const weekTabsHtml = hist.slice(0,8).map((h,i)=>`
+    <button class="week-tab ${i===weekIdx?'active':''}" onclick="renderReport(${i})">
+      W${hist.length-i}
+    </button>
+  `).join('');
+
+  // Score history chart
+  const chartData = hist.slice(0,8).reverse();
+  const chartHtml = chartData.map((h,i)=>{
+    const c = h.score>=80?'var(--green)':h.score>=60?'var(--amber)':'var(--red)';
+    const isActive = i === chartData.length-1-weekIdx;
+    return `<div class="chart-bar-wrap">
+      <div class="chart-score" style="color:${c};opacity:${isActive?1:.5};">${h.score}</div>
+      <div class="chart-bar" style="height:${Math.round((h.score/100)*60)}px;background:${c};opacity:${isActive?1:.4};"></div>
+      <div class="chart-label">W${i+1}</div>
+    </div>`;
+  }).join('');
+
+  // Portal snapshot
+  const snapItems = [
+    ['Contacts', ps.contacts],['Companies', ps.companies],['Deals', ps.deals],
+    ['Tickets', ps.tickets],['Workflows', ps.workflows],['Users', ps.users]
+  ].filter(([,v])=>v!==undefined&&v!==null);
+
+  // Dimension grid
+  const dimHtml = Object.entries(scores).map(([k,v])=>{
+    const prev_v = prevScores[k];
+    const diff = prev_v!==undefined ? v-prev_v : null;
+    const c = v>=80?'var(--green)':v>=60?'var(--amber)':'var(--red)';
+    const trend = diff===null?'':diff>0?`<span style="color:var(--green)">↑${diff}</span>`:diff<0?`<span style="color:var(--red)">↓${Math.abs(diff)}</span>`:'<span style="color:var(--t3)">→</span>';
+    return `<div class="dim-card">
+      <div class="dim-name">${dimNames[k]||k}</div>
+      <div class="dim-score" style="color:${c}">${v}</div>
+      <div class="dim-trend" style="color:var(--t3)">/100 ${trend}</div>
+      <div class="dim-bar-t"><div class="dim-bar-f" style="width:${v}%;background:${c}"></div></div>
+    </div>`;
+  }).join('');
+
+  // Issue list
+  const issueHtml = issues.map((iss,idx)=>{
+    const sc = iss.severity==='critical'?'var(--red)':iss.severity==='warning'?'var(--amber)':'var(--purple3)';
+    const tagCls = iss.severity==='critical'?'tag-c':iss.severity==='warning'?'tag-w':'tag-i';
+    const isNew = prev && !prevTitles.includes(iss.title);
+    const guide = iss.guide || [];
+    return `<div class="issue-card" id="ic-${idx}" onclick="toggleIssue(${idx})">
+      <div class="issue-top">
+        <div class="sev-bar" style="background:${sc}"></div>
+        <div>
+          <div class="i-title">${esc(iss.title)}${isNew?'<span class="new-badge">NEW</span>':''}<span class="i-dim">${esc(iss.dimension||'')}</span></div>
+          <div class="i-impact">💸 ${esc(iss.impact||'')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
+          <span class="sev-tag ${tagCls}">${(iss.severity||'').toUpperCase()}</span>
+          <span class="i-arrow">▾</span>
+        </div>
+      </div>
+      <div class="issue-expand">
+        ${iss.description?`<div style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:12px;">${esc(iss.description)}</div>`:''}
+        ${iss.detail?`<div class="expand-block" style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.14);">
+          <div class="expand-label" style="color:var(--purple3)">🔍 Why This Matters</div>
+          <div class="expand-text">${esc(iss.detail)}</div>
+        </div>`:''}
+        ${guide.length?`<div class="expand-block" style="background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.14);margin-top:10px;">
+          <div class="expand-label" style="color:var(--green)">✓ Fix Guide</div>
+          ${guide.map((g,gi)=>`<div class="guide-step"><div class="step-n" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:var(--green)">${gi+1}</div><div>${esc(g)}</div></div>`).join('')}
+        </div>`:''}
+        <a class="fix-btn fix-btn-p" onclick="event.stopPropagation();requestFix(${idx})">🛠 Fix It For Me</a>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Monthly waste
+  const waste = current ? current.monthly_waste : (latestResult?.summary?.monthlyWaste||0);
+  const critical = current ? current.critical_count : (latestResult?.summary?.criticalCount||0);
+  const warning = current ? current.warning_count : (latestResult?.summary?.warningCount||0);
+  const scanned = current ? current.records_scanned : (latestResult?.summary?.recordsScanned||0);
+  const auditDate = current ? new Date(current.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'This week';
+
+  document.getElementById('report').innerHTML = `
+    <!-- Week bar -->
+    <div class="week-bar">
+      <div>
+        <div style="font-size:22px;font-weight:800;letter-spacing:-.5px;">${customer.company||'Your Portal'} — Pulse Report</div>
+        <div class="week-label">${auditDate} · ${Number(scanned).toLocaleString()} records scanned</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span style="font-size:11px;color:var(--t3);font-family:var(--mono);">WEEK:</span>
+        ${weekTabsHtml}
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+      <div style="text-align:center;">
+        <div class="score-ring" style="border:3px solid ${scoreCol};">
+          <div class="score-ring-inner"></div>
+          <div class="score-inner">
+            <div class="score-num" style="color:${scoreCol}">${score}</div>
+            <div class="score-denom">/100</div>
+          </div>
+        </div>
+        <div class="score-grade" style="background:${scoreCol}15;color:${scoreCol};border:1px solid ${scoreCol}40;">${grade}</div>
+        ${scoreDiff!==null?`<div style="margin-top:8px;font-size:13px;font-weight:700;color:${scoreDiff>0?'var(--green)':scoreDiff<0?'var(--red)':'var(--t3)'};">${scoreDiff>0?'↑'+scoreDiff:scoreDiff<0?'↓'+Math.abs(scoreDiff):'→'} vs last week</div>`:'<div style="margin-top:8px;font-size:11px;color:var(--t3);">First scan</div>'}
+      </div>
+      <div>
+        <h2>${auditDate}</h2>
+        <div class="hero-sub">Weekly HubSpot portal health scan · ${Number(scanned).toLocaleString()} records analyzed</div>
+        <div class="stats-row">
+          <div class="stat-chip" style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18);">
+            <div class="stat-v" style="color:var(--red)">${critical}</div><div class="stat-l">Critical</div>
+          </div>
+          <div class="stat-chip" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);">
+            <div class="stat-v" style="color:var(--amber)">${warning}</div><div class="stat-l">Warnings</div>
+          </div>
+          <div class="stat-chip" style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.18);">
+            <div class="stat-v" style="color:var(--purple3)">$${Number(waste).toLocaleString()}</div><div class="stat-l">Est. Waste/mo</div>
+          </div>
+          ${latestResult?.auditId?`<div style="margin-top:8px;width:100%;">
+            <a href="results.html?id=${latestResult.auditId}" style="font-size:12px;color:var(--purple3);text-decoration:none;font-weight:600;">View full audit results →</a>
+          </div>`:''}
+        </div>
+      </div>
+    </div>
+
+    <!-- Week-over-week -->
+    ${prev?`<div class="trend-bar">
+      <div class="trend-card" style="border-color:${newCount>0?'rgba(244,63,94,.25)':'var(--b1)'}">
+        <div class="trend-v" style="color:${newCount>0?'var(--red)':'var(--green)'}">${newCount}</div>
+        <div class="trend-l">New Issues</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px;">${newCount>0?'vs last week':'No new issues 🎉'}</div>
+      </div>
+      <div class="trend-card" style="border-color:${resolvedCount>0?'rgba(16,185,129,.25)':'var(--b1)'}">
+        <div class="trend-v" style="color:${resolvedCount>0?'var(--green)':'var(--t3)'}">${resolvedCount}</div>
+        <div class="trend-l">Resolved</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px;">${resolvedCount>0?'Fixed this week':'None resolved yet'}</div>
+      </div>
+      <div class="trend-card">
+        <div class="trend-v" style="color:${scoreDiff>0?'var(--green)':scoreDiff<0?'var(--red)':'var(--t3)'}">${scoreDiff!==null?(scoreDiff>0?'+':'')+scoreDiff:'—'}</div>
+        <div class="trend-l">Score Change</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px;">${prevScore!==null?`Was ${prevScore} last week`:'First scan'}</div>
+      </div>
+    </div>`:''}
+
+    <!-- Score history -->
+    ${chartData.length>1?`<div class="sec">
+      <div class="sec-h">📈 Score History <span style="background:var(--b1);color:var(--t3);">${chartData.length} WEEKS</span></div>
+      <div class="history-chart">
+        <div class="chart-bars">${chartHtml}</div>
+        <div style="font-size:11px;color:var(--t3);font-family:var(--mono);text-align:center;">Click week tabs above to explore historical audits</div>
+      </div>
+    </div>`:''}
+
+    <!-- Dimensions -->
+    <div class="sec">
+      <div class="sec-h">⬡ Health Dimensions <span style="background:var(--b1);color:var(--t3);">8 AREAS</span></div>
+      <div class="dim-grid">${dimHtml}</div>
+    </div>
+
+    <!-- Portal snapshot -->
+    ${snapItems.length?`<div class="sec">
+      <div class="sec-h">📊 Portal Snapshot</div>
+      <div class="snapshot-grid">
+        ${snapItems.map(([l,v])=>`<div class="snap-item"><div class="snap-v">${Number(v||0).toLocaleString()}</div><div class="snap-l">${l}</div></div>`).join('')}
+      </div>
+    </div>`:''}
+
+    <!-- Issues -->
+    ${issues.length?`<div class="sec">
+      <div class="sec-h">🔍 All Issues <span style="background:var(--b1);color:var(--t3);">${issues.length} FOUND</span></div>
+      ${issueHtml}
+    </div>`:''}
+
+    <!-- CTA -->
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.06));border:1px solid rgba(124,58,237,.22);border-radius:16px;padding:32px;text-align:center;margin-top:8px;">
+      <div style="font-size:22px;font-weight:800;margin-bottom:8px;">Ready to fix these issues?</div>
+      <div style="font-size:14px;color:var(--t2);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">Matthew will review your audit and send a prioritized fix plan with flat-rate pricing. Or book a call to go through it together.</div>
+      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="display:inline-block;padding:13px 28px;background:var(--purple);color:#fff;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;">📅 Book a Free Strategy Call →</a>
+      <div style="font-size:11px;color:var(--t3);margin-top:14px;font-family:var(--mono);">matthew@fixops.io · HubSpot Systems. Fixed.</div>
+    </div>
+  `;
+}
+
+function esc(str){
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function toggleIssue(idx){
+  const c = document.getElementById('ic-'+idx);
+  const was = c.classList.contains('open');
+  document.querySelectorAll('.issue-card').forEach(el=>el.classList.remove('open'));
+  if(!was) c.classList.add('open');
+}
+
+async function requestFix(idx){
+  if(!REPORT_DATA?.latestResult) return;
+  const issue = REPORT_DATA.latestResult.issues?.[idx];
+  if(!issue) return;
+  showToast('🛠','Sending Fix Request...','Matthew will reach out to scope this');
+  try {
+    const res = await fetch(API+'/fix-request',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        issueTitle:issue.title, issueImpact:issue.impact,
+        issueDimension:issue.dimension,
+        portalCompany:REPORT_DATA.customer?.company,
+        portalEmail:REPORT_DATA.customer?.email,
+        auditId:REPORT_DATA.latestAuditId
+      })
+    });
+    const d = await res.json();
+    if(d.success) showToast('✅','Request Sent!','Matthew will reply within a few hours with a quote');
+    else throw new Error(d.error);
+  } catch(e){ showToast('📧','Email Matthew','matthew@fixops.io'); }
+}
+
+let toastT;
+function showToast(ico,title,sub){
+  document.getElementById('t-ico').textContent=ico;
+  document.getElementById('t-title').textContent=title;
+  document.getElementById('t-sub').textContent=sub;
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(hideToast,6000);
+}
+function hideToast(){ document.getElementById('toast').classList.remove('show'); }
+</script>
+</body>
+</html>
