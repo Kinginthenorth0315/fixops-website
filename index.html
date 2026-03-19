@@ -1255,7 +1255,7 @@ function showOnetime() {
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 </style>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false">
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<105;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.12?2.5:Math.random()<.4?2:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
 
@@ -1380,3 +1380,11 @@ async function startFreeAudit(){
 let tt2;
 function toast(title,sub){
   document.getElementById('tt').textContent=title;
+  document.getElementById('ts').textContent=sub;
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(tt2);
+  tt2=setTimeout(()=>document.getElementById('toast').classList.remove('show'),6000);
+}
+</script>
+</body>
+</html>
