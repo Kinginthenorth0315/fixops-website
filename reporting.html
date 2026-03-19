@@ -1380,7 +1380,7 @@ function buildTickets() {
 }
 
 // ── AI REPORT BUILDER ─────────────────────────────────────────────────────────
-const AI_API = 'https://api.anthropic.com/v1/messages';
+// AI calls go through Railway proxy — see runAiReport()
 
 const SUGGESTIONS = [
   'Which deals are most at risk of going cold?',
@@ -1448,55 +1448,21 @@ async function runAiReport() {
   const ctx = buildAuditContext();
 
   try {
-    const response = await fetch(AI_API, {
+    // Call Railway proxy — browser can't call Anthropic directly due to CORS
+    const response = await fetch(API + '/ai/report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content: `You are a HubSpot revenue intelligence analyst. Analyze this HubSpot audit data and answer the user's question.
-
-AUDIT DATA:
-${ctx}
-
-USER QUESTION: ${query}
-
-Respond in this exact JSON format (no markdown, no backticks):
-{
-  "title": "short report title",
-  "summary": "2-3 sentence direct answer with specific numbers from the data",
-  "keyFindings": ["finding 1 with specific data", "finding 2 with specific data", "finding 3 with specific data"],
-  "recommendation": "1-2 sentence actionable recommendation",
-  "chartData": {
-    "type": "bar or doughnut or none",
-    "labels": ["label1","label2"],
-    "values": [10,20],
-    "colors": ["#3b82f6","#10b981"]
-  },
-  "urgency": "critical or warning or info"
-}`
-        }]
-      })
+      body: JSON.stringify({ query, context: ctx })
     });
 
-    const apiData = await response.json();
-    const text = apiData.content?.map(b => b.text||'').join('') || '';
-
-    let parsed;
-    try {
-      parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
-    } catch(e) {
-      parsed = {
-        title: query,
-        summary: text.substring(0, 300),
-        keyFindings: [],
-        recommendation: '',
-        urgency: 'info',
-        chartData: { type: 'none' }
-      };
+    if (!response.ok) {
+      const errData = await response.json().catch(()=>({}));
+      throw new Error(errData.error || 'Server error ' + response.status);
     }
+
+    const apiData = await response.json();
+    const parsed = apiData.result;
+    if (!parsed) throw new Error('No result from AI');
 
     // Update title
     document.getElementById('ai-result-title').textContent = parsed.title || query;
