@@ -364,6 +364,21 @@ function showResults(data) {
     if(h1) h1.before(bar);
   }
 
+  // Show upgrade banner for free plan
+  if(portalInfo.isLimited) {
+    var limits = portalInfo.limits || {};
+    var upgradeBar = document.createElement('div');
+    upgradeBar.style.cssText = 'background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;';
+    upgradeBar.innerHTML =
+      '<div>' +
+        '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">⚡ This is a partial audit — free plan scans up to 1,000 contacts and deals</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.5);">Your portal has more records. Upgrade to Deep Audit ($299) for a complete scan of all ' + Number(summary.totalContacts||0).toLocaleString() + '+ contacts and full analysis.</div>' +
+      '</div>' +
+      '<a href="index.html#pricing" style="padding:10px 20px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;white-space:nowrap;flex-shrink:0;">Upgrade — $299 →</a>';
+    var resultsDiv = document.getElementById('results');
+    resultsDiv.insertBefore(upgradeBar, resultsDiv.firstChild);
+  }
+
   // Stats chips
   var recordsScanned = summary.recordsScanned || 0;
   document.getElementById('stats-row').innerHTML =
