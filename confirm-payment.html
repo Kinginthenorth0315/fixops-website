@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixOps — Payment Confirmed</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Outfit',sans-serif;background:#000;color:#fff;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,4s) ease-in-out infinite var(--dl,0s);}
+@keyframes tw{0%,100%{opacity:.03}50%{opacity:.45}}
+.bg-orb{position:fixed;top:45%;left:50%;transform:translate(-50%,-50%);width:800px;height:700px;background:radial-gradient(ellipse,rgba(124,58,237,.12) 0%,transparent 68%);filter:blur(60px);pointer-events:none;}
+.bg-orb-green{position:fixed;top:30%;left:30%;width:400px;height:400px;background:radial-gradient(ellipse,rgba(16,185,129,.07) 0%,transparent 68%);filter:blur(40px);pointer-events:none;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(0,0,0,.88);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.05);}
+.nl{font-size:19px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
+.ni{width:30px;height:30px;background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 18px rgba(124,58,237,.4);}
+
+.wrap{position:relative;z-index:1;text-align:center;max-width:560px;padding:24px;width:100%;margin-top:64px;}
+
+/* Success badge */
+.success-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:999px;font-size:12px;font-weight:700;color:#10b981;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:28px;}
+.success-dot{width:7px;height:7px;border-radius:50%;background:#10b981;animation:blink 1.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+h1{font-size:38px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bottom:14px;}
+.sub{font-size:15px;font-weight:300;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:32px;max-width:460px;margin-left:auto;margin-right:auto;}
+
+/* Plan badge */
+.plan-badge{display:inline-flex;align-items:center;gap:10px;padding:12px 24px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:12px;font-size:14px;font-weight:700;color:#a78bfa;margin-bottom:32px;}
+.plan-icon{font-size:18px;}
+
+/* Steps */
+.steps-wrap{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:40px;}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.step-circle{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;border:2px solid #22223a;color:rgba(255,255,255,.3);transition:all .4s;}
+.step-circle.done{background:rgba(16,185,129,.15);border-color:#10b981;color:#10b981;}
+.step-circle.active{background:rgba(124,58,237,.15);border-color:#7c3aed;color:#a78bfa;}
+.step-label{font-size:11px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+.step-label.done{color:#10b981;}
+.step-label.active{color:#a78bfa;}
+.step-line{width:60px;height:2px;background:#22223a;margin-bottom:22px;}
+.step-line.done{background:#10b981;}
+
+/* Main card */
+.main-card{background:#0c0c16;border:1px solid #1e1e32;border-radius:18px;padding:32px;margin-bottom:24px;text-align:left;position:relative;overflow:hidden;}
+.main-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed);background-size:200% 100%;animation:shimmer 2.5s linear infinite;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.card-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.card-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px;}
+.card-sub{font-size:13px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:20px;}
+
+/* Input */
+.input-wrap{position:relative;margin-bottom:14px;}
+.input-wrap input{width:100%;padding:14px 16px;background:#10101a;border:1px solid #22223a;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;color:#fff;outline:none;transition:border-color .2s;}
+.input-wrap input:focus{border-color:#7c3aed;}
+.input-wrap input::placeholder{color:rgba(255,255,255,.2);}
+.input-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;display:block;}
+
+/* Buttons */
+.btn-connect{width:100%;padding:16px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;border:none;border-radius:12px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;margin-top:8px;}
+.btn-connect:hover{transform:translateY(-1px);box-shadow:0 8px 32px rgba(124,58,237,.35);}
+.btn-connect:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+.btn-connect::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.08),transparent);pointer-events:none;}
+
+/* What happens next */
+.next-card{background:#0c0c16;border:1px solid #1e1e32;border-radius:14px;padding:24px;margin-bottom:24px;text-align:left;}
+.next-title{font-size:12px;font-weight:700;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.next-item{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px;}
+.next-item:last-child{margin-bottom:0;}
+.next-num{width:24px;height:24px;border-radius:6px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#a78bfa;flex-shrink:0;font-family:'JetBrains Mono',monospace;}
+.next-text{font-size:13px;color:rgba(255,255,255,.5);line-height:1.6;}
+.next-text strong{color:rgba(255,255,255,.8);font-weight:600;}
+
+/* Receipt note */
+.receipt-note{text-align:center;font-size:12px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;margin-bottom:32px;line-height:1.6;}
+
+/* Error */
+.error-msg{background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:8px;padding:12px 16px;font-size:13px;color:#f43f5e;margin-top:12px;display:none;}
+
+/* Plan configs */
+.plan-configs{
+  'pulse':    {label:'Pulse — $399/mo', icon:'📡', desc:'Weekly monitoring begins after your first audit completes.'},
+  'pro':      {label:'Pro — $699/mo',   icon:'⚡', desc:'Daily monitoring across 3 portals begins after setup.'},
+  'command':  {label:'Command — $1,299/mo', icon:'🎯', desc:'Full agency platform — Matthew will reach out to complete onboarding.'},
+  'deep':     {label:'Deep Audit — $299', icon:'🔍', desc:'Full audit runs instantly. Your 30-min strategy call will be scheduled by email.'},
+  'pro-audit':{label:'Pro Audit — $599', icon:'🏆', desc:'Full audit runs instantly. Your 60-min strategy call will be scheduled by email.'},
+}
+</style>
+</head>
+<body>
+<div id="stars"></div>
+<div class="bg-orb"></div>
+<div class="bg-orb-green"></div>
+
+<nav>
+  <a class="nl" href="/"><div class="ni">⚡</div>FixOps.io</a>
+</nav>
+
+<div class="wrap">
+
+  <!-- Success badge -->
+  <div class="success-badge">
+    <div class="success-dot"></div>
+    Payment Confirmed
+  </div>
+
+  <h1>You're in.<br><span style="color:#a78bfa">Let's connect your portal.</span></h1>
+  <p class="sub" id="plan-sub">Payment received — now connect your HubSpot portal and we'll run your full audit immediately.</p>
+
+  <!-- Plan badge -->
+  <div class="plan-badge" id="plan-badge">
+    <span class="plan-icon" id="plan-icon">⚡</span>
+    <span id="plan-label">Loading...</span>
+  </div>
+
+  <!-- Progress steps -->
+  <div class="steps-wrap">
+    <div class="step-item">
+      <div class="step-circle done">✓</div>
+      <div class="step-label done">Payment</div>
+    </div>
+    <div class="step-line done"></div>
+    <div class="step-item">
+      <div class="step-circle active">2</div>
+      <div class="step-label active">Connect</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item">
+      <div class="step-circle">3</div>
+      <div class="step-label">Audit</div>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item">
+      <div class="step-circle">4</div>
+      <div class="step-label">Results</div>
+    </div>
+  </div>
+
+  <!-- Connect card -->
+  <div class="main-card" id="connect-card">
+    <div class="card-label">Step 2 of 4 — Connect HubSpot</div>
+    <div class="card-title">Connect your HubSpot portal</div>
+    <div class="card-sub">Enter your email then click Connect HubSpot. We use read-only OAuth — we never modify your data without explicit approval.</div>
+
+    <label class="input-label">Your email address</label>
+    <div class="input-wrap">
+      <input type="email" id="email-input" placeholder="you@company.com" autocomplete="email" />
+    </div>
+
+    <label class="input-label" style="margin-top:4px;">Company name</label>
+    <div class="input-wrap">
+      <input type="text" id="company-input" placeholder="Acme Corp" />
+    </div>
+
+    <button class="btn-connect" id="connect-btn" onclick="connectHubSpot()">
+      Connect HubSpot Portal →
+    </button>
+    <div class="error-msg" id="error-msg">Please enter your email address to continue.</div>
+  </div>
+
+  <!-- What happens next -->
+  <div class="next-card">
+    <div class="next-title">What happens next</div>
+    <div class="next-item">
+      <div class="next-num">1</div>
+      <div class="next-text"><strong>Connect HubSpot</strong> — read-only OAuth takes 30 seconds. You approve exactly what we can see.</div>
+    </div>
+    <div class="next-item">
+      <div class="next-num">2</div>
+      <div class="next-text"><strong>Audit runs automatically</strong> — full scan of every object, all records, all 30 health checks. Usually 2–5 minutes.</div>
+    </div>
+    <div class="next-item">
+      <div class="next-num">3</div>
+      <div class="next-text"><strong>Results emailed to you</strong> — full report with health score, every issue found, fix guides, and dollar impact.</div>
+    </div>
+    <div class="next-item" id="next-extra">
+      <div class="next-num">4</div>
+      <div class="next-text"><strong>Strategy call scheduled</strong> — Matthew will email you within a few hours to book your call and walk through every finding.</div>
+    </div>
+  </div>
+
+  <div class="receipt-note">
+    A payment receipt has been sent to your email by Stripe.<br>
+    Questions? Email <span style="color:#a78bfa;">matthew@fixops.io</span>
+  </div>
+
+</div>
+
+<script data-cfasync="false">
+const API = 'https://fixops-api-production.up.railway.app';
+
+// Stars
+(()=>{
+  const c = document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random()<.15?2.5:1.5;
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;
+    c.appendChild(s);
+  }
+})();
+
+// Plan configs
+const PLANS = {
+  'pulse':     {label:'Pulse — $399/mo',      icon:'📡', callNote:false, desc:'Weekly monitoring starts after your first audit completes.'},
+  'pro':       {label:'Pro — $699/mo',         icon:'⚡', callNote:false, desc:'Daily monitoring across 3 portals begins after your audit.'},
+  'command':   {label:'Command — $1,299/mo',   icon:'🎯', callNote:false, desc:'Matthew will reach out within a few hours to complete your agency onboarding.'},
+  'deep':      {label:'Deep Audit — $299',     icon:'🔍', callNote:true,  desc:'Full audit runs instantly. Your 30-min strategy call will be scheduled by email.'},
+  'pro-audit': {label:'Pro Audit — $599',      icon:'🏆', callNote:true,  desc:'Full audit runs instantly. Your 60-min strategy call will be scheduled by email.'},
+};
+
+// Read plan from URL
+const params = new URLSearchParams(window.location.search);
+const planKey = params.get('plan') || 'pulse';
+const plan = PLANS[planKey] || PLANS['pulse'];
+
+// Set plan UI
+document.getElementById('plan-label').textContent = plan.label;
+document.getElementById('plan-icon').textContent = plan.icon;
+document.getElementById('plan-sub').textContent = 'Payment confirmed — now connect your HubSpot portal and we will run your full audit immediately. ' + plan.desc;
+
+// Hide strategy call step for monthly plans
+if(!plan.callNote) {
+  document.getElementById('next-extra').style.display = 'none';
+}
+
+async function connectHubSpot() {
+  const email = document.getElementById('email-input').value.trim();
+  const company = document.getElementById('company-input').value.trim() || 'My Company';
+  const errEl = document.getElementById('error-msg');
+  const btn = document.getElementById('connect-btn');
+
+  errEl.style.display = 'none';
+
+  if(!email || !email.includes('@')) {
+    errEl.textContent = 'Please enter a valid email address to continue.';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  btn.textContent = 'Connecting...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(API + '/auth/url', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        email,
+        company,
+        plan: planKey,
+        paid: true
+      })
+    });
+
+    const data = await res.json();
+
+    if(data.url) {
+      // Save email/plan to sessionStorage so confirm.html can use it
+      sessionStorage.setItem('fo_email', email);
+      sessionStorage.setItem('fo_company', company);
+      sessionStorage.setItem('fo_plan', planKey);
+      sessionStorage.setItem('fo_paid', 'true');
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'Could not get auth URL');
+    }
+  } catch(err) {
+    console.error(err);
+    btn.textContent = 'Connect HubSpot Portal →';
+    btn.disabled = false;
+    errEl.textContent = 'Connection error — please try again or email matthew@fixops.io';
+    errEl.style.display = 'block';
+  }
+}
+
+// Allow Enter key to submit
+document.getElementById('email-input').addEventListener('keydown', function(e) {
+  if(e.key === 'Enter') connectHubSpot();
+});
+document.getElementById('company-input').addEventListener('keydown', function(e) {
+  if(e.key === 'Enter') connectHubSpot();
+});
+</script>
+</body>
+</html>
