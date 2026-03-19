@@ -212,15 +212,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API = 'https://fixops-api-production.up.railway.app';
-const P   = new URLSearchParams(window.location.search);
+const P = new URLSearchParams(window.location.search);
 const auditId = P.get('id');
 let AUDIT_DATA = null;
 
 // Stars
-(()=>{const c=document.getElementById('stars');for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.15?2.5:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
+(function(){
+  var c = document.getElementById('stars');
+  for(var i=0;i<80;i++){
+    var s = document.createElement('div');
+    s.className = 'star';
+    var sz = Math.random()<.15?2.5:1.5;
+    s.style.cssText = 'left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+sz+'px;height:'+sz+'px;--d:'+(2+Math.random()*6)+'s;--dl:-'+Math.random()*6+'s';
+    c.appendChild(s);
+  }
+})();
 
 // Dimension config
-const DM = {
+var DM = {
   dataIntegrity:    {l:'Data Integrity',    e:'🗄️'},
   automationHealth: {l:'Automation Health', e:'⚙️'},
   pipelineIntegrity:{l:'Pipeline',          e:'📊'},
@@ -239,320 +248,328 @@ if(!auditId) {
 
 function loadWithRetry(id, attempt) {
   attempt = attempt || 0;
-  const maxAttempts = 150;
-  const elapsed = Math.round((attempt * 8) / 60);
+  var maxAttempts = 150;
+  var elapsed = Math.round((attempt * 8) / 60);
 
   if(attempt === 0) {
-    document.getElementById('load-msg').textContent = 'Loading your results…';
-    document.getElementById('load-sub').textContent = 'Fetching audit data…';
+    document.getElementById('load-msg').textContent = 'Loading your results...';
+    document.getElementById('load-sub').textContent = 'Fetching audit data...';
   } else if(attempt < 4) {
-    document.getElementById('load-sub').textContent = 'Audit in progress — results arriving shortly…';
+    document.getElementById('load-sub').textContent = 'Audit in progress — results arriving shortly...';
   } else {
-    document.getElementById('load-msg').textContent = 'Still scanning your portal…';
-    document.getElementById('load-sub').textContent = `Large portal detected — ${elapsed > 0 ? elapsed + ' min elapsed · ' : ''}your results will be emailed when complete`;
+    document.getElementById('load-msg').textContent = 'Still scanning your portal...';
+    document.getElementById('load-sub').textContent = 'Large portal detected' + (elapsed > 0 ? ' — ' + elapsed + ' min elapsed' : '') + ' · check your email when complete';
   }
 
   if(attempt > 0) {
-    document.getElementById('load-attempt').textContent = `Checking every 8 seconds${elapsed > 0 ? ' · ' + elapsed + ' min elapsed' : ''}`;
+    document.getElementById('load-attempt').textContent = 'Checking every 8 seconds' + (elapsed > 0 ? ' · ' + elapsed + ' min elapsed' : '');
   }
 
-  fetch(`${API}/audit/status/${id}`, {cache:'no-store'})
-    .then(r => { if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(data => {
-      console.log(`Status: ${data.status} attempt: ${attempt}`);
+  fetch(API + '/audit/status/' + id, {cache:'no-store'})
+    .then(function(r) {
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(data) {
+      console.log('Status:', data.status, 'attempt:', attempt);
       if(data.status === 'complete') {
         showResults(data);
       } else if(data.status === 'error') {
         showError(data.message || 'Audit failed. Please contact matthew@fixops.io');
       } else {
-        if(attempt < maxAttempts) setTimeout(() => loadWithRetry(id, attempt + 1), 8000);
-        else showError('Your audit is still running. You will receive an email when complete. Contact matthew@fixops.io with any questions.');
+        if(attempt < maxAttempts) {
+          setTimeout(function(){ loadWithRetry(id, attempt + 1); }, 8000);
+        } else {
+          showError('Your audit is still running. You will receive an email when complete. Contact matthew@fixops.io with questions.');
+        }
       }
     })
-    .catch(() => {
-      if(attempt < maxAttempts) setTimeout(() => loadWithRetry(id, attempt + 1), 8000);
-      else showError('Could not connect. Check your email for results or contact matthew@fixops.io');
+    .catch(function(err) {
+      console.error('Fetch error:', err.message);
+      if(attempt < maxAttempts) {
+        setTimeout(function(){ loadWithRetry(id, attempt + 1); }, 8000);
+      } else {
+        showError('Could not connect. Check your email for results or contact matthew@fixops.io');
+      }
     });
 }
 
 function showError(msg) {
-  document.getElementById('loading').style.display    = 'none';
+  document.getElementById('loading').style.display = 'none';
   document.getElementById('error-state').style.display = 'block';
   document.getElementById('err-msg').textContent = msg;
 }
 
-// Sanitize text to prevent template literal and HTML injection issues
-function san(str) {
+function esc(str) {
   if(!str) return '';
-  var s = String(str);
-  s = s.replace(/&/g,'&amp;');
-  s = s.replace(/</g,'&lt;');
-  s = s.replace(/>/g,'&gt;');
-  s = s.replace(/"/g,'&quot;');
-  // Remove backticks entirely - they break template literals
-  s = s.split(String.fromCharCode(96)).join("'");
-  return s;
+  var d = document.createElement('div');
+  d.textContent = String(str);
+  return d.innerHTML;
 }
 
 function showResults(data) {
-  try {
   AUDIT_DATA = data;
+  console.log('showResults called, issues:', data.issues ? data.issues.length : 0);
+
   document.getElementById('loading').style.display = 'none';
   document.getElementById('results').style.display = 'block';
   document.getElementById('pdf-btn').classList.add('show');
 
-  const {summary, scores, issues} = data;
-  const col = summary.overallScore >= 80 ? '#10b981' : summary.overallScore >= 60 ? '#f59e0b' : '#f43f5e';
-  const grade = summary.overallScore >= 85 ? 'Excellent' : summary.overallScore >= 70 ? 'Good' : summary.overallScore >= 55 ? 'Needs Attention' : 'Critical';
+  var summary = data.summary || {};
+  var scores = data.scores || {};
+  var issues = data.issues || [];
+  var portalInfo = data.portalInfo || {};
+
+  var overallScore = summary.overallScore || 0;
+  var col = overallScore >= 80 ? '#10b981' : overallScore >= 60 ? '#f59e0b' : '#f43f5e';
+  var grade = overallScore >= 85 ? 'Excellent' : overallScore >= 70 ? 'Good' : overallScore >= 55 ? 'Needs Attention' : 'Critical';
 
   // Score ring
-  document.getElementById('score-ring').style.background =
-    `conic-gradient(${col} 0% ${summary.overallScore}%, #10101a ${summary.overallScore}% 100%)`;
-  document.getElementById('score-num').textContent = summary.overallScore;
+  var ring = document.getElementById('score-ring');
+  ring.style.background = 'conic-gradient(' + col + ' 0% ' + overallScore + '%, #10101a ' + overallScore + '% 100%)';
+  document.getElementById('score-num').textContent = overallScore;
   document.getElementById('score-num').style.color = col;
-  const badge = document.getElementById('score-badge');
+  var badge = document.getElementById('score-badge');
   badge.textContent = grade;
-  badge.style.cssText = `display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;margin-top:6px;background:${col}18;color:${col};border:1px solid ${col}44;`;
+  badge.style.cssText = 'display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;margin-top:6px;background:' + col + '18;color:' + col + ';border:1px solid ' + col + '44;';
 
   // Portal stats bar
-  const ps = data.portalInfo?.portalStats || {};
-  const statsItems = [
-    ps.contacts  && `${ps.contacts.toLocaleString()} contacts`,
-    ps.companies && `${ps.companies.toLocaleString()} companies`,
-    ps.deals     && `${ps.deals.toLocaleString()} deals`,
-    ps.tickets   && ps.tickets > 0 && `${ps.tickets} tickets`,
-    ps.tasks     && ps.tasks > 0 && `${ps.tasks} tasks`,
-    ps.meetings  && ps.meetings > 0 && `${ps.meetings} meetings`,
-    ps.calls     && ps.calls > 0 && `${ps.calls} calls`,
-    ps.workflows !== undefined && `${ps.workflows} workflows`,
-    ps.forms     && ps.forms > 0 && `${ps.forms} forms`,
-    ps.users     && ps.users > 0 && `${ps.users} users`,
-    ps.quotes    && ps.quotes > 0 && `${ps.quotes} quotes`,
-    ps.lineItems && ps.lineItems > 0 && `${ps.lineItems} line items`,
-    ps.products  && ps.products > 0 && `${ps.products} products`,
-    ps.lists     && ps.lists > 0 && `${ps.lists} lists`,
-  ].filter(Boolean);
-  if(statsItems.length) {
-    const bar = document.createElement('div');
+  var ps = portalInfo.portalStats || {};
+  var items = [];
+  if(ps.contacts) items.push(Number(ps.contacts).toLocaleString() + ' contacts');
+  if(ps.companies) items.push(Number(ps.companies).toLocaleString() + ' companies');
+  if(ps.deals) items.push(Number(ps.deals).toLocaleString() + ' deals');
+  if(ps.tickets) items.push(ps.tickets + ' tickets');
+  if(ps.tasks) items.push(ps.tasks + ' tasks');
+  if(ps.meetings) items.push(ps.meetings + ' meetings');
+  if(ps.calls) items.push(ps.calls + ' calls');
+  if(ps.workflows !== undefined) items.push(ps.workflows + ' workflows');
+  if(ps.forms) items.push(ps.forms + ' forms');
+  if(ps.users) items.push(ps.users + ' users');
+  if(ps.quotes) items.push(ps.quotes + ' quotes');
+
+  if(items.length) {
+    var bar = document.createElement('div');
     bar.style.cssText = 'font-size:11px;color:rgba(255,255,255,.22);font-family:var(--mono);margin-bottom:16px;padding:9px 13px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.05);line-height:1.8;';
-    bar.innerHTML = '📊 Portal snapshot: ' + statsItems.join(' &nbsp;·&nbsp; ');
-    document.querySelector('.score-right h1').before(bar);
+    bar.textContent = '📊 Portal snapshot: ' + items.join(' · ');
+    var h1 = document.querySelector('.score-right h1');
+    if(h1) h1.before(bar);
   }
 
   // Stats chips
-  document.getElementById('stats-row').innerHTML = `
-    <div class="stat" style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18)"><div class="stat-n" style="color:#f43f5e">${summary.criticalCount}</div><div class="stat-l">Critical</div></div>
-    <div class="stat" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18)"><div class="stat-n" style="color:#f59e0b">${summary.warningCount}</div><div class="stat-l">Warnings</div></div>
-    <div class="stat" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18)"><div class="stat-n" style="color:#a78bfa">$${(summary.monthlyWaste||0).toLocaleString()}</div><div class="stat-l">Est. Waste/mo</div></div>
-    <div class="stat" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18)"><div class="stat-n" style="color:#10b981">${(summary.recordsScanned||0).toLocaleString()}</div><div class="stat-l">Records Scanned</div></div>
-    <div class="stat" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)"><div class="stat-n" style="color:rgba(255,255,255,.5)">${summary.checksRun||30}</div><div class="stat-l">Checks Run</div></div>`;
+  var recordsScanned = summary.recordsScanned || 0;
+  document.getElementById('stats-row').innerHTML =
+    '<div class="stat" style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18)"><div class="stat-n" style="color:#f43f5e">' + (summary.criticalCount||0) + '</div><div class="stat-l">Critical</div></div>' +
+    '<div class="stat" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18)"><div class="stat-n" style="color:#f59e0b">' + (summary.warningCount||0) + '</div><div class="stat-l">Warnings</div></div>' +
+    '<div class="stat" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18)"><div class="stat-n" style="color:#a78bfa">$' + Number(summary.monthlyWaste||0).toLocaleString() + '</div><div class="stat-l">Est. Waste/mo</div></div>' +
+    '<div class="stat" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18)"><div class="stat-n" style="color:#10b981">' + Number(recordsScanned).toLocaleString() + '</div><div class="stat-l">Records Scanned</div></div>';
 
-  // Dimensions
-  document.getElementById('dim-grid').innerHTML = Object.entries(scores||{}).map(([k,v])=>{
-    const d = DM[k]||{l:k,e:'⬡'};
-    const c = v>=80?'#10b981':v>=60?'#f59e0b':'#f43f5e';
-    return `<div class="dim-card"><div class="dim-emo">${d.e}</div><div class="dim-name">${d.l}</div><div class="dim-score" style="color:${c}">${v}</div><div class="dim-bar-t"><div class="dim-bar-f" style="width:${v}%;background:${c}"></div></div></div>`;
-  }).join('');
+  // Dimension grid
+  var dimHtml = '';
+  var scoreKeys = Object.keys(scores);
+  for(var ki=0; ki<scoreKeys.length; ki++) {
+    var k = scoreKeys[ki];
+    var v = scores[k];
+    var d = DM[k] || {l:k, e:'⬡'};
+    var c = v>=80?'#10b981':v>=60?'#f59e0b':'#f43f5e';
+    dimHtml += '<div class="dim-card"><div class="dim-emo">' + d.e + '</div><div class="dim-name">' + d.l + '</div><div class="dim-score" style="color:' + c + '">' + v + '</div><div class="dim-bar-t"><div class="dim-bar-f" style="width:' + v + '%;background:' + c + '"></div></div></div>';
+  }
+  document.getElementById('dim-grid').innerHTML = dimHtml;
 
   // Issues
-  const sorted = [...(issues||[])].sort((a,b)=>({critical:0,warning:1,info:2}[a.severity]||3)-({critical:0,warning:1,info:2}[b.severity]||3));
-  document.getElementById('issues-header').textContent = `${sorted.length} Issue${sorted.length!==1?'s':''} Found — ${summary.criticalCount} Critical, ${summary.warningCount} Warnings`;
+  var sorted = issues.slice().sort(function(a,b){
+    var order = {critical:0, warning:1, info:2};
+    return (order[a.severity]||3) - (order[b.severity]||3);
+  });
 
-  document.getElementById('issue-list').innerHTML = sorted.map((issue, idx) => {
-    const sc  = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#a78bfa';
-    const scC = issue.severity==='critical'?'sev-c':issue.severity==='warning'?'sev-w':'sev-i';
-    const guides = (issue.guide||[]).map((s,i)=>`<div class="guide-step"><div class="step-num">${i+1}</div><div>${san(s)}</div></div>`).join('');
-    const detailBlock = issue.detail ? `<div class="detail-block"><div class="detail-label">🔍 Why This Matters</div><div class="detail-text">${san(issue.detail)}</div></div>` : '';
-    const autoBtn = issue.autoFixable ? `<button class="act-btn btn-autofix" onclick="event.stopPropagation();autoFix(${idx})">⚡ Auto-Fix Available</button>` : '';
-    const titleSafe = (issue.title||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  document.getElementById('issues-header').textContent = sorted.length + ' Issue' + (sorted.length!==1?'s':'') + ' Found — ' + (summary.criticalCount||0) + ' Critical, ' + (summary.warningCount||0) + ' Warnings';
 
-    return `<div class="issue-card" id="ic-${idx}" onclick="toggleIssue(${idx})">
-      <div class="issue-top">
-        <div class="sev-bar" style="background:${sc}"></div>
-        <div class="i-body">
-          <div class="i-header">
-            <div class="i-title">${san(issue.title)}</div>
-            <div class="sev-tag ${scC}">${(issue.severity||'').toUpperCase()}</div>
-          </div>
-          <div class="i-desc">${san(issue.description)}</div>
-          <div class="i-impact"><span>💸</span><span>${san(issue.impact)}</span>${issue.dimension?`<span class="i-dim">${issue.dimension}</span>`:''}</div>
-        </div>
-        <div class="i-arrow">▾</div>
-      </div>
-      <div class="issue-expand">
-        ${detailBlock}
-        ${guides?`<div class="guide-block"><div class="guide-label">✓ Best Practice Fix Guide</div><div class="guide-steps">${guides}</div></div>`:''}
-        <div class="action-btns">
-          ${autoBtn}
-          <button class="act-btn btn-fixme" onclick="event.stopPropagation();fixItForMe(${idx})">🛠 Fix It For Me</button>
-          <button class="act-btn btn-call" onclick="event.stopPropagation();bookCall(${idx})">📅 Discuss on a Call</button>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-  } catch(err) {
-    console.error('showResults error:', err);
-    // Show error with details
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('results').style.display = 'block';
-    var errDiv = document.createElement('div');
-    errDiv.style.cssText = 'background:#1a0a0a;border:1px solid #f43f5e;border-radius:12px;padding:24px;margin:20px 0;color:#f43f5e;font-family:monospace;font-size:13px;';
-    errDiv.innerHTML = '<strong>Render error — please share this with matthew@fixops.io:</strong><br><br>' + err.toString();
-    document.getElementById('issue-list').before(errDiv);
+  // Build issue cards using DOM - NO template literals
+  var list = document.getElementById('issue-list');
+  list.innerHTML = '';
+
+  for(var ii=0; ii<sorted.length; ii++) {
+    var issue = sorted[ii];
+    var idx = ii;
+    var sc = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#a78bfa';
+    var scC = issue.severity==='critical'?'sev-c':issue.severity==='warning'?'sev-w':'sev-i';
+
+    var card = document.createElement('div');
+    card.className = 'issue-card';
+    card.id = 'ic-' + idx;
+    card.onclick = (function(i){ return function(){ toggleIssue(i); }; })(idx);
+
+    // Build guide steps HTML safely
+    var guidesHtml = '';
+    var guide = issue.guide || [];
+    for(var gi=0; gi<guide.length; gi++) {
+      guidesHtml += '<div class="guide-step"><div class="step-num">' + (gi+1) + '</div><div>' + esc(guide[gi]) + '</div></div>';
+    }
+
+    var detailHtml = issue.detail ? '<div class="detail-block"><div class="detail-label">🔍 Why This Matters</div><div class="detail-text">' + esc(issue.detail) + '</div></div>' : '';
+    var guideHtml = guidesHtml ? '<div class="guide-block"><div class="guide-label">✓ Best Practice Fix Guide</div><div class="guide-steps">' + guidesHtml + '</div></div>' : '';
+    var autoBtn = issue.autoFixable ? '<button class="act-btn btn-autofix" onclick="event.stopPropagation();autoFix(' + idx + ')">⚡ Auto-Fix Available</button>' : '';
+
+    card.innerHTML =
+      '<div class="issue-top">' +
+        '<div class="sev-bar" style="background:' + sc + '"></div>' +
+        '<div class="i-body">' +
+          '<div class="i-header">' +
+            '<div class="i-title">' + esc(issue.title) + '</div>' +
+            '<div class="sev-tag ' + scC + '">' + (issue.severity||'').toUpperCase() + '</div>' +
+          '</div>' +
+          '<div class="i-desc">' + esc(issue.description) + '</div>' +
+          '<div class="i-impact"><span>💸</span><span>' + esc(issue.impact) + '</span>' + (issue.dimension ? '<span class="i-dim">' + esc(issue.dimension) + '</span>' : '') + '</div>' +
+        '</div>' +
+        '<div class="i-arrow">▾</div>' +
+      '</div>' +
+      '<div class="issue-expand">' +
+        detailHtml +
+        guideHtml +
+        '<div class="action-btns">' +
+          autoBtn +
+          '<button class="act-btn btn-fixme" onclick="event.stopPropagation();fixItForMe(' + idx + ')">🛠 Fix It For Me</button>' +
+          '<button class="act-btn btn-call" onclick="event.stopPropagation();bookCall(' + idx + ')">📅 Discuss on a Call</button>' +
+        '</div>' +
+      '</div>';
+
+    list.appendChild(card);
   }
+
+  // CTA section
+  document.querySelector('.cta-section').style.display = 'block';
+  console.log('showResults complete - rendered ' + sorted.length + ' issues');
 }
 
 function toggleIssue(idx) {
-  const c = document.getElementById(`ic-${idx}`);
-  const was = c.classList.contains('open');
-  document.querySelectorAll('.issue-card').forEach(x=>x.classList.remove('open'));
+  var c = document.getElementById('ic-' + idx);
+  var was = c.classList.contains('open');
+  var all = document.querySelectorAll('.issue-card');
+  for(var i=0;i<all.length;i++) all[i].classList.remove('open');
   if(!was) c.classList.add('open');
 }
 
 async function autoFix(idx) {
-  const issue = AUDIT_DATA?.issues?.[idx];
+  var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
   if(!issue) return;
-
-  showToast('⚡','Sending Auto-Fix Request…','Notifying Matthew');
-
+  showToast('⚡','Sending Auto-Fix Request...','Notifying Matthew');
   try {
-    const res = await fetch(`${API}/fix-request`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    var res = await fetch(API + '/fix-request', {
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        issueTitle:     '⚡ AUTO-FIX: ' + issue.title,
-        issueImpact:    issue.impact,
-        issueDimension: issue.dimension,
-        portalCompany:  AUDIT_DATA?.portalInfo?.company,
-        portalEmail:    AUDIT_DATA?.portalInfo?.email,
-        auditId:        AUDIT_DATA?.auditId
+        issueTitle: '⚡ AUTO-FIX: ' + issue.title,
+        issueImpact: issue.impact, issueDimension: issue.dimension,
+        portalCompany: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.company,
+        portalEmail: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.email,
+        auditId: AUDIT_DATA.auditId
       })
     });
-    const data = await res.json();
-    if(data.success) {
-      showToast('⚡','Auto-Fix Requested!','Matthew will apply this fix within 24 hours · matthew@fixops.io');
-      const card = document.getElementById(`ic-${idx}`);
-      const btn = card?.querySelector('.btn-autofix');
-      if(btn) { btn.textContent = '✅ Fix Requested'; btn.disabled = true; btn.style.opacity = '0.6'; }
-    } else {
-      throw new Error(data.error);
-    }
-  } catch(e) {
-    showToast('📧','Email Matthew',`matthew@fixops.io — Auto-Fix: ${(issue.title||'').substring(0,40)}`);
-  }
+    var d = await res.json();
+    if(d.success) {
+      showToast('⚡','Auto-Fix Requested!','Matthew will apply this fix — matthew@fixops.io');
+      var btn = document.querySelector('#ic-' + idx + ' .btn-autofix');
+      if(btn){ btn.textContent='✅ Requested'; btn.disabled=true; btn.style.opacity='0.6'; }
+    } else { throw new Error(d.error); }
+  } catch(e) { showToast('📧','Email Matthew','matthew@fixops.io'); }
 }
 
 async function fixItForMe(idx) {
-  const issue = AUDIT_DATA?.issues?.[idx];
+  var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
   if(!issue) return;
-
-  showToast('🛠','Sending Request…','Notifying Matthew about this issue');
-
+  showToast('🛠','Sending Request...','Notifying Matthew about this issue');
   try {
-    const res = await fetch(`${API}/fix-request`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    var res = await fetch(API + '/fix-request', {
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        issueTitle:     issue.title,
-        issueImpact:    issue.impact,
+        issueTitle: issue.title, issueImpact: issue.impact,
         issueDimension: issue.dimension,
-        portalCompany:  AUDIT_DATA?.portalInfo?.company,
-        portalEmail:    AUDIT_DATA?.portalInfo?.email,
-        auditId:        AUDIT_DATA?.auditId
+        portalCompany: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.company,
+        portalEmail: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.email,
+        auditId: AUDIT_DATA.auditId
       })
     });
-    const data = await res.json();
-    if(data.success) {
-      showToast('✅','Request Sent!',`Matthew has been notified and will scope and quote within 4 hours · matthew@fixops.io`);
-      // Update button to show sent
-      const card = document.getElementById(`ic-${idx}`);
-      const btn = card?.querySelector('.btn-fixme');
-      if(btn) { btn.textContent = '✅ Request Sent'; btn.disabled = true; btn.style.opacity = '0.6'; }
-    } else {
-      throw new Error(data.error || 'Request failed');
-    }
-  } catch(e) {
-    console.error('Fix request error:', e);
-    showToast('📧','Email Matthew Directly',`matthew@fixops.io — subject: Fix It For Me: ${(issue.title||'').substring(0,40)}`);
-  }
+    var d = await res.json();
+    if(d.success) {
+      showToast('✅','Request Sent!','Matthew will scope and quote within a few hours · matthew@fixops.io');
+      var btn = document.querySelector('#ic-' + idx + ' .btn-fixme');
+      if(btn){ btn.textContent='✅ Request Sent'; btn.disabled=true; btn.style.opacity='0.6'; }
+    } else { throw new Error(d.error); }
+  } catch(e) { showToast('📧','Email Matthew Directly','matthew@fixops.io'); }
 }
 
 function bookCall(idx) {
-  showToast('📅','Opening Calendly…','Book a time to discuss this issue with Matthew');
-  setTimeout(()=>window.open('https://calendly.com/matthew-fixops/30min','_blank'),600);
+  showToast('📅','Opening Calendly...','Book a time to discuss with Matthew');
+  setTimeout(function(){ window.open('https://calendly.com/matthew-fixops/30min','_blank'); }, 600);
 }
 
-// PDF Download
 function downloadPDF() {
-  if(!AUDIT_DATA){showToast('⚠️','No data','Please wait for results to load');return;}
-  showToast('📄','Generating PDF…','Your branded report is being created');
-  const {jsPDF}=window.jspdf;
-  const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-  const {summary,scores,issues,portalInfo}=AUDIT_DATA;
-  const W=210,M=20,CW=170;let y=20;
-  const bg=(...c)=>doc.setFillColor(...c);
-  const tc=(...c)=>doc.setTextColor(...c);
-  const fs=s=>doc.setFontSize(s);
-  const fw=w=>doc.setFont('helvetica',w);
-  const bx=(x,yy,w,h,r)=>r?doc.roundedRect(x,yy,w,h,r,r,'F'):doc.rect(x,yy,w,h,'F');
-  bg(4,4,10);bx(0,0,W,297);
-  bg(12,12,20);bx(0,0,W,52);
-  bg(124,58,237);doc.roundedRect(M,13,26,26,4,4,'F');
-  tc(255,255,255);fs(13);fw('bold');doc.text('FO',M+6,29);
-  fs(18);doc.text('FixOps.io',M+34,25);
-  fs(8);fw('normal');tc(167,139,250);doc.text('HubSpot Intelligence Platform',M+34,32);
-  fs(7);fw('bold');tc(124,58,237);doc.text('PORTAL HEALTH AUDIT REPORT',M+34,38);
-  tc(120,120,150);fs(8);fw('normal');doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,24,{align:'right'});
-  tc(167,139,250);doc.text(portalInfo?.company||'Your Portal',W-M,32,{align:'right'});
+  if(!AUDIT_DATA){ showToast('⚠️','No data','Please wait for results to load'); return; }
+  showToast('📄','Generating PDF...','Your branded report is being created');
+  var jsPDF = window.jspdf && window.jspdf.jsPDF;
+  if(!jsPDF){ showToast('⚠️','PDF Error','Please refresh and try again'); return; }
+  var doc = new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+  var data = AUDIT_DATA;
+  var summary = data.summary || {};
+  var issues = data.issues || [];
+  var portalInfo = data.portalInfo || {};
+  var W=210, M=20, y=20;
+
+  // Header
+  doc.setFillColor(4,4,10); doc.rect(0,0,W,297,'F');
+  doc.setFillColor(12,12,20); doc.rect(0,0,W,52,'F');
+  doc.setFillColor(124,58,237); doc.roundedRect(M,13,26,26,4,4,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(13); doc.setFont('helvetica','bold'); doc.text('FO',M+6,29);
+  doc.setFontSize(18); doc.text('FixOps.io',M+34,25);
+  doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(167,139,250); doc.text('PORTAL HEALTH AUDIT REPORT',M+34,38);
+  doc.setTextColor(120,120,150); doc.setFontSize(8); doc.text(new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),W-M,24,{align:'right'});
+  doc.text(portalInfo.company||'Your Portal',W-M,32,{align:'right'});
+
   y=64;
-  const sc=summary.overallScore>=80?[16,185,129]:summary.overallScore>=60?[245,158,11]:[244,63,94];
-  bg(18,18,40);bx(M,y,CW,40,4);
-  fs(34);fw('bold');tc(...sc);doc.text(String(summary.overallScore),M+12,y+26);
-  fs(13);tc(100,100,140);doc.text('/100',M+30,y+26);
-  const g=summary.overallScore>=85?'Excellent':summary.overallScore>=70?'Good':summary.overallScore>=55?'Needs Attention':'Critical';
-  fs(11);fw('bold');tc(...sc);doc.text(g,M+50,y+14);
-  fs(8);fw('normal');tc(244,63,94);doc.text(`${summary.criticalCount} Critical Issues`,M+50,y+22);
-  tc(245,158,11);doc.text(`${summary.warningCount} Warnings`,M+50,y+29);
-  tc(167,139,250);doc.text(`$${(summary.monthlyWaste||0).toLocaleString()}/mo estimated waste`,M+50,y+36);
-  y+=50;
-  tc(124,58,237);fs(7);fw('bold');doc.text('HEALTH DIMENSIONS',M,y);y+=6;
-  const des=Object.entries(scores||{});const cw=(CW-4)/2;
-  des.forEach(([k,v],i)=>{
-    const col=i%2,row=Math.floor(i/2),dx=M+col*(cw+4),dy=y+row*14;
-    bg(18,18,40);bx(dx,dy,cw,12,2);
-    const dm=DM[k]||{l:k};tc(160,160,185);fs(7);fw('normal');doc.text(dm.l,dx+3,dy+8);
-    const c=v>=80?[16,185,129]:v>=60?[245,158,11]:[244,63,94];
-    tc(...c);fw('bold');doc.text(String(v),dx+cw-3,dy+8,{align:'right'});
-    bg(28,28,48);bx(dx+3,dy+10,cw-6,1.5);bg(...c);bx(dx+3,dy+10,(cw-6)*v/100,1.5);
-  });
-  y+=Math.ceil(des.length/2)*14+10;
-  if(y>235){doc.addPage();bg(4,4,10);bx(0,0,W,297);y=20;}
-  tc(124,58,237);fs(7);fw('bold');doc.text('ISSUES FOUND',M,y);y+=6;
-  const si=[...(issues||[])].sort((a,b)=>({critical:0,warning:1,info:2}[a.severity]||3)-({critical:0,warning:1,info:2}[b.severity]||3));
-  si.slice(0,8).forEach(issue=>{
-    if(y>252){doc.addPage();bg(4,4,10);bx(0,0,W,297);y=20;}
-    const sv=issue.severity==='critical'?[244,63,94]:issue.severity==='warning'?[245,158,11]:[167,139,250];
-    bg(18,18,40);bx(M,y,CW,22,2);bg(...sv);bx(M,y,2,22);
-    fs(7);fw('bold');tc(...sv);doc.text((issue.severity||'').toUpperCase(),M+5,y+7);
-    const tl=doc.splitTextToSize(issue.title||'',CW-14);
-    fs(8.5);fw('bold');tc(240,240,250);doc.text(tl[0],M+5,y+14);
-    fs(7);fw('normal');tc(245,158,11);doc.text('$ '+(issue.impact||'').substring(0,80),M+5,y+20);
+  var sc=summary.overallScore>=80?[16,185,129]:summary.overallScore>=60?[245,158,11]:[244,63,94];
+  doc.setFillColor(18,18,40); doc.roundedRect(M,y,170,40,4,4,'F');
+  doc.setFontSize(34); doc.setFont('helvetica','bold'); doc.setTextColor(sc[0],sc[1],sc[2]); doc.text(String(summary.overallScore||0),M+12,y+26);
+  doc.setFontSize(13); doc.setTextColor(100,100,140); doc.text('/100',M+30,y+26);
+  var grade=summary.overallScore>=85?'Excellent':summary.overallScore>=70?'Good':summary.overallScore>=55?'Needs Attention':'Critical';
+  doc.setFontSize(11); doc.setFont('helvetica','bold'); doc.setTextColor(sc[0],sc[1],sc[2]); doc.text(grade,M+50,y+14);
+  doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(244,63,94); doc.text((summary.criticalCount||0)+' Critical Issues',M+50,y+22);
+  doc.setTextColor(245,158,11); doc.text((summary.warningCount||0)+' Warnings',M+50,y+29);
+  doc.setTextColor(167,139,250); doc.text('$'+Number(summary.monthlyWaste||0).toLocaleString()+'/mo estimated waste',M+50,y+36);
+  y+=52;
+
+  // Issues
+  doc.setTextColor(124,58,237); doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.text('ISSUES FOUND',M,y); y+=6;
+  var si = issues.slice().sort(function(a,b){var o={critical:0,warning:1,info:2};return (o[a.severity]||3)-(o[b.severity]||3);});
+  for(var i=0;i<Math.min(si.length,10);i++){
+    if(y>252){doc.addPage();doc.setFillColor(4,4,10);doc.rect(0,0,W,297,'F');y=20;}
+    var iss=si[i];
+    var sv=iss.severity==='critical'?[244,63,94]:iss.severity==='warning'?[245,158,11]:[167,139,250];
+    doc.setFillColor(18,18,40); doc.roundedRect(M,y,170,22,2,2,'F');
+    doc.setFillColor(sv[0],sv[1],sv[2]); doc.rect(M,y,2,22,'F');
+    doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(sv[0],sv[1],sv[2]); doc.text((iss.severity||'').toUpperCase(),M+5,y+7);
+    var tl=doc.splitTextToSize(iss.title||'',158); doc.setFontSize(8.5); doc.setTextColor(240,240,250); doc.text(tl[0],M+5,y+14);
+    doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(245,158,11); doc.text((iss.impact||'').substring(0,80),M+5,y+20);
     y+=26;
-  });
-  y=Math.max(y+8,258);
-  if(y>270){doc.addPage();bg(4,4,10);bx(0,0,W,297);y=258;}
-  bg(18,18,40);bx(M,y,CW,28,3);
-  fs(10);fw('bold');tc(255,255,255);doc.text('Ready to fix these issues?',M+7,y+9);
-  fs(7);fw('normal');tc(167,139,250);doc.text('calendly.com/matthew-fixops/30min — free 30-min strategy call',M+7,y+16);
-  tc(100,100,140);doc.text('matthew@fixops.io · fixops.io · HubSpot Systems. Fixed.',M+7,y+22);
-  const co=(portalInfo?.company||'Portal').replace(/[^a-zA-Z0-9]/g,'-');
-  doc.save(`FixOps-Report-${co}-${new Date().toISOString().split('T')[0]}.pdf`);
+  }
+
+  y=Math.max(y+8,260);
+  doc.setFillColor(18,18,40); doc.roundedRect(M,y,170,28,3,3,'F');
+  doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255); doc.text('Ready to fix these issues?',M+7,y+9);
+  doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(167,139,250); doc.text('calendly.com/matthew-fixops/30min',M+7,y+16);
+  doc.setTextColor(100,100,140); doc.text('matthew@fixops.io · fixops.io · HubSpot Systems. Fixed.',M+7,y+22);
+
+  var co=(portalInfo.company||'Portal').replace(/[^a-zA-Z0-9]/g,'-');
+  doc.save('FixOps-Report-'+co+'-'+new Date().toISOString().split('T')[0]+'.pdf');
   showToast('✅','PDF Downloaded','Your branded FixOps audit report has been saved');
 }
 
-let toastTimer;
+var toastTimer;
 function showToast(ico,title,sub){
   document.getElementById('t-ico').textContent=ico;
   document.getElementById('t-title').textContent=title;
   document.getElementById('t-sub').textContent=sub;
-  docume
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(hideToast,7000);
+}
+function hideToast(){ document.getElementById('toast').classList.remove('show'); }
+e
