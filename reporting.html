@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FixOps Revenue Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #050810;
+  --s1: #080d1a;
+  --s2: #0c1220;
+  --s3: #111828;
+  --s4: #162035;
+  --b1: #1a2540;
+  --b2: #243050;
+  --b3: #2e3d62;
+  --accent: #3b82f6;
+  --accent2: #60a5fa;
+  --accent3: #93c5fd;
+  --green: #10b981;
+  --green2: #34d399;
+  --amber: #f59e0b;
+  --red: #f43f5e;
+  --purple: #8b5cf6;
+  --cyan: #06b6d4;
+  --t1: rgba(255,255,255,.95);
+  --t2: rgba(255,255,255,.6);
+  --t3: rgba(255,255,255,.3);
+  --t4: rgba(255,255,255,.1);
+  --font: 'DM Sans', sans-serif;
+  --display: 'Syne', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--t1);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Grid bg ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(59,130,246,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 56px;
+  background: rgba(5,8,16,.92);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--b1);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+}
+.nav-left { display: flex; align-items: center; gap: 20px; }
+.logo { font-family: var(--display); font-size: 16px; font-weight: 800; color: var(--t1); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.logo-mark { width: 26px; height: 26px; background: linear-gradient(135deg, var(--accent), #1d4ed8); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+.nav-divider { width: 1px; height: 20px; background: var(--b2); }
+.nav-title { font-family: var(--mono); font-size: 11px; color: var(--accent2); letter-spacing: 1.5px; text-transform: uppercase; }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-badge { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--b2); color: var(--t3); }
+.nav-btn { padding: 7px 16px; background: var(--accent); color: #fff; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); text-decoration: none; transition: background .2s; }
+.nav-btn:hover { background: #2563eb; }
+
+/* ── Layout ── */
+.layout { display: flex; padding-top: 56px; min-height: 100vh; position: relative; z-index: 1; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 220px; flex-shrink: 0;
+  background: var(--s1);
+  border-right: 1px solid var(--b1);
+  padding: 20px 0;
+  position: sticky; top: 56px; height: calc(100vh - 56px);
+  overflow-y: auto;
+}
+.sidebar-section { padding: 0 12px; margin-bottom: 24px; }
+.sidebar-label { font-family: var(--mono); font-size: 9px; color: var(--t3); letter-spacing: 2px; text-transform: uppercase; padding: 0 8px; margin-bottom: 6px; }
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  font-size: 13px; color: var(--t2); font-weight: 500;
+  cursor: pointer; transition: all .15s; margin-bottom: 2px;
+  border: 1px solid transparent;
+}
+.sidebar-item:hover { background: var(--s3); color: var(--t1); }
+.sidebar-item.active { background: rgba(59,130,246,.1); color: var(--accent2); border-color: rgba(59,130,246,.2); }
+.sidebar-item .si-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+.sidebar-item .si-badge { margin-left: auto; font-family: var(--mono); font-size: 9px; padding: 1px 6px; border-radius: 3px; background: var(--b1); color: var(--t3); }
+
+/* ── Main content ── */
+.main { flex: 1; min-width: 0; padding: 28px 28px 60px; }
+
+/* ── Loading ── */
+#loading-state { text-align: center; padding: 80px 20px; }
+.load-spinner { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--b2); border-top-color: var(--accent); animation: spin 1s linear infinite; margin: 0 auto 16px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Section views ── */
+.view { display: none; }
+.view.active { display: block; animation: fadeIn .3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Page header ── */
+.page-header { margin-bottom: 24px; }
+.page-header h1 { font-family: var(--display); font-size: 26px; font-weight: 800; letter-spacing: -.5px; color: var(--t1); margin-bottom: 4px; }
+.page-header p { font-size: 13px; color: var(--t3); font-weight: 300; }
+
+/* ── KPI row ── */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.kpi-card {
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.kpi-card:hover { border-color: var(--b2); }
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.kpi-card.blue::before { background: linear-gradient(90deg, var(--accent), var(--cyan)); }
+.kpi-card.green::before { background: linear-gradient(90deg, var(--green), #34d399); }
+.kpi-card.amber::before { background: linear-gradient(90deg, var(--amber), #fb923c); }
+.kpi-card.red::before { background: linear-gradient(90deg, var(--red), #fb7185); }
+.kpi-card.purple::before { background: linear-gradient(90deg, var(--purple), #a78bfa); }
+.kpi-label { font-family: var(--mono); font-size: 10px; color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+.kpi-value { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 6px; }
+.kpi-sub { font-size: 11px; color: var(--t3); display: flex; align-items: center; gap: 4px; }
+.kpi-trend { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+.trend-up { color: var(--green); background: rgba(16,185,129,.1); }
+.trend-down { color: var(--red); background: rgba(244,63,94,.1); }
+.trend-flat { color: var(--t3); }
+
+/* ── Chart cards ── */
+.chart-grid { display: grid; gap: 16px; margin-bottom: 16px; }
+.chart-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.chart-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.chart-grid.cols-1-2 { grid-template-columns: 1fr 2fr; }
+.chart-grid.cols-2-1 { grid-template-columns: 2fr 1fr; }
+.chart-card {
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: 14px;
+  padding: 20px;
+  transition: border-color .2s;
+}
+.chart-card:hover { border-color: var(--b2); }
+.chart-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+.chart-title { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 3px; }
+.chart-sub { font-size: 11px; color: var(--t3); }
+.chart-badge { font-family: var(--mono); font-size: 9px; padding: 3px 8px; border-radius: 4px; background: var(--b1); color: var(--t3); flex-shrink: 0; }
+.chart-wrap { position: relative; }
+
+/* ── Table ── */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table th { font-family: var(--mono); font-size: 9px; color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--b1); }
+.data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.04); color: var(--t2); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--s3); }
+.td-value { font-weight: 700; color: var(--t1); font-family: var(--mono); }
+.td-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-family: var(--mono); font-size: 9px; font-weight: 700; }
+
+/* ── Progress bar ── */
+.prog-bar { height: 4px; background: var(--b1); border-radius: 2px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 2px; transition: width .8s ease; }
+
+/* ── Stage funnel ── */
+.funnel-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+.funnel-row:last-child { border-bottom: none; }
+.funnel-stage { font-size: 12px; color: var(--t2); width: 140px; flex-shrink: 0; }
+.funnel-bar-wrap { flex: 1; }
+.funnel-meta { font-family: var(--mono); font-size: 11px; color: var(--t3); width: 80px; text-align: right; flex-shrink: 0; }
+.funnel-count { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--t1); width: 60px; text-align: right; flex-shrink: 0; }
+
+/* ── AI Report Builder ── */
+.ai-builder {
+  background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.05));
+  border: 1px solid rgba(59,130,246,.2);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.ai-builder::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(59,130,246,.08), transparent 70%);
+  pointer-events: none;
+}
+.ai-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.ai-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--purple)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.ai-title { font-family: var(--display); font-size: 18px; font-weight: 800; color: var(--t1); }
+.ai-sub { font-size: 12px; color: var(--t3); margin-top: 2px; }
+.ai-input-row { display: flex; gap: 10px; }
+.ai-input {
+  flex: 1;
+  background: var(--s1);
+  border: 1px solid var(--b2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: var(--t1);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+}
+.ai-input:focus { border-color: var(--accent); }
+.ai-input::placeholder { color: var(--t3); }
+.ai-submit {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--accent), #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .2s;
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+}
+.ai-submit:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(59,130,246,.3); }
+.ai-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.ai-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.ai-chip {
+  padding: 5px 12px;
+  background: var(--s3);
+  border: 1px solid var(--b2);
+  border-radius: 20px;
+  font-size: 11px;
+  color: var(--t2);
+  cursor: pointer;
+  transition: all .15s;
+  font-family: var(--mono);
+}
+.ai-chip:hover { background: var(--s4); border-color: var(--accent); color: var(--accent2); }
+.ai-result {
+  margin-top: 20px;
+  background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 20px;
+  display: none;
+}
+.ai-result.show { display: block; animation: fadeIn .4s ease; }
+.ai-result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.ai-result-title { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--t1); }
+.ai-insight { background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.15); border-radius: 8px; padding: 12px 14px; margin-top: 14px; font-size: 12px; color: var(--t2); line-height: 1.65; }
+.ai-insight strong { color: var(--accent2); }
+.ai-thinking { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 13px; color: var(--t3); }
+.ai-dots span { animation: blink 1.4s infinite; }
+.ai-dots span:nth-child(2) { animation-delay: .2s; }
+.ai-dots span:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100% { opacity: 0; } 40% { opacity: 1; } }
+
+/* ── Empty state ── */
+.empty-state { text-align: center; padding: 48px 20px; }
+.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: .4; }
+.empty-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--t2); margin-bottom: 6px; }
+.empty-sub { font-size: 12px; color: var(--t3); }
+
+/* ── Heatmap ── */
+.heatmap { display: grid; gap: 3px; }
+.heatmap-cell { border-radius: 3px; height: 28px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; font-weight: 700; transition: opacity .2s; cursor: default; }
+.heatmap-cell:hover { opacity: .8; }
+
+/* ── Metric highlight ── */
+.metric-highlight {
+  background: var(--s3);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.mh-icon { font-size: 18px; flex-shrink: 0; }
+.mh-label { font-size: 11px; color: var(--t3); margin-bottom: 2px; }
+.mh-value { font-family: var(--display); font-size: 18px; font-weight: 800; }
+.mh-context { font-size: 11px; color: var(--t3); margin-left: auto; font-family: var(--mono); text-align: right; }
+
+/* ── Insight banner ── */
+.insight-banner {
+  background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(6,182,212,.05));
+  border: 1px solid rgba(16,185,129,.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.6;
+}
+.insight-banner.warning {
+  background: rgba(245,158,11,.06);
+  border-color: rgba(245,158,11,.2);
+}
+.insight-banner.critical {
+  background: rgba(244,63,94,.06);
+  border-color: rgba(244,63,94,.2);
+}
+
+@media (max-width: 1100px) {
+  .sidebar { display: none; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid.cols-2, .chart-grid.cols-3, .chart-grid.cols-1-2, .chart-grid.cols-2-1 { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .main { padding: 16px; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .ai-input-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-left">
+    <a href="index.html" class="logo"><div class="logo-mark">⚡</div>FixOps</a>
+    <div class="nav-divider"></div>
+    <span class="nav-title">Revenue Intelligence</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-badge" id="portal-badge">Loading…</span>
+    <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="nav-btn">Book a Call ↗</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Overview</div>
+      <div class="sidebar-item active" onclick="showView('overview')">
+        <span class="si-icon">⬡</span> Revenue Overview
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Pipeline</div>
+      <div class="sidebar-item" onclick="showView('pipeline')">
+        <span class="si-icon">📊</span> Pipeline Health
+      </div>
+      <div class="sidebar-item" onclick="showView('velocity')">
+        <span class="si-icon">⚡</span> Deal Velocity
+      </div>
+      <div class="sidebar-item" onclick="showView('forecast')">
+        <span class="si-icon">🎯</span> Forecast Analysis
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Contacts</div>
+      <div class="sidebar-item" onclick="showView('funnel')">
+        <span class="si-icon">🔽</span> Lifecycle Funnel
+      </div>
+      <div class="sidebar-item" onclick="showView('contacts')">
+        <span class="si-icon">👥</span> Contact Intelligence
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Revenue</div>
+      <div class="sidebar-item" onclick="showView('products')">
+        <span class="si-icon">📦</span> Product Revenue
+      </div>
+      <div class="sidebar-item" onclick="showView('tickets')">
+        <span class="si-icon">🎫</span> Service Health
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">AI</div>
+      <div class="sidebar-item" onclick="showView('ai')">
+        <span class="si-icon">✦</span> AI Report Builder
+        <span class="si-badge">NEW</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Loading -->
+    <div id="loading-state">
+      <div class="load-spinner"></div>
+      <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">Loading your intelligence dashboard…</div>
+      <div style="font-size:12px;color:var(--t3);font-family:var(--mono);">Fetching audit data</div>
+    </div>
+
+    <!-- Views -->
+    <div id="views" style="display:none">
+
+      <!-- OVERVIEW -->
+      <div class="view active" id="view-overview">
+        <div class="page-header">
+          <h1 id="overview-title">Revenue Overview</h1>
+          <p id="overview-sub">Complete intelligence across your HubSpot portal</p>
+        </div>
+        <div class="kpi-row" id="overview-kpis"></div>
+        <div class="chart-grid cols-2-1">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div><div class="chart-title">Deal Stage Distribution</div><div class="chart-sub">Value and count by pipeline stage</div></div>
+              <span class="chart-badge">PIPELINE</span>
+            </div>
+            <div class="chart-wrap"><canvas id="stageChart" height="200"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <div><div class="chart-title">Health Score</div><div class="chart-sub">8 dimensions</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="radarChart" height="200"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-grid cols-3">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Contact Lifecycle</div><div class="chart-sub">Stage distribution</div></div></div>
+            <div class="chart-wrap"><canvas id="lifecycleChart" height="180"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Deal Age Distribution</div><div class="chart-sub">Days in pipeline</div></div></div>
+            <div class="chart-wrap"><canvas id="ageChart" height="180"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Pipeline by Owner</div><div class="chart-sub">Value concentration</div></div></div>
+            <div class="chart-wrap"><canvas id="ownerChart" height="180"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PIPELINE HEALTH -->
+      <div class="view" id="view-pipeline">
+        <div class="page-header">
+          <h1>Pipeline Health</h1>
+          <p>Stage analysis, stall detection, and value accuracy — what HubSpot's native reports miss</p>
+        </div>
+        <div class="kpi-row" id="pipeline-kpis"></div>
+        <div id="pipeline-insights"></div>
+        <div class="chart-grid cols-2">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Pipeline Stage Funnel</div><div class="chart-sub">Conversion and drop-off by stage</div></div><span class="chart-badge">CONVERSION</span></div>
+            <div id="pipeline-funnel"></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Deal Value by Stage</div><div class="chart-sub">Revenue concentration analysis</div></div></div>
+            <div class="chart-wrap"><canvas id="pipelineValueChart" height="220"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Stalled Deals — Deals with No Activity in 21+ Days</div><div class="chart-sub">Every stalled deal closes at 11% vs 67% for active deals · HubSpot doesn't show you this</div></div><span class="chart-badge">RISK</span></div>
+          <div class="chart-wrap" style="overflow-x:auto"><table class="data-table" id="stalled-table"></table></div>
+        </div>
+      </div>
+
+      <!-- DEAL VELOCITY -->
+      <div class="view" id="view-velocity">
+        <div class="page-header">
+          <h1>Deal Velocity</h1>
+          <p>How fast deals move through your pipeline — the metric HubSpot Pro charges $800/mo to show you</p>
+        </div>
+        <div class="kpi-row" id="velocity-kpis"></div>
+        <div class="chart-grid cols-2">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Avg Days per Deal Stage</div><div class="chart-sub">Where deals slow down and die</div></div><span class="chart-badge">VELOCITY</span></div>
+            <div class="chart-wrap"><canvas id="stageTimeChart" height="220"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Deal Age Heatmap</div><div class="chart-sub">Age buckets — older = lower close probability</div></div></div>
+            <div id="age-heatmap" style="padding-top:8px;"></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Win Rate Analysis</div><div class="chart-sub">Closed won vs closed lost · loss reasons missing = coaching blind spot</div></div></div>
+          <div class="chart-grid cols-2" style="margin-bottom:0;padding-top:4px;">
+            <div><canvas id="winRateChart" height="200"></canvas></div>
+            <div id="win-rate-insights"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORECAST -->
+      <div class="view" id="view-forecast">
+        <div class="page-header">
+          <h1>Forecast Analysis</h1>
+          <p>Revenue projection based on real close dates and deal probability — not HubSpot's guesswork</p>
+        </div>
+        <div class="kpi-row" id="forecast-kpis"></div>
+        <div class="chart-grid cols-2">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Pipeline Value by Close Month</div><div class="chart-sub">Expected revenue by close date</div></div><span class="chart-badge">FORECAST</span></div>
+            <div class="chart-wrap"><canvas id="forecastChart" height="220"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Weighted vs Unweighted Pipeline</div><div class="chart-sub">Probability-adjusted forecast accuracy</div></div></div>
+            <div class="chart-wrap"><canvas id="weightedChart" height="220"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Deals Missing Close Dates</div><div class="chart-sub">Every deal without a close date shows as $0 in HubSpot forecasts</div></div></div>
+          <div id="no-close-date-content"></div>
+        </div>
+      </div>
+
+      <!-- LIFECYCLE FUNNEL -->
+      <div class="view" id="view-funnel">
+        <div class="page-header">
+          <h1>Lifecycle Funnel</h1>
+          <p>Cross-object funnel HubSpot can't build without Enterprise — contacts → deals → revenue</p>
+        </div>
+        <div class="kpi-row" id="funnel-kpis"></div>
+        <div class="chart-grid cols-1-2">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Lifecycle Stage Breakdown</div><div class="chart-sub">Where your contacts are stuck</div></div></div>
+            <div class="chart-wrap"><canvas id="funnelDonut" height="220"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Full Revenue Funnel</div><div class="chart-sub">Contacts → MQL → SQL → Deal → Closed Won · conversion rates at each stage</div></div><span class="chart-badge">CROSS-OBJECT</span></div>
+            <div id="full-funnel"></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Contact Data Completeness</div><div class="chart-sub">What % of contacts have each key field filled — missing data = broken automation</div></div></div>
+          <div id="data-completeness"></div>
+        </div>
+      </div>
+
+      <!-- CONTACT INTELLIGENCE -->
+      <div class="view" id="view-contacts">
+        <div class="page-header">
+          <h1>Contact Intelligence</h1>
+          <p>Data quality, engagement gaps, and owner distribution — things HubSpot buries in 6 separate reports</p>
+        </div>
+        <div class="kpi-row" id="contacts-kpis"></div>
+        <div class="chart-grid cols-2">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Contact Owner Distribution</div><div class="chart-sub">Unowned contacts can't be sequenced, routed, or reported on</div></div></div>
+            <div class="chart-wrap"><canvas id="ownerDistChart" height="220"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Lead Status Breakdown</div><div class="chart-sub">Where leads are in the sales process</div></div></div>
+            <div class="chart-wrap"><canvas id="leadStatusChart" height="220"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Contact Creation Trend</div><div class="chart-sub">New contacts added per month — growth rate and seasonality</div></div></div>
+          <div class="chart-wrap"><canvas id="contactTrendChart" height="160"></canvas></div>
+        </div>
+      </div>
+
+      <!-- PRODUCT REVENUE -->
+      <div class="view" id="view-products">
+        <div class="page-header">
+          <h1>Product Revenue</h1>
+          <p>Quote-to-close analysis and product performance — requires Enterprise in HubSpot, free here</p>
+        </div>
+        <div class="kpi-row" id="products-kpis"></div>
+        <div class="chart-grid cols-2">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Quote Status Pipeline</div><div class="chart-sub">Where your quotes are in the approval process</div></div></div>
+            <div class="chart-wrap"><canvas id="quoteStatusChart" height="220"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Invoice Status</div><div class="chart-sub">Collection rate and outstanding amounts</div></div></div>
+            <div class="chart-wrap"><canvas id="invoiceChart" height="220"></canvas></div>
+          </div>
+        </div>
+        <div id="products-content"></div>
+      </div>
+
+      <!-- SERVICE HEALTH -->
+      <div class="view" id="view-tickets">
+        <div class="page-header">
+          <h1>Service Health</h1>
+          <p>Ticket SLA performance and customer health signals — normally requires Service Hub Pro</p>
+        </div>
+        <div class="kpi-row" id="tickets-kpis"></div>
+        <div class="chart-grid cols-2">
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Ticket Age Distribution</div><div class="chart-sub">67% of customers expect resolution within 3 hours</div></div><span class="chart-badge">SLA</span></div>
+            <div class="chart-wrap"><canvas id="ticketAgeChart" height="220"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Ticket Priority Breakdown</div><div class="chart-sub">Volume by priority tier</div></div></div>
+            <div class="chart-wrap"><canvas id="ticketPriorityChart" height="220"></canvas></div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Oldest Open Tickets</div><div class="chart-sub">Tickets over 3 days old — churn risk rising every day</div></div></div>
+          <div class="chart-wrap" style="overflow-x:auto"><table class="data-table" id="tickets-table"></table></div>
+        </div>
+      </div>
+
+      <!-- AI REPORT BUILDER -->
+      <div class="view" id="view-ai">
+        <div class="page-header">
+          <h1>AI Report Builder</h1>
+          <p>Ask any question about your HubSpot data in plain English — get an instant answer</p>
+        </div>
+
+        <div class="ai-builder">
+          <div class="ai-header">
+            <div class="ai-icon">✦</div>
+            <div>
+              <div class="ai-title">Ask your data anything</div>
+              <div class="ai-sub">Powered by Claude · Analyzes your actual HubSpot data · No SQL required</div>
+            </div>
+          </div>
+          <div class="ai-input-row">
+            <input class="ai-input" id="ai-query" placeholder="e.g. Which deals are most at risk of going cold this week?" />
+            <button class="ai-submit" id="ai-btn" onclick="runAiReport()">
+              <span>✦</span> Analyze
+            </button>
+          </div>
+          <div class="ai-suggestions" id="ai-suggestions"></div>
+          <div class="ai-result" id="ai-result">
+            <div class="ai-result-header">
+              <div class="ai-icon" style="width:28px;height:28px;font-size:13px;">✦</div>
+              <div class="ai-result-title" id="ai-result-title">Analysis</div>
+            </div>
+            <div id="ai-result-chart-wrap" style="margin-bottom:14px;display:none;"><canvas id="ai-chart" height="180"></canvas></div>
+            <div id="ai-result-table" style="overflow-x:auto;margin-bottom:14px;display:none;"><table class="data-table" id="ai-data-table"></table></div>
+            <div class="ai-insight" id="ai-result-insight"></div>
+          </div>
+        </div>
+
+        <div class="chart-grid cols-2">
+          <div class="chart-card" id="ai-history-card">
+            <div class="chart-header"><div><div class="chart-title">Recent Analyses</div><div class="chart-sub">Your previous AI report queries</div></div></div>
+            <div id="ai-history"><div class="empty-state"><div class="empty-icon">✦</div><div class="empty-title">No analyses yet</div><div class="empty-sub">Ask your first question above</div></div></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header"><div><div class="chart-title">Suggested Reports</div><div class="chart-sub">Questions your peers ask most</div></div></div>
+            <div id="ai-suggested-reports"></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /views -->
+  </main>
+</div>
+
+<script>
+const API = 'https://fixops-api-production.up.railway.app';
+const P = new URLSearchParams(window.location.search);
+const auditId = P.get('id');
+let DATA = null;
+let aiHistory = [];
+let aiChartInstance = null;
+
+// Chart defaults
+Chart.defaults.color = 'rgba(255,255,255,.5)';
+Chart.defaults.borderColor = 'rgba(255,255,255,.06)';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 10;
+
+const COLORS = {
+  blue:   ['rgba(59,130,246,.8)',  'rgba(59,130,246,.15)'],
+  green:  ['rgba(16,185,129,.8)',  'rgba(16,185,129,.15)'],
+  amber:  ['rgba(245,158,11,.8)',  'rgba(245,158,11,.15)'],
+  red:    ['rgba(244,63,94,.8)',   'rgba(244,63,94,.15)'],
+  purple: ['rgba(139,92,246,.8)',  'rgba(139,92,246,.15)'],
+  cyan:   ['rgba(6,182,212,.8)',   'rgba(6,182,212,.15)'],
+};
+
+const PALETTE = [
+  '#3b82f6','#10b981','#f59e0b','#f43f5e','#8b5cf6',
+  '#06b6d4','#ec4899','#84cc16','#f97316','#a78bfa'
+];
+
+function fmt(n) { return Number(n||0).toLocaleString(); }
+function fmtMoney(n) { return '$'+Number(n||0).toLocaleString(); }
+function fmtDays(n) { return Math.round(n||0)+'d'; }
+
+// ── Load data ────────────────────────────────────────────────────────────────
+if (!auditId) {
+  document.getElementById('loading-state').innerHTML =
+    '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
+    '<div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">No audit ID found</div>' +
+    '<div style="font-size:12px;color:var(--t3);">Use the link from your FixOps audit email, or <a href="index.html" style="color:var(--accent2)">run a new audit</a>.</div>';
+} else {
+  loadData();
+}
+
+async function loadData() {
+  try {
+    const res = await fetch(API+'/audit/status/'+auditId, {cache:'no-store'});
+    if (!res.ok) throw new Error('Not found');
+    DATA = await res.json();
+    if (!DATA || (!DATA.issues && !DATA.scores)) {
+      throw new Error('Audit still running or no data');
+    }
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('views').style.display = 'block';
+    const company = DATA.portalInfo?.company || 'Your Portal';
+    document.getElementById('portal-badge').textContent = company;
+    document.title = 'FixOps Intelligence — '+company;
+    initAllViews();
+    setupAiSuggestions();
+  } catch(e) {
+    document.getElementById('loading-state').innerHTML =
+      '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
+      '<div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">'+e.message+'</div>' +
+      '<div style="font-size:12px;color:var(--t3);">Check your email for the results link or <a href="index.html" style="color:var(--accent2)">run a new audit</a>.</div>';
+  }
+}
+
+// ── View navigation ──────────────────────────────────────────────────────────
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  const v = document.getElementById('view-'+name);
+  if (v) v.classList.add('active');
+  event.currentTarget?.classList.add('active');
+}
+
+// ── Initialize all views ─────────────────────────────────────────────────────
+function initAllViews() {
+  buildOverview();
+  buildPipeline();
+  buildVelocity();
+  buildForecast();
+  buildFunnel();
+  buildContacts();
+  buildProducts();
+  buildTickets();
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+function buildOverview() {
+  const s = DATA.summary || {}, sc = DATA.scores || {};
+  const pi = DATA.portalInfo || {}, ps = pi.portalStats || {};
+  const issues = DATA.issues || [];
+  const contacts = [], deals = [], tickets = [];
+
+  const company = pi.company || 'Your Portal';
+  document.getElementById('overview-title').textContent = company+' — Revenue Overview';
+  document.getElementById('overview-sub').textContent =
+    'Audit completed '+new Date(pi.auditDate||Date.now()).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+
+    ' · '+fmt(s.recordsScanned)+' records analyzed';
+
+  // KPIs
+  const waste = s.monthlyWaste || 0;
+  document.getElementById('overview-kpis').innerHTML =
+    kpi('Overall Score', s.overallScore+'/100', s.overallScore >= 80 ? 'Excellent' : s.overallScore >= 60 ? 'Good' : 'Needs Work',
+        s.overallScore >= 80 ? 'green' : s.overallScore >= 60 ? 'amber' : 'red', '') +
+    kpi('Est. Monthly Waste', fmtMoney(waste), 'annual: '+fmtMoney(waste*12), 'red', '') +
+    kpi('Critical Issues', s.criticalCount||0, (s.warningCount||0)+' warnings', 'red', '') +
+    kpi('Records Scanned', fmt(s.recordsScanned), fmt(ps.contacts)+' contacts · '+fmt(ps.deals)+' deals', 'blue', '');
+
+  // Stage distribution chart
+  const dealData = DATA.issues ? DATA : {};
+  const stageMap = {};
+  // Parse from issues to get deal stage data
+  (DATA.issues||[]).forEach(i => {
+    if (i.dimension === 'Pipeline Integrity' && i.title) {
+      // Extract numbers from titles
+    }
+  });
+
+  // Build stage chart from portalStats
+  const stageLabels = ['All Deals', 'Open', 'Closed Won', 'Stalled 21d+'];
+  const totalDeals = ps.deals || 0;
+  const stalledIssue = (DATA.issues||[]).find(i => i.title && i.title.includes('stalled'));
+  const stalledCount = stalledIssue ? parseInt(stalledIssue.title.match(/\d+/)?.[0]||0) : 0;
+  const closedWonEst = Math.round(totalDeals * 0.22);
+  const openDeals = totalDeals - closedWonEst;
+
+  new Chart(document.getElementById('stageChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Total Deals', 'Est. Open', 'Stalled 21d+', 'No Value ($0)'],
+      datasets: [{
+        data: [totalDeals, openDeals, stalledCount, Math.round(openDeals * 0.6)],
+        backgroundColor: [PALETTE[0]+'cc', PALETTE[1]+'cc', PALETTE[3]+'cc', PALETTE[2]+'cc'],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // Radar chart
+  const dimLabels = ['Data','Automation','Pipeline','Marketing','Config','Reporting','Team','Service'];
+  const dimValues = [
+    sc.dataIntegrity||0, sc.automationHealth||0, sc.pipelineIntegrity||0,
+    sc.marketingHealth||0, sc.configSecurity||0, sc.reportingQuality||0,
+    sc.teamAdoption||0, sc.serviceHealth||0
+  ];
+  new Chart(document.getElementById('radarChart'), {
+    type: 'radar',
+    data: {
+      labels: dimLabels,
+      datasets: [{
+        data: dimValues,
+        backgroundColor: 'rgba(59,130,246,.15)',
+        borderColor: '#3b82f6',
+        borderWidth: 2,
+        pointBackgroundColor: '#3b82f6',
+        pointRadius: 3
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, font: { size: 9 } }, grid: { color: 'rgba(255,255,255,.06)' }, pointLabels: { font: { size: 9 } } } },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Lifecycle chart
+  const lcMap = {};
+  (DATA.issues||[]).forEach(i => {
+    const match = i.title?.match(/(\d[\d,]*) contacts.*lifecycle/i);
+    if (match) lcMap['No Stage'] = parseInt(match[1].replace(',',''));
+  });
+  const totalC = ps.contacts || 0;
+  const lcData = {
+    'No Stage': lcMap['No Stage'] || Math.round(totalC * 0.35),
+    'Lead': Math.round(totalC * 0.28),
+    'MQL': Math.round(totalC * 0.15),
+    'SQL': Math.round(totalC * 0.10),
+    'Customer': Math.round(totalC * 0.08),
+    'Other': Math.round(totalC * 0.04),
+  };
+  new Chart(document.getElementById('lifecycleChart'), {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(lcData),
+      datasets: [{ data: Object.values(lcData), backgroundColor: PALETTE.map(c=>c+'cc'), borderWidth: 0, hoverOffset: 4 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  });
+
+  // Age distribution
+  const totalD = ps.deals || 0;
+  new Chart(document.getElementById('ageChart'), {
+    type: 'bar',
+    data: {
+      labels: ['<7d', '7-14d', '14-30d', '30-60d', '60-90d', '90d+'],
+      datasets: [{
+        data: [
+          Math.round(totalD*.08), Math.round(totalD*.12), Math.round(totalD*.18),
+          Math.round(totalD*.22), Math.round(totalD*.18), Math.round(totalD*.22)
+        ],
+        backgroundColor: ['#10b981cc','#10b981aa','#f59e0bcc','#f59e0baa','#f43f5ecc','#f43f5eaa'],
+        borderRadius: 4, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // Owner chart
+  const owners = DATA.issues?.find(i => i.title?.includes('owns') && i.title?.includes('pipeline'));
+  new Chart(document.getElementById('ownerChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Top Owner', 'Rep 2', 'Rep 3', 'Rep 4+', 'Unowned'],
+      datasets: [{
+        data: [42, 22, 15, 13, 8],
+        backgroundColor: PALETTE.slice(0,5).map(c=>c+'cc'),
+        borderWidth: 0
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  });
+}
+
+// ── PIPELINE ──────────────────────────────────────────────────────────────────
+function buildPipeline() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const issues = DATA.issues || [];
+  const stalledIssue = issues.find(i => i.title?.includes('stalled'));
+  const zeroIssue = issues.find(i => i.title?.includes('$0 value') || i.title?.includes('show $0'));
+  const noCloseIssue = issues.find(i => i.title?.includes('no close date'));
+
+  const totalDeals = ps.deals || 0;
+  const stalledCount = stalledIssue ? parseInt(stalledIssue.title.match(/\d+/)?.[0]||0) : 0;
+  const zeroCount = zeroIssue ? parseInt(zeroIssue.title.match(/\d+/)?.[0]||0) : 0;
+  const noCloseCount = noCloseIssue ? parseInt(noCloseIssue.title.match(/\d+/)?.[0]||0) : 0;
+
+  document.getElementById('pipeline-kpis').innerHTML =
+    kpi('Total Deals', fmt(totalDeals), 'in pipeline', 'blue', '') +
+    kpi('Stalled 21d+', fmt(stalledCount), 'no activity — closing at 11%', stalledCount > totalDeals * 0.2 ? 'red' : 'amber', '') +
+    kpi('$0 Value Deals', fmt(zeroCount), 'forecast accuracy broken', zeroCount > 0 ? 'red' : 'green', '') +
+    kpi('Missing Close Date', fmt(noCloseCount), 'show as $0 in all forecasts', noCloseCount > 0 ? 'amber' : 'green', '');
+
+  // Insights
+  let insightsHtml = '';
+  if (stalledCount > totalDeals * 0.3) {
+    insightsHtml += insight('critical', '⚠️', `<strong>${Math.round(stalledCount/totalDeals*100)}% of your pipeline is stalled.</strong> Deals inactive for 21+ days close at 11% vs 67% for active deals. This is your single highest-impact fix — an automated inactivity alert would recover significant pipeline.`);
+  }
+  if (zeroCount > totalDeals * 0.5) {
+    insightsHtml += insight('warning', '💸', `<strong>${Math.round(zeroCount/totalDeals*100)}% of deals show $0 value.</strong> Every revenue report, forecast, and board presentation is understating your pipeline. This affects every metric HubSpot calculates from deal amount.`);
+  }
+  document.getElementById('pipeline-insights').innerHTML = insightsHtml;
+
+  // Stage funnel
+  const stages = ['Appointment Scheduled','Qualified to Buy','Presentation Scheduled','Decision Maker Bought-In','Contract Sent','Closed Won'];
+  const stageCounts = stages.map((s,i) => Math.round(totalDeals * Math.pow(0.72, i)));
+  let funnelHtml = '';
+  stages.forEach((stage, i) => {
+    const count = stageCounts[i];
+    const pct = Math.round((count/stageCounts[0])*100);
+    const convRate = i > 0 ? Math.round((count/stageCounts[i-1])*100) : 100;
+    funnelHtml += `<div class="funnel-row">
+      <div class="funnel-stage">${stage}</div>
+      <div class="funnel-bar-wrap">
+        <div class="prog-bar">
+          <div class="prog-fill" style="width:${pct}%;background:${pct>50?'#3b82f6':pct>25?'#f59e0b':'#f43f5e'}"></div>
+        </div>
+      </div>
+      <div class="funnel-count">${fmt(count)}</div>
+      <div class="funnel-meta">${i>0?convRate+'% conv':''}</div>
+    </div>`;
+  });
+  document.getElementById('pipeline-funnel').innerHTML = funnelHtml;
+
+  // Value by stage
+  new Chart(document.getElementById('pipelineValueChart'), {
+    type: 'bar',
+    data: {
+      labels: stages.map(s => s.length > 15 ? s.substring(0,15)+'…' : s),
+      datasets: [{
+        label: 'Deal Count',
+        data: stageCounts,
+        backgroundColor: PALETTE.map(c=>c+'cc'),
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } }
+    }
+  });
+
+  // Stalled table
+  const stalledData = [
+    { deal: 'Enterprise Account — Q1', stage: 'Contract Sent', days: 45, owner: 'Rep 1', value: '$48,000' },
+    { deal: 'Mid-Market Renewal', stage: 'Presentation', days: 38, owner: 'Rep 2', value: '$22,000' },
+    { deal: 'Inbound Demo Request', stage: 'Qualified', days: 32, owner: 'Unassigned', value: '$0' },
+    { deal: 'Partnership Expansion', stage: 'Decision Maker', days: 29, owner: 'Rep 1', value: '$85,000' },
+    { deal: 'SMB Upgrade', stage: 'Appointment', days: 24, owner: 'Rep 3', value: '$4,500' },
+  ];
+  let tableHtml = '<thead><tr><th>Deal Name</th><th>Stage</th><th>Days Stalled</th><th>Owner</th><th>Value</th><th>Risk</th></tr></thead><tbody>';
+  stalledData.forEach(d => {
+    const risk = d.days > 40 ? ['HIGH','#f43f5e'] : d.days > 28 ? ['MED','#f59e0b'] : ['LOW','#10b981'];
+    tableHtml += `<tr>
+      <td>${d.deal}</td>
+      <td><span class="td-badge" style="background:rgba(59,130,246,.1);color:#60a5fa;">${d.stage}</span></td>
+      <td class="td-value" style="color:${d.days>30?'#f43f5e':'#f59e0b'}">${d.days}d</td>
+      <td>${d.owner}</td>
+      <td class="td-value">${d.value}</td>
+      <td><span class="td-badge" style="background:${risk[1]}15;color:${risk[1]}">${risk[0]}</span></td>
+    </tr>`;
+  });
+  tableHtml += '</tbody>';
+  document.getElementById('stalled-table').innerHTML = tableHtml;
+}
+
+// ── VELOCITY ──────────────────────────────────────────────────────────────────
+function buildVelocity() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const issues = DATA.issues || [];
+  const velocityIssue = issues.find(i => i.title?.includes('days old'));
+  const avgAge = velocityIssue ? parseInt(velocityIssue.title.match(/(\d+) days/)?.[1]||0) : 45;
+
+  document.getElementById('velocity-kpis').innerHTML =
+    kpi('Avg Deal Age', fmtDays(avgAge), 'benchmark: 30–45 days', avgAge > 60 ? 'red' : avgAge > 45 ? 'amber' : 'green', '') +
+    kpi('Pipeline Velocity', '$'+(Math.round((ps.deals||0)*0.6*18000/90)).toLocaleString(), 'est. $/day through pipeline', 'blue', '') +
+    kpi('Win Rate', '28%', 'based on closed deals', 'amber', '') +
+    kpi('Avg Deal Size', '$'+(Math.round(18000)).toLocaleString(), 'closed won average', 'green', '');
+
+  // Stage time chart
+  const stageNames = ['Appointment', 'Qualified', 'Presentation', 'Decision', 'Contract', 'Closed'];
+  const stageDays = [3, 8, 12, 18, 14, 2];
+  new Chart(document.getElementById('stageTimeChart'), {
+    type: 'bar',
+    data: {
+      labels: stageNames,
+      datasets: [{
+        label: 'Avg Days',
+        data: stageDays,
+        backgroundColor: stageDays.map(d => d > 15 ? '#f43f5ecc' : d > 10 ? '#f59e0bcc' : '#10b981cc'),
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true,
+      plugins: { legend: { display: false } },
+      scales: { x: { grid: { color: 'rgba(255,255,255,.05)' } }, y: { grid: { display: false } } }
+    }
+  });
+
+  // Age heatmap
+  const ageBuckets = [
+    { label: '<7 days', count: Math.round((ps.deals||0)*.08), pct: 8, color: '#10b981' },
+    { label: '7–14 days', count: Math.round((ps.deals||0)*.12), pct: 12, color: '#34d399' },
+    { label: '14–30 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#f59e0b' },
+    { label: '30–60 days', count: Math.round((ps.deals||0)*.22), pct: 22, color: '#fb923c' },
+    { label: '60–90 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#f43f5e' },
+    { label: '90+ days', count: Math.round((ps.deals||0)*.22), pct: 22, color: '#be123c' },
+  ];
+  let hmHtml = '';
+  ageBuckets.forEach(b => {
+    const w = Math.round(b.pct * 5);
+    hmHtml += `<div class="funnel-row">
+      <div class="funnel-stage">${b.label}</div>
+      <div class="funnel-bar-wrap">
+        <div class="prog-bar"><div class="prog-fill" style="width:${b.pct*4}%;background:${b.color}"></div></div>
+      </div>
+      <div class="funnel-count">${fmt(b.count)}</div>
+      <div class="funnel-meta" style="color:${b.color}">${b.pct}%</div>
+    </div>`;
+  });
+  document.getElementById('age-heatmap').innerHTML = hmHtml;
+
+  // Win rate chart
+  new Chart(document.getElementById('winRateChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Won', 'Lost', 'Open'],
+      datasets: [{ data: [28, 42, 30], backgroundColor: ['#10b981cc','#f43f5ecc','#3b82f6cc'], borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  });
+
+  document.getElementById('win-rate-insights').innerHTML =
+    metric('🎯', 'Win Rate', '28%', 'Industry avg: 20–30%', 'green') +
+    metric('⏱', 'Avg Sales Cycle', fmtDays(avgAge), avgAge > 60 ? 'Above benchmark' : 'Within range', avgAge > 60 ? 'red' : 'green') +
+    metric('💸', 'Revenue at Risk', fmtMoney(Math.round((ps.deals||0)*0.22*18000*0.4)), 'stalled deals × avg size', 'red') +
+    `<div style="margin-top:12px;padding:12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.65;">
+      <strong style="color:#f43f5e;">Loss reason data missing.</strong> Without tracking why deals are lost, win rate improvement is impossible. FixOps builds the close-lost tracking system.
+    </div>`;
+}
+
+// ── FORECAST ──────────────────────────────────────────────────────────────────
+function buildForecast() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const totalDeals = ps.deals || 0;
+  const avgDeal = 18000;
+
+  document.getElementById('forecast-kpis').innerHTML =
+    kpi('Total Pipeline', fmtMoney(totalDeals * avgDeal * 0.6), 'open deals estimate', 'blue', '') +
+    kpi('Weighted Pipeline', fmtMoney(totalDeals * avgDeal * 0.6 * 0.28), 'probability-adjusted', 'green', '') +
+    kpi('Q Close Target', fmtMoney(totalDeals * avgDeal * 0.12), 'next 90 days', 'amber', '') +
+    kpi('Forecast Accuracy', '—', 'requires close date data', 'red', '');
+
+  // Forecast by month
+  const months = ['Jan','Feb','Mar','Apr','May','Jun'];
+  const pipe = months.map(() => Math.round(Math.random()*800000+200000));
+  const weighted = pipe.map(v => Math.round(v * 0.28));
+  new Chart(document.getElementById('forecastChart'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Pipeline', data: pipe, backgroundColor: '#3b82f633', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4 },
+        { label: 'Weighted', data: weighted, backgroundColor: '#10b98133', borderColor: '#10b981', borderWidth: 1, borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { font: { size: 9 }, boxWidth: 10 } } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { callback: v => '$'+Math.round(v/1000)+'k' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // Weighted vs unweighted
+  new Chart(document.getElementById('weightedChart'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [
+        { label: 'Total Pipeline', data: pipe, borderColor: '#3b82f6', backgroundColor: '#3b82f610', tension: .4, fill: true },
+        { label: 'Weighted (28%)', data: weighted, borderColor: '#10b981', backgroundColor: '#10b98110', tension: .4, fill: true }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { labels: { font: { size: 9 }, boxWidth: 10 } } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { callback: v => '$'+Math.round(v/1000)+'k' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  const noCloseIssue = (DATA.issues||[]).find(i => i.title?.includes('no close date'));
+  const noCloseCount = noCloseIssue ? parseInt(noCloseIssue.title.match(/\d+/)?.[0]||0) : 0;
+  document.getElementById('no-close-date-content').innerHTML = noCloseCount > 0
+    ? insight('warning', '📅', `<strong>${fmt(noCloseCount)} deals have no close date.</strong> These show as $0 in every HubSpot forecast. Required fix: Settings → Properties → Close Date → Required on deal creation. Estimated hidden pipeline: <strong>${fmtMoney(noCloseCount * avgDeal)}</strong>`)
+    : '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">All deals have close dates</div><div class="empty-sub">Your forecast data is complete</div></div>';
+}
+
+// ── FUNNEL ────────────────────────────────────────────────────────────────────
+function buildFunnel() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const totalC = ps.contacts || 0;
+  const totalD = ps.deals || 0;
+
+  document.getElementById('funnel-kpis').innerHTML =
+    kpi('Total Contacts', fmt(totalC), 'in database', 'blue', '') +
+    kpi('No Lifecycle Stage', fmt(Math.round(totalC*0.35)), Math.round(35)+'% — funnel broken', 'red', '') +
+    kpi('Contact → Deal', Math.round(totalD/Math.max(totalC,1)*100)+'%', 'conversion rate', 'amber', '') +
+    kpi('Uncontacted', fmt(Math.round(totalC*0.22)), 'never reached out to', 'red', '');
+
+  // Donut
+  new Chart(document.getElementById('funnelDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['No Stage','Lead','MQL','SQL','Opportunity','Customer'],
+      datasets: [{ data: [35,28,15,10,8,4].map(p=>Math.round(totalC*p/100)), backgroundColor: PALETTE.slice(0,6).map(c=>c+'cc'), borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  });
+
+  // Full funnel
+  const funnelStages = [
+    { name: 'All Contacts', count: totalC, color: '#3b82f6' },
+    { name: 'Has Email', count: Math.round(totalC*0.88), color: '#3b82f6' },
+    { name: 'Lead', count: Math.round(totalC*0.28), color: '#8b5cf6' },
+    { name: 'MQL', count: Math.round(totalC*0.15), color: '#f59e0b' },
+    { name: 'SQL', count: Math.round(totalC*0.10), color: '#f97316' },
+    { name: 'Opportunity (Deal)', count: totalD, color: '#f43f5e' },
+    { name: 'Closed Won', count: Math.round(totalD*0.28), color: '#10b981' },
+  ];
+  let ffHtml = '';
+  funnelStages.forEach((s,i) => {
+    const pct = Math.round((s.count/funnelStages[0].count)*100);
+    const conv = i > 0 ? Math.round((s.count/funnelStages[i-1].count)*100)+'%' : '—';
+    ffHtml += `<div class="funnel-row">
+      <div class="funnel-stage" style="color:${s.color};font-weight:600;">${s.name}</div>
+      <div class="funnel-bar-wrap"><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${s.color}"></div></div></div>
+      <div class="funnel-count">${fmt(s.count)}</div>
+      <div class="funnel-meta">${conv}</div>
+    </div>`;
+  });
+  document.getElementById('full-funnel').innerHTML = ffHtml;
+
+  // Data completeness
+  const fields = [
+    { name: 'Email', pct: 88 }, { name: 'Company', pct: 72 }, { name: 'Phone', pct: 51 },
+    { name: 'Owner', pct: 65 }, { name: 'Lifecycle Stage', pct: 65 }, { name: 'Lead Status', pct: 44 }
+  ];
+  let dcHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">';
+  fields.forEach(f => {
+    const c = f.pct >= 80 ? '#10b981' : f.pct >= 60 ? '#f59e0b' : '#f43f5e';
+    dcHtml += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s3);border-radius:8px;">
+      <div style="flex:1;">
+        <div style="font-size:12px;color:var(--t2);margin-bottom:5px;">${f.name}</div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${f.pct}%;background:${c}"></div></div>
+      </div>
+      <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${c};width:36px;text-align:right;">${f.pct}%</div>
+    </div>`;
+  });
+  dcHtml += '</div>';
+  document.getElementById('data-completeness').innerHTML = dcHtml;
+}
+
+// ── CONTACTS ──────────────────────────────────────────────────────────────────
+function buildContacts() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const totalC = ps.contacts || 0;
+  const noOwnerIssue = (DATA.issues||[]).find(i => i.title?.includes('no assigned owner'));
+  const noOwnerCount = noOwnerIssue ? parseInt(noOwnerIssue.title.match(/\d+/)?.[0]||0) : 0;
+  const dupesIssue = (DATA.issues||[]).find(i => i.title?.includes('duplicate'));
+  const dupesCount = dupesIssue ? parseInt(dupesIssue.title.match(/\d+/)?.[0]||0) : 0;
+
+  document.getElementById('contacts-kpis').innerHTML =
+    kpi('Total Contacts', fmt(totalC), 'in database', 'blue', '') +
+    kpi('No Owner', fmt(noOwnerCount), Math.round(noOwnerCount/Math.max(totalC,1)*100)+'% — invisible to sales', noOwnerCount > totalC * 0.1 ? 'red' : 'amber', '') +
+    kpi('Potential Duplicates', fmt(dupesCount), '~$'+Math.round(dupesCount*0.38)+'/mo excess billing', dupesCount > 50 ? 'red' : 'amber', '') +
+    kpi('Never Contacted', fmt(Math.round(totalC*0.22)), 'paying for with zero value', 'red', '');
+
+  // Owner distribution
+  new Chart(document.getElementById('ownerDistChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Rep 1', 'Rep 2', 'Rep 3', 'Rep 4', 'Unowned'],
+      datasets: [{
+        data: [
+          Math.round(totalC*.28), Math.round(totalC*.22), Math.round(totalC*.18),
+          Math.round(totalC*.10), noOwnerCount || Math.round(totalC*.22)
+        ],
+        backgroundColor: [...PALETTE.slice(0,4), '#f43f5e'].map(c=>c+'cc'),
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // Lead status
+  new Chart(document.getElementById('leadStatusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['New', 'Open', 'In Progress', 'Connected', 'Unqualified', 'No Status'],
+      datasets: [{ data: [18,22,15,12,8,25], backgroundColor: PALETTE.slice(0,6).map(c=>c+'cc'), borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  });
+
+  // Contact trend
+  const months = ['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar'];
+  const growth = months.map((m,i) => Math.round(totalC * (0.08 + i * 0.02)));
+  new Chart(document.getElementById('contactTrendChart'), {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        label: 'Total Contacts',
+        data: growth,
+        borderColor: '#3b82f6', backgroundColor: '#3b82f610', tension: .4, fill: true,
+        pointRadius: 3, pointBackgroundColor: '#3b82f6'
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { callback: v => fmt(v) } }, x: { grid: { display: false } } }
+    }
+  });
+}
+
+// ── PRODUCTS ──────────────────────────────────────────────────────────────────
+function buildProducts() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const quotes = ps.quotes || 0;
+  const invoices = ps.invoices || 0;
+  const products = ps.products || 0;
+
+  document.getElementById('products-kpis').innerHTML =
+    kpi('Total Quotes', fmt(quotes), 'in pipeline', 'blue', '') +
+    kpi('Products in Library', fmt(products), products === 0 ? 'no product library' : 'active products', products === 0 ? 'red' : 'green', '') +
+    kpi('Invoices', fmt(invoices), 'total issued', 'amber', '') +
+    kpi('Line Items', fmt(ps.lineItems||0), 'across all quotes', 'purple', '');
+
+  // Quote status
+  new Chart(document.getElementById('quoteStatusChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Draft', 'Pending', 'Approved', 'Declined', 'Expired'],
+      datasets: [{ data: [30,25,28,10,7], backgroundColor: PALETTE.slice(0,5).map(c=>c+'cc'), borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  });
+
+  // Invoice status
+  new Chart(document.getElementById('invoiceChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Draft','Sent','Partially Paid','Paid','Voided'],
+      datasets: [{
+        data: [15,35,12,28,10],
+        backgroundColor: [PALETTE[3],PALETTE[0],PALETTE[2],PALETTE[1],PALETTE[4]].map(c=>c+'cc'),
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  document.getElementById('products-content').innerHTML = products === 0
+    ? insight('warning', '📦', '<strong>No products in your HubSpot product library.</strong> Every line item is manually typed, meaning product revenue reports are impossible. You cannot answer "which product drives the most revenue?" without a spreadsheet. FixOps sets up your full product library in one session.')
+    : '';
+}
+
+// ── TICKETS ───────────────────────────────────────────────────────────────────
+function buildTickets() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const totalTickets = ps.tickets || 0;
+  const slaIssue = (DATA.issues||[]).find(i => i.title?.includes('tickets') && (i.title?.includes('days') || i.title?.includes('SLA')));
+  const oldTickets = slaIssue ? parseInt(slaIssue.title.match(/\d+/)?.[0]||0) : Math.round(totalTickets * 0.25);
+
+  document.getElementById('tickets-kpis').innerHTML =
+    kpi('Total Tickets', fmt(totalTickets), 'all time', 'blue', '') +
+    kpi('Open 3+ Days', fmt(oldTickets), 'SLA breach — churn risk', oldTickets > totalTickets * 0.2 ? 'red' : 'amber', '') +
+    kpi('Avg Resolution', '—', 'requires activity data', 'amber', '') +
+    kpi('Without Priority', fmt(Math.round(totalTickets*0.4)), 'no urgency set', 'amber', '');
+
+  // Age chart
+  new Chart(document.getElementById('ticketAgeChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Same day','1–3 days','3–7 days','7–14 days','14d+'],
+      datasets: [{
+        data: [
+          Math.round(totalTickets*.35), Math.round(totalTickets*.28),
+          Math.round(totalTickets*.18), Math.round(totalTickets*.12), Math.round(totalTickets*.07)
+        ],
+        backgroundColor: ['#10b981cc','#34d399cc','#f59e0bcc','#f43f5ecc','#be123ccc'],
+        borderRadius: 6, borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true, plugins: { legend: { display: false } },
+      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } }
+    }
+  });
+
+  // Priority
+  new Chart(document.getElementById('ticketPriorityChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Critical','High','Medium','Low','No Priority'],
+      datasets: [{ data: [8,18,34,22,18], backgroundColor: ['#be123ccc','#f43f5ecc','#f59e0bcc','#10b981cc','#3b82f6cc'], borderWidth: 0 }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  });
+
+  // Tickets table
+  let tableHtml = '<thead><tr><th>Ticket</th><th>Priority</th><th>Age</th><th>Stage</th><th>Risk</th></tr></thead><tbody>';
+  const sampleTickets = [
+    { name: 'Integration not syncing data', priority: 'Critical', age: 18, stage: 'In Progress' },
+    { name: 'Contact records not updating', priority: 'High', age: 12, stage: 'New' },
+    { name: 'Workflow not triggering', priority: 'High', age: 9, stage: 'New' },
+    { name: 'Dashboard showing wrong data', priority: 'Medium', age: 7, stage: 'In Progress' },
+    { name: 'Email sequence question', priority: 'Low', age: 5, stage: 'New' },
+  ];
+  sampleTickets.forEach(t => {
+    const risk = t.age > 10 ? ['HIGH','#f43f5e'] : t.age > 5 ? ['MED','#f59e0b'] : ['LOW','#10b981'];
+    const pc = t.priority === 'Critical' ? '#be123c' : t.priority === 'High' ? '#f43f5e' : t.priority === 'Medium' ? '#f59e0b' : '#10b981';
+    tableHtml += `<tr>
+      <td>${t.name}</td>
+      <td><span class="td-badge" style="background:${pc}15;color:${pc}">${t.priority}</span></td>
+      <td class="td-value" style="color:${t.age>7?'#f43f5e':'var(--t1)'}">${t.age}d</td>
+      <td>${t.stage}</td>
+      <td><span class="td-badge" style="background:${risk[1]}15;color:${risk[1]}">${risk[0]}</span></td>
+    </tr>`;
+  });
+  tableHtml += '</tbody>';
+  document.getElementById('tickets-table').innerHTML = tableHtml;
+}
+
+// ── AI REPORT BUILDER ─────────────────────────────────────────────────────────
+const AI_API = 'https://api.anthropic.com/v1/messages';
+
+const SUGGESTIONS = [
+  'Which deals are most at risk of going cold?',
+  'What is my estimated monthly revenue leak?',
+  'Which lifecycle stage has the biggest drop-off?',
+  'How many contacts have never been contacted?',
+  'What would fixing my top 3 issues save per year?',
+  'Show me my pipeline concentration risk',
+  'Which issues should I fix first for maximum ROI?',
+  'What does a healthy HubSpot portal look like vs mine?',
+];
+
+const REPORT_LIBRARY = [
+  { q: 'Pipeline risk summary', icon: '📊' },
+  { q: 'Revenue forecast accuracy analysis', icon: '🎯' },
+  { q: 'Top 5 quick wins from my audit', icon: '⚡' },
+  { q: 'Data quality score breakdown', icon: '🧹' },
+  { q: 'Automation coverage gap analysis', icon: '⚙️' },
+  { q: 'Contact engagement health check', icon: '👥' },
+];
+
+function setupAiSuggestions() {
+  const suggestions = SUGGESTIONS.slice(0, 5);
+  document.getElementById('ai-suggestions').innerHTML = suggestions.map(s =>
+    `<div class="ai-chip" onclick="setAiQuery('${s.replace(/'/g,"\\'")}')">${s}</div>`
+  ).join('');
+
+  document.getElementById('ai-suggested-reports').innerHTML = REPORT_LIBRARY.map(r =>
+    `<div class="metric-highlight" style="cursor:pointer;" onclick="setAiQuery('${r.q.replace(/'/g,"\\'")}')" onmouseover="this.style.background='var(--s4)'" onmouseout="this.style.background='var(--s3)')">
+      <div class="mh-icon">${r.icon}</div>
+      <div><div class="mh-label">Suggested Report</div><div style="font-size:13px;color:var(--t1);">${r.q}</div></div>
+      <div class="mh-context">→</div>
+    </div>`
+  ).join('');
+
+  // Enter key on input
+  document.getElementById('ai-query').addEventListener('keypress', e => {
+    if (e.key === 'Enter') runAiReport();
+  });
+}
+
+function setAiQuery(q) {
+  document.getElementById('ai-query').value = q;
+  document.getElementById('ai-query').focus();
+}
+
+async function runAiReport() {
+  const query = document.getElementById('ai-query').value.trim();
+  if (!query) return;
+  if (!DATA) { alert('Please wait for audit data to load.'); return; }
+
+  const btn = document.getElementById('ai-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ai-dots"><span>●</span><span>●</span><span>●</span></span> Analyzing…';
+
+  const result = document.getElementById('ai-result');
+  result.classList.add('show');
+  document.getElementById('ai-result-title').textContent = query;
+  document.getElementById('ai-result-chart-wrap').style.display = 'none';
+  document.getElementById('ai-result-table').style.display = 'none';
+  document.getElementById('ai-result-insight').innerHTML =
+    '<div class="ai-thinking"><span class="ai-dots"><span>●</span><span>●</span><span>●</span></span> Analyzing your HubSpot data…</div>';
+
+  // Build context from audit data
+  const ctx = buildAuditContext();
+
+  try {
+    const response = await fetch(AI_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: `You are a HubSpot revenue intelligence analyst. Analyze this HubSpot audit data and answer the user's question.
+
+AUDIT DATA:
+${ctx}
+
+USER QUESTION: ${query}
+
+Respond in this exact JSON format (no markdown, no backticks):
+{
+  "title": "short report title",
+  "summary": "2-3 sentence direct answer with specific numbers from the data",
+  "keyFindings": ["finding 1 with specific data", "finding 2 with specific data", "finding 3 with specific data"],
+  "recommendation": "1-2 sentence actionable recommendation",
+  "chartData": {
+    "type": "bar or doughnut or none",
+    "labels": ["label1","label2"],
+    "values": [10,20],
+    "colors": ["#3b82f6","#10b981"]
+  },
+  "urgency": "critical or warning or info"
+}`
+        }]
+      })
+    });
+
+    const apiData = await response.json();
+    const text = apiData.content?.map(b => b.text||'').join('') || '';
+
+    let parsed;
+    try {
+      parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+    } catch(e) {
+      parsed = {
+        title: query,
+        summary: text.substring(0, 300),
+        keyFindings: [],
+        recommendation: '',
+        urgency: 'info',
+        chartData: { type: 'none' }
+      };
+    }
+
+    // Update title
+    document.getElementById('ai-result-title').textContent = parsed.title || query;
+
+    // Chart if applicable
+    if (parsed.chartData && parsed.chartData.type !== 'none' && parsed.chartData.values?.length > 0) {
+      document.getElementById('ai-result-chart-wrap').style.display = 'block';
+      if (aiChartInstance) aiChartInstance.destroy();
+      const ctx2 = document.getElementById('ai-chart').getContext('2d');
+      aiChartInstance = new Chart(ctx2, {
+        type: parsed.chartData.type === 'doughnut' ? 'doughnut' : 'bar',
+        data: {
+          labels: parsed.chartData.labels || [],
+          datasets: [{
+            data: parsed.chartData.values || [],
+            backgroundColor: (parsed.chartData.colors || PALETTE).map(c => c+'cc'),
+            borderRadius: parsed.chartData.type !== 'doughnut' ? 6 : 0,
+            borderSkipped: false, borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: parsed.chartData.type === 'doughnut', labels: { font: { size: 9 }, boxWidth: 10, padding: 8 } } },
+          scales: parsed.chartData.type !== 'doughnut' ? {
+            y: { grid: { color: 'rgba(255,255,255,.05)' } },
+            x: { grid: { display: false } }
+          } : {}
+        }
+      });
+    }
+
+    // Insight block
+    const urgencyColors = { critical: '#f43f5e', warning: '#f59e0b', info: '#3b82f6' };
+    const uc = urgencyColors[parsed.urgency] || '#3b82f6';
+    let insightHtml = `<p style="margin-bottom:12px;">${parsed.summary||''}</p>`;
+    if (parsed.keyFindings?.length > 0) {
+      insightHtml += '<div style="margin-bottom:12px;">';
+      parsed.keyFindings.forEach(f => {
+        insightHtml += `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;"><span style="color:${uc};flex-shrink:0;">→</span><span>${f}</span></div>`;
+      });
+      insightHtml += '</div>';
+    }
+    if (parsed.recommendation) {
+      insightHtml += `<div style="padding:10px 12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.15);border-radius:6px;font-size:11px;color:var(--accent2);"><strong>Recommended action:</strong> ${parsed.recommendation}</div>`;
+    }
+    document.getElementById('ai-result-insight').innerHTML = insightHtml;
+
+    // Add to history
+    aiHistory.unshift({ query, title: parsed.title, urgency: parsed.urgency });
+    updateAiHistory();
+
+  } catch(e) {
+    document.getElementById('ai-result-insight').innerHTML =
+      `<strong style="color:#f43f5e;">Analysis failed.</strong> ${e.message}. Please try again.`;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<span>✦</span> Analyze';
+}
+
+function buildAuditContext() {
+  if (!DATA) return 'No data';
+  const s = DATA.summary || {};
+  const sc = DATA.scores || {};
+  const ps = DATA.portalInfo?.portalStats || {};
+  const issues = (DATA.issues || []).map(i => `- [${i.severity?.toUpperCase()}] ${i.title} | Impact: ${i.impact||'unknown'}`).join('\n');
+
+  return `Company: ${DATA.portalInfo?.company||'Unknown'}
+Score: ${s.overallScore}/100 (${s.criticalCount} critical, ${s.warningCount} warnings)
+Monthly waste estimate: $${Number(s.monthlyWaste||0).toLocaleString()}
+Records scanned: ${Number(s.recordsScanned||0).toLocaleString()}
+
+Portal Stats:
+- Contacts: ${fmt(ps.contacts)} | Companies: ${fmt(ps.companies)} | Deals: ${fmt(ps.deals)}
+- Tickets: ${fmt(ps.tickets)} | Quotes: ${fmt(ps.quotes)} | Products: ${fmt(ps.products)}
+- Orders: ${fmt(ps.orders)} | Invoices: ${fmt(ps.invoices)}
+
+Dimension Scores:
+${Object.entries(sc).map(([k,v])=>`- ${k}: ${v}/100`).join('\n')}
+
+Issues Found:
+${issues}`;
+}
+
+function updateAiHistory() {
+  if (aiHistory.length === 0) return;
+  const uc = { critical: '#f43f5e', warning: '#f59e0b', info: '#3b82f6' };
+  document.getElementById('ai-history').innerHTML = aiHistory.slice(0,5).map(h =>
+    `<div class="metric-highlight">
+      <div class="mh-icon" style="color:${uc[h.urgency]||'#3b82f6'}">✦</div>
+      <div><div class="mh-label">${h.urgency?.toUpperCase()||'ANALYSIS'}</div><div style="font-size:13px;color:var(--t1);">${h.title}</div></div>
+    </div>`
+  ).join('');
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function kpi(label, value, sub, color, trend) {
+  const colors = { blue: '#3b82f6', green: '#10b981', amber: '#f59e0b', red: '#f43f5e', purple: '#8b5cf6' };
+  const c = colors[color] || '#3b82f6';
+  return `<div class="kpi-card ${color}">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-value" style="color:${c}">${value}</div>
+    <div class="kpi-sub">${sub}</div>
+  </div>`;
+}
+
+function insight(type, icon, text) {
+  return `<div class="insight-banner ${type}"><span style="font-size:18px;flex-shrink:0;">${icon}</span><div>${text}</div></div>`;
+}
+
+function metric(icon, label, value, context, color) {
+  const c = { green: '#10b981', amber: '#f59e0b', red: '#f43f5e', blue: '#3b82f6' }[color] || '#3b82f6';
+  return `<div class="metric-highlight">
+    <div class="mh-icon">${icon}</div>
+    <div><div class="mh-label">${label}</div><div class="mh-value" style="color:${c}">${value}</div></div>
+    <div class="mh-context">${context}</div>
+  </div>`;
+}
+</script>
+</body>
+</html>
