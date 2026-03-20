@@ -163,6 +163,33 @@ section{position:relative;z-index:1;}
 .price-note{text-align:center;font-size:13px;color:var(--t3);font-family:var(--mono);margin-top:20px;}
 
 /* FAQ */
+
+/* ── Roadmap ─────────────────────────────────────────────────────────────── */
+.roadmap{padding:100px 0;background:var(--bg);}
+.road-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:48px;}
+.road-card{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:28px;position:relative;overflow:hidden;transition:all .2s;}
+.road-card:hover{border-color:var(--b2);transform:translateY(-3px);}
+.road-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.road-card.live::before{background:linear-gradient(90deg,#10b981,#34d399);}
+.road-card.building::before{background:linear-gradient(90deg,#7c3aed,#a78bfa);}
+.road-card.planned::before{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
+.road-status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.road-status.live{background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2);}
+.road-status.building{background:rgba(124,58,237,.1);color:var(--v3);border:1px solid rgba(124,58,237,.2);}
+.road-status.planned{background:rgba(59,130,246,.1);color:#60a5fa;border:1px solid rgba(59,130,246,.2);}
+.road-status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.road-status.live .road-status-dot{animation:pulse-dot 1.5s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+.road-ico{font-size:28px;margin-bottom:12px;}
+.road-h{font-size:17px;font-weight:800;color:var(--w);margin-bottom:8px;}
+.road-p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;}
+.road-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.road-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:var(--mono);background:var(--s2);color:var(--t3);border:1px solid var(--b1);}
+.road-filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px;}
+.road-filter{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b2);color:var(--t2);background:transparent;font-family:var(--font);transition:all .15s;}
+.road-filter.on,.road-filter:hover{background:var(--v);color:#fff;border-color:var(--v);}
+.road-card.hidden{display:none;}
+
 .faq{padding:120px 0;}
 .faq-wrap{max-width:760px;margin:0 auto;}
 .faq-list{margin-top:52px;}
@@ -245,6 +272,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <li><a href="#services">Services</a></li>
     <li><a href="#pulse">Platform</a></li>
     <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="setup.html">Setup Guide</a></li>
     <li><a href="#faq">FAQ</a></li>
   </ul>
@@ -268,6 +296,47 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <span class="trust-item">⚡ Results in under 15 minutes</span>
       <span class="trust-item">·</span>
       <span class="trust-item">🚫 No data stored</span>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏥</div>
+        <div class="road-h">HubSpot Health Score Over Time</div>
+        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
+        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">💳</div>
+        <div class="road-h">Billing Tier Risk Monitor</div>
+        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🎯</div>
+        <div class="road-h">Deal Risk Scoring</div>
+        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">⚙️</div>
+        <div class="road-h">Workflow Conflict Detector</div>
+        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">📅</div>
+        <div class="road-h">Sequence & Email Health Monitor</div>
+        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -317,6 +386,47 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <p class="prob-p">Most HubSpot portals have broken workflows, duplicate contacts, stalled deals, and misconfigured pipelines that nobody knows about — until a lead falls through the cracks or a forecast is wrong.</p>
         <span class="prob-badge pb-v">Reporting gap</span>
       </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏥</div>
+        <div class="road-h">HubSpot Health Score Over Time</div>
+        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
+        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">💳</div>
+        <div class="road-h">Billing Tier Risk Monitor</div>
+        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🎯</div>
+        <div class="road-h">Deal Risk Scoring</div>
+        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">⚙️</div>
+        <div class="road-h">Workflow Conflict Detector</div>
+        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">📅</div>
+        <div class="road-h">Sequence & Email Health Monitor</div>
+        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -488,6 +598,47 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <div class="svc-note">Based on portal size · minimum 3-month commitment</div>
         <div class="svc-link" onclick="requestSvc('Monthly Retainer')">Request this → </div>
       </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏥</div>
+        <div class="road-h">HubSpot Health Score Over Time</div>
+        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
+        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">💳</div>
+        <div class="road-h">Billing Tier Risk Monitor</div>
+        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🎯</div>
+        <div class="road-h">Deal Risk Scoring</div>
+        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">⚙️</div>
+        <div class="road-h">Workflow Conflict Detector</div>
+        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">📅</div>
+        <div class="road-h">Sequence & Email Health Monitor</div>
+        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -526,6 +677,47 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           </div>
         </div>
       </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏥</div>
+        <div class="road-h">HubSpot Health Score Over Time</div>
+        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
+        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">💳</div>
+        <div class="road-h">Billing Tier Risk Monitor</div>
+        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🎯</div>
+        <div class="road-h">Deal Risk Scoring</div>
+        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">⚙️</div>
+        <div class="road-h">Workflow Conflict Detector</div>
+        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">📅</div>
+        <div class="road-h">Sequence & Email Health Monitor</div>
+        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -563,6 +755,47 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="cmp-item"><span style="color:var(--g)">✓</span>Continuous monitoring — your portal gets healthier every single week</div>
         </div>
       </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏥</div>
+        <div class="road-h">HubSpot Health Score Over Time</div>
+        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
+        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">💳</div>
+        <div class="road-h">Billing Tier Risk Monitor</div>
+        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🎯</div>
+        <div class="road-h">Deal Risk Scoring</div>
+        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">⚙️</div>
+        <div class="road-h">Workflow Conflict Detector</div>
+        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">📅</div>
+        <div class="road-h">Sequence & Email Health Monitor</div>
+        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -832,6 +1065,168 @@ function showOnetime() {
 
 /script>
 
+<!-- ROADMAP -->
+<section class="roadmap" id="roadmap">
+  <div class="wrap">
+    <div class="r" style="text-align:center">
+      <span class="tag">Platform Roadmap</span>
+      <h2 class="h2">Built to Keep Getting<br>Better Every Week</h2>
+      <p class="lead" style="max-width:600px;margin:0 auto 0">The audit is live and working. Here's everything being built on top of it — get in early and you grow with the platform.</p>
+      <div class="road-filters">
+        <div class="road-filter on" onclick="filterRoad(this,'all')">All</div>
+        <div class="road-filter" onclick="filterRoad(this,'live')">Live Now</div>
+        <div class="road-filter" onclick="filterRoad(this,'building')">In Progress</div>
+        <div class="road-filter" onclick="filterRoad(this,'planned')">Coming Soon</div>
+      </div>
+    </div>
+
+    <div class="road-grid" id="road-grid">
+
+      <!-- LIVE -->
+      <div class="road-card live" data-status="live">
+        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
+        <div class="road-ico">🔍</div>
+        <div class="road-h">165-Point Portal Audit</div>
+        <div class="road-p">Connects via read-only OAuth in 2 minutes. Scans contacts, deals, tickets, pipelines, workflows, and configuration. Scores across 8 dimensions with dollar impact on every issue.</div>
+        <div class="road-tags"><span class="road-tag">Free</span><span class="road-tag">PDF Report</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card live" data-status="live">
+        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
+        <div class="road-ico">📊</div>
+        <div class="road-h">Fix Plan & Project Scoping</div>
+        <div class="road-p">Every audit generates a personalized fix plan grouping issues into project buckets — Data, Automation, Pipeline, Reporting, Config — with a Calendly CTA pre-filled with your company name and score.</div>
+        <div class="road-tags"><span class="road-tag">Included</span><span class="road-tag">One-Click</span></div>
+      </div>
+
+      <div class="road-card live" data-status="live">
+        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
+        <div class="road-ico">📄</div>
+        <div class="road-h">Branded PDF Report</div>
+        <div class="road-p">Multi-page executive PDF with cover page, score ring, dimension breakdown, and full issue detail pages. Share with leadership or use to scope a fix engagement.</div>
+        <div class="road-tags"><span class="road-tag">Included</span><span class="road-tag">Shareable</span></div>
+      </div>
+
+      <!-- IN PROGRESS -->
+      <div class="road-card live" data-status="live">
+        <div class="road-status live"><div class="road-status-dot"></div>Live — Activating Soon</div>
+        <div class="road-ico">⚡</div>
+        <div class="road-h">Pulse Weekly Monitoring</div>
+        <div class="road-p">Built and running. Every Monday at 9am ET, FixOps automatically rescans your portal, compares to last week, and emails you a full report showing new issues, resolved issues, and score trends. Activating for all subscribers after HubSpot marketplace approval.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Monday Scans</span><span class="road-tag">Score History</span></div>
+      </div>
+
+      <div class="road-card building" data-status="building">
+        <div class="road-status building"><div class="road-status-dot"></div>In Progress</div>
+        <div class="road-ico">📋</div>
+        <div class="road-h">AutoDoc — Workflow Documentation</div>
+        <div class="road-p">Reads every workflow in your portal and generates plain-English documentation automatically. What it does, who it affects, what triggers it, conflicts, and whether it has a goal. Exports to PDF. Auto-updates when workflows change.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">PDF Export</span><span class="road-tag">Auto-Updates</span></div>
+      </div>
+
+      <div class="road-card building" data-status="building">
+        <div class="road-status building"><div class="road-status-dot"></div>In Progress</div>
+        <div class="road-ico">🔔</div>
+        <div class="road-h">Integration & Workflow Health Alerts</div>
+        <div class="road-p">Continuous monitoring of workflow errors, broken integration connections, and failing automation actions. Instant email and Slack alerts the moment something breaks — not when a lead complains three weeks later.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Slack Alerts</span><span class="road-tag">Email Alerts</span></div>
+      </div>
+
+      <!-- PLANNED -->
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">👥</div>
+        <div class="road-h">Team Adoption Scorecard</div>
+        <div class="road-p">Weekly rep-level scorecard showing who's logging calls and emails, whose pipeline data is stale, and data quality scores per rep. Sent to the sales manager every Monday. Stop pulling manual reports.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Per-Rep Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🕵️</div>
+        <div class="road-h">Change Intelligence Log</div>
+        <div class="road-p">Weekly digest of every meaningful change in your portal — modified workflows, deleted properties, new super admins, pipeline stage changes. Catches the mystery change that broke your automation before anyone notices.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Weekly Digest</span><span class="road-tag">Change History</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">✦</div>
+        <div class="road-h">AI Report Builder</div>
+        <div class="road-p">Ask any question about your HubSpot data in plain English and get an instant chart, analysis, and recommended action. "Which deals are most at risk this week?" — answered in seconds from your real data.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Claude AI</span><span class="road-tag">Instant Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🔧</div>
+        <div class="road-h">Guided Fix Mode</div>
+        <div class="road-p">For the most common issues, a preview-before-apply fix flow. See exactly what will change, approve it, and it's done. Starting with archiving dead workflows, reassigning unowned contacts, and adding missing required fields.</div>
+        <div class="road-tags"><span class="road-tag">Command Plan</span><span class="road-tag">Preview First</span><span class="road-tag">Safe Fixes</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏢</div>
+        <div class="road-h">Multi-Portal Agency Dashboard</div>
+        <div class="road-p">One view across all your client portals. Health scores, critical issues, billing tier risks, and score trends — without logging into each portal separately. Built specifically for HubSpot solutions partners and agencies.</div>
+        <div class="road-tags"><span class="road-tag">Agency Plan</span><span class="road-tag">All Clients</span><span class="road-tag">White Label</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🔄</div>
+        <div class="road-h">Salesforce Activity Migration</div>
+        <div class="road-p">Moving from Salesforce to HubSpot? The native integration drops all historical activity — calls, emails, notes, meetings. FixOps migrates your full activity history so your reps don't go in blind. Done-for-you service.</div>
+        <div class="road-tags"><span class="road-tag">Service</span><span class="road-tag">Done For You</span><span class="road-tag">Full History</span></div>
+      </div>
+
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏥</div>
+        <div class="road-h">HubSpot Health Score Over Time</div>
+        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
+        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">💳</div>
+        <div class="road-h">Billing Tier Risk Monitor</div>
+        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🎯</div>
+        <div class="road-h">Deal Risk Scoring</div>
+        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">⚙️</div>
+        <div class="road-h">Workflow Conflict Detector</div>
+        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">📅</div>
+        <div class="road-h">Sequence & Email Health Monitor</div>
+        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
 <!-- FAQ -->
 <section class="faq" id="faq">
   <div class="wrap">
@@ -862,6 +1257,47 @@ function showOnetime() {
           <div class="faq-a">Every issue card in the platform has a "Fix It For Me" button. Clicking it sends a pre-filled request to our team with the full context — what the issue is, what it's costing you, and what needs to happen. We review it, scope the work, and send a flat-rate quote within 4 hours. You approve the quote, we do the work. No open-ended billing, no surprise charges. Larger projects (builds, migrations, RevOps strategy) start with a discovery call to scope properly.</div>
         </div>
         >
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🏥</div>
+        <div class="road-h">HubSpot Health Score Over Time</div>
+        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
+        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">💳</div>
+        <div class="road-h">Billing Tier Risk Monitor</div>
+        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
+        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">🎯</div>
+        <div class="road-h">Deal Risk Scoring</div>
+        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">⚙️</div>
+        <div class="road-h">Workflow Conflict Detector</div>
+        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
+      </div>
+
+      <div class="road-card planned" data-status="planned">
+        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
+        <div class="road-ico">📅</div>
+        <div class="road-h">Sequence & Email Health Monitor</div>
+        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
+        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -897,6 +1333,7 @@ function showOnetime() {
           <li><a href="#" onclick="openAuditModal(event)">Free Audit</a></li>
           <li><a href="#pulse">FixOps Pulse</a></li>
                 <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#roadmap">Roadmap</a></li>
         </ul>
       </div>
       <div class="ft-col">
@@ -1219,6 +1656,18 @@ function filterSvc(tab,cat){
 }
 function requestSvc(name){toast(name,'Request received — we\'ll scope and quote within 4 hours · matthew@fixops.io');}
 
+
+function filterRoad(el, status) {
+  document.querySelectorAll('.road-filter').forEach(f => f.classList.remove('on'));
+  el.classList.add('on');
+  document.querySelectorAll('.road-card').forEach(card => {
+    if(status === 'all' || card.dataset.status === status) {
+      card.classList.remove('hidden');
+    } else {
+      card.classList.add('hidden');
+    }
+  });
+}
 
 // ═══ AUDIT MODAL ═══
 let chosenPlan = '';
