@@ -417,7 +417,7 @@ function renderReport(weekIdx) {
     <!-- CTA -->
     <div style="background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.06));border:1px solid rgba(124,58,237,.22);border-radius:16px;padding:32px;text-align:center;margin-top:8px;">
       <div style="font-size:22px;font-weight:800;margin-bottom:8px;">Ready to fix these issues?</div>
-      <div style="font-size:14px;color:var(--t2);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">Matthew will review your audit and send a prioritized fix plan with flat-rate pricing. Or book a call to go through it together.</div>
+      <div style="font-size:14px;color:var(--t2);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">We'll review your audit and send a prioritized fix plan with flat-rate pricing. Or book a call to go through it together.</div>
       <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="display:inline-block;padding:13px 28px;background:var(--purple);color:#fff;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;">📅 Book a Free Strategy Call →</a>
       <div style="font-size:11px;color:var(--t3);margin-top:14px;font-family:var(--mono);">matthew@fixops.io · HubSpot Systems. Fixed.</div>
     </div>
@@ -439,7 +439,7 @@ async function requestFix(idx){
   if(!REPORT_DATA?.latestResult) return;
   const issue = REPORT_DATA.latestResult.issues?.[idx];
   if(!issue) return;
-  showToast('🛠','Sending Fix Request...','Matthew will reach out to scope this');
+  showToast('🛠','Sending Fix Request...',"We'll reach out to scope this");
   try {
     const res = await fetch(API+'/fix-request',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -452,9 +452,9 @@ async function requestFix(idx){
       })
     });
     const d = await res.json();
-    if(d.success) showToast('✅','Request Sent!','Matthew will reply within a few hours with a quote');
+    if(d.success) showToast('✅','Request Sent!','We will reply within a few hours with a quote');
     else throw new Error(d.error);
-  } catch(e){ showToast('📧','Email Matthew','matthew@fixops.io'); }
+  } catch(e){ showToast('📧','Email our team','matthew@fixops.io'); }
 }
 
 let toastT;

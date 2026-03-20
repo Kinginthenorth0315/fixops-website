@@ -92,7 +92,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
       <div class="ec-divider"></div>
       <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)">5–15 minutes</strong> depending on portal size</span></div>
       <div class="ec-row" style="margin-top:8px"><span class="ec-icon">🔒</span><span>Read-only access · your data is never modified</span></div>
-      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)">reports@fixops.io</strong> · check spam if not received</span></div>
+      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="453720352a37313605232c3d2a35366b2c2a">[email&#160;protected]</a></strong> · check spam if not received</span></div>
     </div>
 
     <div class="steps" id="step-list">
@@ -120,7 +120,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API    = 'https://fixops-api-production.up.railway.app';
 const params = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
@@ -203,18 +203,8 @@ function poll() {
         }, 800);
 
       } else if(data.status === 'error') {
-        document.getElementById('status-note').textContent = 'Audit encountered an error — Matthew has been notified and will follow up.';
+        document.getElementById('status-note').textContent = 'Audit encountered an error — our team has been notified and will follow up.';
       } else {
         // Still running
         if(attempts < MAX) setTimeout(poll, 8000);
-        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when complete.';
-      }
-    })
-    .catch(() => { if(attempts < MAX) setTimeout(poll, 8000); });
-}
-
-// Start polling after 8 seconds — give audit time to register then check frequently
-setTimeout(poll, 8000);
-</script>
-</body>
-</html>
+        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when comp

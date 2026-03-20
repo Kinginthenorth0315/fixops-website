@@ -217,7 +217,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
       </div>
       <div class="score-right">
         <h1>Your HubSpot Portal Audit Is Complete</h1>
-        <p class="sub">Matthew will personally review these findings and reach out with a prioritized fix plan. Your full report has also been emailed to you.</p>
+        <p class="sub">We'll personally review these findings and reach out with a prioritized fix plan. Your full report has also been emailed to you.</p>
         <div class="stats-row" id="stats-row"></div>
       </div>
     </div>
@@ -515,7 +515,7 @@ function toggleIssue(idx) {
 async function fixItForMe(idx) {
   var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
   if(!issue) return;
-  showToast('🛠','Sending Fix Request...','Matthew will reach out to scope this for you');
+  showToast('🛠','Sending Fix Request...',"We'll reach out to scope this for you");
   try {
     var res = await fetch(API + '/fix-request', {
       method:'POST', headers:{'Content-Type':'application/json'},
@@ -529,7 +529,7 @@ async function fixItForMe(idx) {
     });
     var d = await res.json();
     if(d.success) {
-      showToast('✅','Request Sent!','Matthew will reach out within a few hours to discuss and quote');
+      showToast('✅','Request Sent!',"We'll reach out within a few hours to discuss and quote");
       var btn = document.querySelector('#ic-' + idx + ' .btn-fixme');
       if(btn){ btn.textContent='✅ Request Sent'; btn.disabled=true; btn.style.opacity='0.6'; }
     } else { throw new Error(d.error); }
@@ -692,10 +692,10 @@ function buildFixPlan(data) {
     '<div class="fp-cta-wrap">' +
       '<div class="fp-eyebrow" style="margin-bottom:14px;">Free 30-Minute Strategy Call</div>' +
       '<div class="fp-cta-title">Get Your Prioritized Fix Plan</div>' +
-      '<div class="fp-cta-sub">Matthew will personally review every finding in your audit, walk you through what to fix first, and send you a written action plan with flat-rate pricing for each item. No obligation, no sales pitch — just clarity on what your portal actually needs.</div>' +
+      '<div class="fp-cta-sub">We will personally review every finding in your audit, walk you through what to fix first, and send you a written action plan with flat-rate pricing for each item. No obligation, no sales pitch.</div>' +
       '<a href="' + calendlyUrl + '" target="_blank" class="fp-cta-btn">📅 Book Your Free Strategy Call →</a>' +
       '<div class="fp-proof">' +
-        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Matthew reviews before the call</div>' +
+        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>We review before the call</div>' +
         '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Written action plan included</div>' +
         '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Flat-rate pricing, no surprises</div>' +
         '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>No commitment required</div>' +
@@ -954,7 +954,7 @@ function _buildPDF(jsPDF) {
   fc(PURP_BG); RR(ML,CTAY,CW,52,5,'F');
   fc(PURPLE); doc.rect(ML,CTAY,4,52,'F');
   F(11,true,PURPLE); doc.text("Let's Fix Your Portal",ML+14,CTAY+17);
-  F(8.5,false,INK2); doc.text('Matthew reviews every audit personally and builds a prioritized fix plan.',ML+14,CTAY+31);
+  F(8.5,false,INK2); doc.text('We review every audit personally and build a prioritized fix plan.',ML+14,CTAY+31);
   F(8.5,true,GREEN); doc.text('Book your free 30-min call:',ML+14,CTAY+45);
   F(8.5,false,INK2); doc.text('  calendly.com/matthew-fixops/30min',ML+14+doc.getTextWidth('Book your free 30-min call:'),CTAY+45);
 
@@ -1120,7 +1120,7 @@ function _buildPDF(jsPDF) {
   fc(PURPLE); doc.rect(rcx,y,4,118,'F');
   F(12,true,PURPLE); doc.text("Let's Fix Your Portal",rcx+14,y+20);
   F(8.5,false,INK2);
-  var ctaMsg='Matthew reviews every audit personally and builds a prioritized action plan with flat-rate pricing. No surprise costs, no open-ended billing, ever.';
+  var ctaMsg='We review every audit personally and build a prioritized action plan with flat-rate pricing. No surprise costs, no open-ended billing, ever.';
   var ctaLines=doc.splitTextToSize(ctaMsg,rcw-24);
   doc.text(ctaLines,rcx+14,y+36);
   F(8.5,true,GREEN); doc.text('Book your free 30-min strategy call:',rcx+14,y+80);
@@ -1379,7 +1379,7 @@ function buildPDF(jsPDF) {
   fc(PURPLT); rr(ML, ctaY2, CW, 22, 3, 'F');
   fc(PURPLE); doc.rect(ML, ctaY2, 3, 22, 'F');
   font(9.5, true, PURPLE); doc.text("Let's Fix Your Portal", ML+8, ctaY2+9);
-  font(7, false, INK2); doc.text('Matthew reviews every audit personally and builds a prioritized fix plan.', ML+8, ctaY2+15.5);
+  font(7, false, INK2); doc.text('We review every audit personally and build a prioritized fix plan.', ML+8, ctaY2+15.5);
   font(7, true, GREEN); doc.text('Book your free 30-min call: ', ML+8, ctaY2+21);
   var callW = doc.getTextWidth('Book your free 30-min call: ');
   font(7, false, INK2); doc.text('calendly.com/matthew-fixops/30min', ML+8+callW, ctaY2+21);
@@ -1560,7 +1560,7 @@ function buildPDF(jsPDF) {
   fc(PURPLE); doc.rect(rcx, ncy, 3, 55, 'F');
   font(10, true, PURPLE); doc.text("Let's Fix Your Portal", rcx+8, ncy+11);
   font(7.5, false, INK2);
-  var ctaMsg = 'Matthew reviews every audit personally and builds a prioritized fix plan with flat-rate pricing. No surprise costs. No open-ended billing.';
+  var ctaMsg = 'We review every audit personally and build a prioritized fix plan with flat-rate pricing. No surprise costs. No open-ended billing.';
   var ctaLines = doc.splitTextToSize(ctaMsg, rcw-14);
   doc.text(ctaLines, rcx+8, ncy+20);
   font(7.5, true, GREEN); doc.text('Book your free 30-min strategy call:', rcx+8, ncy+38);
