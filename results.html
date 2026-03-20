@@ -308,9 +308,13 @@ function loadWithRetry(id, attempt) {
     })
     .then(function(data) {
       if(!data) return; // 404 handled above
-      console.log('Status:', data.status, 'attempt:', attempt, 'has issues:', !!(data.issues));
-      // Treat complete OR any data with issues/scores as complete
-      if(data.status === 'complete' || (data.issues && data.scores)) {
+      console.log('Status:', data.status, 'attempt:', attempt, 'has issues:', !!(data.issues), 'score:', data.summary && data.summary.overallScore);
+      // Multiple ways to detect a complete audit
+      const isComplete = 
+        data.status === 'complete' || 
+        (data.issues && data.scores && data.summary && data.summary.overallScore !== undefined) ||
+        (data.issues && data.issues.length >= 0 && data.scores && Object.keys(data.scores).length > 0);
+      if(isComplete) {
         showResults(data);
       } else if(data.status === 'error') {
         showError(data.message || 'Audit failed. Please contact matthew@fixops.io');
@@ -321,7 +325,7 @@ function loadWithRetry(id, attempt) {
             'Still scanning · <a href="javascript:void(0)" onclick="loadWithRetry(\''+id+'\',0)" style="color:#a78bfa;text-decoration:underline;">Refresh now</a>';
         }
         if(attempt < maxAttempts) {
-          setTimeout(function(){ loadWithRetry(id, attempt + 1); }, 8000);
+          setTimeout(function(){ loadWithRetry(id, attempt + 1); }, attempt < 3 ? 3000 : 8000);
         } else {
           showError('Audit is taking longer than expected. You will receive an email when complete. Contact matthew@fixops.io');
         }
@@ -330,7 +334,7 @@ function loadWithRetry(id, attempt) {
     .catch(function(err) {
       console.error('Fetch error:', err.message);
       if(attempt < maxAttempts) {
-        setTimeout(function(){ loadWithRetry(id, attempt + 1); }, 8000);
+        setTimeout(function(){ loadWithRetry(id, attempt + 1); }, attempt < 3 ? 3000 : 8000);
       } else {
         showError('Could not connect. Check your email for results or contact matthew@fixops.io');
       }
