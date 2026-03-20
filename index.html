@@ -655,7 +655,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-name">Pulse</div>
           <div class="pc-desc">Full scan + weekly automated monitoring. Know the moment something breaks.</div>
           <div class="pc-price">$399<span>/mo</span></div>
-          <div class="pc-per">1 portal · cancel anytime · no contract</div>
+          <div class="pc-per">per portal · cancel anytime · no contract</div>
           <div style="font-size:10px;color:rgba(255,255,255,.28);font-family:JetBrains Mono,monospace;margin-bottom:10px;">Competitors charge $400–$1,000 for a static one-time PDF</div>
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Full portal scan · all objects · unlimited records</div>
@@ -676,9 +676,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <div class="price-card">
           <div class="pc-tier">Teams</div>
           <div class="pc-name">Pro</div>
-          <div class="pc-desc">Daily monitoring + AI report builder + portal snapshot dashboard. Up to 3 portals.</div>
+          <div class="pc-desc">Daily monitoring + AI report builder + portal snapshot dashboard. Per portal.</div>
           <div class="pc-price">$699<span>/mo</span></div>
-          <div class="pc-per">3 portals · cancel anytime · no contract</div>
+          <div class="pc-per">per portal · cancel anytime · no contract</div>
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Everything in Pulse</div>
             <div class="pc-feat"><span>✓</span>Daily monitoring</div>
@@ -688,33 +688,33 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Pipeline health + deal velocity reports</div>
             <div class="pc-feat"><span>✓</span>Lifecycle funnel + forecast analysis</div>
             <div class="pc-feat"><span>✓</span>Contact intelligence + owner coverage</div>
-            <div class="pc-feat"><span>✓</span>Up to 3 portals</div>
           </div>
           <button class="pc-btn pcb-o" onclick="goStripe('pro')">Get Pro →</button>
         </div>
 
         <div class="price-card">
-          <div class="pc-tier">Agencies</div>
-          <div class="pc-name">Command</div>
-          <div class="pc-desc">Unlimited portals, white-label reports, agency dashboard, billing risk monitor.</div>
+          <div class="pc-tier">For Agencies</div>
+          <div class="pc-name">Agency</div>
+          <div class="pc-desc">Your entire client portfolio — one dashboard. White-label, unlimited audits, and dollar-impact reporting your clients will love.</div>
           <div class="pc-price">$1,299<span>/mo</span></div>
-          <div class="pc-per">Unlimited portals · cancel anytime · no contract</div>
+          <div class="pc-per">up to 25 client portals · cancel anytime · no contract</div>
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Everything in Pro</div>
-            <div class="pc-feat"><span>✓</span>Unlimited portals</div>
-            <div class="pc-feat"><span>✓</span>White-label PDF reports</div>
-            <div class="pc-feat"><span>✓</span>Multi-portal agency dashboard</div>
-            <div class="pc-feat"><span>✓</span>Client-facing score dashboards</div>
-            <div class="pc-feat"><span>✓</span>Billing tier risk monitor</div>
-            <div class="pc-feat"><span>✓</span>Full API access</div>
-            <div class="pc-feat"><span>✓</span>Priority support + SLA</div>
-            <div class="pc-feat"><span>✓</span>Onboarding call included</div>
+            <div class="pc-feat"><span>✓</span>Up to 25 client portals</div>
+            <div class="pc-feat"><span>✓</span>Unlimited audits across all portals</div>
+            <div class="pc-feat"><span>✓</span>White-label PDF reports — your agency brand</div>
+            <div class="pc-feat"><span>✓</span>Multi-client portfolio dashboard</div>
+            <div class="pc-feat"><span>✓</span>Client-facing health score pages</div>
+            <div class="pc-feat"><span>✓</span>Dollar impact reporting per client</div>
+            <div class="pc-feat"><span>✓</span>Billing tier risk monitor per client</div>
+            <div class="pc-feat"><span>✓</span>Weekly monitoring across all clients</div>
+            <div class="pc-feat"><span>✓</span>Priority support + dedicated onboarding</div>
           </div>
-          <button class="pc-btn pcb-o" onclick="goStripe('command')">Get Command →</button>
+          <button class="pc-btn pcb-o" onclick="goStripe('command')">Get Agency Plan →</button>
         </div>
 
       </div>
-      <p class="price-note">All monthly plans · cancel anytime · no contracts · any HubSpot tier · any portal size · same price</p>
+      <p class="price-note">Pulse + Pro priced per portal · Agency plan covers up to 25 client portals · cancel anytime · no contracts · any HubSpot tier · any portal size</p>
     </div>
 
     <!-- ONE-TIME AUDITS -->
@@ -986,7 +986,7 @@ function showOnetime() {
         <div class="road-ico">🔧</div>
         <div class="road-h">Guided Fix Mode</div>
         <div class="road-p">For the most common issues, a preview-before-apply fix flow. See exactly what will change, approve it, and it's done. Starting with archiving dead workflows, reassigning unowned contacts, and adding missing required fields.</div>
-        <div class="road-tags"><span class="road-tag">Command Plan</span><span class="road-tag">Preview First</span><span class="road-tag">Safe Fixes</span></div>
+        <div class="road-tags"><span class="road-tag">Agency Plan</span><span class="road-tag">Preview First</span><span class="road-tag">Safe Fixes</span></div>
       </div>
 
       <div class="road-card planned" data-status="planned">
@@ -1497,7 +1497,7 @@ function selectPlan(plan, el){
     if(plan==='free'){
       showStep('free');
     } else {
-      const tags={pulse:'Pulse Plan — $399/mo',pro:'Pro Plan — $699/mo',command:'Command Plan — $1,299/mo'};
+      const tags={pulse:'Pulse Plan — $399/mo',pro:'Pro Plan — $699/mo',command:'Agency Plan — $1,299/mo'};
       document.getElementById('paid-tier-tag').textContent=tags[plan]||'Paid Plan';
       showStep('paid');
     }
