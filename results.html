@@ -839,23 +839,23 @@ function _buildPDF(jsPDF) {
   // Returns height used so caller can advance Y
   function callout(x,y,w,label,body,accent,bg){
     var lines=wrap(body,w-24,8.5);
-    var bodyH=lines.length*13;
-    var totalH=bodyH+28;
+    var bodyH=lines.length*14;
+    var totalH=bodyH+46;  // 14 top pad + 13 label + 10 gap + body + 9 bottom
     fc(bg); RR(x,y,w,totalH,4,'F');
-    fc(accent); doc.rect(x,y,4,totalH,'F'); // left bar
-    F(7.5,true,accent); doc.text(ss(label),x+12,y+14);
-    F(8.5,false,INK2); doc.text(lines,x+12,y+26);
-    return totalH+8;
+    fc(accent); doc.rect(x,y,4,totalH,'F');
+    F(7.5,true,accent); doc.text(ss(label),x+14,y+18);
+    F(8.5,false,INK2); doc.text(lines,x+14,y+34);
+    return totalH+10;
   }
 
   // ── SECTION HEADING ──────────────────────────────────────────────────────
   function H1(y,title,sub){
-    y=chk(y,28);
+    y=chk(y,40);
     F(20,true,INK); doc.text(ss(title),ML,y);
-    y+=6;
-    if(sub){ F(9.5,false,INK3); doc.text(ss(sub),ML,y); y+=5; }
+    y+=22;
+    if(sub){ F(9.5,false,INK3); doc.text(ss(sub),ML,y); y+=14; }
     SD(INK4,0.5); doc.line(ML,y,PW-MR,y);
-    return y+14;
+    return y+18;
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -964,10 +964,10 @@ function _buildPDF(jsPDF) {
   fc([245,243,252]); doc.rect(ML,y,CW,20,'F');
   SD(PURPLE,0.4); doc.line(ML,y,ML+CW,y); doc.line(ML,y+20,ML+CW,y+20);
   F(7.5,true,PURPLE);
-  doc.text('#',ML+4,y+13);
-  doc.text('SEVERITY',ML+18,y+13);
-  doc.text('ISSUE TITLE',ML+74,y+13);
-  doc.text('DIMENSION',PW-MR-70,y+13);
+  doc.text('#',ML+4,y+14);
+  doc.text('SEVERITY',ML+18,y+14);
+  doc.text('ISSUE TITLE',ML+74,y+14);
+  doc.text('DIMENSION',PW-MR-70,y+14);
   y+=22;
 
   for(var ti=0;ti<issues.length;ti++){
@@ -1025,32 +1025,32 @@ function _buildPDF(jsPDF) {
 
     // ── Issue header bar ─────────────────────────────────────────────────
     y=chk(y,28);
-    fc(ib); doc.rect(ML,y,CW,24,'F');
-    fc(ic); doc.rect(ML,y,4,24,'F');
+    fc(ib); doc.rect(ML,y,CW,26,'F');
+    fc(ic); doc.rect(ML,y,4,26,'F');
     // Severity badge inside header
-    fc(ic); RR(ML+12,y+5.5,52,13,3,'F');
-    F(7.5,true,WHITE); doc.text(sv.toUpperCase(),ML+38,y+14,{align:'center'});
+    fc(ic); RR(ML+12,y+6.5,52,13,3,'F');
+    F(7.5,true,WHITE); doc.text(sv.toUpperCase(),ML+38,y+15,{align:'center'});
     // Counter
-    F(7.5,false,INK3); doc.text('Issue '+(i+1)+' of '+issues.length,ML+72,y+14.5);
+    F(7.5,false,INK3); doc.text('Issue '+(i+1)+' of '+issues.length,ML+72,y+15.5);
     // Dimension tag right
     if(iss.dimension){
-      F(7.5,false,INK3); doc.text(ss(iss.dimension).toUpperCase(),PW-MR,y+14.5,{align:'right'});
+      F(7.5,false,INK3); doc.text(ss(iss.dimension).toUpperCase(),PW-MR,y+15.5,{align:'right'});
     }
-    y+=32;
+    y+=36;
 
     // ── Title ────────────────────────────────────────────────────────────
-    y=chk(y,22);
+    y=chk(y,24);
     F(14,true,INK);
     var tl=doc.splitTextToSize(ss(iss.title||''),CW);
     doc.text(tl,ML,y);
-    y+=tl.length*18+6;
+    y+=tl.length*19+8;
 
     // ── Description ──────────────────────────────────────────────────────
-    y=chk(y,14);
+    y=chk(y,16);
     F(8.5,false,INK2);
     var dl=doc.splitTextToSize(ss(iss.description||''),CW);
     doc.text(dl,ML,y);
-    y+=dl.length*14+8;
+    y+=dl.length*14+12;
 
     // ── Impact ───────────────────────────────────────────────────────────
     if(iss.impact){
@@ -1070,17 +1070,17 @@ function _buildPDF(jsPDF) {
     if(guide.length){
       y=chk(y,28);
       F(9.5,true,GREEN); doc.text('Fix Guide',ML,y);
-      SD(GREEN,1); doc.line(ML,y+3,ML+45,y+3);
-      y+=16;
+      SD(GREEN,1); doc.line(ML,y+4,ML+46,y+4);
+      y+=20;
       for(var g=0;g<guide.length;g++){
-        var glines2=doc.splitTextToSize(String(guide[g]||' '),CW-24);
-        var gh=glines2.length*13+10;
+        var glines2=doc.splitTextToSize(String(guide[g]||' '),CW-26);
+        var gh=glines2.length*14+14;
         y=chk(y,gh);
         // Circle number
-        fc(PURP_BG); doc.circle(ML+7,y+4,7,'F');
-        F(7.5,true,PURPLE); doc.text(String(g+1),ML+7,y+6.5,{align:'center'});
+        fc(PURP_BG); doc.circle(ML+8,y+5,8,'F');
+        F(7.5,true,PURPLE); doc.text(String(g+1),ML+8,y+7.5,{align:'center'});
         // Step text
-        F(8.5,false,INK); doc.text(glines2,ML+20,y+4);
+        F(8.5,false,INK); doc.text(glines2,ML+22,y+5);
         y+=gh;
       }
       y+=4;
@@ -1090,7 +1090,7 @@ function _buildPDF(jsPDF) {
     if(i<issues.length-1){
       y=chk(y,20);
       SD(INK4,0.4); doc.line(ML,y,PW-MR,y);
-      y+=16;
+      y+=22;
     }
   }
 
