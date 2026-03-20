@@ -729,7 +729,7 @@ function _buildPDF(jsPDF) {
   var SAFE = PH-60;                  // last safe y
 
   // ── DATA ────────────────────────────────────────────────────────────────
-  var dat=AUDIT_DATA, sum=dat.summary||{}, sc=dat.scores||{};
+  var dat=AUDIT_DATA, sum=dat.summary||{}, scores=dat.scores||{};
   var pi=dat.portalInfo||{}, ps=pi.portalStats||{};
   var issues=(dat.issues||[]).slice().sort(function(a,b){
     return ({'critical':0,'warning':1,'info':2}[a.severity]||3)-({'critical':0,'warning':1,'info':2}[b.severity]||3);
@@ -774,7 +774,7 @@ function _buildPDF(jsPDF) {
 
   // ── DRAWING PRIMITIVES ───────────────────────────────────────────────────
   function fc(rgb){ doc.setFillColor(rgb[0],rgb[1],rgb[2]); }
-  function sc(rgb,w){ doc.setDrawColor(rgb[0],rgb[1],rgb[2]); doc.setLineWidth(w||0.5); }
+  function SD(rgb,w){ doc.setDrawColor(rgb[0],rgb[1],rgb[2]); doc.setLineWidth(w||0.5); }
   function tc(rgb){ doc.setTextColor(rgb[0],rgb[1],rgb[2]); }
   function F(sz,bold,col){
     doc.setFontSize(sz);
@@ -806,7 +806,7 @@ function _buildPDF(jsPDF) {
     fc(PURPLE); doc.rect(0,0,PW,5,'F');
     // White header
     fc(WHITE); doc.rect(0,5,PW,44,'F');
-    sc(INK4,0.5); doc.line(0,49,PW,49);
+    SD(INK4,0.5); doc.line(0,49,PW,49);
     // Logo pill
     fc(PURPLE); RR(ML,10,24,24,5,'F');
     F(9.5,true,WHITE); doc.text('FO',ML+4,26.5);
@@ -819,7 +819,7 @@ function _buildPDF(jsPDF) {
   }
 
   function drawFooter(){
-    sc(INK4,0.5); doc.line(ML,PH-28,PW-MR,PH-28);
+    SD(INK4,0.5); doc.line(ML,PH-28,PW-MR,PH-28);
     F(7,false,INK4);
     doc.text('fixops.io  |  matthew@fixops.io  |  HubSpot Systems. Fixed.',ML,PH-16);
     doc.text(dt,PW-MR,PH-16,{align:'right'});
@@ -854,7 +854,7 @@ function _buildPDF(jsPDF) {
     F(20,true,INK); doc.text(ss(title),ML,y);
     y+=6;
     if(sub){ F(9.5,false,INK3); doc.text(ss(sub),ML,y); y+=5; }
-    sc(INK4,0.5); doc.line(ML,y,PW-MR,y);
+    SD(INK4,0.5); doc.line(ML,y,PW-MR,y);
     return y+14;
   }
 
@@ -875,14 +875,14 @@ function _buildPDF(jsPDF) {
   // Company name
   F(30,true,INK); doc.text(ss(company),ML,112);
   F(11,false,INK3); doc.text('HubSpot Portal Health Audit Report',ML,128);
-  sc(INK4,0.5); doc.line(ML,136,PW-MR,136);
+  SD(INK4,0.5); doc.line(ML,136,PW-MR,136);
 
   // ── Score hero ──────────────────────────────────────────────────────────
   var SY=148;
   F(58,true,SCOL); doc.text(String(ovr),ML,SY+52);
   F(13,false,INK3); doc.text('/100',ML+78,SY+30);
   F(11.5,true,SCOL); doc.text(grade,ML,SY+68);
-  sc(INK4,0.5); doc.line(ML+130,SY,ML+130,SY+74);
+  SD(INK4,0.5); doc.line(ML+130,SY,ML+130,SY+74);
 
   // 3 stat tiles
   var statData=[
@@ -907,14 +907,14 @@ function _buildPDF(jsPDF) {
   if(ps.tickets) snap.push(Number(ps.tickets).toLocaleString()+' tickets');
   if(ps.users>0) snap.push(ps.users+' users');
   if(snap.length){
-    sc(INK4,0.5); doc.line(ML,SY+82,PW-MR,SY+82);
+    SD(INK4,0.5); doc.line(ML,SY+82,PW-MR,SY+82);
     F(8,false,INK3); doc.text('Scanned:  '+snap.join('  /  '),ML,SY+96);
   }
 
   // ── Dimension grid ──────────────────────────────────────────────────────
   var DY=SY+114;
   F(12,true,INK); doc.text('Health Dimension Scores',ML,DY);
-  sc(INK4,0.4); doc.line(ML,DY+4,PW-MR,DY+4);
+  SD(INK4,0.4); doc.line(ML,DY+4,PW-MR,DY+4);
   DY+=18;
 
   var dkeys=['dataIntegrity','automationHealth','pipelineIntegrity','marketingHealth',
@@ -925,7 +925,7 @@ function _buildPDF(jsPDF) {
               teamAdoption:'Team Adoption',serviceHealth:'Service Health'};
   var DCW=(CW-10)/2, DRH=20;
   for(var di=0;di<dkeys.length;di++){
-    var dk=dkeys[di],dv=sc[dk];
+    var dk=dkeys[di],dv=scores[dk];
     if(dv===undefined) continue;
     var dc2=dimCol(dv),db=dimBg(dv);
     var dc=di%2, dr=Math.floor(di/2);
@@ -962,7 +962,7 @@ function _buildPDF(jsPDF) {
 
   // Table header
   fc([245,243,252]); doc.rect(ML,y,CW,20,'F');
-  sc(PURPLE,0.4); doc.line(ML,y,ML+CW,y); doc.line(ML,y+20,ML+CW,y+20);
+  SD(PURPLE,0.4); doc.line(ML,y,ML+CW,y); doc.line(ML,y+20,ML+CW,y+20);
   F(7.5,true,PURPLE);
   doc.text('#',ML+4,y+13);
   doc.text('SEVERITY',ML+18,y+13);
@@ -974,7 +974,7 @@ function _buildPDF(jsPDF) {
     var iss=issues[ti], sv=ss(iss.severity||'info');
     y=chk(y,22);
     fc(ti%2===0?WHITE:[250,249,253]); doc.rect(ML,y,CW,20,'F');
-    sc(INK4,0.2); doc.line(ML,y+20,ML+CW,y+20);
+    SD(INK4,0.2); doc.line(ML,y+20,ML+CW,y+20);
     // Number
     F(8,false,INK3); doc.text(String(ti+1),ML+4,y+13);
     // Badge
@@ -1070,7 +1070,7 @@ function _buildPDF(jsPDF) {
     if(guide.length){
       y=chk(y,28);
       F(9.5,true,GREEN); doc.text('Fix Guide',ML,y);
-      sc(GREEN,1); doc.line(ML,y+3,ML+45,y+3);
+      SD(GREEN,1); doc.line(ML,y+3,ML+45,y+3);
       y+=16;
       for(var g=0;g<guide.length;g++){
         var glines2=doc.splitTextToSize(String(guide[g]||' '),CW-24);
@@ -1089,7 +1089,7 @@ function _buildPDF(jsPDF) {
     // ── Separator ────────────────────────────────────────────────────────
     if(i<issues.length-1){
       y=chk(y,20);
-      sc(INK4,0.4); doc.line(ML,y,PW-MR,y);
+      SD(INK4,0.4); doc.line(ML,y,PW-MR,y);
       y+=16;
     }
   }
@@ -1104,7 +1104,7 @@ function _buildPDF(jsPDF) {
   F(48,true,SCOL); doc.text(String(ovr),ML,y+52);
   F(12,false,INK3); doc.text('/100',ML+68,y+30);
   F(12,true,SCOL); doc.text(grade,ML,y+70);
-  sc(INK4,0.4); doc.line(ML,y+78,ML+110,y+78);
+  SD(INK4,0.4); doc.line(ML,y+78,ML+110,y+78);
   F(8.5,false,INK3); doc.text((sum.criticalCount||0)+' Critical  /  '+(sum.warningCount||0)+' Warnings',ML,y+92);
   F(8.5,false,INK3); doc.text('$'+Number(sum.monthlyWaste||0).toLocaleString()+' est. monthly waste',ML,y+106);
 
