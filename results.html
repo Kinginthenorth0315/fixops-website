@@ -717,8 +717,415 @@ function downloadPDF() {
   var jsPDF = window.jspdf && window.jspdf.jsPDF;
   if(!jsPDF){ showToast('⚠️','PDF Error','Please refresh and try again'); return; }
   showToast('📄','Building PDF...','One moment');
-  setTimeout(function(){ try { buildPDF(jsPDF); } catch(e){ console.error(e); showToast('❌','PDF Error',String(e.message||e).substring(0,80)); } }, 120);
+  setTimeout(function(){ try { _buildPDF(jsPDF); } catch(e){ console.error('PDF',e); showToast('❌','PDF Error',String(e.message||e).substring(0,80)); } }, 150);
 }
+
+function _buildPDF(jsPDF) {
+
+  // ── DOC SETUP ────────────────────────────────────────────────────────────
+  var doc = new jsPDF({ orientation:'portrait', unit:'pt', format:'a4' });
+  var PW=595.28, PH=841.89;
+  var ML=40, MR=40, CW=PW-ML-MR;   // 515.28pt content width
+  var SAFE = PH-60;                  // last safe y
+
+  // ── DATA ────────────────────────────────────────────────────────────────
+  var dat=AUDIT_DATA, sum=dat.summary||{}, sc=dat.scores||{};
+  var pi=dat.portalInfo||{}, ps=pi.portalStats||{};
+  var issues=(dat.issues||[]).slice().sort(function(a,b){
+    return ({'critical':0,'warning':1,'info':2}[a.severity]||3)-({'critical':0,'warning':1,'info':2}[b.severity]||3);
+  });
+  var ovr=sum.overallScore||0;
+  var company=String(pi.company||'Your Portal').substring(0,45);
+  var grade=ovr>=85?'Excellent':ovr>=70?'Good':ovr>=55?'Needs Attention':'Critical';
+  var today=new Date();
+  var dt=today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  var fname='FixOps-Audit-'+company.replace(/[^a-zA-Z0-9]/g,'-')+'-'+today.toISOString().split('T')[0]+'.pdf';
+
+  // safe string
+  function ss(v){
+    if(v==null) return '';
+    return String(v).replace(/[^\x20-\x7E]/g,function(c){
+      var m={'\u2192':'>','\u2013':'-','\u2014':'-','\u2018':"'",'\u2019':"'",
+             '\u201C':'"','\u201D':'"','\u2022':'*','\u2713':'v','\u2714':'v',
+             '\xAE':'(R)','\xA0':' ','\u2026':'...','\u00e2\u20ac\u2122':"'"};
+      return m[c]||'';
+    });
+  }
+
+  // ── BRAND COLOURS (website exact) ───────────────────────────────────────
+  var PURPLE=[124,58,237],  PURP_DK=[91,33,182],  PURP_BG=[237,233,254];
+  var GREEN=[16,185,129],   GREEN_BG=[236,253,245];
+  var RED=[244,63,94],      RED_BG=[255,241,242];
+  var AMBER=[245,158,11],   AMBER_BG=[255,251,235];
+  var BLUE=[59,130,246],    BLUE_BG=[239,246,255];
+  var INK=[15,14,26];       // near-black headings
+  var INK2=[72,68,95];      // body text
+  var INK3=[139,136,163];   // captions
+  var INK4=[209,205,224];   // rules / dividers
+  var WHITE=[255,255,255];
+
+  var SCOL=ovr>=80?GREEN:ovr>=60?AMBER:RED;
+  var SCBG=ovr>=80?GREEN_BG:ovr>=60?AMBER_BG:RED_BG;
+
+  function sevCol(sv){ return sv==='critical'?RED:sv==='warning'?AMBER:BLUE; }
+  function sevBg(sv){ return sv==='critical'?RED_BG:sv==='warning'?AMBER_BG:BLUE_BG; }
+  function dimCol(v){ return v>=80?GREEN:v>=60?AMBER:RED; }
+  function dimBg(v){ return v>=80?GREEN_BG:v>=60?AMBER_BG:RED_BG; }
+
+  // ── DRAWING PRIMITIVES ───────────────────────────────────────────────────
+  function fc(rgb){ doc.setFillColor(rgb[0],rgb[1],rgb[2]); }
+  function sc(rgb,w){ doc.setDrawColor(rgb[0],rgb[1],rgb[2]); doc.setLineWidth(w||0.5); }
+  function tc(rgb){ doc.setTextColor(rgb[0],rgb[1],rgb[2]); }
+  function F(sz,bold,col){
+    doc.setFontSize(sz);
+    doc.setFont('helvetica',bold?'bold':'normal');
+    if(col) tc(col);
+  }
+  function RR(x,y,w,h,r,sty){ doc.roundedRect(x,y,w,h,r||3,r||3,sty||'F'); }
+
+  // wrap text returning array of lines
+  function wrap(txt,maxW,sz){
+    F(sz||9,false);
+    return doc.splitTextToSize(ss(txt)||' ', maxW);
+  }
+
+  // draw text block, return new Y
+  function textBlock(txt,x,y,maxW,sz,bold,col,lh){
+    F(sz||9,bold||false,col||INK2);
+    var lines=doc.splitTextToSize(ss(txt)||' ',maxW);
+    var h=lh||(sz||9)*1.45;
+    doc.text(lines,x,y);
+    return y+lines.length*h;
+  }
+
+  // ── PAGE / HEADER / FOOTER ───────────────────────────────────────────────
+  var pageNum=1;
+
+  function drawHeader(){
+    // Purple strip
+    fc(PURPLE); doc.rect(0,0,PW,5,'F');
+    // White header
+    fc(WHITE); doc.rect(0,5,PW,44,'F');
+    sc(INK4,0.5); doc.line(0,49,PW,49);
+    // Logo pill
+    fc(PURPLE); RR(ML,10,24,24,5,'F');
+    F(9.5,true,WHITE); doc.text('FO',ML+4,26.5);
+    // Brand
+    F(12,true,INK); doc.text('FixOps.io',ML+32,24);
+    F(8,false,INK3); doc.text('HubSpot Portal Intelligence',ML+32,36);
+    // Right side
+    F(8,false,INK3); doc.text('Page '+pageNum,PW-MR,24,{align:'right'});
+    F(8,true,INK2); doc.text(company,PW-MR,36,{align:'right'});
+  }
+
+  function drawFooter(){
+    sc(INK4,0.5); doc.line(ML,PH-28,PW-MR,PH-28);
+    F(7,false,INK4);
+    doc.text('fixops.io  |  matthew@fixops.io  |  HubSpot Systems. Fixed.',ML,PH-16);
+    doc.text(dt,PW-MR,PH-16,{align:'right'});
+  }
+
+  function newPage(){
+    drawFooter();
+    doc.addPage(); pageNum++;
+    fc(WHITE); doc.rect(0,0,PW,PH,'F');
+    drawHeader();
+    return 68;
+  }
+
+  function chk(y,need){ return (y+need>SAFE)?newPage():y; }
+
+  // ── CALLOUT BOX ──────────────────────────────────────────────────────────
+  // Returns height used so caller can advance Y
+  function callout(x,y,w,label,body,accent,bg){
+    var lines=wrap(body,w-24,8.5);
+    var bodyH=lines.length*13;
+    var totalH=bodyH+28;
+    fc(bg); RR(x,y,w,totalH,4,'F');
+    fc(accent); doc.rect(x,y,4,totalH,'F'); // left bar
+    F(7.5,true,accent); doc.text(ss(label),x+12,y+14);
+    F(8.5,false,INK2); doc.text(lines,x+12,y+26);
+    return totalH+8;
+  }
+
+  // ── SECTION HEADING ──────────────────────────────────────────────────────
+  function H1(y,title,sub){
+    y=chk(y,28);
+    F(20,true,INK); doc.text(ss(title),ML,y);
+    y+=6;
+    if(sub){ F(9.5,false,INK3); doc.text(ss(sub),ML,y); y+=5; }
+    sc(INK4,0.5); doc.line(ML,y,PW-MR,y);
+    return y+14;
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PAGE 1 — COVER
+  // ════════════════════════════════════════════════════════════════════════
+  fc(WHITE); doc.rect(0,0,PW,PH,'F');
+
+  // Purple cover header band
+  fc(PURPLE); doc.rect(0,0,PW,82,'F');
+  // Logo pill on cover
+  fc(WHITE); RR(ML,14,34,34,6,'F');
+  F(12,true,PURPLE); doc.text('FO',ML+7,35.5);
+  F(20,true,WHITE); doc.text('FixOps.io',ML+46,30);
+  F(9.5,false,[196,181,253]); doc.text('HubSpot Portal Intelligence',ML+46,45);
+  F(9,false,[196,181,253]); doc.text(dt,PW-MR,30,{align:'right'});
+
+  // Company name
+  F(30,true,INK); doc.text(ss(company),ML,112);
+  F(11,false,INK3); doc.text('HubSpot Portal Health Audit Report',ML,128);
+  sc(INK4,0.5); doc.line(ML,136,PW-MR,136);
+
+  // ── Score hero ──────────────────────────────────────────────────────────
+  var SY=148;
+  F(58,true,SCOL); doc.text(String(ovr),ML,SY+52);
+  F(13,false,INK3); doc.text('/100',ML+78,SY+30);
+  F(11.5,true,SCOL); doc.text(grade,ML,SY+68);
+  sc(INK4,0.5); doc.line(ML+130,SY,ML+130,SY+74);
+
+  // 3 stat tiles
+  var statData=[
+    {v:String(sum.criticalCount||0),l:'Critical Issues',c:RED,bg:RED_BG},
+    {v:String(sum.warningCount||0),l:'Warnings',c:AMBER,bg:AMBER_BG},
+    {v:'$'+Number(sum.monthlyWaste||0).toLocaleString(),l:'Est. Waste / Month',c:PURPLE,bg:PURP_BG}
+  ];
+  var TW=(CW-146)/3;
+  for(var si=0;si<3;si++){
+    var TX=ML+140+si*(TW+8);
+    fc(statData[si].bg); RR(TX,SY,TW,78,5,'F');
+    F(si===2?20:28,true,statData[si].c);
+    doc.text(ss(statData[si].v),TX+TW/2,SY+38,{align:'center'});
+    F(8,false,INK3); doc.text(ss(statData[si].l),TX+TW/2,SY+56,{align:'center'});
+  }
+
+  // Portal stats strip
+  var snap=[];
+  if(ps.contacts) snap.push(Number(ps.contacts).toLocaleString()+' contacts');
+  if(ps.companies) snap.push(Number(ps.companies).toLocaleString()+' companies');
+  if(ps.deals) snap.push(Number(ps.deals).toLocaleString()+' deals');
+  if(ps.tickets) snap.push(Number(ps.tickets).toLocaleString()+' tickets');
+  if(ps.users>0) snap.push(ps.users+' users');
+  if(snap.length){
+    sc(INK4,0.5); doc.line(ML,SY+82,PW-MR,SY+82);
+    F(8,false,INK3); doc.text('Scanned:  '+snap.join('  /  '),ML,SY+96);
+  }
+
+  // ── Dimension grid ──────────────────────────────────────────────────────
+  var DY=SY+114;
+  F(12,true,INK); doc.text('Health Dimension Scores',ML,DY);
+  sc(INK4,0.4); doc.line(ML,DY+4,PW-MR,DY+4);
+  DY+=18;
+
+  var dkeys=['dataIntegrity','automationHealth','pipelineIntegrity','marketingHealth',
+             'configSecurity','reportingQuality','teamAdoption','serviceHealth'];
+  var dnames={dataIntegrity:'Data Integrity',automationHealth:'Automation Health',
+              pipelineIntegrity:'Pipeline Integrity',marketingHealth:'Marketing Health',
+              configSecurity:'Config & Security',reportingQuality:'Reporting Quality',
+              teamAdoption:'Team Adoption',serviceHealth:'Service Health'};
+  var DCW=(CW-10)/2, DRH=20;
+  for(var di=0;di<dkeys.length;di++){
+    var dk=dkeys[di],dv=sc[dk];
+    if(dv===undefined) continue;
+    var dc2=dimCol(dv),db=dimBg(dv);
+    var dc=di%2, dr=Math.floor(di/2);
+    var DX=ML+dc*(DCW+10), DY2=DY+dr*DRH;
+    // Score pill — right aligned
+    fc(db); RR(DX+DCW-32,DY2-1,30,14,3,'F');
+    F(8,true,dc2); doc.text(String(dv),DX+DCW-17,DY2+9.5,{align:'center'});
+    // Dim name
+    F(9,false,INK2); doc.text(ss(dnames[dk]||dk),DX,DY2+9);
+    // Progress bar
+    var BX=DX+90, BW=DCW-130;
+    if(BW>20){
+      fc(INK4); RR(BX,DY2+4,BW,4,2,'F');
+      fc(dc2); RR(BX,DY2+4,BW*(dv/100),4,2,'F');
+    }
+  }
+
+  // ── CTA on cover ────────────────────────────────────────────────────────
+  var CTAY=DY+Math.ceil(dkeys.length/2)*DRH+16;
+  fc(PURP_BG); RR(ML,CTAY,CW,52,5,'F');
+  fc(PURPLE); doc.rect(ML,CTAY,4,52,'F');
+  F(11,true,PURPLE); doc.text("Let's Fix Your Portal",ML+14,CTAY+17);
+  F(8.5,false,INK2); doc.text('Matthew reviews every audit personally and builds a prioritized fix plan.',ML+14,CTAY+31);
+  F(8.5,true,GREEN); doc.text('Book your free 30-min call:',ML+14,CTAY+45);
+  F(8.5,false,INK2); doc.text('  calendly.com/matthew-fixops/30min',ML+14+doc.getTextWidth('Book your free 30-min call:'),CTAY+45);
+
+  drawFooter();
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PAGE 2 — ISSUE INDEX
+  // ════════════════════════════════════════════════════════════════════════
+  var y=newPage();
+  y=H1(y,'Issue Summary','All findings at a glance — detailed breakdown follows in subsequent pages');
+
+  // Table header
+  fc([245,243,252]); doc.rect(ML,y,CW,20,'F');
+  sc(PURPLE,0.4); doc.line(ML,y,ML+CW,y); doc.line(ML,y+20,ML+CW,y+20);
+  F(7.5,true,PURPLE);
+  doc.text('#',ML+4,y+13);
+  doc.text('SEVERITY',ML+18,y+13);
+  doc.text('ISSUE TITLE',ML+74,y+13);
+  doc.text('DIMENSION',PW-MR-70,y+13);
+  y+=22;
+
+  for(var ti=0;ti<issues.length;ti++){
+    var iss=issues[ti], sv=ss(iss.severity||'info');
+    y=chk(y,22);
+    fc(ti%2===0?WHITE:[250,249,253]); doc.rect(ML,y,CW,20,'F');
+    sc(INK4,0.2); doc.line(ML,y+20,ML+CW,y+20);
+    // Number
+    F(8,false,INK3); doc.text(String(ti+1),ML+4,y+13);
+    // Badge
+    var bc=sevCol(sv), bb=sevBg(sv);
+    fc(bb); RR(ML+18,y+4,46,13,3,'F');
+    F(7,true,bc); doc.text(sv.toUpperCase(),ML+41,y+13.5,{align:'center'});
+    // Title
+    F(8.5,false,INK);
+    var short=ss(iss.title||'');
+    while(short.length>4 && doc.getTextWidth(short)>CW-170){ short=short.slice(0,-1); }
+    if(short.length<ss(iss.title||'').length) short=short.slice(0,-1)+'...';
+    doc.text(short,ML+74,y+13);
+    // Dimension
+    F(7.5,false,INK3); doc.text(ss(iss.dimension||'').substring(0,20),PW-MR,y+13,{align:'right'});
+    y+=22;
+  }
+  y+=10;
+
+  // Monthly waste summary
+  if((sum.monthlyWaste||0)>0){
+    y=chk(y,70);
+    var wh=callout(ML,y,CW,'Estimated Monthly Waste: $'+Number(sum.monthlyWaste||0).toLocaleString(),
+      'This figure represents the combined revenue impact of the issues found across your portal. Addressing the critical items alone typically recovers 60-80% of this within 30 days.',
+      PURPLE,PURP_BG);
+    y+=wh;
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // PAGES 3+ — DETAILED FINDINGS
+  // ════════════════════════════════════════════════════════════════════════
+  y=newPage();
+  y=H1(y,'Detailed Findings','Full analysis, context, and step-by-step fix guide for every issue');
+
+  for(var i=0;i<issues.length;i++){
+    var iss=issues[i], sv=ss(iss.severity||'info');
+    var ic=sevCol(sv), ib=sevBg(sv);
+    var guide=(iss.guide||[]).map(function(g){ return ss(g); });
+
+    // Estimate block height for smart page breaking
+    F(8.5,false);
+    var tlines=doc.splitTextToSize(ss(iss.title||''),CW).length;
+    var dlines=doc.splitTextToSize(ss(iss.description||''),CW).length;
+    var wlines=iss.detail?doc.splitTextToSize(ss(iss.detail),CW-24).length:0;
+    var glines=0; guide.forEach(function(g){ glines+=doc.splitTextToSize(g||' ',CW-22).length; });
+    var estH=28+tlines*18+4+dlines*14+(iss.impact?40:0)+(wlines?wlines*13+36:0)+(glines?glines*13+guide.length*8+24:0)+16;
+
+    if(i>0 && y+Math.min(estH,140)>SAFE) y=newPage();
+
+    // ── Issue header bar ─────────────────────────────────────────────────
+    y=chk(y,28);
+    fc(ib); doc.rect(ML,y,CW,24,'F');
+    fc(ic); doc.rect(ML,y,4,24,'F');
+    // Severity badge inside header
+    fc(ic); RR(ML+12,y+5.5,52,13,3,'F');
+    F(7.5,true,WHITE); doc.text(sv.toUpperCase(),ML+38,y+14,{align:'center'});
+    // Counter
+    F(7.5,false,INK3); doc.text('Issue '+(i+1)+' of '+issues.length,ML+72,y+14.5);
+    // Dimension tag right
+    if(iss.dimension){
+      F(7.5,false,INK3); doc.text(ss(iss.dimension).toUpperCase(),PW-MR,y+14.5,{align:'right'});
+    }
+    y+=32;
+
+    // ── Title ────────────────────────────────────────────────────────────
+    y=chk(y,22);
+    F(14,true,INK);
+    var tl=doc.splitTextToSize(ss(iss.title||''),CW);
+    doc.text(tl,ML,y);
+    y+=tl.length*18+6;
+
+    // ── Description ──────────────────────────────────────────────────────
+    y=chk(y,14);
+    F(8.5,false,INK2);
+    var dl=doc.splitTextToSize(ss(iss.description||''),CW);
+    doc.text(dl,ML,y);
+    y+=dl.length*14+8;
+
+    // ── Impact ───────────────────────────────────────────────────────────
+    if(iss.impact){
+      y=chk(y,44);
+      var ih=callout(ML,y,CW,'IMPACT',ss(iss.impact),AMBER,AMBER_BG);
+      y+=ih;
+    }
+
+    // ── Why This Matters ─────────────────────────────────────────────────
+    if(iss.detail){
+      y=chk(y,44);
+      var dh=callout(ML,y,CW,'Why This Matters',ss(iss.detail),BLUE,BLUE_BG);
+      y+=dh;
+    }
+
+    // ── Fix Guide ────────────────────────────────────────────────────────
+    if(guide.length){
+      y=chk(y,28);
+      F(9.5,true,GREEN); doc.text('Fix Guide',ML,y);
+      sc(GREEN,1); doc.line(ML,y+3,ML+45,y+3);
+      y+=16;
+      for(var g=0;g<guide.length;g++){
+        var glines2=doc.splitTextToSize(String(guide[g]||' '),CW-24);
+        var gh=glines2.length*13+10;
+        y=chk(y,gh);
+        // Circle number
+        fc(PURP_BG); doc.circle(ML+7,y+4,7,'F');
+        F(7.5,true,PURPLE); doc.text(String(g+1),ML+7,y+6.5,{align:'center'});
+        // Step text
+        F(8.5,false,INK); doc.text(glines2,ML+20,y+4);
+        y+=gh;
+      }
+      y+=4;
+    }
+
+    // ── Separator ────────────────────────────────────────────────────────
+    if(i<issues.length-1){
+      y=chk(y,20);
+      sc(INK4,0.4); doc.line(ML,y,PW-MR,y);
+      y+=16;
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // FINAL PAGE — NEXT STEPS
+  // ════════════════════════════════════════════════════════════════════════
+  y=chk(y,180);
+  y=H1(y,'Next Steps','Every issue has a clear solution and a path forward');
+
+  // Left: score recap
+  F(48,true,SCOL); doc.text(String(ovr),ML,y+52);
+  F(12,false,INK3); doc.text('/100',ML+68,y+30);
+  F(12,true,SCOL); doc.text(grade,ML,y+70);
+  sc(INK4,0.4); doc.line(ML,y+78,ML+110,y+78);
+  F(8.5,false,INK3); doc.text((sum.criticalCount||0)+' Critical  /  '+(sum.warningCount||0)+' Warnings',ML,y+92);
+  F(8.5,false,INK3); doc.text('$'+Number(sum.monthlyWaste||0).toLocaleString()+' est. monthly waste',ML,y+106);
+
+  // Right: CTA block
+  var rcx=ML+130, rcw=CW-130;
+  fc(PURP_BG); RR(rcx,y,rcw,118,5,'F');
+  fc(PURPLE); doc.rect(rcx,y,4,118,'F');
+  F(12,true,PURPLE); doc.text("Let's Fix Your Portal",rcx+14,y+20);
+  F(8.5,false,INK2);
+  var ctaMsg='Matthew reviews every audit personally and builds a prioritized action plan with flat-rate pricing. No surprise costs, no open-ended billing, ever.';
+  var ctaLines=doc.splitTextToSize(ctaMsg,rcw-24);
+  doc.text(ctaLines,rcx+14,y+36);
+  F(8.5,true,GREEN); doc.text('Book your free 30-min strategy call:',rcx+14,y+80);
+  F(8.5,false,INK2); doc.text('calendly.com/matthew-fixops/30min',rcx+14,y+95);
+  F(8.5,false,INK3); doc.text('matthew@fixops.io',rcx+14,y+110);
+
+  drawFooter();
+  doc.save(fname);
+  showToast('✅','PDF Ready — '+issues.length+' issues — '+pageNum+' pages','Saved to downloads');
+}
+
 
 function buildPDF(jsPDF) {
   var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
