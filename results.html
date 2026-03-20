@@ -779,6 +779,9 @@ function downloadPDF() {
   function sevLite(s){ return s==='critical'?C.redL : s==='warning'?C.amberL : C.blueL; }
   function dimRGB(v){  return v>=80?C.green : v>=60?C.amber : C.red; }
 
+  // Safe string — converts anything to a non-empty string jsPDF accepts
+  function S(v){ return (v===null||v===undefined||v===''||v!==v) ? ' ' : String(v); }
+
   // ─── DRAWING HELPERS ─────────────────────────────────────────────────────────
   function fc(rgb)  { doc.setFillColor(rgb[0],rgb[1],rgb[2]); }
   function sc2(rgb,w){ doc.setDrawColor(rgb[0],rgb[1],rgb[2]); doc.setLineWidth(w||0.25); }
@@ -826,6 +829,9 @@ function downloadPDF() {
 
   // Clean arrow → (avoids encoding issues)
   function arrow(){ return '>'; }
+
+  // Safe string — jsPDF crashes on null/undefined/number passed to doc.text
+  function S(v){ return (v === null || v === undefined) ? '' : String(v); }
 
   // Page number tracking
   var pageNum = 1;
@@ -942,7 +948,7 @@ function downloadPDF() {
     }
   }
   // Score number
-  ft(20, true, scoreRGB); doc.text(String(ovr), cx, cy+4, {align:'center'});
+  ft(20, true, scoreRGB); doc.text(String(ovr||0), cx, cy+4, {align:'center'});
   ft(5.5, false, C.ink3); doc.text('/100', cx, cy+10, {align:'center'});
   // Grade pill below ring
   var gw = doc.getTextWidth(grade.toUpperCase());
@@ -980,7 +986,7 @@ function downloadPDF() {
   if(ps.users>0) snap.push(ps.users+' users');
   if(snap.length){
     fc(C.pageBg); rr(ML, cardY+47, CW, 8, 2, 'F');
-    ft(6, false, C.ink3); doc.text('Portal:  ' + snap.join('   ·   '), ML+5, cardY+52.5, {maxWidth:CW-10});
+    ft(6, false, C.ink3); doc.text('Portal:  ' + snap.join('   .   '), ML+5, cardY+52.5, {maxWidth:CW-10});
   }
 
   // ── Dimension Scores ──────────────────────────────────────────────────────
@@ -1010,7 +1016,7 @@ function downloadPDF() {
     // Left color tick
     fc(dr); doc.rect(cx2, cy2, 3, drh-2, 'F');
     // Name
-    ft(6.5, true, C.ink1); doc.text(dnames[dk], cx2+6, cy2+6.5);
+    ft(6.5, true, C.ink1); doc.text(S(dnames[dk]||dk), cx2+6, cy2+6.5);
     // Score pill
     var svtxt = String(dv);
     var svw = doc.getTextWidth(svtxt) + 6;
@@ -1072,7 +1078,7 @@ function downloadPDF() {
     fc(C.brand); doc.rect(ML, ctaY, 4, 20, 'F');
     ft(9, true, C.white); doc.text("Let's Fix Your Portal", ML+9, ctaY+9);
     ft(6.5, false, [195,185,235]); doc.text('Matthew reviews every audit personally and builds a prioritized fix plan.', ML+9, ctaY+15);
-    ft(6.5, true, C.green); doc.text('Book your free 30-min call: ', ML+9, ctaY+20.5);
+    ft(6.5, true, C.green); doc.text('Book your free 30-min call:  ', ML+9, ctaY+20.5);
     var cw2 = doc.getTextWidth('Book your free 30-min call: ');
     ft(6.5, false, C.white); doc.text('calendly.com/matthew-fixops/30min', ML+9+cw2, ctaY+20.5);
   }
@@ -1125,22 +1131,22 @@ function downloadPDF() {
     ft(5.5, false, C.ink3); doc.text('ISSUE '+(i+1)+' OF '+issues.length, ML+38, y+7);
     // Dimension on right
     if(iss.dimension){
-      ft(5.5, false, C.ink3); doc.text(String(iss.dimension).toUpperCase(), PW-MR, y+7, {align:'right'});
+      ft(5.5, false, C.ink3); doc.text(S(iss.dimension).toUpperCase(), PW-MR, y+7, {align:'right'});
     }
     y += 13;
 
     // ── Title ───────────────────────────────────────────────────────────────
     y = needY(y, 10);
     ft(10, true, C.ink1);
-    var tLines = doc.splitTextToSize(String(iss.title||''), CW);
-    doc.text(tLines, ML, y);
+    var tLines = doc.splitTextToSize(S(iss.title)||' ', CW);
+    if(tLines && tLines.length) doc.text(tLines, ML, y);
     y += tLines.length * 5.5 + 3;
 
     // ── Description ─────────────────────────────────────────────────────────
     y = needY(y, 8);
     ft(7.5, false, C.ink2);
-    var dLines = doc.splitTextToSize(String(iss.description||''), CW);
-    doc.text(dLines, ML, y);
+    var dLines = doc.splitTextToSize(S(iss.description)||' ', CW);
+    if(dLines && dLines.length) doc.text(dLines, ML, y);
     y += dLines.length * 4.3 + 4;
 
     // ── Impact ──────────────────────────────────────────────────────────────
@@ -1150,8 +1156,8 @@ function downloadPDF() {
       fc(C.amber); doc.rect(ML, y, 3, 9, 'F');
       ft(5.5, true, C.amber); doc.text('IMPACT', ML+6, y+3.5);
       ft(6.5, false, C.ink1);
-      var iLines = doc.splitTextToSize(String(iss.impact), CW-26);
-      doc.text(iLines[0], ML+22, y+3.5);
+      var iLines = doc.splitTextToSize(S(iss.impact)||' ', CW-26);
+      if(iLines && iLines[0]) doc.text(iLines[0], ML+22, y+3.5);
       ft(6.5, false, C.ink2);
       if(iLines.length>1){ y+=4; doc.text(iLines[1], ML+6, y+3.5); }
       y += 12;
@@ -1165,10 +1171,10 @@ function downloadPDF() {
       ft(5.5, true, C.blue); doc.text('WHY THIS MATTERS', ML+6, y+4.5);
       y += 9;
       ft(7, false, C.ink2);
-      var wLines = doc.splitTextToSize(String(iss.detail), CW-4);
+      var wLines = doc.splitTextToSize(S(iss.detail)||' ', CW-4);
       for(var wi=0; wi<wLines.length; wi++){
         y = needY(y, 5);
-        doc.text(wLines[wi], ML+2, y); y += 4.3;
+        if(wLines[wi]) doc.text(wLines[wi], ML+2, y); y += 4.3;
       }
       y += 3;
     }
@@ -1181,14 +1187,14 @@ function downloadPDF() {
       ft(5.5, true, C.green); doc.text('FIX GUIDE', ML+6, y+4.5);
       y += 9;
       for(var g=0; g<guide.length; g++){
-        var gLines = doc.splitTextToSize(String(guide[g]), CW-16);
-        var gH = gLines.length*4.5 + 5;
+        var gLines = doc.splitTextToSize(S(guide[g])||' ', CW-16);
+        var gH = (gLines.length||1)*4.5 + 5;
         y = needY(y, gH);
         // Step circle
         fc(C.brandLight); doc.circle(ML+3.5, y+2.5, 3.5, 'F');
         ft(6, true, C.brand); doc.text(String(g+1), ML+3.5, y+4.5, {align:'center'});
         ft(7, false, C.ink1);
-        doc.text(gLines, ML+10, y+2.5);
+        if(gLines && gLines.length) doc.text(gLines, ML+10, y+2.5);
         y += gH;
       }
       y += 2;
@@ -1227,16 +1233,16 @@ function downloadPDF() {
   ft(5.5, true, scoreRGB); doc.text(grade.toUpperCase(), nx, ny+17.5, {align:'center'});
 
   // CTA block (right of score)
-  var ctx = ML+44;
-  fc(C.brandDark); rr(ctx, y, CW-(ctx-ML), 50, 3, 'F');
-  fc(C.brand); doc.rect(ctx, y, 4, 50, 'F');
-  ft(11, true, C.white); doc.text("Let's Fix Your Portal", ctx+9, y+13);
+  var ctaX = ML+44;
+  fc(C.brandDark); rr(ctaX, y, CW-(ctaX-ML), 50, 3, 'F');
+  fc(C.brand); doc.rect(ctaX, y, 4, 50, 'F');
+  ft(11, true, C.white); doc.text("Let's Fix Your Portal", ctaX+9, y+13);
   ft(7, false, [195,185,235]);
-  var ctxt = "Every issue in this report has a clear solution. Matthew will personally review your results and send a prioritized action plan with flat-rate pricing — no surprise costs.";
-  var ctLines = doc.splitTextToSize(ctxt, CW-(ctxt-ML)-22);
-  doc.text(ctLines, ctxt+9, y+22);
-  ft(7.5, true, C.green); doc.text('Book your free 30-min strategy call:', ctx+9, y+38);
-  ft(7.5, false, C.white); doc.text('calendly.com/matthew-fixops/30min', ctx+9, y+45);
+  var ctxtMsg = 'Every issue in this report has a clear solution. Matthew will personally review your results and send a prioritized action plan with flat-rate pricing - no surprise costs.';
+  var ctLines = doc.splitTextToSize(ctxtMsg, CW-50);
+  if(ctLines && ctLines.length) doc.text(ctLines, ctaX+9, y+22);
+  ft(7.5, true, C.green); doc.text('Book your free 30-min strategy call:', ctaX+9, y+38);
+  ft(7.5, false, C.white); doc.text('calendly.com/matthew-fixops/30min', ctaX+9, y+45);
 
   drawFooter();
 
