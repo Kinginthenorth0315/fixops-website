@@ -166,20 +166,29 @@ section{position:relative;z-index:1;}
 
 /* ── Roadmap ─────────────────────────────────────────────────────────────── */
 .roadmap{padding:100px 0;background:var(--bg);}
-.road-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:48px;}
-.road-card{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:28px;position:relative;overflow:hidden;transition:all .2s;}
+.road-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px;margin-top:48px;}
+.road-card{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:28px;position:relative;overflow:hidden;transition:all .2s;display:flex;flex-direction:column;}
 .road-card:hover{border-color:var(--b2);transform:translateY(-3px);}
 .road-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .road-card.live::before{background:linear-gradient(90deg,#10b981,#34d399);}
 .road-card.building::before{background:linear-gradient(90deg,#7c3aed,#a78bfa);}
 .road-card.planned::before{background:linear-gradient(90deg,#3b82f6,#60a5fa);}
 @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-.road-h{font-size:17px;font-weight:800;color:var(--w);margin-bottom:8px;}
-.road-p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;}
+.road-h{font-size:16px;font-weight:800;color:var(--w);margin-bottom:10px;line-height:1.3;}
+.road-p{font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:0;flex:1;}
 .road-filters{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px;}
 .road-filter{padding:7px 18px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--b2);color:var(--t2);background:transparent;font-family:var(--font);transition:all .15s;}
 .road-filter.on,.road-filter:hover{background:var(--v);color:#fff;border-color:var(--v);}
 .road-card.hidden{display:none;}
+.road-status{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+.road-status.live{background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25);}
+.road-status.building{background:rgba(124,58,237,.12);color:#a78bfa;border:1px solid rgba(124,58,237,.25);}
+.road-status.planned{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.25);}
+.road-status-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.road-status.live .road-status-dot{animation:pulse-dot 1.5s ease-in-out infinite;}
+.road-ico{font-size:24px;margin-bottom:10px;display:block;}
+.road-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;padding-top:14px;border-top:1px solid var(--b1);}
+.road-tag{display:inline-block;font-size:10px;font-weight:700;padding:4px 10px;border-radius:6px;font-family:var(--mono);background:rgba(255,255,255,.07);color:var(--t2);border:1px solid rgba(255,255,255,.1);white-space:nowrap;letter-spacing:.3px;line-height:1;}
 
 .faq{padding:120px 0;}
 .faq-wrap{max-width:760px;margin:0 auto;}
@@ -724,7 +733,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
 
         <div class="price-card best">
           <div class="pc-name">Deep Audit</div>
-          <div class="pc-desc">Full audit of every object + written action plan + 30-min call with Matthew.</div>
+          <div class="pc-desc">Full audit of every object + written action plan + 30-min strategy call with our team.</div>
           <div class="pc-price">$299</div>
           <div class="pc-per">One-time · agencies charge $500–$1,000 for this</div>
           <div style="font-size:10px;color:rgba(255,255,255,.28);font-family:JetBrains Mono,monospace;margin-bottom:10px;">Portal-iQ charges $339 for a static PDF with no live data</div>
@@ -733,7 +742,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Results stored 90 days</div>
             <div class="pc-feat"><span>✓</span>Written prioritized action plan</div>
             <div class="pc-feat"><span>✓</span>Same-day Fix It For Me response</div>
-            <div class="pc-feat"><span>✓</span>30-min strategy call with Matthew</div>
+            <div class="pc-feat"><span>✓</span>30-min strategy call with our team</div>
             <div class="pc-feat"><span>✓</span>Integration + API health check</div>
           </div>
           <button class="pc-btn pcb-f" onclick="goStripe('deep')">Get Deep Audit — $299 →</button>
@@ -750,7 +759,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Full workflow analysis</div>
             <div class="pc-feat"><span>✓</span>Form + email health scan</div>
             <div class="pc-feat"><span>✓</span>User permissions + security audit</div>
-            <div class="pc-feat"><span>✓</span>60-min strategy call with Matthew</div>
+            <div class="pc-feat"><span>✓</span>60-min strategy call with our team</div>
             <div class="pc-feat"><span>✓</span>90-day fix roadmap + ROI report</div>
             <div class="pc-feat"><span>✓</span>Results stored 1 year</div>
           </div>
@@ -1047,7 +1056,7 @@ function showOnetime() {
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="doFaq(this)">Can FixOps actually fix things automatically, and is it safe?<span class="faq-arr">+</span></button>
-          <div class="faq-a">Every issue in your audit includes a step-by-step fix guide you can implement yourself, or click “Fix It For Me” to have Matthew handle it personally. Matthew reviews every request and replies within a few hours with a flat-rate quote. No surprise costs, no contracts.</div>
+          <div class="faq-a">Every issue in your audit includes a step-by-step fix guide you can implement yourself, or click “Fix It For Me” to have our team handle it. We review every request and reply within a few hours with a flat-rate quote. No surprise costs, no contracts.</div>
         </div>
         <div class="faq-item">
           <button class="faq-q" onclick="doFaq(this)">How does the reporting work — what data can you actually calculate?<span class="faq-arr">+</span></button>
@@ -1061,7 +1070,6 @@ function showOnetime() {
           <button class="faq-q" onclick="doFaq(this)">How does the Fix It For Me service work exactly?<span class="faq-arr">+</span></button>
           <div class="faq-a">Every issue card in the platform has a "Fix It For Me" button. Clicking it sends a pre-filled request to our team with the full context — what the issue is, what it's costing you, and what needs to happen. We review it, scope the work, and send a flat-rate quote within 4 hours. You approve the quote, we do the work. No open-ended billing, no surprise charges. Larger projects (builds, migrations, RevOps strategy) start with a discovery call to scope properly.</div>
         </div>
-        >
 
     </div>
   </div>
@@ -1220,7 +1228,7 @@ function showOnetime() {
         </div>
 
       </div>
-      <p style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;text-align:center;">All paid plans quoted and onboarded by Matthew personally · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d606c797965687a4d6b6475627d7e236462">[email&#160;protected]</a></p>
+      <p style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;text-align:center;">All paid plans personally reviewed and onboarded by our team · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d606c797965687a4d6b6475627d7e236462">[email&#160;protected]</a></p>
     </div>
 
     <!-- STEP 2a: Free audit — HubSpot connect -->
@@ -1228,7 +1236,7 @@ function showOnetime() {
       <button onclick="backToPlans()" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;margin-bottom:20px;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:6px;">← Back</button>
       <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;font-family:'JetBrains Mono',monospace;margin-bottom:12px;">Free Snapshot Audit</div>
       <h2 style="font-size:26px;font-weight:900;letter-spacing:-.8px;color:#fff;margin-bottom:8px;">Connect Your HubSpot Portal</h2>
-      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:28px;font-weight:300;line-height:1.65;">We connect via read-only OAuth — we can see your data but cannot change anything. Connect your portal and get your full results in under 15 minutes. Matthew personally reviews every audit.</p>
+      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:28px;font-weight:300;line-height:1.65;">We connect via read-only OAuth — we can see your data but cannot change anything. Connect your portal and get your full results in under 15 minutes. We personally review every audit.</p>
 
       <div style="padding:18px 20px;background:#10101a;border:1px solid #18182a;border-radius:12px;margin-bottom:20px;display:flex;align-items:flex-start;gap:14px;">
         <div style="width:36px;height:36px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🔒</div>
@@ -1259,7 +1267,7 @@ function showOnetime() {
       <button onclick="backToPlans()" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;margin-bottom:20px;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:6px;">← Back</button>
       <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;font-family:'JetBrains Mono',monospace;margin-bottom:12px;" id="paid-tier-tag">Pulse Plan</div>
       <h2 style="font-size:26px;font-weight:900;letter-spacing:-.8px;color:#fff;margin-bottom:8px;">Let's Get You Set Up</h2>
-      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:28px;font-weight:300;line-height:1.65;">Book a quick 30-minute onboarding call with Matthew. We'll connect your portal, walk you through what FixOps found, and get your monitoring configured on the first call.</p>
+      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:28px;font-weight:300;line-height:1.65;">Book a quick 30-minute onboarding call with our team. We'll connect your portal, walk you through what FixOps found, and get your monitoring configured on the first call.</p>
 
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
         <div style="padding:16px 18px;background:#10101a;border:1px solid #18182a;border-radius:12px;display:flex;align-items:center;gap:12px;">
