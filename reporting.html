@@ -188,6 +188,11 @@ nav {
 .funnel-meta { font-family: var(--mono); font-size: 11px; color: var(--t3); width: 80px; text-align: right; flex-shrink: 0; }
 .funnel-count { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--t1); width: 60px; text-align: right; flex-shrink: 0; }
 
+
+.ai-tab{background:var(--s2);border:1px solid var(--s4);border-radius:6px;padding:4px 12px;font-size:10px;font-weight:700;color:var(--t3);cursor:pointer;font-family:var(--mono);letter-spacing:.5px;transition:all .15s;}
+.ai-tab:hover,.ai-tab.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.ai-result-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+
 /* ── AI Report Builder ── */
 .ai-builder {
   background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.05));
@@ -612,21 +617,28 @@ nav {
       <div class="view" id="view-ai">
         <div class="page-header">
           <h1>AI Report Builder</h1>
-          <p>Ask any question about your HubSpot data in plain English — get an instant answer</p>
+          <p>Ask any question about your actual HubSpot data in plain English — powered by Claude</p>
         </div>
-
         <div class="ai-builder">
           <div class="ai-header">
             <div class="ai-icon">✦</div>
-            <div>
+            <div style="flex:1">
               <div class="ai-title">Ask your data anything</div>
-              <div class="ai-sub">Powered by Claude · Analyzes your actual HubSpot data · No SQL required</div>
+              <div class="ai-sub">Analyzes your real audit data · No SQL required · Powered by Claude AI</div>
+            </div>
+            <div id="ai-category-tabs" style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="ai-tab on" onclick="switchAiCategory(this,'all')">All</button>
+              <button class="ai-tab" onclick="switchAiCategory(this,'pipeline')">Pipeline</button>
+              <button class="ai-tab" onclick="switchAiCategory(this,'data')">Data Quality</button>
+              <button class="ai-tab" onclick="switchAiCategory(this,'revenue')">Revenue</button>
+              <button class="ai-tab" onclick="switchAiCategory(this,'risk')">Risk</button>
+              <button class="ai-tab" onclick="switchAiCategory(this,'quickwin')">Quick Wins</button>
             </div>
           </div>
           <div class="ai-input-row">
             <input class="ai-input" id="ai-query" placeholder="e.g. Which deals are most at risk of going cold this week?" />
             <button class="ai-submit" id="ai-btn" onclick="runAiReport()">
-              <span>✦</span> Analyze
+              <span>&#x2736;</span> Analyze
             </button>
           </div>
           <div class="ai-suggestions" id="ai-suggestions"></div>
@@ -634,22 +646,30 @@ nav {
             <div class="ai-result-header">
               <div class="ai-icon" style="width:28px;height:28px;font-size:13px;">✦</div>
               <div class="ai-result-title" id="ai-result-title">Analysis</div>
+              <div id="ai-urgency-badge" style="margin-left:auto;font-size:10px;font-weight:700;padding:3px 10px;border-radius:10px;display:none;"></div>
             </div>
             <div id="ai-result-chart-wrap" style="margin-bottom:14px;display:none;"><canvas id="ai-chart" height="180"></canvas></div>
             <div id="ai-result-table" style="overflow-x:auto;margin-bottom:14px;display:none;"><table class="data-table" id="ai-data-table"></table></div>
             <div class="ai-insight" id="ai-result-insight"></div>
+            <div id="ai-result-actions" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--s4);">
+              <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1px;margin-bottom:8px;">FOLLOW-UP QUESTIONS</div>
+              <div id="ai-followup-chips" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+            </div>
           </div>
         </div>
-
         <div class="chart-grid cols-2">
           <div class="chart-card" id="ai-history-card">
-            <div class="chart-header"><div><div class="chart-title">Recent Analyses</div><div class="chart-sub">Your previous AI report queries</div></div></div>
+            <div class="chart-header"><div><div class="chart-title">Recent Analyses</div><div class="chart-sub">Your session history — click to re-run</div></div></div>
             <div id="ai-history"><div class="empty-state"><div class="empty-icon">✦</div><div class="empty-title">No analyses yet</div><div class="empty-sub">Ask your first question above</div></div></div>
           </div>
           <div class="chart-card">
-            <div class="chart-header"><div><div class="chart-title">Suggested Reports</div><div class="chart-sub">Questions your peers ask most</div></div></div>
+            <div class="chart-header"><div><div class="chart-title">Report Library</div><div class="chart-sub">One-click reports based on your audit findings</div></div></div>
             <div id="ai-suggested-reports"></div>
           </div>
+        </div>
+        <div class="chart-card" style="margin-top:0;">
+          <div class="chart-header"><div><div class="chart-title">What Your Data Is Telling You</div><div class="chart-sub">Key patterns from this audit — click any to analyze deeper</div></div><span class="chart-badge">AUTO-GENERATED</span></div>
+          <div id="ai-auto-insights"></div>
         </div>
       </div>
 
@@ -1382,50 +1402,175 @@ function buildTickets() {
 // ── AI REPORT BUILDER ─────────────────────────────────────────────────────────
 // AI calls go through Railway proxy — see runAiReport()
 
-const SUGGESTIONS = [
-  'Which deals are most at risk of going cold?',
-  'What is my estimated monthly revenue leak?',
-  'Which lifecycle stage has the biggest drop-off?',
-  'How many contacts have never been contacted?',
-  'What would fixing my top 3 issues save per year?',
-  'Show me my pipeline concentration risk',
-  'Which issues should I fix first for maximum ROI?',
-  'What does a healthy HubSpot portal look like vs mine?',
-];
+const AI_CATEGORIES = {
+  all: [
+    'Which deals are most at risk of going cold this week?',
+    'What would fixing my top 3 issues save per year?',
+    'Give me a 90-day fix prioritization plan',
+    'What does a healthy HubSpot portal look like vs mine?',
+    'Which issues should I fix first for maximum ROI?',
+  ],
+  pipeline: [
+    'How much revenue is at risk from stalled deals?',
+    'Show me my pipeline concentration risk by stage',
+    'Which deals have no activity in 30+ days?',
+    'What is my average deal velocity vs benchmark?',
+    'How many deals are missing close dates or amounts?',
+  ],
+  data: [
+    'What are my top 3 data quality problems?',
+    'How many contacts have incomplete records?',
+    'What percentage of my pipeline has no dollar value?',
+    'Show me my contact owner coverage gap',
+    'What data is broken that affects automation?',
+  ],
+  revenue: [
+    'What is my estimated monthly revenue lost from HubSpot issues?',
+    'What would fixing my top 3 issues save per year?',
+    'How much pipeline am I losing to deals going dark?',
+    'What is my weighted vs unweighted pipeline gap?',
+    'Which issues are costing me the most money?',
+  ],
+  risk: [
+    'What are the highest-risk issues in my portal right now?',
+    'Which automations could be losing leads silently?',
+    'What configuration gaps are security risks?',
+    'What would break first if my team doubled in size?',
+    'Which workflows have no goal set?',
+  ],
+  quickwin: [
+    'Top 5 fixes I can do myself in under an hour',
+    'What can be fixed with a single workflow?',
+    'Which issues have the highest ROI for least effort?',
+    'What free HubSpot settings am I not using?',
+    'What is the fastest way to improve my score by 10 points?',
+  ],
+};
 
 const REPORT_LIBRARY = [
-  { q: 'Pipeline risk summary', icon: '📊' },
-  { q: 'Revenue forecast accuracy analysis', icon: '🎯' },
-  { q: 'Top 5 quick wins from my audit', icon: '⚡' },
-  { q: 'Data quality score breakdown', icon: '🧹' },
-  { q: 'Automation coverage gap analysis', icon: '⚙️' },
-  { q: 'Contact engagement health check', icon: '👥' },
+  { q: 'Give me a full pipeline risk assessment', icon: '📊', badge: 'PIPELINE' },
+  { q: 'Top 5 quick wins from my audit findings', icon: '⚡', badge: 'QUICK WIN' },
+  { q: 'What would fixing everything save annually?', icon: '💰', badge: 'REVENUE' },
+  { q: 'Data quality scorecard — what is broken?', icon: '🧹', badge: 'DATA' },
+  { q: 'Automation coverage gap — what should be automated?', icon: '⚙️', badge: 'AUTOMATION' },
+  { q: 'Give me a 90-day prioritized fix roadmap', icon: '🗺', badge: 'ROADMAP' },
+  { q: 'Contact engagement health — what is at risk?', icon: '👥', badge: 'CONTACTS' },
+  { q: 'What configuration issues are security risks?', icon: '🔒', badge: 'SECURITY' },
 ];
 
 function setupAiSuggestions() {
-  const suggestions = SUGGESTIONS.slice(0, 5);
-  document.getElementById('ai-suggestions').innerHTML = suggestions.map(s =>
-    `<div class="ai-chip" onclick="setAiQuery('${s.replace(/'/g,"\\'")}')">${s}</div>`
-  ).join('');
-
-  document.getElementById('ai-suggested-reports').innerHTML = REPORT_LIBRARY.map(r =>
-    `<div class="metric-highlight" style="cursor:pointer;" onclick="setAiQuery('${r.q.replace(/'/g,"\\'")}')" onmouseover="this.style.background='var(--s4)'" onmouseout="this.style.background='var(--s3)')">
-      <div class="mh-icon">${r.icon}</div>
-      <div><div class="mh-label">Suggested Report</div><div style="font-size:13px;color:var(--t1);">${r.q}</div></div>
-      <div class="mh-context">→</div>
-    </div>`
-  ).join('');
-
-  // Enter key on input
+  renderAiChips('all');
+  renderReportLibrary();
   document.getElementById('ai-query').addEventListener('keypress', e => {
     if (e.key === 'Enter') runAiReport();
   });
+  setTimeout(buildAutoInsights, 600);
+}
+
+function switchAiCategory(btn, cat) {
+  document.querySelectorAll('.ai-tab').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  renderAiChips(cat);
+}
+
+function renderAiChips(cat) {
+  const chips = AI_CATEGORIES[cat] || AI_CATEGORIES.all;
+  document.getElementById('ai-suggestions').innerHTML = chips.map(s =>
+    `<div class="ai-chip" onclick="setAiQuery('${s.replace(/'/g,"&#39;")}')">${s}</div>`
+  ).join('');
+}
+
+function renderReportLibrary() {
+  document.getElementById('ai-suggested-reports').innerHTML = REPORT_LIBRARY.map(r =>
+    `<div class="metric-highlight" style="cursor:pointer;" onclick="setAiQuery('${r.q.replace(/'/g,"&#39;")}')" onmouseover="this.style.background='var(--s4)'" onmouseout="this.style.background=''">
+      <div class="mh-icon">${r.icon}</div>
+      <div style="flex:1"><div class="mh-label">${r.badge}</div><div style="font-size:12px;color:var(--t1);margin-top:2px;">${r.q}</div></div>
+      <div class="mh-context" style="font-size:16px;color:var(--accent);">→</div>
+    </div>`
+  ).join('');
+}
+
+function buildAutoInsights() {
+  if (!DATA) return;
+  const s = DATA.summary || {};
+  const sc = DATA.scores || {};
+  const issues = DATA.issues || [];
+  const ps = DATA.portalInfo?.portalStats || {};
+  const insights = [];
+  const ovr = s.overallScore || 0;
+  const gradeLabel = ovr >= 85 ? 'excellent' : ovr >= 70 ? 'good' : ovr >= 55 ? 'needs attention' : 'critical';
+
+  insights.push({
+    icon: ovr >= 70 ? '✓' : '⚠',
+    color: ovr >= 70 ? 'var(--green)' : 'var(--red)',
+    title: `Portal scored ${ovr}/100 — ${gradeLabel}`,
+    sub: `${s.criticalCount||0} critical issues and ${s.warningCount||0} warnings. Est. $${Number(s.monthlyWaste||0).toLocaleString()}/mo waste.`,
+    q: 'Give me a full summary of my portal health and top priorities'
+  });
+
+  const dimNames = { dataIntegrity:'Data Integrity', automationHealth:'Automation Health', pipelineIntegrity:'Pipeline Integrity', marketingHealth:'Marketing Health', configSecurity:'Configuration', reportingQuality:'Reporting', teamAdoption:'Team Adoption', serviceHealth:'Service Health' };
+  const dims = Object.entries(sc).sort((a,b) => a[1]-b[1]);
+  if (dims.length > 0) {
+    const [wk, wv] = dims[0];
+    insights.push({
+      icon: '↓',
+      color: wv < 60 ? 'var(--red)' : 'var(--amber)',
+      title: `${dimNames[wk]||wk} is your weakest area at ${wv}/100`,
+      sub: 'This is where the biggest revenue impact hides. Most improvements here require less than a day of work.',
+      q: `Analyze my ${dimNames[wk]||wk} issues and tell me exactly what to fix first`
+    });
+  }
+
+  if ((s.monthlyWaste||0) > 300) {
+    insights.push({
+      icon: '💸',
+      color: 'var(--amber)',
+      title: `$${Number(s.monthlyWaste||0).toLocaleString()}/mo in waste identified`,
+      sub: `That is $${Number((s.monthlyWaste||0)*12).toLocaleString()}/year. Most can be recovered by fixing the top 3 issues.`,
+      q: 'Break down my monthly waste by issue and show me the fix priority order'
+    });
+  }
+
+  if ((s.criticalCount||0) >= 1) {
+    insights.push({
+      icon: '🔴',
+      color: 'var(--red)',
+      title: `${s.criticalCount} critical issue${s.criticalCount>1?'s':''} need immediate attention`,
+      sub: 'Critical issues are actively damaging pipeline, data, or revenue right now.',
+      q: 'Explain each critical issue and give me a step-by-step fix order starting today'
+    });
+  }
+
+  if ((s.criticalCount||0) === 0 && ovr >= 80) {
+    insights.push({
+      icon: '✦',
+      color: 'var(--green)',
+      title: 'No critical issues — strong foundation',
+      sub: 'Focus on the warning-level items to push toward a perfect score and unlock advanced features.',
+      q: 'My portal has no critical issues. What are the highest-impact improvements I can still make?'
+    });
+  }
+
+  const container = document.getElementById('ai-auto-insights');
+  if (!container) return;
+  container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;padding:4px 0;">` +
+    insights.map(ins => `
+    <div onclick="setAiQuery('${ins.q.replace(/'/g,"&#39;")}');document.querySelector('.ai-submit').click();"
+      style="cursor:pointer;background:var(--s2);border:1px solid var(--s4);border-radius:10px;padding:14px 16px;transition:border-color .15s;"
+      onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--s4)'">
+      <div style="font-size:18px;margin-bottom:8px;">${ins.icon}</div>
+      <div style="font-size:12px;font-weight:700;color:${ins.color};margin-bottom:4px;">${ins.title}</div>
+      <div style="font-size:11px;color:var(--t3);line-height:1.5;">${ins.sub}</div>
+      <div style="font-size:10px;color:var(--accent);margin-top:8px;font-weight:600;">Analyze → </div>
+    </div>`).join('') + '</div>';
 }
 
 function setAiQuery(q) {
   document.getElementById('ai-query').value = q;
   document.getElementById('ai-query').focus();
+  showView('ai');
 }
+
 
 async function runAiReport() {
   const query = document.getElementById('ai-query').value.trim();
@@ -1497,18 +1642,37 @@ async function runAiReport() {
     // Insight block
     const urgencyColors = { critical: '#f43f5e', warning: '#f59e0b', info: '#3b82f6' };
     const uc = urgencyColors[parsed.urgency] || '#3b82f6';
-    let insightHtml = `<p style="margin-bottom:12px;">${parsed.summary||''}</p>`;
+
+    // Urgency badge
+    const badge = document.getElementById('ai-urgency-badge');
+    if (badge && parsed.urgency) {
+      badge.textContent = parsed.urgency.toUpperCase();
+      badge.style.background = uc + '22';
+      badge.style.color = uc;
+      badge.style.display = 'inline-block';
+    }
+
+    let insightHtml = `<p style="margin-bottom:14px;line-height:1.7;font-size:13px;">${parsed.summary||''}</p>`;
     if (parsed.keyFindings?.length > 0) {
-      insightHtml += '<div style="margin-bottom:12px;">';
+      insightHtml += '<div style="margin-bottom:14px;">';
       parsed.keyFindings.forEach(f => {
-        insightHtml += `<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:6px;"><span style="color:${uc};flex-shrink:0;">→</span><span>${f}</span></div>`;
+        insightHtml += `<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;padding:8px 12px;background:var(--s2);border-radius:6px;border-left:2px solid ${uc};"><span style="color:${uc};flex-shrink:0;font-size:14px;line-height:1.4;">→</span><span style="font-size:12px;color:var(--t1);line-height:1.5;">${f}</span></div>`;
       });
       insightHtml += '</div>';
     }
     if (parsed.recommendation) {
-      insightHtml += `<div style="padding:10px 12px;background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.15);border-radius:6px;font-size:11px;color:var(--accent2);"><strong>Recommended action:</strong> ${parsed.recommendation}</div>`;
+      insightHtml += `<div style="padding:12px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:12px;color:var(--accent2);line-height:1.6;"><strong style="display:block;margin-bottom:4px;">Recommended action:</strong>${parsed.recommendation}</div>`;
     }
     document.getElementById('ai-result-insight').innerHTML = insightHtml;
+
+    // Follow-up chips
+    const followUps = generateFollowUps(query, parsed.urgency);
+    if (followUps.length > 0) {
+      document.getElementById('ai-result-actions').style.display = 'block';
+      document.getElementById('ai-followup-chips').innerHTML = followUps.map(q =>
+        `<div class="ai-chip" onclick="setAiQuery('${q.replace(/'/g,"&#39;")}');runAiReport();">${q}</div>`
+      ).join('');
+    }
 
     // Add to history
     aiHistory.unshift({ query, title: parsed.title, urgency: parsed.urgency });
@@ -1545,6 +1709,35 @@ ${Object.entries(sc).map(([k,v])=>`- ${k}: ${v}/100`).join('\n')}
 
 Issues Found:
 ${issues}`;
+}
+
+function generateFollowUps(query, urgency) {
+  const q = query.toLowerCase();
+  if (q.includes('pipeline') || q.includes('deal')) return [
+    'Which specific deals should I call this week?',
+    'What is my pipeline conversion rate by stage?',
+    'How do I fix deals with no close date?',
+  ];
+  if (q.includes('data') || q.includes('contact') || q.includes('duplicate')) return [
+    'What is the fastest way to clean my contact data?',
+    'Which contacts should I archive vs re-engage?',
+    'How do I prevent bad data from coming in?',
+  ];
+  if (q.includes('revenue') || q.includes('waste') || q.includes('cost') || q.includes('save')) return [
+    'What is the single highest ROI fix I can do today?',
+    'Give me a 30-day fix plan to recover this revenue',
+    'Which issues can I fix for free vs need a service?',
+  ];
+  if (q.includes('automat') || q.includes('workflow')) return [
+    'What are the 3 workflows every portal needs?',
+    'Which of my workflows are broken or conflicting?',
+    'How do I document my workflows before changing them?',
+  ];
+  return [
+    'What should I fix first for maximum impact?',
+    'Give me a step-by-step action plan for this week',
+    'What does a healthy version of this look like?',
+  ];
 }
 
 function updateAiHistory() {
