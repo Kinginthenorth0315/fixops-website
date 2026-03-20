@@ -511,16 +511,6 @@ function toggleIssue(idx) {
   for(var i=0;i<all.length;i++) all[i].classList.remove('open');
   if(!was) c.classList.add('open');
 }
-)
-    });
-    var d = await res.json();
-    if(d.success) {
-      showToast('✅','Request Sent!','Matthew will reach out within a few hours to discuss and quote');
-      var btn = document.querySelector('#ic-' + idx + ' .btn-autofix');
-      if(btn){ btn.textContent='✅ Requested'; btn.disabled=true; btn.style.opacity='0.6'; }
-    } else { throw new Error(d.error); }
-  } catch(e) { showToast('📧','Email Matthew','matthew@fixops.io'); }
-}
 
 async function fixItForMe(idx) {
   var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
@@ -683,7 +673,7 @@ function buildFixPlan(data) {
     // Header
     '<div class="fp-header">' +
       '<div class="fp-eyebrow">Your Personalized Fix Plan</div>' +
-      '<div class="fp-title">Here's What Fixing<br>' + esc(company) + ' Looks Like</div>' +
+      '<div class="fp-title">Here\'s What Fixing<br>' + esc(company) + ' Looks Like</div>' +
       '<div class="fp-sub">' + scoreContext + ' Below is a breakdown of every area that needs work, built directly from your audit findings.</div>' +
     '</div>' +
 
