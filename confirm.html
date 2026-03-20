@@ -84,13 +84,13 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
     <div class="connected-badge"><div class="connected-dot"></div>HubSpot Connected</div>
 
     <h1>Your Audit Is<br>Running Now</h1>
-    <p class="sub" id="main-sub">We're scanning your full HubSpot portal across 30 checkpoints. You'll receive your results by email — no need to wait on this page.</p>
+    <p class="sub" id="main-sub">We're scanning your full HubSpot portal across 165 checkpoints. You'll receive your results by email — no need to wait on this page.</p>
 
     <div class="email-card">
       <div class="ec-label">Results delivering to</div>
       <div class="ec-email"><div class="ec-email-dot"></div><span id="email-display">your inbox</span></div>
       <div class="ec-divider"></div>
-      <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)">2–5 minutes</strong> depending on portal size</span></div>
+      <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)">5–15 minutes</strong> depending on portal size</span></div>
       <div class="ec-row" style="margin-top:8px"><span class="ec-icon">🔒</span><span>Read-only access · your data is never modified</span></div>
       <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)">reports@fixops.io</strong> · check spam if not received</span></div>
     </div>
@@ -99,7 +99,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
       <div class="step active" id="s0"><div class="step-ico">↻</div><span>Reading all contacts, companies, and owners</span></div>
       <div class="step" id="s1"><div class="step-ico"></div><span>Scanning all deals, tickets, and pipeline data</span></div>
       <div class="step" id="s2"><div class="step-ico"></div><span>Checking tasks, meetings, calls, and activity</span></div>
-      <div class="step" id="s3"><div class="step-ico"></div><span>Running 30 data quality and health checks</span></div>
+      <div class="step" id="s3"><div class="step-ico"></div><span>Running 165 data quality and health checks</span></div>
       <div class="step" id="s4"><div class="step-ico"></div><span>Scoring dimensions and calculating fix priorities</span></div>
       <div class="step" id="s5"><div class="step-ico"></div><span>Generating report and sending to your inbox</span></div>
     </div>
@@ -124,13 +124,21 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 const API    = 'https://fixops-api-production.up.railway.app';
 const params = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
-const email   = params.get('email') ? decodeURIComponent(params.get('email')) : '';
+// Decode email carefully — avoid Cloudflare mangling
+let email = '';
+try {
+  const raw = params.get('email');
+  if(raw) email = decodeURIComponent(raw.replace(/\+/g,' '));
+} catch(e) { email = params.get('email') || ''; }
 
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<90;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.12?2.5:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*7}s;--dl:-${Math.random()*7}s`;c.appendChild(s);}})();
 
 if(email) document.getElementById('email-display').textContent = email;
 if(!auditId) { document.getElementById('main-sub').textContent = 'Audit started — check your email for results.'; }
+// Activate first step immediately
+const s0 = document.getElementById('s0');
+if(s0) s0.classList.add('active');
 
 // Step animation — advances every 30 seconds to reflect real backend progress
 // Steps match the actual audit phases: fetch contacts → fetch deals → fetch engagements → checks → scores → email
@@ -155,6 +163,9 @@ function advanceStep(idx) {
 stepTimes.forEach((t, i) => {
   if(i > 0) setTimeout(() => advanceStep(i), t);
 });
+// Start step 0 as active right away (already done above)
+// Advance to step 1 after 5 seconds so user sees progress quickly
+setTimeout(() => advanceStep(1), 5000);
 
 // Update time estimate as audit runs
 setTimeout(() => {
@@ -193,8 +204,17 @@ function poll() {
 
       } else if(data.status === 'error') {
         document.getElementById('status-note').textContent = 'Audit encountered an error — Matthew has been notified and will follow up.';
-        document.getElementById('main-sub').textContent = 'Something went wrong with this audit. Matthew has been notified and will reach out shortly.';
       } else {
         // Still running
         if(attempts < MAX) setTimeout(poll, 8000);
-        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by
+        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when complete.';
+      }
+    })
+    .catch(() => { if(attempts < MAX) setTimeout(poll, 8000); });
+}
+
+// Start polling after 8 seconds — give audit time to register then check frequently
+setTimeout(poll, 8000);
+</script>
+</body>
+</html>
