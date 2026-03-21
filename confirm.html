@@ -92,7 +92,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
       <div class="ec-divider"></div>
       <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)">5–15 minutes</strong> depending on portal size</span></div>
       <div class="ec-row" style="margin-top:8px"><span class="ec-icon">🔒</span><span>Read-only access · your data is never modified</span></div>
-      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="453720352a37313605232c3d2a35366b2c2a">[email&#160;protected]</a></strong> · check spam if not received</span></div>
+      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)">reports@fixops.io</strong> · check spam if not received</span></div>
     </div>
 
     <div class="steps" id="step-list">
@@ -120,7 +120,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const API    = 'https://fixops-api-production.up.railway.app';
 const params = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
@@ -134,43 +134,65 @@ try {
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<90;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.12?2.5:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*7}s;--dl:-${Math.random()*7}s`;c.appendChild(s);}})();
 
-if(email) document.getElementById('email-display').textContent = email;
+// Set email display — run immediately and after DOM is ready
+function setEmailDisplay() {
+  const el = document.getElementById('email-display');
+  if(el && email) {
+    el.textContent = email;
+    el.style.color = '#a78bfa';
+  }
+}
+setEmailDisplay();
+// Also run after short delay in case CF script interferes
+setTimeout(setEmailDisplay, 100);
+setTimeout(setEmailDisplay, 500);
 if(!auditId) { document.getElementById('main-sub').textContent = 'Audit started — check your email for results.'; }
 // Activate first step immediately
 const s0 = document.getElementById('s0');
 if(s0) s0.classList.add('active');
 
-// Step animation — advances every 30 seconds to reflect real backend progress
-// Steps match the actual audit phases: fetch contacts → fetch deals → fetch engagements → checks → scores → email
-const stepTimes = [0, 30000, 60000, 90000, 150000, 210000];
+// Step animation — paced to match actual audit speed (small portals ~2min, large ~10min)
+// Steps advance automatically and are overridden by poll completion
 let currentStep = 0;
+let stepsDone = false;
 
 function advanceStep(idx) {
+  if(stepsDone) return;
   if(idx <= 0) return;
-  const prev = document.getElementById(`s${idx-1}`);
+  const prev = document.getElementById('s'+(idx-1));
   if(prev) {
     prev.classList.remove('active');
     prev.classList.add('done');
     prev.querySelector('.step-ico').textContent = '✓';
   }
-  const curr = document.getElementById(`s${idx}`);
+  const curr = document.getElementById('s'+idx);
   if(curr) {
     curr.classList.add('active');
     curr.querySelector('.step-ico').textContent = '↻';
   }
+  currentStep = idx;
 }
 
-stepTimes.forEach((t, i) => {
-  if(i > 0) setTimeout(() => advanceStep(i), t);
-});
-// Start step 0 as active right away (already done above)
-// Advance to step 1 after 5 seconds so user sees progress quickly
-setTimeout(() => advanceStep(1), 5000);
+function completeAllSteps() {
+  stepsDone = true;
+  for(let i=0;i<=5;i++) {
+    const s = document.getElementById('s'+i);
+    if(s){ s.classList.remove('active'); s.classList.add('done'); s.querySelector('.step-ico').textContent='✓'; }
+  }
+}
 
-// Update time estimate as audit runs
-setTimeout(() => {
-  document.querySelector('.ec-row strong').textContent = '3–8 minutes — large portal detected';
-}, 60000);
+// Paced timing: fast start, gradual middle, holds at last step until poll confirms done
+// Works well for both small (2min) and large (10min) portals
+const stepTimings = [
+  {step:1, delay:6000},
+  {step:2, delay:18000},
+  {step:3, delay:35000},
+  {step:4, delay:60000},
+  {step:5, delay:100000}
+];
+stepTimings.forEach(({step, delay}) => {
+  setTimeout(() => advanceStep(step), delay);
+});
 
 // Poll for completion — every 8 seconds for up to 15 minutes
 let attempts = 0;
@@ -187,10 +209,7 @@ function poll() {
 
       if(data.status === 'complete') {
         // Mark all steps done
-        for(let i=0;i<=5;i++) {
-          const s = document.getElementById(`s${i}`);
-          if(s){ s.classList.remove('active'); s.classList.add('done'); s.querySelector('.step-ico').textContent='✓'; }
-        }
+        completeAllSteps();
         // Show complete state after brief pause
         setTimeout(() => {
           document.getElementById('running-state').style.display = 'none';
@@ -207,4 +226,17 @@ function poll() {
       } else {
         // Still running
         if(attempts < MAX) setTimeout(poll, 8000);
-        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when comp
+        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when complete.';
+      }
+    })
+    .catch(() => {
+      if(attempts < MAX) setTimeout(poll, 8000);
+    });
+}
+
+// Start polling immediately — first check at 3 seconds, then every 8
+setTimeout(poll, 3000);
+
+</script>
+</body>
+</html>
