@@ -621,7 +621,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <div class="r" style="text-align:center">
       <span class="tag">Pricing</span>
       <h2 class="h2">Any HubSpot Tier.<br>Any Portal Size. One Platform.</h2>
-      <p class="lead" style="max-width:580px;margin:0 auto 12px">Agencies charge $500–$3,000 for a manual HubSpot audit. FixOps delivers more in under 15 minutes and monitors your portal every week. No contracts. Cancel anytime.</p>
+      <p class="lead" style="max-width:580px;margin:0 auto 12px">Agencies charge $500–$3,000 for a manual audit that takes days. FixOps delivers more in under 15 minutes, monitors every week, and lets your team fix issues with one click. No contracts. Cancel anytime.</p>
       <div style="display:inline-flex;align-items:center;gap:0;background:#0c0c14;border:1px solid #22223a;border-radius:10px;padding:4px;margin:0 auto 48px;">
         <button id="toggle-monthly" onclick="showMonthly()" style="padding:9px 22px;background:#7c3aed;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">Monthly Plans</button>
         <button id="toggle-onetime" onclick="showOnetime()" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">One-Time Audits</button>
@@ -654,22 +654,22 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
 
         <div class="price-card best">
           <div class="pc-name">Pulse</div>
-          <div class="pc-desc">Full scan + weekly automated monitoring. Know the moment something breaks.</div>
-          <div class="pc-price">$399<span>/mo</span></div>
+          <div class="pc-desc">Full portal scan + weekly automated monitoring. Alerts, score history, and a PDF every Monday.</div>
+          <div class="pc-price">$299<span>/mo</span></div>
           <div class="pc-per">per portal · cancel anytime · no contract</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.28);font-family:JetBrains Mono,monospace;margin-bottom:10px;">Competitors charge $400–$1,000 for a static one-time PDF</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.28);font-family:JetBrains Mono,monospace;margin-bottom:10px;">Agencies charge $1,000–$5,000/mo for a static one-time PDF</div>
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Full portal scan · all objects · unlimited records</div>
             <div class="pc-feat"><span>✓</span>Weekly automated re-scans every Monday</div>
             <div class="pc-feat"><span>✓</span>New issue alerts via email</div>
+            <div class="pc-feat"><span>✓</span>Dollar impact estimate on every issue</div>
             <div class="pc-feat"><span>✓</span>Week-over-week score comparison</div>
             <div class="pc-feat"><span>✓</span>Score history + trend tracking</div>
             <div class="pc-feat"><span>✓</span>Workflow health monitoring</div>
             <div class="pc-feat"><span>✓</span>Integration status alerts</div>
             <div class="pc-feat"><span>✓</span>PDF report on every scan</div>
+            <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
             <div class="pc-feat"><span>✓</span>Results stored 90 days</div>
-            <div class="pc-feat no"><span>–</span>No AI report builder</div>
-            <div class="pc-feat no"><span>–</span>No portal snapshot dashboard</div>
           </div>
           <button class="pc-btn pcb-f" onclick="goStripe('pulse')">Get Pulse →</button>
         </div>
@@ -677,8 +677,8 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <div class="price-card">
           <div class="pc-tier">Teams</div>
           <div class="pc-name">Pro</div>
-          <div class="pc-desc">Daily monitoring + AI report builder + portal snapshot dashboard. Per portal.</div>
-          <div class="pc-price">$699<span>/mo</span></div>
+          <div class="pc-desc">Everything in Pulse — plus daily monitoring, AI report builder, and portal snapshot dashboard.</div>
+          <div class="pc-price">$549<span>/mo</span></div>
           <div class="pc-per">per portal · cancel anytime · no contract</div>
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Everything in Pulse</div>
@@ -689,6 +689,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Pipeline health + deal velocity reports</div>
             <div class="pc-feat"><span>✓</span>Lifecycle funnel + forecast analysis</div>
             <div class="pc-feat"><span>✓</span>Contact intelligence + owner coverage</div>
+            <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
           </div>
           <button class="pc-btn pcb-o" onclick="goStripe('pro')">Get Pro →</button>
         </div>
@@ -697,7 +698,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-tier">For Agencies</div>
           <div class="pc-name">Agency</div>
           <div class="pc-desc">Your entire client portfolio — one dashboard. White-label, unlimited audits, and dollar-impact reporting your clients will love.</div>
-          <div class="pc-price">$1,299<span>/mo</span></div>
+          <div class="pc-price">$999<span>/mo</span></div>
           <div class="pc-per">up to 25 client portals · cancel anytime · no contract</div>
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Everything in Pro</div>
@@ -715,7 +716,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         </div>
 
       </div>
-      <p class="price-note">Pulse + Pro priced per portal · Agency plan covers up to 25 client portals · cancel anytime · no contracts · any HubSpot tier · any portal size</p>
+      <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · Agency plan covers up to 25 portals</p>
     </div>
 
     <!-- ONE-TIME AUDITS -->
@@ -746,16 +747,19 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-desc">Full audit of every object + written action plan + 30-min strategy call with our team.</div>
           <div class="pc-price">$399</div>
           <div class="pc-per">One-time · agencies charge $500–$1,000 for this</div>
-          <div style="font-size:10px;color:rgba(255,255,255,.28);font-family:JetBrains Mono,monospace;margin-bottom:10px;">Competitors charge $400–$1,000 for a static PDF with no live data</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.28);font-family:JetBrains Mono,monospace;margin-bottom:10px;">Agencies charge $1,000–$5,000/mo for a static PDF with no live data</div>
           <div class="pc-feats">
-            <div class="pc-feat"><span>✓</span>All objects · unlimited records</div>
-            <div class="pc-feat"><span>✓</span>Results stored 90 days</div>
+            <div class="pc-feat"><span>✓</span>165-point audit · all objects · unlimited records</div>
+            <div class="pc-feat"><span>✓</span>Dollar impact estimate on every issue</div>
+            <div class="pc-feat"><span>✓</span>Step-by-step fix guide per issue</div>
+            <div class="pc-feat"><span>✓</span>Branded PDF report download</div>
             <div class="pc-feat"><span>✓</span>Written prioritized action plan</div>
+            <div class="pc-feat"><span>✓</span>Integration + API health check</div>
             <div class="pc-feat"><span>✓</span>Same-day Fix It For Me response</div>
             <div class="pc-feat"><span>✓</span>30-min strategy call with our team</div>
-            <div class="pc-feat"><span>✓</span>Integration + API health check</div>
+            <div class="pc-feat"><span>✓</span>Results stored 90 days</div>
           </div>
-          <button class="pc-btn pcb-f" onclick="goStripe('deep')">Get Deep Audit — $299 →</button>
+          <button class="pc-btn pcb-f" onclick="goStripe('deep')">Get Deep Audit — $399 →</button>
         </div>
 
         <div class="price-card">
@@ -765,16 +769,20 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-price">$699</div>
           <div class="pc-per">One-time · agencies charge $1,500–$3,000 for this</div>
           <div class="pc-feats">
-            <div class="pc-feat"><span>✓</span>All objects · unlimited records</div>
+            <div class="pc-feat"><span>✓</span>165-point audit · all objects · unlimited records</div>
+            <div class="pc-feat"><span>✓</span>Dollar impact estimate on every issue</div>
+            <div class="pc-feat"><span>✓</span>Step-by-step fix guide per issue</div>
+            <div class="pc-feat"><span>✓</span>Branded PDF report download</div>
             <div class="pc-feat"><span>✓</span>Full workflow analysis</div>
             <div class="pc-feat"><span>✓</span>Form + email health scan</div>
             <div class="pc-feat"><span>✓</span>User permissions + security audit</div>
             <div class="pc-feat"><span>✓</span>Portal Snapshot reporting dashboard</div>
+            <div class="pc-feat"><span>✓</span>Same-day Fix It For Me response</div>
             <div class="pc-feat"><span>✓</span>60-min strategy call with our team</div>
             <div class="pc-feat"><span>✓</span>90-day fix roadmap + ROI report</div>
             <div class="pc-feat"><span>✓</span>Results stored 1 year</div>
           </div>
-          <button class="pc-btn pcb-o" onclick="goStripe('pro_audit')">Get Pro Audit — $599 →</button>
+          <button class="pc-btn pcb-o" onclick="goStripe('pro_audit')">Get Pro Audit — $699 →</button>
         </div>
 
       </div>
@@ -933,10 +941,10 @@ function showOnetime() {
 
       <!-- IN PROGRESS -->
       <div class="road-card live" data-status="live">
-        <div class="road-status live"><div class="road-status-dot"></div>Live — Activating Soon</div>
+        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
         <div class="road-ico">⚡</div>
         <div class="road-h">Pulse Weekly Monitoring</div>
-        <div class="road-p">Built and running. Every Monday at 9am ET, FixOps automatically rescans your portal, compares to last week, and emails you a full report showing new issues, resolved issues, and score trends. Activating for all subscribers after HubSpot marketplace approval.</div>
+        <div class="road-p">Built and running. Every Monday at 9am ET, FixOps automatically rescans your portal, compares to last week, and emails you a full report showing new issues, resolved issues, and score trends. Active for all Pulse subscribers.</div>
         <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Monday Scans</span><span class="road-tag">Score History</span></div>
       </div>
 
@@ -1134,7 +1142,7 @@ function showOnetime() {
           <li><a href="about.html">About</a></li>
           <li><a href="setup.html">Setup Guide</a></li>
           <li><a href="https://calendly.com/matthew-fixops/30min" target="_blank">Book a Call</a></li>
-          <li><a href="mailto:matthew@fixops.io">Contact Us</a></li>
+          <li><a href="/cdn-cgi/l/email-protection#abc6cadfdfc3cedcebcdc2d3c4dbd885c2c4">Contact Us</a></li>
         </ul>
       </div>
       <div class="ft-col">
@@ -1152,7 +1160,7 @@ function showOnetime() {
         <a href="privacy.html" style="font-size:13px;color:rgba(255,255,255,.25);">Privacy Policy</a>
         <a href="terms.html" style="font-size:13px;color:rgba(255,255,255,.25);">Terms of Service</a>
         <a href="setup.html" style="font-size:13px;color:rgba(255,255,255,.25);">Setup Guide</a>
-        <a href="mailto:matthew@fixops.io" style="font-size:13px;color:rgba(255,255,255,.25);">matthew@fixops.io</a>
+        <a href="/cdn-cgi/l/email-protection#c3aea2b7b7aba6b483a5aabbacb3b0edaaac" style="font-size:13px;color:rgba(255,255,255,.25);"><span class="__cf_email__" data-cfemail="610c001515090416210708190e11124f080e">[email&#160;protected]</span></a>
       </div>
     </div>
   </div>
@@ -1198,13 +1206,13 @@ function showOnetime() {
           <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Most Popular</div>
           <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:4px;">Pulse</div>
           <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Full 165-checkpoint audit with AI explanations, dollar impact, and best practice guides.</div>
-          <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$149<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
+          <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$299<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>All 165 audit checkpoints</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>AI analysis + dollar impact</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Best practice guides per issue</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Weekly monitoring digest</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Fix It For Me requests</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Full portal scan · all objects</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Weekly automated re-scans</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>New issue alerts via email</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Score history + trend tracking</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>PDF report on every scan</div>
           </div>
         </div>
 
@@ -1212,33 +1220,33 @@ function showOnetime() {
         <div onclick="selectPlan('pro',this)" style="padding:20px;background:#10101a;border:1px solid #18182a;border-radius:14px;cursor:pointer;transition:all .2s;" class="plan-opt">
           <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Power Users</div>
           <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:4px;">Pro</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Pulse + priority monitoring, full Fix It For Me service, and AutoDoc.</div>
-          <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$299<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Daily monitoring, AI report builder, portal snapshot dashboard. Per portal.</div>
+          <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$549<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Everything in Pulse</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Sentinel hourly monitoring</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Slack + SMS alerts</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Fix It For Me service included</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>AutoDoc documentation</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Daily monitoring</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Portal snapshot dashboard</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>AI report builder</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Pipeline + forecast analysis</div>
           </div>
         </div>
 
-        <!-- Command -->
+        <!-- Agency -->
         <div onclick="selectPlan('command',this)" style="padding:20px;background:#10101a;border:1px solid #18182a;border-radius:14px;cursor:pointer;transition:all .2s;" class="plan-opt">
-          <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Revenue Teams</div>
-          <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:4px;">Command</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Pro + FixOps revenue dashboards, churn signals, 3 portals, priority service.</div>
-          <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$499<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
+          <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">For Agencies</div>
+          <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:4px;">Agency</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Everything in Pro for up to 25 client portals. White-label, agency dashboard.</div>
+          <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$999<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Everything in Pro</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Pulse weekly monitoring email</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>3 connected portals</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>4-hour priority response</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Up to 25 client portals</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>White-label PDF reports</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Multi-client agency dashboard</div>
           </div>
         </div>
 
       </div>
-      <p style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;text-align:center;">All paid plans personally reviewed and onboarded by our team · <a href="mailto:matthew@fixops.io" style="color:rgba(255,255,255,.25);">matthew@fixops.io</a></p>
+      <p style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;text-align:center;">All paid plans personally reviewed and onboarded by our team · <a href="/cdn-cgi/l/email-protection#d9b4b8adadb1bcae99bfb0a1b6a9aaf7b0b6" style="color:rgba(255,255,255,.25);"><span class="__cf_email__" data-cfemail="25484451514d405265434c5d4a55560b4c4a">[email&#160;protected]</span></a></p>
     </div>
 
     <!-- STEP 2a: Free audit — HubSpot connect -->
@@ -1297,7 +1305,7 @@ function showOnetime() {
       <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="width:100%;padding:15px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">
         Book Your Setup Call ↗
       </a>
-      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;"><a href="mailto:matthew@fixops.io" style="color:rgba(255,255,255,.22);">matthew@fixops.io</a> · response within 4 hours</p>
+      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;"><a href="/cdn-cgi/l/email-protection#117c706565797466517778697e61623f787e" style="color:rgba(255,255,255,.22);"><span class="__cf_email__" data-cfemail="cea3afbabaa6abb98ea8a7b6a1bebde0a7a1">[email&#160;protected]</span></a> · response within 4 hours</p>
     </div>
 
     <!-- STEP 3: Connecting / Demo result -->
@@ -1401,7 +1409,7 @@ function showOnetime() {
       <div style="padding:20px;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);border-radius:14px;text-align:center;">
         <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">Your full audit has 165 checkpoints — 8 critical and 14 warnings not shown here</div>
         <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px;font-weight:300;">Upgrade to Pulse for AI explanations, dollar impact estimates, best practice guides, and one-click Fix It For Me on every issue.</div>
-        <button onclick="selectPlan('pulse',null);showStep('paid')" style="padding:12px 28px;background:#7c3aed;color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">Upgrade to Pulse — $149/mo →</button>
+        <button onclick="selectPlan('pulse',null);showStep('paid')" style="padding:12px 28px;background:#7c3aed;color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">Upgrade to Pulse — $299/mo →</button>
         <div style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;margin-top:10px;">Results load instantly · email copy also sent to you</div>
       </div>
     </div>
@@ -1417,7 +1425,7 @@ function showOnetime() {
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 </style>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<105;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.12?2.5:Math.random()<.4?2:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
 
@@ -1497,7 +1505,7 @@ function selectPlan(plan, el){
     if(plan==='free'){
       showStep('free');
     } else {
-      const tags={pulse:'Pulse Plan — $399/mo',pro:'Pro Plan — $699/mo',command:'Agency Plan — $1,299/mo'};
+      const tags={pulse:'Pulse Plan — $299/mo',pro:'Pro Plan — $549/mo',command:'Agency Plan — $999/mo'};
       document.getElementById('paid-tier-tag').textContent=tags[plan]||'Paid Plan';
       showStep('paid');
     }
@@ -1517,31 +1525,4 @@ async function startFreeAudit(){
   btn.innerHTML='<span style="display:inline-block;animation:spin .8s linear infinite">⟳</span> Connecting…';
   btn.disabled=true;
   try{
-    const res=await fetch('https://fixops-api-production.up.railway.app/auth/url?email='+encodeURIComponent(email)+'&company='+encodeURIComponent(company)+'&plan=free');
-    const data=await res.json();
-    if(data.url){
-      window.location.href=data.url;
-    } else {
-      throw new Error('No URL returned');
-    }
-  }catch(err){
-    console.error('OAuth error:',err);
-    btn.innerHTML=orig;
-    btn.disabled=false;
-    toast('Connection Error','Could not reach server. Please try again or email us at matthew@fixops.io');
-  }
-}
-
-
-// Toast
-let tt2;
-function toast(title,sub){
-  document.getElementById('tt').textContent=title;
-  document.getElementById('ts').textContent=sub;
-  document.getElementById('toast').classList.add('show');
-  clearTimeout(tt2);
-  tt2=setTimeout(()=>document.getElementById('toast').classList.remove('show'),6000);
-}
-</script>
-</body>
-</html>
+    const res=await fetch('https://fixops-api-production.up.railway.app/auth/url?email='+enc
