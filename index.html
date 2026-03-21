@@ -273,6 +273,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <li><a href="#services">Services</a></li>
     <li><a href="#pulse">Platform</a></li>
     <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#recommender">Find My Plan</a></li>
           <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="setup.html">Setup Guide</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -902,6 +903,83 @@ function showOnetime() {
 
 
 <!-- ROADMAP -->
+<!-- AI Plan Recommender -->
+<section class="r d2" id="recommender" style="padding:72px 0;border-top:1px solid var(--b2);">
+  <div class="wrap" style="max-width:680px;">
+    <div style="text-align:center;margin-bottom:36px;">
+      <span class="tag">✦ AI Powered</span>
+      <h2 class="h2" style="margin-top:12px;">Not Sure Which Plan Is Right?</h2>
+      <p class="sub" style="margin-top:10px;">Answer 4 quick questions. We'll tell you exactly what FixOps will find in your portal and which plan delivers the most value — and why.</p>
+    </div>
+
+    <div id="rec-widget" style="background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:28px 32px;">
+
+      <!-- Step 1 -->
+      <div id="rec-step-1" class="rec-step">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);letter-spacing:.07em;margin-bottom:6px;">STEP 1 OF 4</div>
+        <div style="font-size:16px;font-weight:700;color:var(--w);margin-bottom:20px;">How many contacts are in your HubSpot portal?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="q1-opts">
+          <button class="rec-opt" data-key="q1" data-val="small" onclick="recPick(this)">Under 5,000</button>
+          <button class="rec-opt" data-key="q1" data-val="medium" onclick="recPick(this)">5,000 – 25,000</button>
+          <button class="rec-opt" data-key="q1" data-val="large" onclick="recPick(this)">25,000 – 100,000</button>
+          <button class="rec-opt" data-key="q1" data-val="enterprise" onclick="recPick(this)">100,000+</button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div id="rec-step-2" class="rec-step" style="display:none;">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);letter-spacing:.07em;margin-bottom:6px;">STEP 2 OF 4</div>
+        <div style="font-size:16px;font-weight:700;color:var(--w);margin-bottom:20px;">What's your biggest HubSpot pain right now?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="q2-opts">
+          <button class="rec-opt" data-key="q2" data-val="billing" onclick="recPick(this)">Surprise billing / contact tier</button>
+          <button class="rec-opt" data-key="q2" data-val="workflows" onclick="recPick(this)">Broken workflows / automation</button>
+          <button class="rec-opt" data-key="q2" data-val="reporting" onclick="recPick(this)">Bad data / reporting issues</button>
+          <button class="rec-opt" data-key="q2" data-val="checkup" onclick="recPick(this)">Just want a full health check</button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div id="rec-step-3" class="rec-step" style="display:none;">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);letter-spacing:.07em;margin-bottom:6px;">STEP 3 OF 4</div>
+        <div style="font-size:16px;font-weight:700;color:var(--w);margin-bottom:20px;">How do you manage HubSpot?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="q3-opts">
+          <button class="rec-opt" data-key="q3" data-val="inhouse" onclick="recPick(this)">In-house admin / RevOps</button>
+          <button class="rec-opt" data-key="q3" data-val="agency" onclick="recPick(this)">Agency manages it for us</button>
+          <button class="rec-opt" data-key="q3" data-val="iam_agency" onclick="recPick(this)">I am the agency (multiple clients)</button>
+          <button class="rec-opt" data-key="q3" data-val="solo" onclick="recPick(this)">Just me / small team</button>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div id="rec-step-4" class="rec-step" style="display:none;">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);letter-spacing:.07em;margin-bottom:6px;">STEP 4 OF 4</div>
+        <div style="font-size:16px;font-weight:700;color:var(--w);margin-bottom:20px;">What matters more right now?</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="q4-opts">
+          <button class="rec-opt" data-key="q4" data-val="onetime" onclick="recPick(this)">One-time deep audit with expert review</button>
+          <button class="rec-opt" data-key="q4" data-val="ongoing" onclick="recPick(this)">Ongoing monitoring — catch issues weekly</button>
+          <button class="rec-opt" data-key="q4" data-val="both" onclick="recPick(this)">Both — start with audit, then monitor</button>
+          <button class="rec-opt" data-key="q4" data-val="free" onclick="recPick(this)">Just the free audit first</button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="rec-loading" style="display:none;text-align:center;padding:40px 0;">
+        <div style="font-size:24px;margin-bottom:12px;animation:spin .8s linear infinite;display:inline-block;">⟳</div>
+        <div style="font-size:14px;color:var(--t2);">Analyzing your answers…</div>
+      </div>
+
+      <!-- Result -->
+      <div id="rec-result" style="display:none;"></div>
+
+      <!-- Progress bar -->
+      <div style="margin-top:24px;height:3px;background:var(--b2);border-radius:2px;" id="rec-progress-wrap">
+        <div id="rec-progress" style="height:100%;background:var(--purple);border-radius:2px;width:25%;transition:width .3s;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <section class="roadmap" id="roadmap">
   <div class="wrap">
     <div class="r" style="text-align:center">
@@ -1128,6 +1206,7 @@ function showOnetime() {
           <li><a href="#" onclick="openAuditModal(event)">Free Audit</a></li>
           <li><a href="#pulse">FixOps Pulse</a></li>
                 <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#recommender">Find My Plan</a></li>
           <li><a href="#roadmap">Roadmap</a></li>
         </ul>
       </div>
@@ -1427,6 +1506,47 @@ function showOnetime() {
 .audit-modal-wrap.open{display:flex;}
 .plan-opt.selected{border-color:rgba(124,58,237,.5)!important;background:rgba(124,58,237,.1)!important;box-shadow:0 0 0 2px rgba(124,58,237,.2);}
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+  .rec-opt {
+    padding: 12px 14px;
+    background: transparent;
+    border: 1px solid var(--b2);
+    border-radius: 10px;
+    color: var(--t2);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: all .15s;
+    line-height: 1.4;
+  }
+  .rec-opt:hover {
+    border-color: var(--purple);
+    color: var(--w);
+    background: rgba(124,58,237,.08);
+  }
+  .rec-opt.selected {
+    border-color: var(--purple);
+    background: rgba(124,58,237,.18);
+    color: #a78bfa;
+  }
+  .rec-plan-card {
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .rec-plan-best {
+    background: rgba(124,58,237,.18);
+    border: 1.5px solid rgba(124,58,237,.5);
+  }
+  .rec-plan-alt {
+    background: var(--s1);
+    border: 1px solid var(--b2);
+  }
 </style>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
@@ -1554,6 +1674,135 @@ function toast(title,sub){
   clearTimeout(tt2);
   tt2=setTimeout(()=>document.getElementById('toast').classList.remove('show'),6000);
 }
+
+// ── AI Recommender ───────────────────────────────────────────────
+var recAnswers = {};
+var recCurrentStep = 1;
+
+function recPick(btn) {
+  var key = btn.dataset.key;
+  var val = btn.dataset.val;
+  // Highlight selection
+  btn.closest('[id^="q"]').querySelectorAll('.rec-opt').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  recAnswers[key] = val;
+  // Advance after short delay
+  setTimeout(function(){
+    recCurrentStep++;
+    if(recCurrentStep <= 4) {
+      document.getElementById('rec-step-' + (recCurrentStep-1)).style.display = 'none';
+      document.getElementById('rec-step-' + recCurrentStep).style.display = 'block';
+      document.getElementById('rec-progress').style.width = (recCurrentStep * 25) + '%';
+    } else {
+      // All answered — get recommendation
+      document.getElementById('rec-step-4').style.display = 'none';
+      document.getElementById('rec-progress-wrap').style.display = 'none';
+      document.getElementById('rec-loading').style.display = 'block';
+      getRecommendation();
+    }
+  }, 380);
+}
+
+async function getRecommendation() {
+  var a = recAnswers;
+  // Build context for Claude
+  var context = "A HubSpot user answered these questions:\n" +
+    "Portal size: " + ({small:"Under 5,000 contacts",medium:"5,000-25,000 contacts",large:"25,000-100,000 contacts",enterprise:"100,000+ contacts"}[a.q1]||a.q1) + "\n" +
+    "Biggest pain: " + ({billing:"Surprise billing / contact tier upgrades",workflows:"Broken workflows / automation failures",reporting:"Bad data / reporting issues",checkup:"General health check"}[a.q2]||a.q2) + "\n" +
+    "How they manage HubSpot: " + ({inhouse:"In-house admin or RevOps team",agency:"An agency manages it for them",iam_agency:"They ARE an agency managing multiple client portals",solo:"Just them or a very small team"}[a.q3]||a.q3) + "\n" +
+    "Priority: " + ({onetime:"One-time deep audit with expert review",ongoing:"Ongoing weekly monitoring",both:"Start with audit then add monitoring",free:"Just the free audit first"}[a.q4]||a.q4) + "\n\n" +
+    "FixOps plans:\n" +
+    "- Snapshot: Free. 165-point audit, up to 1,000 contacts, PDF, fix guides. No monitoring.\n" +
+    "- Pulse: $299/mo. Full unlimited scan, weekly monitoring every Monday, score history, alerts, PDF every scan, Fix It For Me.\n" +
+    "- Pro: $549/mo. Everything in Pulse + daily monitoring + AI report builder + portal snapshot dashboard + pipeline health + lifecycle funnel + workflow conflict detection.\n" +
+    "- Agency: $999/mo. Everything in Pro + up to 25 client portals + white-label PDFs + multi-client dashboard + client health score pages.\n" +
+    "- Deep Audit: $399 one-time. Full unlimited scan + written action plan + 30-min strategy call with the team.\n" +
+    "- Pro Audit: $699 one-time. Everything in Deep Audit + workflow analysis + form/email health + user permissions/security audit + 60-min strategy call + 90-day roadmap.\n\n" +
+    "Recommend the best plan(s) for this user. Be specific — reference their portal size and pain point. Explain in 2-3 sentences why this plan fits them better than alternatives. Then list the top 3 things FixOps will find in their portal given what they told you. Be direct and honest. Format: start with PRIMARY RECOMMENDATION: [plan name and price], then your explanation, then a new line, then FINDINGS: and 3 bullet points. Keep it under 120 words total.";
+
+  try {
+    var resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: context }]
+      })
+    });
+    var data = await resp.json();
+    var text = (data.content||[]).map(function(b){ return b.text||''; }).join('');
+    showRecommendation(text, a);
+  } catch(e) {
+    showRecommendation(null, a);
+  }
+}
+
+function showRecommendation(text, a) {
+  document.getElementById('rec-loading').style.display = 'none';
+  var result = document.getElementById('rec-result');
+  result.style.display = 'block';
+
+  // Parse the plan from the response
+  var planLinks = {
+    'Pulse': 'https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06',
+    'Pro': 'https://buy.stripe.com/28E4gz2rw1MC7LKeFL8Ra08',
+    'Agency': 'https://buy.stripe.com/cNi3cv2rw9f46HG69f8Ra09',
+    'Deep Audit': 'https://buy.stripe.com/eVqdR96HMbnc8POdBH8Ra0a',
+    'Pro Audit': 'https://buy.stripe.com/6oU8wP8PU9f4d644178Ra07',
+    'Snapshot': 'index.html#pricing',
+  };
+
+  var recPlan = 'Pulse', recPrice = '$299/mo', recLink = planLinks['Pulse'];
+  if(text) {
+    Object.keys(planLinks).forEach(function(plan){
+      if(text.indexOf(plan) > -1 && text.indexOf('PRIMARY') > -1) {
+        var idx = text.indexOf('PRIMARY');
+        var chunk = text.slice(idx, idx+60);
+        if(chunk.indexOf(plan) > -1) { recPlan = plan; }
+      }
+    });
+    if(text.indexOf('Pro Audit') > -1 && text.indexOf('PRIMARY') > -1) recPlan = 'Pro Audit';
+    if(text.indexOf('Agency') > -1 && text.indexOf('PRIMARY') > -1) recPlan = 'Agency';
+    recLink = planLinks[recPlan] || planLinks['Pulse'];
+  }
+
+  var formattedText;
+  if(text) {
+    formattedText = text
+      .replace("PRIMARY RECOMMENDATION:", '<strong style="color:#a78bfa;">Our recommendation:</strong>')
+      .replace("FINDINGS:", '<strong style="color:rgba(255,255,255,.7);">What we will find in your portal:</strong>')
+      .split("\n").join("<br>");
+  } else {
+    formattedText = 'Based on your answers, we recommend starting with <strong>Pulse</strong> for ongoing weekly monitoring of your portal.';
+  }
+  result.innerHTML =
+    '<div style="text-align:center;margin-bottom:20px;">' +
+      '<span style="font-size:11px;font-weight:700;color:#10b981;letter-spacing:.07em;">✦ YOUR RECOMMENDATION</span>' +
+    '</div>' +
+    '<div style="font-size:13.5px;color:rgba(255,255,255,.75);line-height:1.75;margin-bottom:20px;">' + formattedText + '</div>' +
+    '<div style="display:flex;gap:10px;flex-wrap:wrap;">' +
+      '<a href="' + recLink + '" target="_blank" style="flex:1;min-width:160px;display:block;text-align:center;padding:13px 20px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:9px;text-decoration:none;">Get ' + recPlan + ' →</a>' +
+      '<a href="#" onclick="openAuditModal(event)" style="flex:1;min-width:160px;display:block;text-align:center;padding:13px 20px;background:transparent;color:rgba(255,255,255,.5);font-size:13px;font-weight:600;border-radius:9px;text-decoration:none;border:1px solid var(--b2);">Try Free Audit First</a>' +
+    '</div>' +
+    '<div style="text-align:center;margin-top:14px;">' +
+      '<button onclick="recReset()" style="background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;font-family:Outfit,sans-serif;">Start over ↺</button>' +
+    '</div>';
+}
+
+function recReset() {
+  recAnswers = {};
+  recCurrentStep = 1;
+  for(var i=1;i<=4;i++){
+    var s = document.getElementById('rec-step-'+i);
+    if(s){ s.style.display = i===1?'block':'none'; s.querySelectorAll('.rec-opt').forEach(function(b){b.classList.remove('selected');}); }
+  }
+  document.getElementById('rec-loading').style.display = 'none';
+  document.getElementById('rec-result').style.display = 'none';
+  document.getElementById('rec-progress-wrap').style.display = 'block';
+  document.getElementById('rec-progress').style.width = '25%';
+}
+
 </script>
 </body>
 </html>
