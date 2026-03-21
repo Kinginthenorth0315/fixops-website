@@ -92,7 +92,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
       <div class="ec-divider"></div>
       <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)">5–15 minutes</strong> depending on portal size</span></div>
       <div class="ec-row" style="margin-top:8px"><span class="ec-icon">🔒</span><span>Read-only access · your data is never modified</span></div>
-      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)">reports@fixops.io</strong> · check spam if not received</span></div>
+      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="087a6d78677a7c7b486e617067787b266167">[email&#160;protected]</a></strong> · check spam if not received</span></div>
     </div>
 
     <div class="steps" id="step-list">
@@ -120,7 +120,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 const API    = 'https://fixops-api-production.up.railway.app';
 const params = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
@@ -142,10 +142,11 @@ function setEmailDisplay() {
     el.style.color = '#a78bfa';
   }
 }
+// Run immediately and after delays as safety net against any script interference
 setEmailDisplay();
-// Also run after short delay in case CF script interferes
 setTimeout(setEmailDisplay, 100);
 setTimeout(setEmailDisplay, 500);
+setTimeout(setEmailDisplay, 1500);
 if(!auditId) { document.getElementById('main-sub').textContent = 'Audit started — check your email for results.'; }
 // Activate first step immediately
 const s0 = document.getElementById('s0');
@@ -226,17 +227,4 @@ function poll() {
       } else {
         // Still running
         if(attempts < MAX) setTimeout(poll, 8000);
-        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when complete.';
-      }
-    })
-    .catch(() => {
-      if(attempts < MAX) setTimeout(poll, 8000);
-    });
-}
-
-// Start polling immediately — first check at 3 seconds, then every 8
-setTimeout(poll, 3000);
-
-</script>
-</body>
-</html>
+        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when 

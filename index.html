@@ -1088,7 +1088,7 @@ function showOnetime() {
           <button class="faq-q" onclick="doFaq(this)">How does the Fix It For Me service work exactly?<span class="faq-arr">+</span></button>
           <div class="faq-a">Every issue card in the platform has a "Fix It For Me" button. Clicking it sends a pre-filled request to our team with the full context — what the issue is, what it's costing you, and what needs to happen. We review it, scope the work, and send a flat-rate quote within 4 hours. You approve the quote, we do the work. No open-ended billing, no surprise charges. Larger projects (builds, migrations, RevOps strategy) start with a discovery call to scope properly.</div>
         </div>
-
+      </div>
     </div>
   </div>
 </section>
@@ -1525,4 +1525,31 @@ async function startFreeAudit(){
   btn.innerHTML='<span style="display:inline-block;animation:spin .8s linear infinite">⟳</span> Connecting…';
   btn.disabled=true;
   try{
-    const res=await fetch('https://fixops-api-production.up.railway.app/auth/url?email='+enc
+    const res=await fetch('https://fixops-api-production.up.railway.app/auth/url?email='+encodeURIComponent(email)+'&company='+encodeURIComponent(company)+'&plan=free');
+    const data=await res.json();
+    if(data.url){
+      window.location.href=data.url;
+    } else {
+      throw new Error('No URL returned');
+    }
+  }catch(err){
+    console.error('OAuth error:',err);
+    btn.innerHTML=orig;
+    btn.disabled=false;
+    toast('Connection Error','Could not reach server. Please try again or email us at matthew@fixops.io');
+  }
+}
+
+
+// Toast
+let tt2;
+function toast(title,sub){
+  document.getElementById('tt').textContent=title;
+  document.getElementById('ts').textContent=sub;
+  document.getElementById('toast').classList.add('show');
+  clearTimeout(tt2);
+  tt2=setTimeout(()=>document.getElementById('toast').classList.remove('show'),6000);
+}
+</script>
+</body>
+</html>

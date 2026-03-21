@@ -222,7 +222,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;display:flex;ali
 
     <!-- Footer -->
     <div style="text-align:center;margin-top:20px;font-size:11px;color:var(--t3);line-height:1.8;">
-      <a href="/cdn-cgi/l/email-protection#5c313d282834392b1c3a3524332c2f723533" style="color:var(--purple3);text-decoration:none;"><span class="__cf_email__" data-cfemail="15787461617d706255737c6d7a65663b7c7a">[email&#160;protected]</span></a> · 
+      <a href="/cdn-cgi/l/email-protection#fb969a8f8f939e8cbb9d9283948b88d59294" style="color:var(--purple3);text-decoration:none;"><span class="__cf_email__" data-cfemail="fe939f8a8a969b89be989786918e8dd09791">[email&#160;protected]</span></a> · 
       <a href="index.html" style="color:var(--t3);text-decoration:none;">fixops.io</a>
     </div>
   </div>
@@ -328,7 +328,7 @@ function renderDashboard(data) {
 
   // Plan pill
   const planColors = { pulse: 'pill-pulse', pro: 'pill-pro', command: 'pill-command' };
-  const planLabels = { pulse: 'Pulse Active', pro: 'Pro Plan', command: 'Command', deep: 'Deep Audit', 'pro-audit': 'Pro Audit', free: 'Free Plan' };
+  const planLabels = { pulse: 'Pulse Active', pro: 'Pro Plan', command: 'Agency', deep: 'Deep Audit', 'pro-audit': 'Pro Audit', free: 'Free Plan' };
   const isMonthly = ['pulse','pro','command'].includes(customer.plan);
   document.getElementById('plan-pill').innerHTML = `
     <span class="plan-pill ${planColors[customer.plan]||'pill-pulse'}">
@@ -509,4 +509,4 @@ let toastT;
 function showToast(ico, title, sub) {
   document.getElementById('t-ico').textContent = ico;
   document.getElementById('t-title').textContent = title;
-  document.getElementById('t-sub').textContent = 
+  

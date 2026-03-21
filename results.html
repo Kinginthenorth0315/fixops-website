@@ -327,7 +327,7 @@ function loadWithRetry(id, attempt) {
         if(attempt < maxAttempts) {
           setTimeout(function(){ loadWithRetry(id, attempt + 1); }, attempt < 3 ? 3000 : 8000);
         } else {
-          showError('Audit is taking longer than expected. You will receive an email when complete. Contact matthew@fixops.io');
+          showError('Audit is taking longer than expected. You will receive an email when complete. contact matthew@fixops.io');
         }
       }
     })
@@ -416,9 +416,9 @@ function showResults(data) {
     upgradeBar.innerHTML =
       '<div>' +
         '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">⚡ This is a partial audit — free plan scans up to 1,000 contacts and deals</div>' +
-        '<div style="font-size:12px;color:rgba(255,255,255,.5);">Your portal has more records. Upgrade to Deep Audit ($299) for a complete scan of all ' + Number(summary.totalContacts||0).toLocaleString() + '+ contacts and full analysis.</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.5);">Your portal has more records. Upgrade to Deep Audit ($399) for a complete scan of all ' + Number(summary.totalContacts||0).toLocaleString() + '+ contacts and full analysis.</div>' +
       '</div>' +
-      '<a href="index.html#pricing" style="padding:10px 20px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;white-space:nowrap;flex-shrink:0;">Upgrade — $299 →</a>';
+      '<a href="index.html#pricing" style="padding:10px 20px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;white-space:nowrap;flex-shrink:0;">Upgrade — $399 →</a>';
     var resultsDiv = document.getElementById('results');
     resultsDiv.insertBefore(upgradeBar, resultsDiv.firstChild);
   }
@@ -533,7 +533,7 @@ async function fixItForMe(idx) {
       var btn = document.querySelector('#ic-' + idx + ' .btn-fixme');
       if(btn){ btn.textContent='✅ Request Sent'; btn.disabled=true; btn.style.opacity='0.6'; }
     } else { throw new Error(d.error); }
-  } catch(e) { showToast('📧','Email Matthew Directly','matthew@fixops.io'); }
+  } catch(e) { showToast('📧','Contact FixOps Support','matthew@fixops.io'); }
 }
 
 
@@ -956,7 +956,7 @@ function _buildPDF(jsPDF) {
   F(11,true,PURPLE); doc.text("Let's Fix Your Portal",ML+14,CTAY+17);
   F(8.5,false,INK2); doc.text('We review every audit personally and build a prioritized fix plan.',ML+14,CTAY+31);
   F(8.5,true,GREEN); doc.text('Book your free 30-min call:',ML+14,CTAY+45);
-  F(8.5,false,INK2); doc.text('  calendly.com/matthew-fixops/30min',ML+14+doc.getTextWidth('Book your free 30-min call:'),CTAY+45);
+  F(8.5,false,INK2); doc.text('  fixops.io/book',ML+14+doc.getTextWidth('Book your free 30-min call:'),CTAY+45);
 
   drawFooter();
 
