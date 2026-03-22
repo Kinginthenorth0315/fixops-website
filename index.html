@@ -555,7 +555,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <span style="font-size:20px;">🗺</span>
       <div style="text-align:left;">
         <div style="font-size:13px;font-weight:700;color:var(--w);">More coming to the platform</div>
-        <div style="font-size:12px;color:var(--t3);margin-top:2px;">AutoDoc · Deal Risk Scoring · Team Adoption Scorecard · Workflow Conflict Detector · and more</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;">AutoDoc · Deal Risk Scoring · Workflow Conflict Detector · Multi-Portal Dashboard · and more</div>
       </div>
       <a href="#roadmap" style="margin-left:12px;font-size:12px;font-weight:700;color:var(--v3);text-decoration:none;white-space:nowrap;">See roadmap →</a>
     </div>
@@ -672,8 +672,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Step-by-step fix guide per issue</div>
             <div class="pc-feat"><span>✓</span>Downloadable PDF report</div>
             <div class="pc-feat"><span>✓</span>Results stored 7 days</div>
-            <div class="pc-feat no"><span>–</span>No monitoring or alerts</div>
-            <div class="pc-feat no"><span>–</span>No full portal scan</div>
+            <div class="pc-feat"><span>✓</span>Portal Snapshot preview — see dashboard with your data</div>
+            <div class="pc-feat no"><span>–</span>No weekly monitoring or alerts</div>
+            <div class="pc-feat no"><span>–</span>No full portal scan (capped at 1,000 contacts)</div>
           </div>
           <button class="pc-btn pcb-o" onclick="openAuditModal(event)">Run Free Audit →</button>
         </div>
@@ -687,13 +688,14 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Full portal scan · all objects · unlimited records</div>
             <div class="pc-feat"><span>✓</span>Weekly automated re-scans every Monday</div>
-            <div class="pc-feat"><span>✓</span>New issue alerts via email</div>
+            <div class="pc-feat"><span>✓</span>Monday email with score + new issues + dollar waste</div>
             <div class="pc-feat"><span>✓</span>Dollar impact estimate on every issue</div>
-            <div class="pc-feat"><span>✓</span>Week-over-week score comparison</div>
-            <div class="pc-feat"><span>✓</span>Score history chart + trend tracking</div>
-            <div class="pc-feat"><span>✓</span>Billing tier risk alerts — know before you upgrade</div>
-            <div class="pc-feat"><span>✓</span>Workflow health monitoring</div>
-            <div class="pc-feat"><span>✓</span>Integration status alerts</div>
+            <div class="pc-feat"><span>✓</span>Week-over-week score comparison + trend chart</div>
+            <div class="pc-feat"><span>✓</span>Ghost seat detector — see unused paid seats by name</div>
+            <div class="pc-feat"><span>✓</span>Rep activity scorecard — calls, meetings, stale deals</div>
+            <div class="pc-feat"><span>✓</span>Ticket SLA alerts — customers waiting too long</div>
+            <div class="pc-feat"><span>✓</span>Billing tier risk alerts — know before you hit the next tier</div>
+            <div class="pc-feat"><span>✓</span>Portal Snapshot preview (Pipeline, Tickets, Overview)</div>
             <div class="pc-feat"><span>✓</span>PDF report on every scan</div>
             <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
             <div class="pc-feat"><span>✓</span>Results stored 90 days</div>
@@ -704,19 +706,19 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <div class="price-card">
           <div class="pc-tier">Teams</div>
           <div class="pc-name">Pro</div>
-          <div class="pc-desc">Everything in Pulse — plus daily monitoring, AI report builder, and portal snapshot dashboard.</div>
+          <div class="pc-desc">Everything in Pulse — plus full Portal Snapshot dashboard, AI report builder, revenue intelligence, and 12-week trend tracking.</div>
           <div class="pc-price">$549<span>/mo</span></div>
           <div class="pc-per">per portal · cancel anytime · no contract</div>
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Everything in Pulse</div>
-            <div class="pc-feat"><span>✓</span>Daily monitoring</div>
-            <div class="pc-feat"><span>✓</span>API error + rate limit alerts</div>
-            <div class="pc-feat"><span>✓</span>Portal snapshot dashboard</div>
-            <div class="pc-feat"><span>✓</span>AI report builder — ask your data anything</div>
-            <div class="pc-feat"><span>✓</span>Pipeline health + deal velocity reports</div>
-            <div class="pc-feat"><span>✓</span>Lifecycle funnel + forecast analysis</div>
-            <div class="pc-feat"><span>✓</span>Contact intelligence + owner coverage</div>
-            <div class="pc-feat"><span>✓</span>Workflow conflict detection</div>
+            <div class="pc-feat"><span>✓</span>Full Portal Snapshot — 15-view intelligence dashboard</div>
+            <div class="pc-feat"><span>✓</span>AI report builder — ask your data anything in plain English</div>
+            <div class="pc-feat"><span>✓</span>Score trends + ROI tracking — 12 weeks of history</div>
+            <div class="pc-feat"><span>✓</span>Revenue health — MRR, churn, quotes, invoices</div>
+            <div class="pc-feat"><span>✓</span>Pipeline health + deal velocity + forecast analysis</div>
+            <div class="pc-feat"><span>✓</span>Lifecycle funnel + contact engagement segmentation</div>
+            <div class="pc-feat"><span>✓</span>Contact intelligence + owner coverage gaps</div>
+            <div class="pc-feat"><span>✓</span>Company intelligence + team activity scorecard</div>
             <div class="pc-feat"><span>✓</span>User permissions + security monitoring</div>
             <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
           </div>
@@ -730,15 +732,15 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-price">$999<span>/mo</span></div>
           <div class="pc-per">up to 25 client portals · cancel anytime · no contract</div>
           <div class="pc-feats">
-            <div class="pc-feat"><span>✓</span>Everything in Pro</div>
+            <div class="pc-feat"><span>✓</span>Everything in Pro — applied to every client portal</div>
             <div class="pc-feat"><span>✓</span>Up to 25 client portals</div>
             <div class="pc-feat"><span>✓</span>Unlimited audits across all portals</div>
-            <div class="pc-feat"><span>✓</span>White-label PDF reports — your agency brand</div>
-            <div class="pc-feat"><span>✓</span>Multi-client portfolio dashboard</div>
-            <div class="pc-feat"><span>✓</span>Client-facing health score pages</div>
+            <div class="pc-feat"><span>✓</span>White-label PDF reports — your agency brand <span style="font-size:10px;color:#f59e0b;">(coming soon)</span></div>
+            <div class="pc-feat"><span>✓</span>Weekly Monday report per client portal</div>
             <div class="pc-feat"><span>✓</span>Dollar impact reporting per client</div>
+            <div class="pc-feat"><span>✓</span>Ghost seat + rep scorecard per client</div>
+            <div class="pc-feat"><span>✓</span>Full Portal Snapshot per client</div>
             <div class="pc-feat"><span>✓</span>Billing tier risk monitor per client</div>
-            <div class="pc-feat"><span>✓</span>Weekly monitoring across all clients</div>
             <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
             <div class="pc-feat"><span>✓</span>Priority support + dedicated onboarding</div>
           </div>
@@ -809,7 +811,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Portal Snapshot reporting dashboard</div>
             <div class="pc-feat"><span>✓</span>Same-day Fix It For Me response</div>
             <div class="pc-feat"><span>✓</span>60-min strategy call with our team</div>
-            <div class="pc-feat"><span>✓</span>90-day fix roadmap + ROI report</div>
+            <div class="pc-feat"><span>✓</span>90-day prioritized fix roadmap (PDF deliverable)</div>
             <div class="pc-feat"><span>✓</span>Results stored 1 year</div>
           </div>
           <button class="pc-btn pcb-o" onclick="goStripe('pro_audit')">Get Pro Audit — $699 →</button>
@@ -1019,147 +1021,115 @@ function showOnetime() {
 
     <div class="road-grid" id="road-grid">
 
-      <!-- LIVE -->
-      <div class="road-card live" data-status="live">
-        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
-        <div class="road-ico">🔍</div>
-        <div class="road-h">165-Point Portal Audit</div>
-        <div class="road-p">Connects via read-only OAuth in 2 minutes. Scans contacts, deals, tickets, pipelines, workflows, and configuration. Scores across 8 dimensions with dollar impact on every issue.</div>
-        <div class="road-tags"><span class="road-tag">Free</span><span class="road-tag">PDF Report</span><span class="road-tag">Fix Guides</span></div>
-      </div>
+  <!-- LIVE -->
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">165-Point Portal Audit</div>
+    <div class="road-p">Full automated scan across contacts, deals, tickets, workflows, companies, products, quotes, invoices, subscriptions, users, and properties. Dollar impact on every finding.</div>
+    <div class="road-plan">All Plans</div>
+  </div>
 
-      <div class="road-card live" data-status="live">
-        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
-        <div class="road-ico">📊</div>
-        <div class="road-h">Fix Plan & Project Scoping</div>
-        <div class="road-p">Every audit generates a personalized fix plan grouping issues into project buckets — Data, Automation, Pipeline, Reporting, Config — with a Calendly CTA pre-filled with your company name and score.</div>
-        <div class="road-tags"><span class="road-tag">Included</span><span class="road-tag">One-Click</span></div>
-      </div>
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Pulse Weekly Monitoring</div>
+    <div class="road-p">Full portal re-scan every Monday. Score delta, new issues found, resolved issues, dollar waste total — all delivered to your inbox before your team starts the week.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
 
-      <div class="road-card live" data-status="live">
-        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
-        <div class="road-ico">📄</div>
-        <div class="road-h">Branded PDF Report</div>
-        <div class="road-p">Multi-page executive PDF with cover page, score ring, dimension breakdown, and full issue detail pages. Share with leadership or use to scope a fix engagement.</div>
-        <div class="road-tags"><span class="road-tag">Included</span><span class="road-tag">Shareable</span></div>
-      </div>
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Rep Activity Scorecard</div>
+    <div class="road-p">Weekly per-rep breakdown of calls, meetings, and stale deals — delivered in every Monday email and visible in the snapshot dashboard. See who's active and who went dark.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
 
-      <!-- IN PROGRESS -->
-      <div class="road-card live" data-status="live">
-        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
-        <div class="road-ico">⚡</div>
-        <div class="road-h">Pulse Weekly Monitoring</div>
-        <div class="road-p">Built and running. Every Monday at 9am ET, FixOps automatically rescans your portal, compares to last week, and emails you a full report showing new issues, resolved issues, and score trends. Active for all Pulse subscribers.</div>
-        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Monday Scans</span><span class="road-tag">Score History</span></div>
-      </div>
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Ghost Seat Detector</div>
+    <div class="road-p">Identifies paid HubSpot users with zero logins in 90+ days. Shows names, last login dates, and estimated monthly cost per unused seat. Instant savings with one deactivation.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
 
-      <div class="road-card building" data-status="building">
-        <div class="road-status building"><div class="road-status-dot"></div>In Progress</div>
-        <div class="road-ico">📋</div>
-        <div class="road-h">AutoDoc — Workflow Documentation</div>
-        <div class="road-p">Reads every workflow in your portal and generates plain-English documentation automatically. What it does, who it affects, what triggers it, conflicts, and whether it has a goal. Exports to PDF. Auto-updates when workflows change.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">PDF Export</span><span class="road-tag">Auto-Updates</span></div>
-      </div>
+  <div class="road-card live" data-cat="reporting">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">AI Report Builder</div>
+    <div class="road-p">Ask any question about your actual HubSpot data in plain English. "Which deals are most at risk?" "What's my real pipeline value?" Powered by Claude. Instant answers, no SQL.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
 
-      <div class="road-card building" data-status="building">
-        <div class="road-status building"><div class="road-status-dot"></div>In Progress</div>
-        <div class="road-ico">🔔</div>
-        <div class="road-h">Integration & Workflow Health Alerts</div>
-        <div class="road-p">Continuous monitoring of workflow errors, broken integration connections, and failing automation actions. Instant email and Slack alerts the moment something breaks — not when a lead complains three weeks later.</div>
-        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Slack Alerts</span><span class="road-tag">Email Alerts</span></div>
-      </div>
+  <div class="road-card live" data-cat="reporting">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Score Trends &amp; ROI Tracking</div>
+    <div class="road-p">12-week score history with per-dimension sparklines, monthly waste trend, issue persistence tracker, and ROI summary showing dollar savings since your first scan.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
 
-      <!-- PLANNED -->
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">👥</div>
-        <div class="road-h">Team Adoption Scorecard</div>
-        <div class="road-p">Weekly rep-level scorecard showing who's logging calls and emails, whose pipeline data is stale, and data quality scores per rep. Sent to the sales manager every Monday. Stop pulling manual reports.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Per-Rep Scoring</span><span class="road-tag">Weekly Digest</span></div>
-      </div>
+  <div class="road-card live" data-cat="reporting">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Portal Snapshot — 15-View Dashboard</div>
+    <div class="road-p">Pipeline health, deal velocity, forecast, lifecycle funnel, contact engagement, revenue health, MRR, quote conversion, company intelligence, team activity, and more — in one dashboard.</div>
+    <div class="road-plan">Pro · Agency · Preview: All</div>
+  </div>
 
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">🕵️</div>
-        <div class="road-h">Change Intelligence Log</div>
-        <div class="road-p">Weekly digest of every meaningful change in your portal — modified workflows, deleted properties, new super admins, pipeline stage changes. Catches the mystery change that broke your automation before anyone notices.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Weekly Digest</span><span class="road-tag">Change History</span></div>
-      </div>
+  <div class="road-card live" data-cat="reporting">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Revenue Health Intelligence</div>
+    <div class="road-p">MRR tracking, subscription churn rate, renewals due in 30 days, quote conversion rate, expired unaccepted quotes, and overdue invoices — all pulled from your live HubSpot data.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
 
-      <div class="road-card live" data-status="live">
-        <div class="road-status live"><div class="road-status-dot"></div>Live Now</div>
-        <div class="road-ico">✦</div>
-        <div class="road-h">AI Report Builder</div>
-        <div class="road-p">Live for Pro subscribers. Ask any question about your HubSpot data in plain English and get an instant chart, analysis, and recommended action. "Which deals are most at risk this week?" — answered in seconds from your real portal data.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Claude AI</span><span class="road-tag">Instant Charts</span></div>
-      </div>
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Branded PDF Report</div>
+    <div class="road-p">Every audit generates a downloadable PDF with your full findings, dollar impact estimates, and prioritized fix guide. Sent automatically with every scan.</div>
+    <div class="road-plan">All Plans</div>
+  </div>
 
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">🔧</div>
-        <div class="road-h">Guided Fix Mode</div>
-        <div class="road-p">For the most common issues, a preview-before-apply fix flow. See exactly what will change, approve it, and it's done. Starting with archiving dead workflows, reassigning unowned contacts, and adding missing required fields.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Preview First</span><span class="road-tag">Safe Fixes</span></div>
-      </div>
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Fix It For Me</div>
+    <div class="road-p">Every issue has a one-click "Fix It For Me" button. Submit it and our team gets a detailed brief of exactly what needs fixing, where it is, and how to do it. Done within 24 hours.</div>
+    <div class="road-plan">All Paid Plans</div>
+  </div>
 
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">🏢</div>
-        <div class="road-h">Multi-Portal Agency Dashboard</div>
-        <div class="road-p">One view across all your client portals. Health scores, critical issues, billing tier risks, and score trends — without logging into each portal separately. Built specifically for HubSpot solutions partners and agencies.</div>
-        <div class="road-tags"><span class="road-tag">Agency Plan</span><span class="road-tag">All Clients</span><span class="road-tag">White Label</span></div>
-      </div>
+  <!-- BUILDING -->
+  <div class="road-card building" data-cat="agency">
+    <div class="road-status building"><span class="road-status-dot" style="background:#7c3aed;display:inline-block;"></span><span>Building</span></div>
+    <div class="road-h">AutoDoc — Workflow Documentation</div>
+    <div class="road-p">Claude reads every HubSpot workflow and generates plain-English documentation — what it does, who it affects, what triggers it, and what would break if it stopped. Exports as a PDF Portal Bible.</div>
+    <div class="road-plan">Agency · Pro</div>
+  </div>
 
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">🔄</div>
-        <div class="road-h">Salesforce Activity Migration</div>
-        <div class="road-p">Moving from Salesforce to HubSpot? The native integration drops all historical activity — calls, emails, notes, meetings. FixOps migrates your full activity history so your reps don't go in blind. Done-for-you service.</div>
-        <div class="road-tags"><span class="road-tag">Service</span><span class="road-tag">Done For You</span><span class="road-tag">Full History</span></div>
-      </div>
+  <div class="road-card building" data-cat="agency">
+    <div class="road-status building"><span class="road-status-dot" style="background:#7c3aed;display:inline-block;"></span><span>Building</span></div>
+    <div class="road-h">Multi-Portal Agency Dashboard</div>
+    <div class="road-p">One dashboard showing health scores, critical issues, and dollar waste across all 25 client portals. Sort by worst score, biggest waste, or most new issues. White-label ready.</div>
+    <div class="road-plan">Agency</div>
+  </div>
 
+  <!-- PLANNED -->
+  <div class="road-card planned" data-cat="monitoring">
+    <div class="road-status planned"><span class="road-status-dot" style="background:#3b82f6;display:inline-block;"></span><span>Planned</span></div>
+    <div class="road-h">Workflow Error Alerts</div>
+    <div class="road-p">Real-time alerts when a workflow breaks, how many contacts were affected, how many days it was broken, and estimated revenue impact. The most shareable email in HubSpot monitoring.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
 
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">🏥</div>
-        <div class="road-h">HubSpot Health Score Over Time</div>
-        <div class="road-p">Track your portal health score week by week with a full history chart. See which dimensions are improving, which are declining, and what events caused changes. Benchmarked against similar portals so you know where you stand in your industry.</div>
-        <div class="road-tags"><span class="road-tag">All Plans</span><span class="road-tag">Benchmarking</span><span class="road-tag">Trend Charts</span></div>
-      </div>
+  <div class="road-card planned" data-cat="monitoring">
+    <div class="road-status planned"><span class="road-status-dot" style="background:#3b82f6;display:inline-block;"></span><span>Planned</span></div>
+    <div class="road-h">Change Intelligence Log</div>
+    <div class="road-p">Weekly digest of what changed in your portal — new properties, modified workflows, user permission changes, pipeline edits — cross-referenced with score drops.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
 
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">💳</div>
-        <div class="road-h">Billing Tier Risk Monitor</div>
-        <div class="road-p">HubSpot charges by marketing contact count — and most portals have thousands of non-marketing contacts inflating their bill. FixOps monitors your contact tiers in real time, alerts you before you cross a billing threshold, and identifies exactly which contacts to suppress to reduce your monthly cost.</div>
-        <div class="road-tags"><span class="road-tag">Pulse Plan</span><span class="road-tag">Cost Savings</span><span class="road-tag">Real-Time Alert</span></div>
-      </div>
+  <div class="road-card planned" data-cat="monitoring">
+    <div class="road-status planned"><span class="road-status-dot" style="background:#3b82f6;display:inline-block;"></span><span>Planned</span></div>
+    <div class="road-h">Guided Fix Mode</div>
+    <div class="road-p">Step-by-step in-app walkthroughs for fixing every issue FixOps surfaces. Click an issue, get a guided fix with screenshots and exact steps — no leaving the dashboard.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
 
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">🎯</div>
-        <div class="road-h">Deal Risk Scoring</div>
-        <div class="road-p">Every open deal in your pipeline scored for risk in real time — age, last activity, missing close date, owner workload, stage probability. Surfaced in a weekly digest so sales managers see exactly which deals need attention before they go cold, not after.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">AI Scoring</span><span class="road-tag">Weekly Digest</span></div>
-      </div>
-
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">⚙️</div>
-        <div class="road-h">Workflow Conflict Detector</div>
-        <div class="road-p">Identifies workflows that are enrolling the same contacts, firing conflicting actions, or overwriting each other's property updates. HubSpot shows you active workflows — it doesn't tell you they're fighting each other. This does.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Conflict Map</span><span class="road-tag">Fix Guides</span></div>
-      </div>
-
-      <div class="road-card planned" data-status="planned">
-        <div class="road-status planned"><div class="road-status-dot"></div>Coming Soon</div>
-        <div class="road-ico">📅</div>
-        <div class="road-h">Sequence & Email Health Monitor</div>
-        <div class="road-p">Tracks your sales sequences for low open rates, broken steps, unenrolled contacts, and emails landing in spam. Most teams don't know their sequences are underperforming until pipeline dries up. FixOps surfaces it weekly with specific fixes.</div>
-        <div class="road-tags"><span class="road-tag">Pro Plan</span><span class="road-tag">Deliverability</span><span class="road-tag">Weekly Report</span></div>
-      </div>
-
-    </div>
+</div>
   </div>
 </section>
 

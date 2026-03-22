@@ -338,6 +338,34 @@ nav {
   .ai-input-row { flex-direction: column; }
 }
 
+  /* Sidebar active item indicator */
+  .sidebar-item.active {
+    background: rgba(124,58,237,.15);
+    color: var(--t1);
+    border-left: 2px solid var(--accent);
+    padding-left: 10px;
+  }
+  .sidebar-item { border-left: 2px solid transparent; transition: all .15s; }
+  .sidebar-item:hover { background: rgba(255,255,255,.04); }
+
+  /* View transition */
+  .view { animation: fadeIn .15s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  /* KPI grid responsive */
+  .kpi-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 16px; }
+  .kpi-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 16px; }
+  @media (max-width: 900px) {
+    .kpi-grid-4 { grid-template-columns: repeat(2,1fr); }
+    .kpi-grid-3 { grid-template-columns: repeat(2,1fr); }
+    .layout { flex-direction: column; }
+    .sidebar { width: 100%; max-height: 200px; overflow-y: auto; }
+  }
+
+  /* Score ring on overview */
+  .score-hero { display: flex; align-items: center; gap: 28px; padding: 24px; background: var(--s1); border-radius: 14px; margin-bottom: 16px; border: 1px solid var(--b1); }
+  .score-ring-lg { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 4px solid; }
+
   /* Plan tier lock overlays */
   .view { position: relative; }
   .pro-lock-overlay {
@@ -364,10 +392,11 @@ nav {
   <div class="nav-left">
     <a href="index.html" class="logo"><div class="logo-mark">⚡</div>FixOps</a>
     <div class="nav-divider"></div>
-    <span class="nav-title">Portal Snapshot</span>
+    <span class="nav-title">Portal Snapshot</span><span id="nav-plan-badge" style="margin-left:8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;background:rgba(124,58,237,.15);color:#a78bfa;display:none;"></span>
   </div>
   <div class="nav-right">
     <span class="nav-badge" id="portal-badge">Loading…</span>
+    <a href="dashboard.html" class="nav-btn" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);">← Dashboard</a>
     <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="nav-btn">Book a Call ↗</a>
   </div>
 </nav>
@@ -377,13 +406,13 @@ nav {
   <aside class="sidebar">
     <div class="sidebar-section">
       <div class="sidebar-label">Overview</div>
-      <div class="sidebar-item active" onclick="showView('overview')">
+      <div class="sidebar-item active" onclick="showView('overview')" data-view="overview">
         <span class="si-icon">⬡</span> Revenue Overview
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Pipeline</div>
-      <div class="sidebar-item" onclick="showView('pipeline')">
+      <div class="sidebar-item" onclick="showView('pipeline')" data-view="pipeline">
         <span class="si-icon">📊</span> Pipeline Health
       </div>
       <div class="sidebar-item" onclick="showView('velocity')" class="sidebar-item" data-pro-view="true">
@@ -403,41 +432,38 @@ nav {
       </div>
     </div>
     <div class="sidebar-section">
-      <div class="sidebar-label">Revenue</div>
-      <div class="sidebar-item" onclick="showView('products')">
-        <span class="si-icon">📦</span> Product Revenue
+      <div class="sidebar-label">Commerce</div>
+      <div class="sidebar-item" onclick="showView('products')" data-view="products">
+        <span class="si-icon">📦</span> Products &amp; Quotes
       </div>
-      <div class="sidebar-item" onclick="showView('tickets')">
-        <span class="si-icon">🎫</span> Service Health
+      <div class="sidebar-item" onclick="showView('tickets')" data-view="tickets">
+        <span class="si-icon">🎫</span> Service &amp; Tickets
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Revenue</div>
-      <div class="sidebar-item" onclick="showView('revenue')">
+      <div class="sidebar-item" onclick="showView('revenue')" data-view="revenue">
         <span class="si-icon">💳</span> Revenue Health
       </div>
-      <div class="sidebar-item" onclick="showView('company')">
+      <div class="sidebar-item" onclick="showView('company')" data-view="company">
         <span class="si-icon">🏢</span> Company Intel
       </div>
-      <div class="sidebar-item" onclick="showView('engagement')">
+      <div class="sidebar-item" onclick="showView('engagement')" data-view="engagement">
         <span class="si-icon">🔥</span> Engagement
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Team</div>
-      <div class="sidebar-item" onclick="showView('team')">
-        <span class="si-icon">👥</span> Rep Activity
-      </div>
-      <div class="sidebar-item" onclick="showView('team')">
-        <span class="si-icon">👻</span> Ghost Seats
+      <div class="sidebar-item" onclick="showView('team')" data-view="team">
+        <span class="si-icon">👥</span> Rep Activity &amp; Seats
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Trends</div>
-      <div class="sidebar-item" onclick="showView('trends')">
+      <div class="sidebar-item" onclick="showView('trends')" data-view="trends">
         <span class="si-icon">📈</span> Score Trends
       </div>
-      <div class="sidebar-item" onclick="showView('roi')">
+      <div class="sidebar-item" onclick="showView('roi')" data-view="roi">
         <span class="si-icon">💰</span> ROI Summary
       </div>
     </div>
@@ -445,7 +471,7 @@ nav {
       <div class="sidebar-label">AI</div>
       <div class="sidebar-item" onclick="showView('ai')" class="sidebar-item" data-pro-view="true">
         <span class="si-icon">✦</span> AI Report Builder
-        <span class="si-badge">NEW</span>
+        <span class="si-badge">PRO</span>
       </div>
     </div>
   </aside>
@@ -468,7 +494,7 @@ nav {
       <!-- OVERVIEW -->
       <div class="view active" id="view-overview">
         <div class="page-header">
-          <h1 id="overview-title">Revenue Overview</h1>
+          <h1 id="overview-title">Portal Health Overview</h1>
           <p id="overview-sub">Complete intelligence across your HubSpot portal</p>
         </div>
         <div class="kpi-row" id="overview-kpis"></div>
@@ -853,6 +879,15 @@ async function loadFromToken(token) {
 
     // Store globally so views can check
     window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
+    // Show plan badge in nav
+    const navPlanBadge = document.getElementById('nav-plan-badge');
+    if (navPlanBadge) {
+      const planLabel = {free:'FREE',pulse:'PULSE',pro:'PRO',command:'AGENCY','pro-audit':'PRO AUDIT',deep:'DEEP AUDIT'}[auditPlan]||auditPlan.toUpperCase();
+      navPlanBadge.textContent = planLabel;
+      navPlanBadge.style.display = 'inline';
+      if (isProOrAbove) navPlanBadge.style.background = 'rgba(16,185,129,.15)';
+      if (isProOrAbove) navPlanBadge.style.color = '#10b981';
+    }
 
     // Show the dashboard for everyone
     initAllViews();
@@ -1008,6 +1043,15 @@ async function loadData() {
 
     // Store globally so views can check
     window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
+    // Show plan badge in nav
+    const navPlanBadge = document.getElementById('nav-plan-badge');
+    if (navPlanBadge) {
+      const planLabel = {free:'FREE',pulse:'PULSE',pro:'PRO',command:'AGENCY','pro-audit':'PRO AUDIT',deep:'DEEP AUDIT'}[auditPlan]||auditPlan.toUpperCase();
+      navPlanBadge.textContent = planLabel;
+      navPlanBadge.style.display = 'inline';
+      if (isProOrAbove) navPlanBadge.style.background = 'rgba(16,185,129,.15)';
+      if (isProOrAbove) navPlanBadge.style.color = '#10b981';
+    }
 
     // Show the dashboard for everyone
     initAllViews();
@@ -1135,7 +1179,13 @@ function showView(name) {
   document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
   const v = document.getElementById('view-'+name);
   if (v) v.classList.add('active');
-  event.currentTarget?.classList.add('active');
+  // Mark active sidebar item
+  const sidebarItem = document.querySelector('.sidebar-item[data-view="'+name+'"]');
+  if (sidebarItem) sidebarItem.classList.add('active');
+  else if (event?.currentTarget) event.currentTarget.classList.add('active');
+  // Scroll main content to top
+  const main = document.querySelector('.main');
+  if (main) main.scrollTop = 0;
 }
 
 // ── Initialize all views ─────────────────────────────────────────────────────
