@@ -393,6 +393,15 @@ nav {
       </div>
     </div>
     <div class="sidebar-section">
+      <div class="sidebar-label">Team</div>
+      <div class="sidebar-item" onclick="showView('team')">
+        <span class="si-icon">👥</span> Rep Activity
+      </div>
+      <div class="sidebar-item" onclick="showView('team')">
+        <span class="si-icon">👻</span> Ghost Seats
+      </div>
+    </div>
+    <div class="sidebar-section">
       <div class="sidebar-label">AI</div>
       <div class="sidebar-item" onclick="showView('ai')">
         <span class="si-icon">✦</span> AI Report Builder
@@ -673,6 +682,16 @@ nav {
         </div>
       </div>
 
+
+    <!-- Team View -->
+    <div class="view" id="view-team">
+      <div class="page-header">
+        <h1>Team Activity &amp; Ghost Seats</h1>
+        <p>Rep activity scorecard and inactive seat detection — updated every Monday</p>
+      </div>
+      <div id="team-content"></div>
+    </div>
+
     </div><!-- /views -->
   </main>
 </div>
@@ -786,6 +805,7 @@ function initAllViews() {
   buildContacts();
   buildProducts();
   buildTickets();
+  buildTeam();
 }
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
@@ -1457,6 +1477,104 @@ const REPORT_LIBRARY = [
   { q: 'Contact engagement health — what is at risk?', icon: '👥', badge: 'CONTACTS' },
   { q: 'What configuration issues are security risks?', icon: '🔒', badge: 'SECURITY' },
 ];
+
+// ── TEAM ACTIVITY + GHOST SEATS ──────────────────────────────────────────────
+function buildTeam() {
+  const issues = DATA.issues || [];
+  const el = document.getElementById('team-content');
+  if (!el) return;
+
+  const ghostIssue = issues.find(i => i.ghostSeatData && i.ghostSeatData.length > 0);
+  const repIssue   = issues.find(i => i.repScorecard && i.repScorecard.length > 0);
+  const staleIssue = issues.find(i => i.title && i.title.includes('stale deals'));
+
+  let html = '';
+
+  // ── Rep Activity Scorecard ────────────────────────────────────────────────
+  if (repIssue && repIssue.repScorecard.length > 0) {
+    const reps = repIssue.repScorecard;
+    const totalCalls    = reps.reduce((s,r) => s + r.calls, 0);
+    const totalMeetings = reps.reduce((s,r) => s + r.meetings, 0);
+    const darkReps      = reps.filter(r => r.calls === 0 && r.meetings === 0);
+    const staleReps     = reps.filter(r => r.staleDealCount > 2);
+
+    const repRows = reps.slice(0,15).map(r => {
+      const total = r.calls + r.meetings;
+      const statusColor = total > 5 ? '#10b981' : total > 0 ? '#f59e0b' : '#f43f5e';
+      const statusLabel = total > 5 ? 'Active' : total > 0 ? 'Low' : 'Dark';
+      const staleCol = r.staleDealCount > 2 ? '#f43f5e' : 'rgba(255,255,255,.5)';
+      return '<tr style="border-bottom:1px solid rgba(255,255,255,.06);">' +
+        '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:#fff;">' + r.name + '</td>' +
+        '<td style="padding:10px 12px;text-align:center;font-size:13px;color:rgba(255,255,255,.7);">' + r.calls + '</td>' +
+        '<td style="padding:10px 12px;text-align:center;font-size:13px;color:rgba(255,255,255,.7);">' + r.meetings + '</td>' +
+        '<td style="padding:10px 12px;text-align:center;font-size:13px;font-weight:700;color:' + staleCol + ';">' + r.staleDealCount + '</td>' +
+        '<td style="padding:10px 12px;text-align:right;"><span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;background:' + statusColor + '20;color:' + statusColor + ';">' + statusLabel + '</span></td>' +
+      '</tr>';
+    }).join('');
+
+    html += '<div class="card" style="margin-bottom:20px;">' +
+      '<div class="card-h">👥 Rep Activity — Last 7 Days</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">' +
+        '<div class="mini-stat"><div class="ms-v">' + totalCalls + '</div><div class="ms-l">Total Calls</div></div>' +
+        '<div class="mini-stat"><div class="ms-v">' + totalMeetings + '</div><div class="ms-l">Total Meetings</div></div>' +
+        '<div class="mini-stat" style="border-color:' + (darkReps.length>0?'rgba(244,63,94,.3)':'rgba(255,255,255,.06)') + ';"><div class="ms-v" style="color:' + (darkReps.length>0?'#f43f5e':'inherit') + ';">' + darkReps.length + '</div><div class="ms-l">Dark Reps</div></div>' +
+      '</div>' +
+      '<table style="width:100%;border-collapse:collapse;">' +
+        '<thead><tr style="border-bottom:1px solid rgba(255,255,255,.1);">' +
+          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Rep</th>' +
+          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Calls</th>' +
+          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Meetings</th>' +
+          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Stale Deals</th>' +
+          '<th style="padding:8px 12px;text-align:right;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Status</th>' +
+        '</tr></thead>' +
+        '<tbody>' + repRows + '</tbody>' +
+      '</table>' +
+      (darkReps.length > 0 ? '<div style="margin-top:14px;padding:12px 14px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:8px;font-size:12px;color:rgba(255,255,255,.6);">⚠️ Dark reps: <strong style="color:#f43f5e;">' + darkReps.map(r=>r.name).join(', ') + '</strong> — no calls or meetings logged this week</div>' : '') +
+    '</div>';
+  } else {
+    html += '<div class="card" style="margin-bottom:20px;opacity:.6;">' +
+      '<div class="card-h">👥 Rep Activity</div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.5);padding:20px 0;text-align:center;">No call or meeting data available — connect HubSpot to Google Calendar or Outlook to enable activity tracking</div>' +
+    '</div>';
+  }
+
+  // ── Ghost Seats ───────────────────────────────────────────────────────────
+  if (ghostIssue && ghostIssue.ghostSeatData.length > 0) {
+    const gd = ghostIssue.ghostSeatData;
+    const waste = gd.length * 90;
+    const maxWaste = gd.length * 120;
+
+    const seatRows = gd.map(u =>
+      '<tr style="border-bottom:1px solid rgba(255,255,255,.06);">' +
+        '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:#fff;">' + u.name + '</td>' +
+        '<td style="padding:10px 12px;font-size:12px;color:rgba(255,255,255,.4);">' + (u.email||'—') + '</td>' +
+        '<td style="padding:10px 12px;text-align:right;"><span style="font-size:12px;font-weight:700;color:#f43f5e;">' + u.daysSince + ' days inactive</span></td>' +
+      '</tr>'
+    ).join('');
+
+    html += '<div class="card">' +
+      '<div class="card-h">👻 Ghost Seats <span style="font-size:12px;font-weight:400;color:#f43f5e;">$' + waste.toLocaleString() + '–$' + maxWaste.toLocaleString() + '/mo wasted</span></div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:16px;">' + gd.length + ' paid HubSpot user' + (gd.length!==1?'s':'') + ' with zero logins in 90+ days. Deactivate to stop paying for unused seats immediately.</div>' +
+      '<table style="width:100%;border-collapse:collapse;">' +
+        '<thead><tr style="border-bottom:1px solid rgba(255,255,255,.1);">' +
+          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">User</th>' +
+          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Email</th>' +
+          '<th style="padding:8px 12px;text-align:right;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Inactivity</th>' +
+        '</tr></thead>' +
+        '<tbody>' + seatRows + '</tbody>' +
+      '</table>' +
+      '<div style="margin-top:14px;padding:12px 14px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:8px;font-size:12px;color:rgba(255,255,255,.6);">💡 Settings → Users → sort by last login → deactivate each ghost seat. Their data and records stay intact — only login access is removed.</div>' +
+    '</div>';
+  } else {
+    html += '<div class="card" style="opacity:.6;">' +
+      '<div class="card-h">👻 Ghost Seats</div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.5);padding:20px 0;text-align:center;">No ghost seats detected — all users have logged in within the last 90 days ✓</div>' +
+    '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
 
 function setupAiSuggestions() {
   renderAiChips('all');

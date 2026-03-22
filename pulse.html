@@ -408,6 +408,59 @@ function renderReport(weekIdx) {
       </div>
     </div>`:''}
 
+    <!-- Ghost Seats -->
+    ${(()=>{
+      const ghostIssue = issues.find(i => i.ghostSeatData && i.ghostSeatData.length > 0);
+      if(!ghostIssue) return '';
+      const gd = ghostIssue.ghostSeatData;
+      const waste = gd.length * 90;
+      const rows = gd.slice(0,8).map(u =>
+        '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--s1);border-radius:8px;margin-bottom:6px;">' +
+          '<div>' +
+            '<div style="font-size:13px;font-weight:600;color:var(--w);">' + u.name + '</div>' +
+            (u.email ? '<div style="font-size:11px;color:var(--t3);">' + u.email + '</div>' : '') +
+          '</div>' +
+          '<div style="font-size:12px;font-weight:700;color:var(--red);">' + u.daysSince + 'd inactive</div>' +
+        '</div>'
+      ).join('');
+      return '<div class="sec">' +
+        '<div class="sec-h">👻 Ghost Seats <span style="background:rgba(244,63,94,.15);color:var(--red);">$' + waste.toLocaleString() + '/mo WASTED</span></div>' +
+        '<div style="font-size:12px;color:var(--t2);margin-bottom:12px;">' + gd.length + ' paid user' + (gd.length!==1?'s':'') + ' with zero logins in 90+ days — deactivate to save $' + waste.toLocaleString() + '/mo immediately</div>' +
+        rows +
+      '</div>';
+    })()}
+
+    <!-- Rep Activity Scorecard -->
+    ${(()=>{
+      const repIssue = issues.find(i => i.repScorecard && i.repScorecard.length > 0);
+      if(!repIssue) return '';
+      const reps = repIssue.repScorecard;
+      const rows = reps.slice(0,10).map(r => {
+        const total = r.calls + r.meetings;
+        const statusColor = total > 5 ? 'var(--green)' : total > 0 ? 'var(--amber)' : 'var(--red)';
+        const statusLabel = total > 5 ? 'Active' : total > 0 ? 'Low' : 'Dark';
+        return '<div style="display:grid;grid-template-columns:1fr 60px 80px 90px 70px;gap:8px;align-items:center;padding:8px 12px;background:var(--s1);border-radius:8px;margin-bottom:6px;">' +
+          '<div style="font-size:13px;font-weight:600;color:var(--w);">' + r.name + '</div>' +
+          '<div style="text-align:center;font-size:12px;color:var(--t2);">' + r.calls + ' calls</div>' +
+          '<div style="text-align:center;font-size:12px;color:var(--t2);">' + r.meetings + ' mtgs</div>' +
+          '<div style="text-align:center;font-size:12px;color:' + (r.staleDealCount>2?'var(--red)':'var(--t2)') + ';">' + r.staleDealCount + ' stale</div>' +
+          '<div style="text-align:right;"><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;background:' + statusColor + '20;color:' + statusColor + ';">' + statusLabel + '</span></div>' +
+        '</div>';
+      }).join('');
+      const header = '<div style="display:grid;grid-template-columns:1fr 60px 80px 90px 70px;gap:8px;padding:4px 12px;margin-bottom:4px;">' +
+        '<div style="font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Rep</div>' +
+        '<div style="text-align:center;font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Calls</div>' +
+        '<div style="text-align:center;font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Meetings</div>' +
+        '<div style="text-align:center;font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Stale Deals</div>' +
+        '<div style="text-align:right;font-size:10px;color:var(--t3);font-weight:600;text-transform:uppercase;">Status</div>' +
+      '</div>';
+      return '<div class="sec">' +
+        '<div class="sec-h">👥 Rep Activity This Week <span style="background:var(--b1);color:var(--t3);">LAST 7 DAYS</span></div>' +
+        '<div style="font-size:12px;color:var(--t2);margin-bottom:12px;">Calls, meetings, and stale deals per rep — updated every Monday</div>' +
+        header + rows +
+      '</div>';
+    })()}
+
     <!-- Issues -->
     ${issues.length?`<div class="sec">
       <div class="sec-h">🔍 All Issues <span style="background:var(--b1);color:var(--t3);">${issues.length} FOUND</span></div>
