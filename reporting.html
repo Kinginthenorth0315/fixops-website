@@ -412,12 +412,33 @@ nav {
       </div>
     </div>
     <div class="sidebar-section">
+      <div class="sidebar-label">Revenue</div>
+      <div class="sidebar-item" onclick="showView('revenue')">
+        <span class="si-icon">💳</span> Revenue Health
+      </div>
+      <div class="sidebar-item" onclick="showView('company')">
+        <span class="si-icon">🏢</span> Company Intel
+      </div>
+      <div class="sidebar-item" onclick="showView('engagement')">
+        <span class="si-icon">🔥</span> Engagement
+      </div>
+    </div>
+    <div class="sidebar-section">
       <div class="sidebar-label">Team</div>
       <div class="sidebar-item" onclick="showView('team')">
         <span class="si-icon">👥</span> Rep Activity
       </div>
       <div class="sidebar-item" onclick="showView('team')">
         <span class="si-icon">👻</span> Ghost Seats
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Trends</div>
+      <div class="sidebar-item" onclick="showView('trends')">
+        <span class="si-icon">📈</span> Score Trends
+      </div>
+      <div class="sidebar-item" onclick="showView('roi')">
+        <span class="si-icon">💰</span> ROI Summary
       </div>
     </div>
     <div class="sidebar-section">
@@ -705,6 +726,55 @@ nav {
       </div>
 
 
+    <!-- Trends View -->
+    <div class="view" id="view-trends">
+      <div class="page-header">
+        <h1>Score Trends &amp; Issue History</h1>
+        <p>12-week portal health trend — see what's improving, what's getting worse, and when</p>
+      </div>
+      <div id="trends-content"></div>
+    </div>
+
+    <!-- ROI View -->
+    <div class="view" id="view-roi">
+      <div class="page-header">
+        <h1>ROI &amp; Progress Summary</h1>
+        <p>Proof that monitoring is working — improvements since your first scan</p>
+      </div>
+      <div id="roi-content"></div>
+    </div>
+
+    <!-- Revenue Health View -->
+    <div class="view" id="view-revenue">
+      <div class="page-header">
+        <h1>Revenue Health</h1>
+        <p>Subscriptions, MRR, quotes, invoices, and pipeline intelligence</p>
+      </div>
+      <div id="revenue-content"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">
+        <div class="card"><div class="card-h">Subscription Status</div><canvas id="subStatusChart" height="140"></canvas></div>
+        <div class="card"><div class="card-h">Quote Conversion</div><canvas id="quoteConvChart" height="140"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Company Intelligence View -->
+    <div class="view" id="view-company">
+      <div class="page-header">
+        <h1>Company Intelligence</h1>
+        <p>Company coverage, owner assignment, and revenue data quality</p>
+      </div>
+      <div id="company-content"></div>
+    </div>
+
+    <!-- Contact Engagement View -->
+    <div class="view" id="view-engagement">
+      <div class="page-header">
+        <h1>Contact Engagement</h1>
+        <p>Hot/warm/cold segmentation and contact data quality from your actual activity data</p>
+      </div>
+      <div id="engagement-content"></div>
+    </div>
+
     <!-- Team View -->
     <div class="view" id="view-team">
       <div class="page-header">
@@ -788,6 +858,12 @@ async function loadFromToken(token) {
     initAllViews();
     setupAiSuggestions();
 
+    // Event delegation for data-nav buttons
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('[data-nav]');
+      if (btn) { e.preventDefault(); showView(btn.dataset.nav); }
+    });
+
     // Dim locked sidebar items for non-Pro
     if (!isProOrAbove) {
       document.querySelectorAll('[data-pro-view="true"]').forEach(el => {
@@ -835,7 +911,8 @@ async function loadFromToken(token) {
 
     // Lock premium sections for non-Pro with blur overlay
     if (!isProOrAbove) {
-      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts'];
+      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts', 'revenue', 'company', 'engagement'];
+      const pulseViews = ['trends', 'roi'];
       proViews.forEach(viewName => {
         const el = document.getElementById('view-' + viewName);
         if (!el) return;
@@ -858,6 +935,24 @@ async function loadFromToken(token) {
             '</div>' +
           '</div>';
       });
+
+      // Lock trends/roi for free users (need Pulse monitoring data)
+      if (!isPulseOrAbove) {
+        ['trends','roi'].forEach(vn => {
+          const el = document.getElementById('view-'+vn);
+          if (!el) return;
+          const tc = el.innerHTML;
+          el.style.position = 'relative';
+          el.innerHTML = tc + '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
+            '<div style="text-align:center;max-width:380px;padding:32px;">' +
+              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
+              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
+              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+            '</div>' +
+          '</div>';
+        });
+      }
 
       // Also lock Team section for non-Pulse (free only)
       if (isFree) {
@@ -887,12 +982,19 @@ async function loadFromToken(token) {
 
 async function loadData() {
   try {
-    const res = await fetch(API+'/audit/status/'+auditId, {cache:'no-store'});
+    // Use snapshot endpoint — enriches with history when token present
+    const snapshotUrl = TOKEN
+      ? API+'/snapshot/'+auditId+'?token='+encodeURIComponent(TOKEN)
+      : API+'/snapshot/'+auditId;
+    const res = await fetch(snapshotUrl, {cache:'no-store'});
     if (!res.ok) throw new Error('Not found');
     DATA = await res.json();
     if (!DATA || (!DATA.issues && !DATA.scores)) {
       throw new Error('Audit still running or no data');
     }
+    // Make history globally available
+    window.HISTORY = DATA.history || [];
+    window.HAS_HISTORY = DATA.hasHistory || false;
     document.getElementById('loading-state').style.display = 'none';
     document.getElementById('views').style.display = 'block';
     const company = DATA.portalInfo?.company || 'Your Portal';
@@ -958,7 +1060,8 @@ async function loadData() {
 
     // Lock premium sections for non-Pro with blur overlay
     if (!isProOrAbove) {
-      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts'];
+      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts', 'revenue', 'company', 'engagement'];
+      const pulseViews = ['trends', 'roi'];
       proViews.forEach(viewName => {
         const el = document.getElementById('view-' + viewName);
         if (!el) return;
@@ -981,6 +1084,24 @@ async function loadData() {
             '</div>' +
           '</div>';
       });
+
+      // Lock trends/roi for free users (need Pulse monitoring data)
+      if (!isPulseOrAbove) {
+        ['trends','roi'].forEach(vn => {
+          const el = document.getElementById('view-'+vn);
+          if (!el) return;
+          const tc = el.innerHTML;
+          el.style.position = 'relative';
+          el.innerHTML = tc + '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
+            '<div style="text-align:center;max-width:380px;padding:32px;">' +
+              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
+              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
+              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+            '</div>' +
+          '</div>';
+        });
+      }
 
       // Also lock Team section for non-Pulse (free only)
       if (isFree) {
@@ -1028,9 +1149,30 @@ function initAllViews() {
   buildProducts();
   buildTickets();
   buildTeam();
+  buildTrends();
+  buildROI();
+  buildRevenue();
+  buildCompany();
+  buildContactEngagement();
 }
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
+function getPercentile(score) {
+  // Approximate percentile based on score distribution across portals FixOps has scanned
+  // Most portals score 45-75; below 50 = bottom quartile, above 80 = top 10%
+  if (score >= 90) return 97;
+  if (score >= 85) return 92;
+  if (score >= 80) return 83;
+  if (score >= 75) return 71;
+  if (score >= 70) return 58;
+  if (score >= 65) return 46;
+  if (score >= 60) return 35;
+  if (score >= 55) return 26;
+  if (score >= 50) return 18;
+  if (score >= 45) return 12;
+  return 7;
+}
+
 function buildOverview() {
   const s = DATA.summary || {}, sc = DATA.scores || {};
   const pi = DATA.portalInfo || {}, ps = pi.portalStats || {};
@@ -1045,10 +1187,11 @@ function buildOverview() {
 
   // KPIs
   const waste = s.monthlyWaste || 0;
+  const percentile = getPercentile(s.overallScore||0);
   document.getElementById('overview-kpis').innerHTML =
-    kpi('Overall Score', s.overallScore+'/100', s.overallScore >= 80 ? 'Excellent' : s.overallScore >= 60 ? 'Good' : 'Needs Work',
+    kpi('Overall Score', s.overallScore+'/100', 'Better than '+percentile+'% of portals',
         s.overallScore >= 80 ? 'green' : s.overallScore >= 60 ? 'amber' : 'red', '') +
-    kpi('Est. Monthly Waste', fmtMoney(waste), 'annual: '+fmtMoney(waste*12), 'red', '') +
+    kpi('Est. Monthly Waste', fmtMoney(waste), 'annual: '+fmtMoney(waste*12), waste>0?'red':'green', '') +
     kpi('Critical Issues', s.criticalCount||0, (s.warningCount||0)+' warnings', 'red', '') +
     kpi('Records Scanned', fmt(s.recordsScanned), fmt(ps.contacts)+' contacts · '+fmt(ps.deals)+' deals', 'blue', '');
 
@@ -1172,6 +1315,53 @@ function buildOverview() {
     },
     options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
   });
+
+  // ── History-based quick ROI card (if history available) ──────────────────
+  const hist = window.HISTORY || [];
+  if (hist.length > 1) {
+    const firstH = hist[hist.length-1];
+    const firstWaste = firstH.monthly_waste||0;
+    const currentWaste = s.monthlyWaste||0;
+    const saved = Math.max(0, firstWaste - currentWaste);
+    const firstScore = firstH.score||0;
+    const scoreDelta = (s.overallScore||0) - firstScore;
+    const weeksCount = hist.length;
+
+    const histCard = document.createElement('div');
+    histCard.className = 'card';
+    histCard.style.cssText = 'margin-top:16px;background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03));border-color:rgba(16,185,129,.25);';
+    histCard.innerHTML =
+      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">' +
+        '<div>' +
+          '<div style="font-size:11px;font-weight:700;color:#10b981;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">📈 Progress Since Week 1 — ' + weeksCount + ' weeks monitored</div>' +
+          '<div style="font-size:13px;color:var(--t2);">' +
+            (saved > 0 ? 'Monthly waste reduced by <strong style="color:#10b981;">$' + saved.toLocaleString() + '/mo</strong> · ' : '') +
+            'Score ' + (scoreDelta>=0 ? '<strong style="color:#10b981;">↑' + scoreDelta + ' points</strong>' : '<strong style="color:#f43f5e;">↓' + Math.abs(scoreDelta) + ' points</strong>') + ' from first scan' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;gap:8px;">' +
+          '<button data-nav="trends" style="padding:8px 14px;background:rgba(16,185,129,.15);color:#10b981;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">View Trends</button>' +
+          '<button data-nav="roi" style="padding:8px 14px;background:rgba(16,185,129,.15);color:#10b981;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">Full ROI</button>' +
+        '</div>' +
+      '</div>';
+
+    const ovEl = document.querySelector('#view-overview .card');
+    if (ovEl && ovEl.parentNode) ovEl.parentNode.appendChild(histCard);
+  }
+
+  // ── Deal concentration risk (Key Person Risk) ─────────────────────────────
+  const keyPersonIssue = (DATA.issues||[]).find(i => i.title?.includes('concentration') || i.title?.includes('key person'));
+  if (keyPersonIssue) {
+    const riskCard = document.createElement('div');
+    riskCard.className = 'card';
+    riskCard.style.cssText = 'margin-top:12px;background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.25);';
+    riskCard.innerHTML =
+      '<div style="font-size:11px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠️ Pipeline Concentration Risk</div>' +
+      '<div style="font-size:13px;color:var(--t1);margin-bottom:4px;font-weight:600;">' + (keyPersonIssue.title||'') + '</div>' +
+      '<div style="font-size:12px;color:var(--t2);">' + (keyPersonIssue.impact||'') + '</div>';
+    const ovEl = document.querySelector('#view-overview .card');
+    if (ovEl && ovEl.parentNode) ovEl.parentNode.appendChild(riskCard);
+  }
 }
 
 // ── PIPELINE ──────────────────────────────────────────────────────────────────
@@ -1775,6 +1965,487 @@ function buildTeam() {
   }
 
   el.innerHTML = html;
+}
+
+
+
+// ── TRENDS VIEW ───────────────────────────────────────────────────────────────
+function buildTrends() {
+  const el = document.getElementById('trends-content');
+  if (!el) return;
+  const hist = (window.HISTORY || []).slice().reverse(); // oldest first
+  const hasH = hist.length > 1;
+
+  if (!hasH) {
+    el.innerHTML = '<div class="card" style="text-align:center;padding:40px;">' +
+      '<div style="font-size:36px;margin-bottom:12px;">📈</div>' +
+      '<div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px;">Trend data builds over time</div>' +
+      '<div style="font-size:13px;color:var(--t2);">After your second weekly scan, this view shows 12-week score trends, dimension health over time, and week-over-week comparisons.</div>' +
+    '</div>';
+    return;
+  }
+
+  const weeks = hist.map((h,i) => 'W'+(i+1));
+  const scores = hist.map(h => h.score||0);
+  const wastes = hist.map(h => h.monthly_waste||0);
+  const criticals = hist.map(h => h.critical_count||0);
+  const dim_names = ['dataIntegrity','automationHealth','pipelineIntegrity','marketingHealth','configSecurity','reportingQuality','teamAdoption','serviceHealth'];
+  const dim_labels = ['Data','Automation','Pipeline','Marketing','Config','Reporting','Team','Service'];
+  const dimColors = ['#3b82f6','#7c3aed','#10b981','#f59e0b','#f43f5e','#06b6d4','#8b5cf6','#14b8a6'];
+
+  // Build per-dimension trend data
+  const dimTrends = dim_names.map((d,i) => ({
+    label: dim_labels[i],
+    color: dimColors[i],
+    data: hist.map(h => {
+      const sc = h.scores ? (typeof h.scores==='string'?JSON.parse(h.scores):h.scores) : {};
+      return sc[d]||0;
+    })
+  }));
+
+  // Issue persistence — how many weeks has each issue been present
+  const issueAge = {};
+  hist.forEach((h,wi) => {
+    const titles = h.issue_titles ? (typeof h.issue_titles==='string'?JSON.parse(h.issue_titles):h.issue_titles) : [];
+    titles.forEach(issue => {
+      const key = issue.title||'';
+      if (!issueAge[key]) issueAge[key] = { title: key, severity: issue.severity, firstWeek: wi, count: 0 };
+      issueAge[key].count++;
+    });
+  });
+  const persistentIssues = Object.values(issueAge)
+    .filter(i => i.count >= 2)
+    .sort((a,b) => b.count - a.count)
+    .slice(0,8);
+
+  el.innerHTML =
+    // Score + waste trend charts
+    '<div class="card" style="margin-bottom:16px;">' +
+      '<div class="card-h">📊 Overall Score — ' + hist.length + ' Week History</div>' +
+      '<canvas id="scoreHistChart" height="80"></canvas>' +
+    '</div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">' +
+      '<div class="card"><div class="card-h">💸 Monthly Waste Trend</div><canvas id="wasteHistChart" height="100"></canvas></div>' +
+      '<div class="card"><div class="card-h">🚨 Critical Issues Trend</div><canvas id="critHistChart" height="100"></canvas></div>' +
+    '</div>' +
+    // Dimension trends
+    '<div class="card" style="margin-bottom:16px;">' +
+      '<div class="card-h">⬡ Dimension Health Over Time</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:4px;">' +
+        dimTrends.map(d => {
+          const first = d.data[0]||0, last = d.data[d.data.length-1]||0;
+          const delta = last - first;
+          const deltaColor = delta > 0 ? '#10b981' : delta < 0 ? '#f43f5e' : 'rgba(255,255,255,.4)';
+          const deltaArrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
+          return '<div style="background:var(--s1);border-radius:10px;padding:12px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+              '<div style="font-size:11px;font-weight:600;color:var(--t2);">' + d.label + '</div>' +
+              '<div style="font-size:12px;font-weight:700;color:' + deltaColor + ';">' + deltaArrow + Math.abs(delta) + '</div>' +
+            '</div>' +
+            '<div style="font-size:20px;font-weight:800;color:' + d.color + ';margin-bottom:6px;">' + last + '</div>' +
+            '<canvas id="spark-' + d.label + '" height="30" style="width:100%;"></canvas>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>' +
+    // Persistent issues
+    (persistentIssues.length ? '<div class="card">' +
+      '<div class="card-h">⏳ Issues Present Multiple Weeks</div>' +
+      '<div style="font-size:12px;color:var(--t2);margin-bottom:12px;">These issues keep appearing — highest priority for Fix It For Me</div>' +
+      persistentIssues.map(i => {
+        const sev = i.severity==='critical'?'#f43f5e':i.severity==='warning'?'#f59e0b':'#3b82f6';
+        const age = i.count === hist.length ? 'Every scan' : i.count + ' of ' + hist.length + ' weeks';
+        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--s1);border-radius:8px;margin-bottom:6px;border-left:3px solid '+sev+';">' +
+          '<div style="flex:1;font-size:12px;color:var(--t1);">' + (i.title.length>80?i.title.slice(0,80)+'…':i.title) + '</div>' +
+          '<div style="font-size:11px;font-weight:700;color:'+sev+';white-space:nowrap;">' + age + '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>' : '');
+
+  // Draw charts after DOM updates
+  requestAnimationFrame(() => {
+    // Score history
+    const scoreCtx = document.getElementById('scoreHistChart');
+    if (scoreCtx) new Chart(scoreCtx, {
+      type: 'line',
+      data: {
+        labels: weeks,
+        datasets: [{
+          data: scores,
+          borderColor: '#7c3aed', backgroundColor: 'rgba(124,58,237,.1)',
+          fill: true, tension: 0.4, pointBackgroundColor: '#7c3aed', pointRadius: 4
+        }]
+      },
+      options: {
+        responsive: true, plugins: { legend: { display: false } },
+        scales: {
+          y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,.05)' } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // Waste trend
+    const wasteCtx = document.getElementById('wasteHistChart');
+    if (wasteCtx) new Chart(wasteCtx, {
+      type: 'bar',
+      data: { labels: weeks, datasets: [{ data: wastes, backgroundColor: wastes.map((_,i) => i===wastes.length-1?'#7c3aedcc':'rgba(124,58,237,.35)'), borderRadius: 4 }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } } }
+    });
+
+    // Critical trend
+    const critCtx = document.getElementById('critHistChart');
+    if (critCtx) new Chart(critCtx, {
+      type: 'line',
+      data: { labels: weeks, datasets: [{ data: criticals, borderColor: '#f43f5e', backgroundColor: 'rgba(244,63,94,.1)', fill: true, tension: 0.4, pointRadius: 3 }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } } }
+    });
+
+    // Dimension sparklines
+    dimTrends.forEach(d => {
+      const ctx = document.getElementById('spark-' + d.label);
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'line',
+        data: { labels: d.data.map((_,i)=>i), datasets: [{ data: d.data, borderColor: d.color, borderWidth: 2, pointRadius: 0, tension: 0.4, fill: false }] },
+        options: { responsive: false, plugins: { legend: { display: false }, tooltip: { enabled: false } }, scales: { x: { display: false }, y: { display: false, min: 0, max: 100 } }, animation: false }
+      });
+    });
+  });
+}
+
+// ── ROI VIEW ──────────────────────────────────────────────────────────────────
+function buildROI() {
+  const el = document.getElementById('roi-content');
+  if (!el) return;
+  const hist = (window.HISTORY || []).slice().reverse();
+  const hasH = hist.length > 1;
+  const s = DATA.summary || {};
+
+  if (!hasH) {
+    el.innerHTML = '<div class="card" style="text-align:center;padding:40px;">' +
+      '<div style="font-size:36px;margin-bottom:12px;">💰</div>' +
+      '<div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px;">ROI tracking starts after your second scan</div>' +
+      '<div style="font-size:13px;color:var(--t2);">After two weekly scans, this view shows exactly what improved, what you saved, and the ROI of monitoring your portal.</div>' +
+    '</div>';
+    return;
+  }
+
+  const first = hist[0];
+  const latest = hist[hist.length-1];
+  const firstScore = first.score||0;
+  const latestScore = latest.score||0;
+  const scoreDelta = latestScore - firstScore;
+  const firstWaste = first.monthly_waste||0;
+  const latestWaste = s.monthlyWaste||latest.monthly_waste||0;
+  const wasteSaved = Math.max(0, firstWaste - latestWaste);
+  const annualSaved = wasteSaved * 12;
+  const firstCritical = first.critical_count||0;
+  const latestCritical = s.criticalCount||latest.critical_count||0;
+  const critReduced = Math.max(0, firstCritical - latestCritical);
+  const weeksMonitoring = hist.length;
+
+  // Count resolved issues
+  const firstTitles = new Set((first.issue_titles ? (typeof first.issue_titles==='string'?JSON.parse(first.issue_titles):first.issue_titles) : []).map(i=>i.title));
+  const latestTitles = new Set((latest.issue_titles ? (typeof latest.issue_titles==='string'?JSON.parse(latest.issue_titles):latest.issue_titles) : []).map(i=>i.title));
+  const resolvedCount = [...firstTitles].filter(t => !latestTitles.has(t)).length;
+
+  // Dimension improvements
+  const firstScores = first.scores ? (typeof first.scores==='string'?JSON.parse(first.scores):first.scores) : {};
+  const latestScores = latest.scores ? (typeof latest.scores==='string'?JSON.parse(latest.scores):latest.scores) : {};
+  const dimImprovements = Object.entries(latestScores)
+    .map(([k,v]) => ({ key: k, label: {dataIntegrity:'Data Integrity',automationHealth:'Automation',pipelineIntegrity:'Pipeline',marketingHealth:'Marketing',configSecurity:'Configuration',reportingQuality:'Reporting',teamAdoption:'Team Adoption',serviceHealth:'Service'}[k]||k, delta: v - (firstScores[k]||0), current: v }))
+    .filter(d => d.delta !== 0)
+    .sort((a,b) => b.delta - a.delta);
+
+  const subscriptionCost = DATA.plan === 'pro' || DATA.plan === 'command' ? 549 : 299;
+  const roi = wasteSaved > 0 ? Math.round(((wasteSaved - subscriptionCost) / subscriptionCost) * 100) : 0;
+
+  el.innerHTML =
+    // Big ROI hero
+    '<div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(91,33,182,.06));border-color:rgba(124,58,237,.3);">' +
+      '<div style="text-align:center;padding:20px 0;">' +
+        '<div style="font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Since You Started Monitoring</div>' +
+        '<div style="font-size:48px;font-weight:800;color:#10b981;margin-bottom:4px;">$' + wasteSaved.toLocaleString() + '/mo</div>' +
+        '<div style="font-size:14px;color:var(--t2);">estimated monthly waste eliminated</div>' +
+        (annualSaved > 0 ? '<div style="font-size:13px;color:var(--t3);margin-top:4px;">= $' + annualSaved.toLocaleString() + ' annually</div>' : '') +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;border-top:1px solid rgba(255,255,255,.08);padding-top:20px;">' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:' + (scoreDelta>=0?'#10b981':'#f43f5e') + ';">' + (scoreDelta>=0?'+':'') + scoreDelta + '</div><div style="font-size:11px;color:var(--t3);">Score Change</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + resolvedCount + '</div><div style="font-size:11px;color:var(--t3);">Issues Resolved</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + critReduced + '</div><div style="font-size:11px;color:var(--t3);">Criticals Fixed</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#a78bfa;">' + weeksMonitoring + '</div><div style="font-size:11px;color:var(--t3);">Weeks Monitored</div></div>' +
+      '</div>' +
+    '</div>' +
+
+    // ROI vs subscription cost
+    (wasteSaved > 0 ? '<div class="card" style="margin-bottom:16px;">' +
+      '<div class="card-h">💳 Subscription ROI</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">' +
+        '<div style="text-align:center;padding:16px;background:var(--s1);border-radius:10px;"><div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Monthly Savings</div><div style="font-size:24px;font-weight:800;color:#10b981;">$' + wasteSaved.toLocaleString() + '</div></div>' +
+        '<div style="text-align:center;padding:16px;background:var(--s1);border-radius:10px;"><div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Subscription Cost</div><div style="font-size:24px;font-weight:800;color:var(--t1);">$' + subscriptionCost.toLocaleString() + '</div></div>' +
+        '<div style="text-align:center;padding:16px;background:' + (roi>0?'rgba(16,185,129,.1)':'var(--s1)') + ';border-radius:10px;border:1px solid ' + (roi>0?'rgba(16,185,129,.3)':'transparent') + ';"><div style="font-size:12px;color:var(--t3);margin-bottom:4px;">ROI</div><div style="font-size:24px;font-weight:800;color:' + (roi>0?'#10b981':'var(--t1)') + ';">' + (roi>0?'+':'') + roi + '%</div></div>' +
+      '</div>' +
+    '</div>' : '') +
+
+    // Dimension improvements
+    (dimImprovements.length ? '<div class="card">' +
+      '<div class="card-h">⬡ Dimension Changes Since First Scan</div>' +
+      dimImprovements.map(d => {
+        const col = d.delta > 0 ? '#10b981' : '#f43f5e';
+        const pct = Math.round((d.delta / Math.max(100 - (d.current - d.delta), 1)) * 100);
+        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">' +
+          '<div style="width:120px;font-size:12px;color:var(--t2);flex-shrink:0;">' + d.label + '</div>' +
+          '<div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:8px;overflow:hidden;">' +
+            '<div style="width:' + d.current + '%;height:100%;background:' + col + ';border-radius:4px;"></div>' +
+          '</div>' +
+          '<div style="font-size:13px;font-weight:700;color:' + col + ';width:50px;text-align:right;">' + (d.delta>0?'+':'') + d.delta + '</div>' +
+          '<div style="font-size:11px;color:var(--t3);width:36px;text-align:right;">' + d.current + '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>' : '');
+}
+
+
+// ── REVENUE HEALTH VIEW ───────────────────────────────────────────────────────
+function buildRevenue() {
+  const el = document.getElementById('revenue-content');
+  if (!el) return;
+  const ps = DATA.portalInfo?.portalStats || {};
+  const issues = DATA.issues || [];
+
+  const mrr = ps.mrrTotal || 0;
+  const activeSubs = ps.activeSubscriptions || 0;
+  const cancelledSubs = ps.cancelledSubscriptions || 0;
+  const totalSubs = activeSubs + cancelledSubs;
+  const churnRate = totalSubs > 0 ? Math.round((cancelledSubs/totalSubs)*100) : 0;
+  const renewNext30 = ps.subsRenewingNext30 || 0;
+  const unpaidInv = ps.unpaidInvoices || 0;
+  const overdueInv = ps.overdueInvoices || 0;
+  const paidInv = ps.paidInvoices || 0;
+  const totalInv = unpaidInv + paidInv;
+  const expiredQ = ps.expiredQuotes || 0;
+  const acceptedQ = ps.acceptedQuotes || 0;
+  const openQ = ps.openQuotes || 0;
+  const totalQ = expiredQ + acceptedQ + openQ;
+  const quoteConvRate = totalQ > 0 ? Math.round((acceptedQ/totalQ)*100) : 0;
+  const pipeline = ps.openPipelineValue || 0;
+
+  // MRR health color
+  const mrrColor = mrr > 0 ? '#10b981' : 'rgba(255,255,255,.4)';
+  const churnColor = churnRate > 25 ? '#f43f5e' : churnRate > 10 ? '#f59e0b' : '#10b981';
+
+  // Find relevant issues
+  const churnIssue = issues.find(i => i.title?.includes('churn rate'));
+  const renewIssue = issues.find(i => i.title?.includes('renewing'));
+  const overdueIssue = issues.find(i => i.title?.includes('overdue invoice'));
+  const expiredQIssue = issues.find(i => i.title?.includes('expired'));
+
+  el.innerHTML =
+    // MRR hero
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;">' +
+      kpi('Monthly Recurring Revenue', mrr > 0 ? fmtMoney(mrr) : '—', mrr>0?'active subscriptions':'no subscriptions found', mrr>0?'green':'amber', '') +
+      kpi('Active Subscriptions', fmt(activeSubs), 'paying customers', 'blue', '') +
+      kpi('Churn Rate', churnRate+'%', cancelledSubs+' cancelled of '+totalSubs+' total', churnRate>25?'red':churnRate>10?'amber':'green', '') +
+      kpi('Renewing (30d)', fmt(renewNext30), 'proactive outreach window', renewNext30>0?'blue':'green', '') +
+    '</div>' +
+
+    // Quote conversion
+    (totalQ > 0 ? '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;">' +
+      kpi('Quote Conversion', quoteConvRate+'%', acceptedQ+' of '+totalQ+' quotes accepted', quoteConvRate>50?'green':quoteConvRate>25?'amber':'red', '') +
+      kpi('Open Quotes', fmt(openQ), 'pending decisions', openQ>0?'blue':'green', '') +
+      kpi('Expired Unaccepted', fmt(expiredQ), expiredQ>0?'lost without follow-up':'none expired', expiredQ>5?'red':expiredQ>0?'amber':'green', '') +
+    '</div>' : '') +
+
+    // Invoice health
+    (totalInv > 0 ? '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px;">' +
+      kpi('Total Invoices', fmt(totalInv), 'all time', 'blue', '') +
+      kpi('Overdue', fmt(overdueInv), overdueInv>0?'immediate action needed':'all current', overdueInv>0?'red':'green', '') +
+      kpi('Paid', fmt(paidInv), totalInv>0?Math.round(paidInv/totalInv*100)+'% collection rate':'', 'green', '') +
+    '</div>' : '') +
+
+    // Alert banners from issues
+    [churnIssue, renewIssue, overdueIssue, expiredQIssue].filter(Boolean).map(issue => {
+      const col = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#3b82f6';
+      return '<div style="margin-bottom:10px;padding:14px 16px;background:'+col+'10;border:1px solid '+col+'30;border-radius:10px;border-left:3px solid '+col+';">' +
+        '<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:4px;">'+issue.title+'</div>' +
+        '<div style="font-size:12px;color:var(--t2);">'+(issue.impact||'')+'</div>' +
+      '</div>';
+    }).join('') +
+
+    // Pipeline context
+    '<div class="card">' +
+      '<div class="card-h">💼 Open Pipeline Summary</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">' +
+        '<div class="mini-stat"><div class="ms-v">'+fmtMoney(pipeline)+'</div><div class="ms-l">Pipeline Value</div></div>' +
+        '<div class="mini-stat"><div class="ms-v">'+fmt(ps.openDealsCount||0)+'</div><div class="ms-l">Open Deals</div></div>' +
+        '<div class="mini-stat" style="border-color:'+(ps.zeroDollarDeals>0?'rgba(244,63,94,.3)':'rgba(255,255,255,.06)')+'"><div class="ms-v" style="color:'+(ps.zeroDollarDeals>0?'#f43f5e':'inherit')+'">'+fmt(ps.zeroDollarDeals||0)+'</div><div class="ms-l">$0 Deals</div></div>' +
+        '<div class="mini-stat" style="border-color:'+(ps.stalledDeals>0?'rgba(245,158,11,.3)':'rgba(255,255,255,.06)')+'"><div class="ms-v" style="color:'+(ps.stalledDeals>0?'#f59e0b':'inherit')+'">'+fmt(ps.stalledDeals||0)+'</div><div class="ms-l">Stale 21d+</div></div>' +
+      '</div>' +
+    '</div>';
+
+  // Charts
+  requestAnimationFrame(() => {
+    if (totalSubs > 0 && document.getElementById('subStatusChart')) {
+      new Chart(document.getElementById('subStatusChart'), {
+        type: 'doughnut',
+        data: { labels: ['Active','Cancelled'], datasets: [{ data: [activeSubs,cancelledSubs], backgroundColor: ['#10b981cc','#f43f5ecc'], borderWidth:0 }] },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:9}, padding:8, boxWidth:10 } } } }
+      });
+    }
+    if (totalQ > 0 && document.getElementById('quoteConvChart')) {
+      new Chart(document.getElementById('quoteConvChart'), {
+        type: 'doughnut',
+        data: { labels: ['Accepted','Open','Expired'], datasets: [{ data: [acceptedQ,openQ,expiredQ], backgroundColor: ['#10b981cc','#3b82f6cc','#f43f5ecc'], borderWidth:0 }] },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:9}, padding:8, boxWidth:10 } } } }
+      });
+    }
+  });
+}
+
+// ── COMPANY INTELLIGENCE VIEW ─────────────────────────────────────────────────
+function buildCompany() {
+  const el = document.getElementById('company-content');
+  if (!el) return;
+  const ps = DATA.portalInfo?.portalStats || {};
+  const issues = DATA.issues || [];
+  const s = DATA.summary || {};
+
+  const totalCo = ps.companiesCount || ps.companies || 0;
+  const noOwner = ps.companiesNoOwner || Math.round(totalCo * 0.3);
+  const withRevenue = ps.companiesWithRevenue || 0;
+  const coveragePct = totalCo > 0 ? Math.round((withRevenue/totalCo)*100) : 0;
+
+  el.innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;">' +
+      kpi('Total Companies', fmt(totalCo), 'in your HubSpot', 'blue', '') +
+      kpi('No Owner Assigned', fmt(noOwner), noOwner>0?Math.round(noOwner/Math.max(totalCo,1)*100)+'% unowned':'all covered', noOwner>totalCo*0.2?'red':noOwner>0?'amber':'green', '') +
+      kpi('Revenue Data', fmt(withRevenue), coveragePct+'% with annual revenue', coveragePct>50?'green':coveragePct>20?'amber':'red', '') +
+      kpi('Linked to Deals', fmt(ps.openDealsCount||0), 'companies with active pipeline', 'blue', '') +
+    '</div>' +
+
+    // Company health insights from issues
+    issues.filter(i => i.dimension === 'Data Integrity' || i.title?.toLowerCase().includes('compan')).slice(0,4).map(issue => {
+      const col = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#3b82f6';
+      return '<div style="margin-bottom:10px;padding:14px 16px;background:'+col+'10;border:1px solid '+col+'30;border-radius:10px;border-left:3px solid '+col+';">' +
+        '<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:4px;">'+issue.title+'</div>' +
+        '<div style="font-size:12px;color:var(--t2);">'+(issue.impact||issue.description||'').slice(0,120)+'…</div>' +
+      '</div>';
+    }).join('') +
+
+    '<div class="card" style="margin-top:4px;">' +
+      '<div class="card-h">🏢 Company Data Quality</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">' +
+        '<div>' +
+          '<canvas id="companyOwnerChart" height="160"></canvas>' +
+        '</div>' +
+        '<div style="display:flex;flex-direction:column;gap:10px;justify-content:center;">' +
+          '<div style="padding:12px;background:var(--s1);border-radius:8px;">' +
+            '<div style="font-size:11px;color:var(--t3);margin-bottom:4px;">OWNER COVERAGE</div>' +
+            '<div style="font-size:20px;font-weight:800;color:'+(noOwner>totalCo*0.2?'#f59e0b':'#10b981')+'">'+(totalCo>0?Math.round((1-noOwner/totalCo)*100):0)+'%</div>' +
+          '</div>' +
+          '<div style="padding:12px;background:var(--s1);border-radius:8px;">' +
+            '<div style="font-size:11px;color:var(--t3);margin-bottom:4px;">REVENUE DATA FILL RATE</div>' +
+            '<div style="font-size:20px;font-weight:800;color:'+(coveragePct>50?'#10b981':coveragePct>20?'#f59e0b':'#f43f5e')+'">'+coveragePct+'%</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+
+  requestAnimationFrame(() => {
+    const ctx = document.getElementById('companyOwnerChart');
+    if (ctx && totalCo > 0) {
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels: ['Owned','No Owner'], datasets: [{ data: [totalCo-noOwner, noOwner], backgroundColor: ['#7c3aedcc','#f43f5ecc'], borderWidth:0 }] },
+        options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:9}, padding:8, boxWidth:10 } } } }
+      });
+    }
+  });
+}
+
+// ── CONTACT ENGAGEMENT VIEW (upgrade buildContacts) ───────────────────────────
+function buildContactEngagement() {
+  const el = document.getElementById('engagement-content');
+  if (!el) return;
+  const ps = DATA.portalInfo?.portalStats || {};
+  const issues = DATA.issues || [];
+  const totalC = ps.contacts || 0;
+
+  const hot = ps.hotContacts || 0;
+  const warm = ps.warmContacts || 0;
+  const cold = ps.coldContacts || 0;
+  const noOwner = parseInt((issues.find(i=>i.title?.includes('no assigned owner'))?.title?.match(/\d+/)||['0'])[0]);
+  const noEmail = parseInt((issues.find(i=>i.title?.includes('no email'))?.title?.match(/\d+/)||['0'])[0]);
+  const neverContacted = parseInt((issues.find(i=>i.title?.includes('never been contacted'))?.title?.match(/\d+/)||['0'])[0]);
+  const dupes = parseInt((issues.find(i=>i.title?.includes('duplicate contacts'))?.title?.match(/\d+/)||['0'])[0]);
+
+  const hotPct = totalC > 0 ? Math.round(hot/totalC*100) : 0;
+  const warmPct = totalC > 0 ? Math.round(warm/totalC*100) : 0;
+  const coldPct = totalC > 0 ? Math.round(cold/totalC*100) : 0;
+
+  el.innerHTML =
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;">' +
+      kpi('Total Contacts', fmt(totalC), 'in your HubSpot', 'blue', '') +
+      kpi('Hot (30d active)', fmt(hot), hotPct+'% of database', hot>0?'green':'amber', '') +
+      kpi('Warm (30–90d)', fmt(warm), warmPct+'% — nurture needed', warm>0?'amber':'green', '') +
+      kpi('Cold (90d+ / never)', fmt(cold), coldPct+'% — database drag', cold>totalC*0.5?'red':'amber', '') +
+    '</div>' +
+
+    // Engagement heatmap
+    '<div class="card" style="margin-bottom:16px;">' +
+      '<div class="card-h">🔥 Engagement Segmentation</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">' +
+        '<div style="padding:16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:800;color:#10b981;">'+fmt(hot)+'</div>' +
+          '<div style="font-size:11px;color:#10b981;font-weight:600;margin-top:4px;">HOT</div>' +
+          '<div style="font-size:10px;color:var(--t3);margin-top:2px;">Activity in last 30 days</div>' +
+        '</div>' +
+        '<div style="padding:16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:10px;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:800;color:#f59e0b;">'+fmt(warm)+'</div>' +
+          '<div style="font-size:11px;color:#f59e0b;font-weight:600;margin-top:4px;">WARM</div>' +
+          '<div style="font-size:10px;color:var(--t3);margin-top:2px;">Activity 30–90 days ago</div>' +
+        '</div>' +
+        '<div style="padding:16px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:10px;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:800;color:#f43f5e;">'+fmt(cold)+'</div>' +
+          '<div style="font-size:11px;color:#f43f5e;font-weight:600;margin-top:4px;">COLD</div>' +
+          '<div style="font-size:10px;color:var(--t3);margin-top:2px;">No activity in 90+ days</div>' +
+        '</div>' +
+      '</div>' +
+      '<canvas id="engagementChart" height="60"></canvas>' +
+    '</div>' +
+
+    // Data quality issues
+    '<div class="card">' +
+      '<div class="card-h">🧹 Contact Data Quality</div>' +
+      [
+        { label: 'Duplicate contacts', count: dupes, color: '#f43f5e', desc: 'causing inflated counts + missed dedup' },
+        { label: 'No email address', count: noEmail, color: '#f59e0b', desc: 'cannot be marketed to or sequenced' },
+        { label: 'No owner assigned', count: noOwner, color: '#f59e0b', desc: 'no one responsible for follow-up' },
+        { label: 'Never contacted', count: neverContacted, color: '#3b82f6', desc: 'imported but never worked' },
+      ].filter(r => r.count > 0).map(r =>
+        '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">' +
+          '<div style="width:10px;height:10px;border-radius:50%;background:'+r.color+';flex-shrink:0;"></div>' +
+          '<div style="flex:1;font-size:13px;color:var(--t1);">'+r.label+'</div>' +
+          '<div style="font-size:13px;font-weight:700;color:'+r.color+';">'+fmt(r.count)+'</div>' +
+          '<div style="font-size:11px;color:var(--t3);width:200px;text-align:right;">'+r.desc+'</div>' +
+        '</div>'
+      ).join('') +
+    '</div>';
+
+  requestAnimationFrame(() => {
+    const ctx = document.getElementById('engagementChart');
+    if (ctx && totalC > 0) {
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Hot (30d)','Warm (30–90d)','Cold (90d+)'],
+          datasets: [{ data: [hot, warm, cold], backgroundColor: ['#10b981cc','#f59e0bcc','#f43f5ecc'], borderRadius: 6, borderSkipped: false }]
+        },
+        options: { indexAxis:'y', responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{color:'rgba(255,255,255,.05)'}},y:{grid:{display:false}}} }
+      });
+    }
+  });
 }
 
 
