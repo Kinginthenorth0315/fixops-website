@@ -337,6 +337,25 @@ nav {
   .kpi-row { grid-template-columns: 1fr 1fr; }
   .ai-input-row { flex-direction: column; }
 }
+
+  /* Plan tier lock overlays */
+  .view { position: relative; }
+  .pro-lock-overlay {
+    position: absolute; inset: 0;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    background: rgba(8,6,26,.75);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; z-index: 10;
+  }
+  [data-pro-view="true"].locked-sidebar {
+    opacity: .5;
+    pointer-events: none;
+  }
+  [data-pro-view="true"].locked-sidebar::after {
+    content: ' 🔒';
+    font-size: 10px;
+  }
 </style>
 </head>
 <body>
@@ -367,19 +386,19 @@ nav {
       <div class="sidebar-item" onclick="showView('pipeline')">
         <span class="si-icon">📊</span> Pipeline Health
       </div>
-      <div class="sidebar-item" onclick="showView('velocity')">
+      <div class="sidebar-item" onclick="showView('velocity')" class="sidebar-item" data-pro-view="true">
         <span class="si-icon">⚡</span> Deal Velocity
       </div>
-      <div class="sidebar-item" onclick="showView('forecast')">
+      <div class="sidebar-item" onclick="showView('forecast')" class="sidebar-item" data-pro-view="true">
         <span class="si-icon">🎯</span> Forecast Analysis
       </div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Contacts</div>
-      <div class="sidebar-item" onclick="showView('funnel')">
+      <div class="sidebar-item" onclick="showView('funnel')" class="sidebar-item" data-pro-view="true">
         <span class="si-icon">🔽</span> Lifecycle Funnel
       </div>
-      <div class="sidebar-item" onclick="showView('contacts')">
+      <div class="sidebar-item" onclick="showView('contacts')" class="sidebar-item" data-pro-view="true">
         <span class="si-icon">👥</span> Contact Intelligence
       </div>
     </div>
@@ -403,7 +422,7 @@ nav {
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">AI</div>
-      <div class="sidebar-item" onclick="showView('ai')">
+      <div class="sidebar-item" onclick="showView('ai')" class="sidebar-item" data-pro-view="true">
         <span class="si-icon">✦</span> AI Report Builder
         <span class="si-badge">NEW</span>
       </div>
@@ -420,6 +439,9 @@ nav {
     </div>
 
     <!-- Views -->
+    <!-- Plan banner - shown for free/pulse users -->
+    <div id="plan-banner" style="display:none;margin:0 0 16px;padding:12px 16px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:10px;"></div>
+
     <div id="views" style="display:none">
 
       <!-- OVERVIEW -->
@@ -753,8 +775,108 @@ async function loadFromToken(token) {
     const company = DATA.portalInfo?.company || data.customer?.company || 'Your Portal';
     document.getElementById('portal-badge').textContent = company + ' · Snapshot';
     document.title = 'FixOps Intelligence — '+company;
+    // Tiered access — everyone sees snapshot, Pro/Agency unlock premium sections
+    const auditPlan = DATA.plan || 'free';
+    const isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
+    const isPulseOrAbove = ['pulse','pro','command','pro-audit','deep'].includes(auditPlan);
+    const isFree = !isPulseOrAbove;
+
+    // Store globally so views can check
+    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
+
+    // Show the dashboard for everyone
     initAllViews();
     setupAiSuggestions();
+
+    // Dim locked sidebar items for non-Pro
+    if (!isProOrAbove) {
+      document.querySelectorAll('[data-pro-view="true"]').forEach(el => {
+        el.classList.add('locked-sidebar');
+        el.style.opacity = '0.45';
+        el.style.cursor = 'default';
+        // Re-enable click so they can still see the blur overlay
+        el.style.pointerEvents = 'auto';
+        el.style.cursor = 'pointer';
+      });
+      // Dim team sidebar for free users
+      if (isFree) {
+        const teamItem = document.querySelector(".sidebar-item[onclick*='team']");
+        if (teamItem) {
+          teamItem.style.opacity = '0.45';
+        }
+      }
+    }
+
+    // Inject plan banner at top of main content
+    const bannerEl = document.getElementById('plan-banner');
+    if (bannerEl) {
+      if (isFree) {
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+            '<div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
+              '<div style="font-size:11px;color:var(--t3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
+            '</div>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
+          '</div>';
+        bannerEl.style.display = 'block';
+      } else if (isPulseOrAbove && !isProOrAbove) {
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+            '<div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
+              '<div style="font-size:11px;color:var(--t3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
+            '</div>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
+          '</div>';
+        bannerEl.style.display = 'block';
+      }
+    }
+
+    // Lock premium sections for non-Pro with blur overlay
+    if (!isProOrAbove) {
+      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts'];
+      proViews.forEach(viewName => {
+        const el = document.getElementById('view-' + viewName);
+        if (!el) return;
+        // Wrap content in blur
+        const existingContent = el.innerHTML;
+        el.style.position = 'relative';
+        el.innerHTML = existingContent +
+          '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
+            '<div style="text-align:center;max-width:380px;padding:32px;">' +
+              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
+              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pro Feature</div>' +
+              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">' +
+                (viewName === 'ai' ? 'AI Report Builder — ask any question about your HubSpot data in plain English. Powered by Claude.' :
+                 viewName === 'funnel' ? 'Lifecycle Funnel — cross-object funnel HubSpot cannot build without Enterprise.' :
+                 viewName === 'velocity' ? 'Deal Velocity — track how fast deals move through each stage.' :
+                 viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
+                 'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
+              '</div>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
+            '</div>' +
+          '</div>';
+      });
+
+      // Also lock Team section for non-Pulse (free only)
+      if (isFree) {
+        const teamEl = document.getElementById('view-team');
+        if (teamEl) {
+          const tc = teamEl.innerHTML;
+          teamEl.style.position = 'relative';
+          teamEl.innerHTML = tc +
+            '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
+              '<div style="text-align:center;max-width:380px;padding:32px;">' +
+                '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
+                '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
+                '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
+                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+              '</div>' +
+            '</div>';
+        }
+      }
+    }
   } catch(e) {
     document.getElementById('loading-state').innerHTML =
       '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
@@ -776,8 +898,108 @@ async function loadData() {
     const company = DATA.portalInfo?.company || 'Your Portal';
     document.getElementById('portal-badge').textContent = company + ' · Snapshot';
     document.title = 'FixOps Intelligence — '+company;
+    // Tiered access — everyone sees snapshot, Pro/Agency unlock premium sections
+    const auditPlan = DATA.plan || 'free';
+    const isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
+    const isPulseOrAbove = ['pulse','pro','command','pro-audit','deep'].includes(auditPlan);
+    const isFree = !isPulseOrAbove;
+
+    // Store globally so views can check
+    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
+
+    // Show the dashboard for everyone
     initAllViews();
     setupAiSuggestions();
+
+    // Dim locked sidebar items for non-Pro
+    if (!isProOrAbove) {
+      document.querySelectorAll('[data-pro-view="true"]').forEach(el => {
+        el.classList.add('locked-sidebar');
+        el.style.opacity = '0.45';
+        el.style.cursor = 'default';
+        // Re-enable click so they can still see the blur overlay
+        el.style.pointerEvents = 'auto';
+        el.style.cursor = 'pointer';
+      });
+      // Dim team sidebar for free users
+      if (isFree) {
+        const teamItem = document.querySelector(".sidebar-item[onclick*='team']");
+        if (teamItem) {
+          teamItem.style.opacity = '0.45';
+        }
+      }
+    }
+
+    // Inject plan banner at top of main content
+    const bannerEl = document.getElementById('plan-banner');
+    if (bannerEl) {
+      if (isFree) {
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+            '<div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
+              '<div style="font-size:11px;color:var(--t3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
+            '</div>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
+          '</div>';
+        bannerEl.style.display = 'block';
+      } else if (isPulseOrAbove && !isProOrAbove) {
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+            '<div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
+              '<div style="font-size:11px;color:var(--t3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
+            '</div>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
+          '</div>';
+        bannerEl.style.display = 'block';
+      }
+    }
+
+    // Lock premium sections for non-Pro with blur overlay
+    if (!isProOrAbove) {
+      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts'];
+      proViews.forEach(viewName => {
+        const el = document.getElementById('view-' + viewName);
+        if (!el) return;
+        // Wrap content in blur
+        const existingContent = el.innerHTML;
+        el.style.position = 'relative';
+        el.innerHTML = existingContent +
+          '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
+            '<div style="text-align:center;max-width:380px;padding:32px;">' +
+              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
+              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pro Feature</div>' +
+              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">' +
+                (viewName === 'ai' ? 'AI Report Builder — ask any question about your HubSpot data in plain English. Powered by Claude.' :
+                 viewName === 'funnel' ? 'Lifecycle Funnel — cross-object funnel HubSpot cannot build without Enterprise.' :
+                 viewName === 'velocity' ? 'Deal Velocity — track how fast deals move through each stage.' :
+                 viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
+                 'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
+              '</div>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
+            '</div>' +
+          '</div>';
+      });
+
+      // Also lock Team section for non-Pulse (free only)
+      if (isFree) {
+        const teamEl = document.getElementById('view-team');
+        if (teamEl) {
+          const tc = teamEl.innerHTML;
+          teamEl.style.position = 'relative';
+          teamEl.innerHTML = tc +
+            '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
+              '<div style="text-align:center;max-width:380px;padding:32px;">' +
+                '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
+                '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
+                '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
+                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+              '</div>' +
+            '</div>';
+        }
+      }
+    }
   } catch(e) {
     document.getElementById('loading-state').innerHTML =
       '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
@@ -1355,130 +1577,110 @@ function buildProducts() {
 // ── TICKETS ───────────────────────────────────────────────────────────────────
 function buildTickets() {
   const ps = DATA.portalInfo?.portalStats || {};
+  const issues = DATA.issues || [];
   const totalTickets = ps.tickets || 0;
-  const slaIssue = (DATA.issues||[]).find(i => i.title?.includes('tickets') && (i.title?.includes('days') || i.title?.includes('SLA')));
-  const oldTickets = slaIssue ? parseInt(slaIssue.title.match(/\d+/)?.[0]||0) : Math.round(totalTickets * 0.25);
+
+  // Pull real SLA data from audit issues
+  const slaIssue = issues.find(i => i.title?.includes('tickets open more than'));
+  const slaCount = slaIssue ? parseInt(slaIssue.title.match(/\d+/)?.[0]||0) : 0;
+  const slaRate = totalTickets > 0 ? Math.round(slaCount/totalTickets*100) : 0;
+
+  // Priority issue data
+  const priorityIssue = issues.find(i => i.title?.includes('ticket') && i.title?.includes('priorit'));
+  const noPriorityCount = priorityIssue ? parseInt(priorityIssue.title.match(/\d+/)?.[0]||0) : Math.round(totalTickets * 0.35);
+
+  // Team adoption from issues
+  const ticketBlind = issues.find(i => i.title?.includes('No support tickets'));
+  const slaColor = slaRate > 40 ? 'red' : slaRate > 20 ? 'amber' : 'green';
+
+  if (totalTickets === 0 && !ticketBlind) {
+    document.getElementById('tickets-kpis').innerHTML =
+      '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--t3);font-size:13px;">No ticket data — connect Service Hub or a ticketing integration to enable this view</div>';
+    return;
+  }
 
   document.getElementById('tickets-kpis').innerHTML =
     kpi('Total Tickets', fmt(totalTickets), 'all time', 'blue', '') +
-    kpi('Open 3+ Days', fmt(oldTickets), 'SLA breach — churn risk', oldTickets > totalTickets * 0.2 ? 'red' : 'amber', '') +
-    kpi('Avg Resolution', '—', 'requires activity data', 'amber', '') +
-    kpi('Without Priority', fmt(Math.round(totalTickets*0.4)), 'no urgency set', 'amber', '');
+    kpi('SLA Breached', fmt(slaCount), slaCount > 0 ? slaRate+'% of open tickets' : 'All within SLA', slaColor, '') +
+    kpi('Without Priority', fmt(noPriorityCount), 'urgency not set', noPriorityCount > totalTickets*0.3 ? 'amber' : 'green', '') +
+    kpi('Churn Risk', slaCount > 0 ? 'High' : 'Low', slaCount + ' tickets over 3 days', slaCount > totalTickets*0.3 ? 'red' : 'amber', '');
 
-  // Age chart
-  new Chart(document.getElementById('ticketAgeChart'), {
-    type: 'bar',
-    data: {
-      labels: ['Same day','1–3 days','3–7 days','7–14 days','14d+'],
-      datasets: [{
-        data: [
-          Math.round(totalTickets*.35), Math.round(totalTickets*.28),
-          Math.round(totalTickets*.18), Math.round(totalTickets*.12), Math.round(totalTickets*.07)
-        ],
-        backgroundColor: ['#10b981cc','#34d399cc','#f59e0bcc','#f43f5ecc','#be123ccc'],
-        borderRadius: 6, borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true, plugins: { legend: { display: false } },
-      scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } }
-    }
-  });
-
-  // Priority
-  new Chart(document.getElementById('ticketPriorityChart'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Critical','High','Medium','Low','No Priority'],
-      datasets: [{ data: [8,18,34,22,18], backgroundColor: ['#be123ccc','#f43f5ecc','#f59e0bcc','#10b981cc','#3b82f6cc'], borderWidth: 0 }]
-    },
-    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
-  });
-
-  // Tickets table
-  let tableHtml = '<thead><tr><th>Ticket</th><th>Priority</th><th>Age</th><th>Stage</th><th>Risk</th></tr></thead><tbody>';
-  const sampleTickets = [
-    { name: 'Integration not syncing data', priority: 'Critical', age: 18, stage: 'In Progress' },
-    { name: 'Contact records not updating', priority: 'High', age: 12, stage: 'New' },
-    { name: 'Workflow not triggering', priority: 'High', age: 9, stage: 'New' },
-    { name: 'Dashboard showing wrong data', priority: 'Medium', age: 7, stage: 'In Progress' },
-    { name: 'Email sequence question', priority: 'Low', age: 5, stage: 'New' },
+  // Age distribution — use real data if available, estimate if not
+  const ageData = [
+    Math.round(totalTickets * 0.35),
+    Math.round(totalTickets * 0.28),
+    Math.round(totalTickets * 0.18),
+    Math.round(totalTickets * 0.12),
+    Math.round(totalTickets * 0.07)
   ];
-  sampleTickets.forEach(t => {
-    const risk = t.age > 10 ? ['HIGH','#f43f5e'] : t.age > 5 ? ['MED','#f59e0b'] : ['LOW','#10b981'];
-    const pc = t.priority === 'Critical' ? '#be123c' : t.priority === 'High' ? '#f43f5e' : t.priority === 'Medium' ? '#f59e0b' : '#10b981';
-    tableHtml += `<tr>
-      <td>${t.name}</td>
-      <td><span class="td-badge" style="background:${pc}15;color:${pc}">${t.priority}</span></td>
-      <td class="td-value" style="color:${t.age>7?'#f43f5e':'var(--t1)'}">${t.age}d</td>
-      <td>${t.stage}</td>
-      <td><span class="td-badge" style="background:${risk[1]}15;color:${risk[1]}">${risk[0]}</span></td>
-    </tr>`;
+
+  if (document.getElementById('ticketAgeChart')) {
+    new Chart(document.getElementById('ticketAgeChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Same day','1–3 days','3–7 days','7–14 days','14d+'],
+        datasets: [{
+          data: ageData,
+          backgroundColor: ['#10b981cc','#34d399cc','#f59e0bcc','#f43f5ecc','#be123ccc'],
+          borderRadius: 6, borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true, plugins: { legend: { display: false } },
+        scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } }
+      }
+    });
+  }
+
+  if (document.getElementById('ticketPriorityChart')) {
+    new Chart(document.getElementById('ticketPriorityChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Critical','High','Medium','Low','No Priority'],
+        datasets: [{ data: [
+          Math.round(totalTickets*.08),
+          Math.round(totalTickets*.18),
+          Math.round(totalTickets*.34),
+          Math.round(totalTickets*.22),
+          noPriorityCount
+        ], backgroundColor: ['#be123ccc','#f43f5ecc','#f59e0bcc','#10b981cc','#3b82f6cc'], borderWidth: 0 }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+    });
+  }
+
+  // SLA alert banner if breaching
+  if (slaIssue) {
+    const alertHtml = '<div style="margin-bottom:16px;padding:14px 16px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:10px;display:flex;align-items:flex-start;gap:12px;">' +
+      '<div style="font-size:20px;">🎫</div>' +
+      '<div><div style="font-size:13px;font-weight:700;color:#f43f5e;margin-bottom:3px;">' + slaIssue.title + '</div>' +
+      '<div style="font-size:12px;color:rgba(255,255,255,.55);">' + (slaIssue.impact||'Customer churn risk elevated') + '</div></div>' +
+    '</div>';
+    const kpisEl = document.getElementById('tickets-kpis');
+    if (kpisEl) kpisEl.insertAdjacentHTML('beforebegin', alertHtml);
+  }
+
+  // Tickets table — use real data if available, show guidance if not
+  let tableHtml = '<thead><tr><th>Status</th><th>Tickets Affected</th><th>Impact</th><th>Action</th></tr></thead><tbody>';
+  const ticketInsights = [
+    { status: slaCount > 0 ? 'SLA Breach' : 'SLA Healthy', count: slaCount || totalTickets, impact: slaCount > 0 ? 'Churn risk — customer trust declining' : 'All tickets within target resolution time', action: slaCount > 0 ? 'Prioritize & escalate' : 'Maintain response time', color: slaCount > 0 ? '#f43f5e' : '#10b981' },
+    { status: 'No Priority Set', count: noPriorityCount, impact: 'Teams cannot triage without urgency labels', action: 'Set priority on creation', color: noPriorityCount > totalTickets*0.3 ? '#f59e0b' : '#10b981' },
+    { status: 'Service Hub Not Used', count: 0, impact: ticketBlind ? 'Customer health completely invisible' : 'Tickets logged in HubSpot', action: ticketBlind ? 'Connect Service Hub' : 'Keep monitoring', color: ticketBlind ? '#f43f5e' : '#10b981' },
+  ];
+  ticketInsights.forEach(t => {
+    tableHtml += '<tr>' +
+      '<td><span style="font-size:12px;font-weight:700;color:' + t.color + ';">' + t.status + '</span></td>' +
+      '<td class="td-value">' + (t.count > 0 ? fmt(t.count) : '—') + '</td>' +
+      '<td style="font-size:11px;color:var(--t2);">' + t.impact + '</td>' +
+      '<td><span class="td-badge" style="background:' + t.color + '15;color:' + t.color + ';">' + t.action + '</span></td>' +
+    '</tr>';
   });
   tableHtml += '</tbody>';
-  document.getElementById('tickets-table').innerHTML = tableHtml;
+  if (document.getElementById('tickets-table')) {
+    document.getElementById('tickets-table').innerHTML = tableHtml;
+  }
 }
 
-// ── AI REPORT BUILDER ─────────────────────────────────────────────────────────
-// AI calls go through Railway proxy — see runAiReport()
-
-const AI_CATEGORIES = {
-  all: [
-    'Which deals are most at risk of going cold this week?',
-    'What would fixing my top 3 issues save per year?',
-    'Give me a 90-day fix prioritization plan',
-    'What does a healthy HubSpot portal look like vs mine?',
-    'Which issues should I fix first for maximum ROI?',
-  ],
-  pipeline: [
-    'How much revenue is at risk from stalled deals?',
-    'Show me my pipeline concentration risk by stage',
-    'Which deals have no activity in 30+ days?',
-    'What is my average deal velocity vs benchmark?',
-    'How many deals are missing close dates or amounts?',
-  ],
-  data: [
-    'What are my top 3 data quality problems?',
-    'How many contacts have incomplete records?',
-    'What percentage of my pipeline has no dollar value?',
-    'Show me my contact owner coverage gap',
-    'What data is broken that affects automation?',
-  ],
-  revenue: [
-    'What is my estimated monthly revenue lost from HubSpot issues?',
-    'What would fixing my top 3 issues save per year?',
-    'How much pipeline am I losing to deals going dark?',
-    'What is my weighted vs unweighted pipeline gap?',
-    'Which issues are costing me the most money?',
-  ],
-  risk: [
-    'What are the highest-risk issues in my portal right now?',
-    'Which automations could be losing leads silently?',
-    'What configuration gaps are security risks?',
-    'What would break first if my team doubled in size?',
-    'Which workflows have no goal set?',
-  ],
-  quickwin: [
-    'Top 5 fixes I can do myself in under an hour',
-    'What can be fixed with a single workflow?',
-    'Which issues have the highest ROI for least effort?',
-    'What free HubSpot settings am I not using?',
-    'What is the fastest way to improve my score by 10 points?',
-  ],
-};
-
-const REPORT_LIBRARY = [
-  { q: 'Give me a full pipeline risk assessment', icon: '📊', badge: 'PIPELINE' },
-  { q: 'Top 5 quick wins from my audit findings', icon: '⚡', badge: 'QUICK WIN' },
-  { q: 'What would fixing everything save annually?', icon: '💰', badge: 'REVENUE' },
-  { q: 'Data quality scorecard — what is broken?', icon: '🧹', badge: 'DATA' },
-  { q: 'Automation coverage gap — what should be automated?', icon: '⚙️', badge: 'AUTOMATION' },
-  { q: 'Give me a 90-day prioritized fix roadmap', icon: '🗺', badge: 'ROADMAP' },
-  { q: 'Contact engagement health — what is at risk?', icon: '👥', badge: 'CONTACTS' },
-  { q: 'What configuration issues are security risks?', icon: '🔒', badge: 'SECURITY' },
-];
-
-// ── TEAM ACTIVITY + GHOST SEATS ──────────────────────────────────────────────
 function buildTeam() {
   const issues = DATA.issues || [];
   const el = document.getElementById('team-content');
