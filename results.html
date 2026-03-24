@@ -75,12 +75,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
 /* ── Issues ── */
 .issues-section{margin-bottom:24px;}
-.issues-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+
 .issues-h{font-size:18px;font-weight:800;letter-spacing:-.3px;}
 #hub-tabs{display:flex;gap:6px;flex-wrap:wrap;}
-.hub-tab{padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.45);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .18s;}
-.hub-tab:hover{border-color:rgba(255,255,255,.28);color:var(--t2);}
-.hub-tab.active{background:var(--v);border-color:var(--v);color:#fff;}
+
 .issues-list{display:flex;flex-direction:column;gap:8px;}
 
 /* ── Issue card ── */
@@ -92,9 +90,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .i-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
 .i-title{font-size:14px;font-weight:700;color:#fff;line-height:1.35;flex:1;}
 .sev-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:5px;font-family:var(--mono);white-space:nowrap;flex-shrink:0;margin-top:2px;}
-.sev-tag.critical{background:rgba(244,63,94,.18);color:#f43f5e;}
-.sev-tag.warning{background:rgba(245,158,11,.18);color:#f59e0b;}
-.sev-tag.info{background:rgba(59,130,246,.15);color:#60a5fa;}
+.sev-tag.critical{background:rgba(244,63,94,.2);color:#f43f5e;border:1px solid rgba(244,63,94,.35);}
+.sev-tag.warning{background:rgba(245,158,11,.18);color:#f59e0b;border:1px solid rgba(245,158,11,.3);}
+.sev-tag.info{background:rgba(59,130,246,.15);color:#93c5fd;border:1px solid rgba(59,130,246,.25);}
 .i-desc{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:8px;font-weight:300;}
 .i-impact{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--a);font-family:var(--mono);flex-wrap:wrap;}
 .i-dim{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:rgba(124,58,237,.15);color:var(--v3);font-family:var(--mono);}
@@ -164,7 +162,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   </div>
   <div class="nav-actions">
     <button class="nav-btn ghost" onclick="downloadPDF()">📄 Download PDF Report</button>
-    <a href="reporting.html" class="nav-btn ghost">📊 View Snapshot</a>
+    <a href="#" class="nav-btn ghost" id="snapshot-link" onclick="goToSnapshot()">📊 View Snapshot</a>
     <a href="https://fixops.io/#pricing" class="nav-btn primary">Book a Call ↗</a>
   </div>
 </nav>
@@ -219,19 +217,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
   <!-- Issues -->
   <div class="issues-section" id="issues-section" style="display:none;">
-    <div class="issues-header-row">
+    <div style="margin-bottom:14px;">
       <div class="issues-h" id="issues-header">Issues Found</div>
-      <div id="hub-tabs">
-        <button class="hub-tab active" onclick="filterHub('all')" id="tab-all">All</button>
-        <button class="hub-tab" onclick="filterHub('Sales')" id="tab-sales">Sales &amp; Pipeline</button>
-        <button class="hub-tab" onclick="filterHub('Marketing')" id="tab-marketing">Marketing</button>
-        <button class="hub-tab" onclick="filterHub('Service')" id="tab-service">Service</button>
-        <button class="hub-tab" onclick="filterHub('Automation')" id="tab-automation">Automation</button>
-        <button class="hub-tab" onclick="filterHub('Data Integrity')" id="tab-data">Data &amp; Config</button>
-      </div>
+
     </div>
     <div class="issues-list" id="issues-list"></div>
-    <div class="no-issues-empty" id="no-issues-msg">No issues found in this category 🎉</div>
+    
   </div>
 
   <!-- Fix Plan -->
@@ -332,6 +323,20 @@ function showToast(icon, title, sub) {
       showError('Could not load audit results. ' + (err.name === 'AbortError' ? 'Request timed out.' : ''));
     });
 })();
+
+// Navigate to reporting with audit ID
+function goToSnapshot() {
+  var params = new URLSearchParams(window.location.search);
+  var auditId = params.get('id');
+  var token   = params.get('token');
+  if (auditId) {
+    window.location.href = 'reporting.html?id=' + auditId;
+  } else if (token) {
+    window.location.href = 'reporting.html?token=' + encodeURIComponent(token);
+  } else {
+    window.location.href = 'reporting.html';
+  }
+}
 
 function showError(msg) {
   document.getElementById('loading-state').innerHTML =
@@ -454,10 +459,15 @@ function showResults(data) {
 
   var list = document.getElementById('issues-list');
   list.innerHTML = '';
-  document.getElementById('issues-header').textContent = sorted.length + ' Issue' + (sorted.length!==1?'s':'') + ' Found';
+  var crits = sorted.filter(function(i){ return i.severity==='critical'; }).length;
+  var warns = sorted.filter(function(i){ return i.severity==='warning'; }).length;
+  var hdr = sorted.length + ' Issue' + (sorted.length!==1?'s':'') + ' Found';
+  if (crits > 0) hdr += ' · <span style="color:#f43f5e;">' + crits + ' Critical</span>';
+  if (warns > 0) hdr += ' · <span style="color:#f59e0b;">' + warns + ' Warning</span>';
+  document.getElementById('issues-header').innerHTML = hdr;
 
   sorted.forEach(function(issue, idx) {
-    var sc = issue.severity==='critical' ? '#f43f5e' : issue.severity==='warning' ? '#f59e0b' : '#3b82f6';
+    var sc = issue.severity==='critical' ? '#f43f5e' : issue.severity==='warning' ? '#f59e0b' : '#60a5fa';
     var scC = issue.severity || 'info';
 
     var detailHtml = '';
@@ -620,54 +630,6 @@ async function fixItForMe(idx) {
 }
 
 // ── Hub filter ────────────────────────────────────────────────────────────────
-function filterHub(hub) {
-  // Tab → dimension strings mapping
-  // Exact match: issue.dimension must be IN this array to show under this tab
-  var TAB_DIMS = {
-    'all':            null,
-    'Sales':          ['Pipeline', 'Sales', 'Team Adoption'],
-    'Marketing':      ['Marketing'],
-    'Service':        ['Service'],
-    'Automation':     ['Automation'],
-    'Data Integrity': ['Data Integrity', 'Configuration', 'Reporting'],
-  };
-
-  // Activate correct tab button
-  document.querySelectorAll('.hub-tab').forEach(function(t){ t.classList.remove('active'); });
-  var tabIds = {
-    'all':'tab-all', 'Sales':'tab-sales', 'Marketing':'tab-marketing',
-    'Service':'tab-service', 'Automation':'tab-automation', 'Data Integrity':'tab-data'
-  };
-  var activeEl = document.getElementById(tabIds[hub]);
-  if (activeEl) activeEl.classList.add('active');
-
-  // Filter cards
-  var cards   = document.querySelectorAll('.issue-card');
-  var allowed = TAB_DIMS[hub];
-  var visible = 0;
-
-  cards.forEach(function(card) {
-    var dim  = (card.getAttribute('data-dimension') || '').trim();
-    var show = (hub === 'all') || (allowed && allowed.indexOf(dim) !== -1);
-    card.style.display = show ? '' : 'none';
-    if (show) visible++;
-  });
-
-  // Update header
-  var header = document.getElementById('issues-header');
-  if (header) {
-    if (hub === 'all') {
-      header.textContent = cards.length + ' Issue' + (cards.length !== 1 ? 's' : '') + ' Found';
-    } else {
-      var label = hub === 'Sales' ? 'Sales & Pipeline' : hub === 'Data Integrity' ? 'Data & Config' : hub;
-      header.textContent = visible + ' ' + label + ' Issue' + (visible !== 1 ? 's' : '');
-    }
-  }
-
-  // Empty state
-  var noMsg = document.getElementById('no-issues-msg');
-  if (noMsg) noMsg.style.display = (visible === 0 && hub !== 'all') ? '' : 'none';
-}
 
 // ── Build Fix Plan ────────────────────────────────────────────────────────────
 function buildFixPlan(data) {
