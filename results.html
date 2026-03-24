@@ -743,8 +743,8 @@ function downloadPDF() {
   if (!AUDIT_DATA) { showToast('⚠️','No audit data','Run an audit first'); return; }
   var auditId = AUDIT_DATA.auditId || (new URLSearchParams(window.location.search).get('id'));
   if (!auditId) { showToast('⚠️','No audit ID found',''); return; }
-  showToast('📄','Generating PDF…','Your report will download shortly');
-  window.open(API+'/audit/pdf?id='+auditId, '_blank');
+  showToast('📄','Opening Report…','Use Ctrl+P or ⌘+P to save as PDF');
+  window.open(API+'/audit/pdf?id='+auditId+'&print=1', '_blank');
 }
 
 </script>
