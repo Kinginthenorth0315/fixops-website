@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FixOps — Revenue Leak Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070709;
+  --s1: #0d0d12;
+  --s2: #121218;
+  --b1: rgba(255,255,255,.07);
+  --b2: rgba(255,255,255,.12);
+  --t1: rgba(255,255,255,.95);
+  --t2: rgba(255,255,255,.55);
+  --t3: rgba(255,255,255,.25);
+  --red: #ff3b3b;
+  --amber: #f59e0b;
+  --green: #10b981;
+  --brand: #7c3aed;
+  --brand2: #a78bfa;
+  --font: 'Syne', sans-serif;
+  --body: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+}
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--body);
+  background: var(--bg);
+  color: var(--t1);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ── Background ── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,59,59,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,59,59,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.bg-glow {
+  position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 500px; z-index: 0; pointer-events: none;
+  background: radial-gradient(ellipse, rgba(255,30,30,.06) 0%, transparent 70%);
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 58px;
+  background: rgba(7,7,9,.88); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--b1);
+}
+.nav-logo {
+  font-family: var(--font); font-size: 15px; font-weight: 800;
+  display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--t1);
+}
+.logo-mark { font-size: 16px; }
+.nav-cta {
+  padding: 7px 18px; border-radius: 8px; background: var(--red);
+  color: #fff; font-size: 12px; font-weight: 600; font-family: var(--font);
+  text-decoration: none; transition: all .2s;
+}
+.nav-cta:hover { background: #ff5555; transform: translateY(-1px); }
+
+/* ── Page ── */
+.page { position: relative; z-index: 1; padding: 80px 24px 60px; max-width: 900px; margin: 0 auto; }
+
+/* ── Header ── */
+.page-header { text-align: center; margin-bottom: 48px; }
+.eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--red); margin-bottom: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.eyebrow::before, .eyebrow::after {
+  content: ''; flex: 1; max-width: 60px; height: 1px; background: rgba(255,59,59,.3);
+}
+.page-title {
+  font-family: var(--font); font-size: clamp(32px, 5vw, 52px);
+  font-weight: 800; letter-spacing: -1.5px; line-height: 1.05;
+  margin-bottom: 14px;
+}
+.page-title em { color: var(--red); font-style: normal; }
+.page-sub {
+  font-size: 15px; color: var(--t2); line-height: 1.7;
+  max-width: 520px; margin: 0 auto;
+}
+
+/* ── Loading ── */
+#loading-state {
+  text-align: center; padding: 80px 20px;
+}
+.spinner {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 2px solid var(--b2); border-top-color: var(--red);
+  animation: spin 1s linear infinite; margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { font-family: var(--mono); font-size: 12px; color: var(--t3); letter-spacing: 1px; }
+
+/* ── Main counter ── */
+#main-content { display: none; }
+
+.counter-hero {
+  text-align: center; margin-bottom: 40px;
+}
+.counter-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--t3); margin-bottom: 12px;
+}
+.counter-wrap {
+  position: relative; display: inline-block;
+}
+.counter-main {
+  font-family: var(--font); font-size: clamp(52px, 10vw, 96px);
+  font-weight: 800; letter-spacing: -3px; line-height: 1;
+  color: var(--red);
+  text-shadow: 0 0 60px rgba(255,59,59,.4), 0 0 120px rgba(255,59,59,.15);
+}
+.counter-period {
+  font-family: var(--mono); font-size: 14px; color: var(--t3); margin-top: 8px;
+  letter-spacing: 2px; text-transform: uppercase;
+}
+.per-day-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,59,59,.1); border: 1px solid rgba(255,59,59,.25);
+  padding: 6px 14px; border-radius: 20px; margin-top: 14px;
+}
+.per-day-val { font-family: var(--font); font-size: 18px; font-weight: 700; color: var(--red); }
+.per-day-lbl { font-family: var(--mono); font-size: 10px; color: var(--t3); letter-spacing: 1px; text-transform: uppercase; }
+
+/* ── Live ticker ── */
+.live-ticker {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  margin: 20px 0 40px; font-family: var(--mono); font-size: 12px; color: var(--t3);
+}
+.ticker-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--red);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .4; transform: scale(.7); }
+}
+.ticker-num { font-size: 14px; color: var(--red); font-weight: 500; }
+
+/* ── Leak breakdown ── */
+.leaks-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; margin-bottom: 32px;
+}
+@media(max-width:600px) { .leaks-grid { grid-template-columns: 1fr; } }
+
+.leak-card {
+  background: var(--s1); border: 1px solid var(--b1); border-radius: 14px;
+  padding: 18px 20px; position: relative; overflow: hidden;
+  transition: border-color .2s;
+}
+.leak-card:hover { border-color: var(--b2); }
+.leak-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--card-color, var(--red));
+  opacity: .6;
+}
+.leak-header {
+  display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px;
+}
+.leak-icon { font-size: 20px; }
+.leak-badge {
+  font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: 1px;
+  text-transform: uppercase; padding: 3px 8px; border-radius: 4px;
+  background: var(--card-bg, rgba(255,59,59,.1)); color: var(--card-color, var(--red));
+}
+.leak-amount {
+  font-family: var(--font); font-size: 26px; font-weight: 800; letter-spacing: -1px;
+  color: var(--card-color, var(--red)); margin-bottom: 4px;
+}
+.leak-period { font-family: var(--mono); font-size: 9px; color: var(--t3); letter-spacing: 1px; text-transform: uppercase; }
+.leak-title { font-size: 12px; font-weight: 600; color: var(--t1); margin-bottom: 4px; margin-top: 10px; }
+.leak-desc { font-size: 11px; color: var(--t2); line-height: 1.5; }
+.leak-metric {
+  display: flex; align-items: center; gap: 6px; margin-top: 10px;
+  font-family: var(--mono); font-size: 10px; color: var(--t3);
+}
+.leak-metric strong { color: var(--t2); }
+.leak-zero { opacity: .35; }
+
+/* ── Summary bar ── */
+.summary-bar {
+  background: var(--s1); border: 1px solid var(--b1); border-radius: 14px;
+  padding: 20px 24px; margin-bottom: 32px;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  text-align: center;
+}
+.sum-val {
+  font-family: var(--font); font-size: 22px; font-weight: 800; letter-spacing: -.5px;
+}
+.sum-lbl { font-family: var(--mono); font-size: 9px; color: var(--t3); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+
+/* ── Action bar ── */
+.action-bar {
+  background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(255,59,59,.06));
+  border: 1px solid rgba(124,58,237,.25); border-radius: 16px;
+  padding: 28px 32px; text-align: center; margin-bottom: 32px;
+}
+.action-title { font-family: var(--font); font-size: 20px; font-weight: 800; letter-spacing: -.3px; margin-bottom: 8px; }
+.action-sub { font-size: 13px; color: var(--t2); line-height: 1.6; max-width: 500px; margin: 0 auto 20px; }
+.action-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  padding: 12px 28px; background: var(--brand); color: #fff; border-radius: 10px;
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  text-decoration: none; transition: all .2s;
+}
+.btn-primary:hover { background: #6d28d9; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,.3); }
+.btn-ghost {
+  padding: 12px 24px; background: transparent; color: var(--t2);
+  border: 1px solid var(--b2); border-radius: 10px;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  text-decoration: none; transition: all .2s;
+}
+.btn-ghost:hover { background: var(--s1); color: var(--t1); }
+
+/* ── Share ── */
+.share-strip {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-family: var(--mono); font-size: 10px; color: var(--t3); letter-spacing: 1px;
+  margin-bottom: 40px;
+}
+.share-btn {
+  padding: 6px 14px; border-radius: 6px; border: 1px solid var(--b1);
+  background: var(--s2); color: var(--t2); font-family: var(--mono);
+  font-size: 10px; cursor: pointer; transition: all .15s; letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.share-btn:hover { border-color: var(--b2); color: var(--t1); }
+
+/* ── Error / no data ── */
+#error-state { display: none; text-align: center; padding: 80px 20px; }
+
+/* ── Breakdown section ── */
+.section-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--t3); margin-bottom: 14px;
+  padding-left: 4px;
+}
+
+/* ── Toast ── */
+#toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--s1); border: 1px solid var(--b2); border-radius: 8px;
+  padding: 10px 18px; font-family: var(--mono); font-size: 11px; color: var(--t2);
+  z-index: 999; display: none; white-space: nowrap;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <span class="logo-mark">⚡</span>
+    Fix<span style="color:var(--brand2)">Ops</span><span style="color:var(--t3);font-weight:400;font-size:12px;">.io</span>
+  </a>
+  <a href="https://fixops.io/#pricing" class="nav-cta">Fix These Leaks →</a>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div class="eyebrow">Live Revenue Intelligence</div>
+    <h1 class="page-title">Your HubSpot is <em>leaking</em> revenue.<br>Here's exactly how much.</h1>
+    <p class="page-sub">Every number below is calculated from your actual portal data — not industry estimates. This is real money leaving your business every month.</p>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading-state">
+    <div class="spinner"></div>
+    <div class="loading-text">Calculating your revenue leaks…</div>
+  </div>
+
+  <!-- Error -->
+  <div id="error-state">
+    <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+    <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Audit data not found</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:20px;">Run a free audit first to see your revenue leaks</div>
+    <a href="index.html" style="display:inline-block;padding:12px 24px;background:var(--brand);color:#fff;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Run Free Audit →</a>
+  </div>
+
+  <!-- Main content -->
+  <div id="main-content">
+
+    <!-- Live ticking counter -->
+    <div class="counter-hero">
+      <div class="counter-label">Estimated Monthly Revenue Leak</div>
+      <div class="counter-wrap">
+        <div class="counter-main" id="counter-display">$0</div>
+      </div>
+      <div class="counter-period">per month · <span id="company-name">your portal</span></div>
+      <div class="per-day-badge">
+        <div class="per-day-val" id="per-day-val">$0</div>
+        <div class="per-day-lbl">per day</div>
+      </div>
+    </div>
+
+    <!-- Live ticker -->
+    <div class="live-ticker">
+      <div class="ticker-dot"></div>
+      <span>This portal has been leaking for <span class="ticker-num" id="leak-days">0</span> days since your last audit</span>
+      <div class="ticker-dot"></div>
+    </div>
+
+    <!-- Summary row -->
+    <div class="summary-bar">
+      <div>
+        <div class="sum-val" id="sum-pipeline" style="color:var(--red)">$0</div>
+        <div class="sum-lbl">Pipeline at Risk</div>
+      </div>
+      <div>
+        <div class="sum-val" id="sum-waste" style="color:var(--amber)">$0</div>
+        <div class="sum-lbl">Monthly Waste</div>
+      </div>
+      <div>
+        <div class="sum-val" id="sum-yr" style="color:var(--brand2)">$0</div>
+        <div class="sum-lbl">Annual Exposure</div>
+      </div>
+    </div>
+
+    <!-- Leak breakdown -->
+    <div class="section-label">Where your money is going</div>
+    <div class="leaks-grid" id="leaks-grid"></div>
+
+    <!-- Action bar -->
+    <div class="action-bar">
+      <div class="action-title">These leaks are fixable — all of them.</div>
+      <div class="action-sub">FixOps gives you a prioritized fix plan with exact steps for each issue. Most portals recover 60–80% of their estimated monthly leak within 30 days of acting on it.</div>
+      <div class="action-btns">
+        <a href="results.html" id="results-link" class="btn-primary">View Full Audit Report →</a>
+        <a href="https://fixops.io/#pricing" class="btn-ghost">Talk to a Specialist</a>
+      </div>
+    </div>
+
+    <!-- Share -->
+    <div class="share-strip">
+      Share your results:
+      <button class="share-btn" onclick="shareLinkedIn()">LinkedIn</button>
+      <button class="share-btn" onclick="copyLink()">Copy Link</button>
+      <button class="share-btn" onclick="window.print()">Print</button>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /page -->
+
+<div id="toast">Link copied!</div>
+
+<script>
+'use strict';
+var API = 'https://fixops-api-production.up.railway.app';
+var AUDIT_DATA = null;
+var counterInterval = null;
+
+function fmt(n) { return Number(n||0).toLocaleString(); }
+function fmtMoney(n) {
+  n = Number(n||0);
+  if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return '$' + (n/1000).toFixed(1) + 'K';
+  return '$' + Math.round(n).toLocaleString();
+}
+function fmtFull(n) { return '$' + Math.round(n||0).toLocaleString(); }
+
+// ── Load data ────────────────────────────────────────────────────────────────
+(function init() {
+  var params = new URLSearchParams(window.location.search);
+  var auditId = params.get('id');
+  var token   = params.get('token');
+
+  if (!auditId && !token) {
+    // Try to find a recent audit id from results page URL
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'block';
+    return;
+  }
+
+  var endpoint = token
+    ? API + '/auth/verify?token=' + encodeURIComponent(token)
+    : API + '/audit/status/' + auditId;
+
+  fetch(endpoint, { cache: 'no-store' })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var result = data.latestResult || data;
+      if (result.portalInfo || result.issues) {
+        renderLeaks(result, auditId);
+      } else {
+        showError();
+      }
+    })
+    .catch(showError);
+})();
+
+function showError() {
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('error-state').style.display = 'block';
+}
+
+// ── Main render ──────────────────────────────────────────────────────────────
+function renderLeaks(data, auditId) {
+  AUDIT_DATA = data;
+  var ps      = (data.portalInfo || {}).portalStats || {};
+  var summary = data.summary || {};
+  var issues  = data.issues  || [];
+  var company = (data.portalInfo || {}).company || 'Your Portal';
+
+  // Update results link
+  if (auditId) {
+    document.getElementById('results-link').href = 'results.html?id=' + auditId;
+  }
+  document.getElementById('company-name').textContent = company;
+
+  // ── Calculate all leak sources ──────────────────────────────────────────
+  var leaks = [];
+
+  // 1. Stalled Pipeline
+  var stalledDeals = ps.stalledDeals || 0;
+  var avgDeal = ps.avgDealSize || 0;
+  var stalledVal = ps.openPipelineValue
+    ? Math.round((stalledDeals / Math.max(ps.openDealsCount || stalledDeals, 1)) * ps.openPipelineValue)
+    : stalledDeals * avgDeal;
+  var stalledLeak = Math.round(stalledVal * 0.03); // 3% opportunity cost/mo
+  leaks.push({
+    id: 'pipeline',
+    icon: '📊',
+    title: 'Stalled Pipeline',
+    amount: stalledLeak,
+    period: '/mo opportunity cost',
+    desc: stalledDeals + ' deals stuck 21+ days. At your avg deal size, this pipeline should be moving.',
+    metric: stalledDeals + ' stalled deals · ' + fmtFull(stalledVal) + ' at risk',
+    color: '#ff3b3b',
+    colorBg: 'rgba(255,59,59,.1)',
+    severity: 'critical',
+    zero_msg: 'No stalled deals detected',
+  });
+
+  // 2. Ghost Seats (HubSpot seat waste)
+  var ghostSeats = ps.ghostSeats || 0;
+  var ghostWaste = ps.ghostSeatWaste || (ghostSeats * 90);
+  leaks.push({
+    id: 'seats',
+    icon: '👻',
+    title: 'Ghost Seat Waste',
+    amount: ghostWaste,
+    period: '/mo in unused seats',
+    desc: ghostSeats + ' paid HubSpot seats with no login in 90 days. That\'s money for zero output.',
+    metric: ghostWaste > 0 ? fmtFull(ghostWaste) + ' billed · $90/seat avg' : '',
+    color: '#f59e0b',
+    colorBg: 'rgba(245,158,11,.1)',
+    severity: ghostSeats > 2 ? 'critical' : 'warning',
+    zero_msg: 'All seats active',
+  });
+
+  // 3. Dead Workflows (missed automation value)
+  var autoIssue = issues.find(function(i){ return i.title && i.title.includes('workflows') && i.title.includes('zero enrollment'); });
+  var deadWf = autoIssue ? parseInt(autoIssue.title) || 0 : 0;
+  var wfLeak = Math.round(deadWf * 22);
+  leaks.push({
+    id: 'workflows',
+    icon: '⚙️',
+    title: 'Dead Workflow Loss',
+    amount: wfLeak,
+    period: '/mo in missed automation',
+    desc: deadWf + ' active workflows enrolling nobody. Each one represents automation that\'s not working.',
+    metric: deadWf + ' dead workflows · avg $22/workflow/mo',
+    color: '#8b5cf6',
+    colorBg: 'rgba(139,92,246,.1)',
+    severity: deadWf > 5 ? 'critical' : 'warning',
+    zero_msg: 'All workflows actively enrolling',
+  });
+
+  // 4. Duplicate contacts (billing inflation)
+  var dupeIssue = issues.find(function(i){ return i.title && i.title.includes('duplicate'); });
+  var dupes = dupeIssue ? parseInt(dupeIssue.title) || 0 : 0;
+  var dupeLeak = Math.round(dupes * 0.45);
+  leaks.push({
+    id: 'dupes',
+    icon: '👥',
+    title: 'Duplicate Contact Billing',
+    amount: dupeLeak,
+    period: '/mo in inflated billing',
+    desc: dupes + ' potential duplicate contacts eating into your contact tier limit and billing.',
+    metric: dupes + ' duplicates · ~$0.45 each in billing waste',
+    color: '#f59e0b',
+    colorBg: 'rgba(245,158,11,.1)',
+    severity: dupes > 15 ? 'critical' : 'warning',
+    zero_msg: 'No duplicate contacts detected',
+  });
+
+  // 5. Email deliverability damage (bounce risk)
+  var bounceContacts = ps.highBounceEmails || 0;
+  var coldContacts = ps.coldContacts || 0;
+  var emailLeak = Math.round(bounceContacts * 8 + coldContacts * 0.5);
+  // $8/contact with hard bounce (list damage) + $0.50/cold contact (opportunity cost)
+  leaks.push({
+    id: 'email',
+    icon: '📧',
+    title: 'Email Deliverability Risk',
+    amount: emailLeak,
+    period: '/mo in email ROI loss',
+    desc: (bounceContacts > 0 ? bounceContacts + ' emails with high bounce rates damaging your sender reputation. ' : '') +
+          (coldContacts > 0 ? fmt(coldContacts) + ' cold contacts dragging down your list quality.' : ''),
+    metric: bounceContacts + ' high-bounce · ' + fmt(coldContacts) + ' cold contacts',
+    color: '#ff3b3b',
+    colorBg: 'rgba(255,59,59,.1)',
+    severity: bounceContacts > 2 ? 'critical' : 'warning',
+    zero_msg: 'Email list health looks clean',
+  });
+
+  // 6. Past-due deals (revenue timing risk)
+  var pastDue = ps.pastDueDeals || 0;
+  var pastDueLeak = Math.round(pastDue * (avgDeal || 500) * 0.15); // 15% loss probability per overdue deal
+  leaks.push({
+    id: 'pastdue',
+    icon: '📅',
+    title: 'Overdue Deal Risk',
+    amount: pastDueLeak,
+    period: '/mo in close-date slippage',
+    desc: pastDue + ' deals past their close date with no update. Slipped close dates correlate with 15–30% higher loss rates.',
+    metric: pastDue + ' overdue deals · ' + fmtFull(pastDue * (avgDeal||500)) + ' pipeline at risk',
+    color: '#ff3b3b',
+    colorBg: 'rgba(255,59,59,.1)',
+    severity: pastDue > 3 ? 'critical' : 'warning',
+    zero_msg: 'No overdue deals',
+  });
+
+  // 7. Overdue invoices
+  var overdueInv = ps.overdueInvoices || 0;
+  var invLeak = overdueInv * 35; // avg AR collection cost + late payment
+  leaks.push({
+    id: 'invoices',
+    icon: '🧾',
+    title: 'Overdue Invoice Exposure',
+    amount: invLeak,
+    period: '/mo in uncollected revenue',
+    desc: overdueInv + ' invoices past due. Every day uncollected increases write-off probability by ~2%.',
+    metric: overdueInv + ' overdue invoices · avg $35/invoice collection cost',
+    color: '#f59e0b',
+    colorBg: 'rgba(245,158,11,.1)',
+    severity: overdueInv > 0 ? 'warning' : 'good',
+    zero_msg: 'No overdue invoices',
+  });
+
+  // 8. Expired quotes (lost deals hiding in plain sight)
+  var expiredQ = ps.expiredQuotes || 0;
+  var quoteLeak = Math.round(expiredQ * (avgDeal || 500) * 0.4); // 40% of expired quotes are winnable if re-engaged
+  leaks.push({
+    id: 'quotes',
+    icon: '📋',
+    title: 'Expired Quote Recovery',
+    amount: quoteLeak,
+    period: '/mo in recoverable revenue',
+    desc: expiredQ + ' quotes expired without response. Industry data shows 40% of expired quotes can be recovered with a single follow-up.',
+    metric: expiredQ + ' expired quotes · ' + fmtFull(expiredQ * (avgDeal||500)) + ' in play',
+    color: '#10b981',
+    colorBg: 'rgba(16,185,129,.1)',
+    severity: expiredQ > 5 ? 'warning' : 'info',
+    zero_msg: 'No expired quotes outstanding',
+  });
+
+  // ── Calculate totals ──────────────────────────────────────────────────────
+  var totalMonthly = leaks.reduce(function(sum, l){ return sum + (l.amount || 0); }, 0);
+  var totalAnnual  = totalMonthly * 12;
+  var perDay = Math.round(totalMonthly / 30);
+  var openPipeline = ps.openPipelineValue || 0;
+  var stalledPipeline = stalledVal || 0;
+
+  // Days since audit (or 30 days default)
+  var auditDate = (data.portalInfo || {}).auditDate;
+  var daysSince = auditDate
+    ? Math.max(1, Math.floor((Date.now() - new Date(auditDate).getTime()) / 86400000))
+    : 30;
+  document.getElementById('leak-days').textContent = daysSince;
+
+  // ── Animate counter ───────────────────────────────────────────────────────
+  animateCounter(totalMonthly);
+
+  // Per day
+  document.getElementById('per-day-val').textContent = fmtFull(perDay);
+
+  // Summary row
+  document.getElementById('sum-pipeline').textContent = fmtMoney(stalledPipeline);
+  document.getElementById('sum-waste').textContent    = fmtMoney(totalMonthly);
+  document.getElementById('sum-yr').textContent       = fmtMoney(totalAnnual);
+
+  // ── Render leak cards ─────────────────────────────────────────────────────
+  var grid = document.getElementById('leaks-grid');
+  grid.innerHTML = '';
+
+  leaks.sort(function(a,b){ return (b.amount||0) - (a.amount||0); });
+
+  leaks.forEach(function(leak) {
+    var card = document.createElement('div');
+    card.className = 'leak-card' + (leak.amount === 0 ? ' leak-zero' : '');
+    card.style.setProperty('--card-color', leak.color);
+    card.style.setProperty('--card-bg', leak.colorBg);
+
+    var amount = leak.amount || 0;
+    var displayAmt = amount === 0 ? '—' : fmtFull(amount);
+    var displayPeriod = amount === 0 ? leak.zero_msg : leak.period;
+
+    card.innerHTML =
+      '<div class="leak-header">' +
+        '<div class="leak-icon">' + leak.icon + '</div>' +
+        '<div class="leak-badge">' + (leak.severity === 'critical' ? 'CRITICAL' : leak.severity === 'warning' ? 'WARNING' : leak.severity === 'good' ? 'CLEAN' : 'INFO') + '</div>' +
+      '</div>' +
+      '<div class="leak-amount" style="color:' + (amount === 0 ? 'var(--t3)' : leak.color) + '">' + displayAmt + '</div>' +
+      '<div class="leak-period">' + displayPeriod + '</div>' +
+      '<div class="leak-title">' + leak.title + '</div>' +
+      '<div class="leak-desc">' + (amount === 0 ? '' : leak.desc) + '</div>' +
+      (leak.metric && amount > 0 ? '<div class="leak-metric"><strong>' + leak.metric + '</strong></div>' : '');
+
+    grid.appendChild(card);
+  });
+
+  // Show
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+}
+
+// ── Counter animation ─────────────────────────────────────────────────────────
+function animateCounter(target) {
+  var display = document.getElementById('counter-display');
+  var start = 0;
+  var duration = 1800;
+  var startTime = null;
+
+  function ease(t) { return t < .5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function step(timestamp) {
+    if (!startTime) startTime = timestamp;
+    var elapsed = timestamp - startTime;
+    var progress = Math.min(elapsed / duration, 1);
+    var current = Math.round(ease(progress) * target);
+    display.textContent = '$' + current.toLocaleString();
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      display.textContent = '$' + target.toLocaleString();
+      // Start slow tick upward (1/30th of monthly per day / 24hrs / 3600s)
+      startTicker(target);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+function startTicker(monthly) {
+  var display = document.getElementById('counter-display');
+  var perSecond = monthly / 30 / 24 / 3600;
+  var current = monthly;
+  var startTs = Date.now();
+
+  if (counterInterval) clearInterval(counterInterval);
+  counterInterval = setInterval(function() {
+    var elapsed = (Date.now() - startTs) / 1000;
+    current = monthly + (perSecond * elapsed);
+    display.textContent = '$' + Math.round(current).toLocaleString();
+  }, 500);
+}
+
+// ── Share ────────────────────────────────────────────────────────────────────
+function shareLinkedIn() {
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('id');
+  var waste = AUDIT_DATA && AUDIT_DATA.summary ? AUDIT_DATA.summary.monthlyWaste || 0 : 0;
+  var company = AUDIT_DATA && AUDIT_DATA.portalInfo ? AUDIT_DATA.portalInfo.company || '' : '';
+  var text = 'Just ran a HubSpot revenue leak analysis on ' + (company || 'our portal') + ' — found $' + Math.round(waste).toLocaleString() + '/mo in leaks. Stalled pipeline, ghost seats, dead workflows, deliverability issues. All fixable. FixOps found it in minutes. fixops.io';
+  var url = 'https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent('https://fixops.io') + '&summary=' + encodeURIComponent(text);
+  window.open(url, '_blank', 'width=600,height=500');
+}
+
+function copyLink() {
+  var url = window.location.href;
+  navigator.clipboard.writeText(url).then(function() {
+    var toast = document.getElementById('toast');
+    toast.style.display = 'block';
+    setTimeout(function(){ toast.style.display = 'none'; }, 2200);
+  });
+}
+</script>
+</body>
+</html>

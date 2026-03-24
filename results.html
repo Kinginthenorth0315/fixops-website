@@ -556,7 +556,12 @@ function showResults(data) {
           '<div class="i-impact">'+
             '<span>💸</span>'+
             '<span>'+esc(issue.impact||'')+'</span>'+
-            (issue.dimension ? '<span class="i-dim">'+esc(issue.dimension)+'</span>' : '')+
+            ((issue.dimension ? (function(d){
+          var n={'Pipeline Integrity':'Pipeline','Service Health':'Service','Automation Health':'Automation',
+                 'Marketing Health':'Marketing','Reporting Quality':'Reporting','Team Adoption':'Sales',
+                 'Configuration & Security':'Configuration'};
+          return '<span class="i-dim">'+esc(n[d]||d)+'</span>';
+        })(issue.dimension) : ''))+
           '</div>'+
         '</div>'+
         '<div class="i-arrow">▾</div>'+
@@ -776,9 +781,19 @@ function buildFixPlan(data) {
     },
   };
 
+  // Normalize old dimension names to new standard
+  var DIM_NORMALIZE = {
+    'Pipeline Integrity': 'Pipeline', 'Service Health': 'Service',
+    'Automation Health': 'Automation', 'Marketing Health': 'Marketing',
+    'Reporting Quality': 'Reporting', 'Team Adoption': 'Sales',
+    'Configuration & Security': 'Configuration', 'Configuration Security': 'Configuration',
+    'Data': 'Data Integrity',
+  };
+
   // Sort issues into buckets by dimension
   issues.forEach(function(issue) {
-    var dim = (issue.dimension || '').trim();
+    var raw = (issue.dimension || '').trim();
+    var dim = DIM_NORMALIZE[raw] || raw;
     var placed = false;
     Object.keys(buckets).forEach(function(key) {
       if (!placed && buckets[key].dims.indexOf(dim) !== -1) {
@@ -786,7 +801,7 @@ function buildFixPlan(data) {
         placed = true;
       }
     });
-    if (!placed) buckets.data.issues.push(issue); // fallback
+    if (!placed) buckets.data.issues.push(issue); // fallback — catches any unmapped dims
   });
 
   var grid = document.getElementById('fixplan-grid');
