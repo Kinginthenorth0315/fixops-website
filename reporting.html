@@ -8,14 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg: #050810;
-  --s1: #080d1a;
-  --s2: #0c1220;
-  --s3: #111828;
-  --s4: #162035;
-  --b1: #1a2540;
-  --b2: #243050;
-  --b3: #2e3d62;
+  /* ── Shared ───────────────────────────────── */
   --accent: #3b82f6;
   --accent2: #60a5fa;
   --accent3: #93c5fd;
@@ -25,13 +18,72 @@
   --red: #f43f5e;
   --purple: #8b5cf6;
   --cyan: #06b6d4;
-  --t1: rgba(255,255,255,.95);
-  --t2: rgba(255,255,255,.6);
-  --t3: rgba(255,255,255,.3);
-  --t4: rgba(255,255,255,.1);
   --font: 'DM Sans', sans-serif;
   --display: 'Syne', sans-serif;
   --mono: 'JetBrains Mono', monospace;
+}
+
+/* ── DARK THEME (default) ──────────────────── */
+[data-theme="dark"], :root {
+  --bg: #050810;
+  --s1: #080d1a;
+  --s2: #0c1220;
+  --s3: #111828;
+  --s4: #162035;
+  --b1: #1a2540;
+  --b2: #243050;
+  --b3: #2e3d62;
+  --t1: rgba(255,255,255,.95);
+  --t2: rgba(255,255,255,.6);
+  --t3: rgba(255,255,255,.3);
+  --t4: rgba(255,255,255,.08);
+  --sidebar-bg: #060b16;
+  --nav-bg: rgba(5,8,16,.95);
+  --card-bg: #080d1a;
+  --chart-grid: rgba(255,255,255,.05);
+  --shadow: 0 4px 24px rgba(0,0,0,.4);
+}
+
+/* ── LIGHT THEME ───────────────────────────── */
+[data-theme="light"] {
+  --bg: #f4f6fa;
+  --s1: #ffffff;
+  --s2: #f8f9fc;
+  --s3: #f0f2f7;
+  --s4: #e8ecf3;
+  --b1: #d1d9e8;
+  --b2: #b8c4d8;
+  --b3: #9aacc8;
+  --t1: rgba(15,20,40,.95);
+  --t2: rgba(15,20,40,.6);
+  --t3: rgba(15,20,40,.35);
+  --t4: rgba(15,20,40,.06);
+  --sidebar-bg: #ffffff;
+  --nav-bg: rgba(255,255,255,.95);
+  --card-bg: #ffffff;
+  --chart-grid: rgba(0,0,0,.06);
+  --shadow: 0 2px 12px rgba(0,0,0,.08);
+}
+
+/* ── SLATE THEME (professional mid-tone) ────── */
+[data-theme="slate"] {
+  --bg: #1a1f2e;
+  --s1: #1f2535;
+  --s2: #242b3d;
+  --s3: #2a3248;
+  --s4: #303a54;
+  --b1: #3a4560;
+  --b2: #445070;
+  --b3: #505c80;
+  --t1: rgba(220,230,255,.95);
+  --t2: rgba(180,200,240,.65);
+  --t3: rgba(160,185,225,.35);
+  --t4: rgba(255,255,255,.06);
+  --sidebar-bg: #171c2a;
+  --nav-bg: rgba(26,31,46,.96);
+  --card-bg: #1f2535;
+  --chart-grid: rgba(255,255,255,.06);
+  --shadow: 0 4px 20px rgba(0,0,0,.3);
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
@@ -394,6 +446,31 @@ nav {
 /* View Cards */
 .view-card{background:#0c0c16;border:1px solid #1e1e32;border-radius:14px;padding:20px 22px;margin-bottom:16px;}
 .view-card-title{font-size:12px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+
+/* ── Theme Buttons ───────────────────────── */
+.theme-btn {
+  width:26px;height:26px;border-radius:6px;border:1px solid var(--b1);
+  background:transparent;cursor:pointer;font-size:13px;
+  transition:all .15s;padding:0;line-height:1;
+  display:inline-flex;align-items:center;justify-content:center;
+}
+.theme-btn:hover { border-color:var(--accent2);background:var(--s3); }
+.theme-btn.active { border-color:var(--accent);background:rgba(59,130,246,.15); }
+
+/* ── Light theme overrides ───────────────── */
+[data-theme="light"] .sidebar { border-right-color: var(--b1); }
+[data-theme="light"] .nav { border-bottom-color: var(--b1); }
+[data-theme="light"] .sidebar-item { color: var(--t2); }
+[data-theme="light"] .sidebar-item:hover { background: var(--s3); color: var(--t1); }
+[data-theme="light"] .sidebar-item.active { background: rgba(59,130,246,.1); color: #2563eb; }
+[data-theme="light"] .card { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+[data-theme="light"] .view-header { border-bottom-color: var(--b1); }
+[data-theme="light"] .kpi-card { border-color: var(--b1); }
+[data-theme="light"] .view-card { border-color: var(--b1); background: var(--s1); }
+[data-theme="light"] .intel-card { background: var(--s1); border-color: var(--b1); }
+
+/* ── Slate theme overrides ───────────────── */
+[data-theme="slate"] .sidebar-item.active { background: rgba(59,130,246,.18); color: #93c5fd; }
 </style>
 </head>
 <body>
@@ -414,76 +491,53 @@ nav {
 <div class="layout">
   <!-- Sidebar -->
   <aside class="sidebar">
+    <!-- Theme toggle -->
+    <div style="padding:12px 16px 0;display:flex;gap:6px;align-items:center;justify-content:flex-end;">
+      <span style="font-size:10px;color:var(--t3);font-family:var(--mono);">THEME</span>
+      <button onclick="setTheme('dark')" id="theme-dark" class="theme-btn active" title="Dark">🌙</button>
+      <button onclick="setTheme('light')" id="theme-light" class="theme-btn" title="Light">☀️</button>
+      <button onclick="setTheme('slate')" id="theme-slate" class="theme-btn" title="Slate">🩶</button>
+    </div>
+
     <div class="sidebar-section">
       <div class="sidebar-label">Overview</div>
       <div class="sidebar-item active" onclick="showView('overview')" data-view="overview">
         <span class="si-icon">⬡</span> Revenue Overview
       </div>
     </div>
+
     <div class="sidebar-section">
-      <div class="sidebar-label">Pipeline</div>
+      <div class="sidebar-label">Sales</div>
       <div class="sidebar-item" onclick="showView('pipeline')" data-view="pipeline">
         <span class="si-icon">📊</span> Pipeline Health
       </div>
-      <div class="sidebar-item" onclick="showView('velocity')" class="sidebar-item" data-pro-view="true">
+      <div class="sidebar-item" onclick="showView('velocity')" data-pro-view="true">
         <span class="si-icon">⚡</span> Deal Velocity
       </div>
-      <div class="sidebar-item" onclick="showView('forecast')" class="sidebar-item" data-pro-view="true">
+      <div class="sidebar-item" onclick="showView('forecast')" data-pro-view="true">
         <span class="si-icon">🎯</span> Forecast Analysis
       </div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Contacts</div>
-      <div class="sidebar-item" onclick="showView('funnel')" class="sidebar-item" data-pro-view="true">
-        <span class="si-icon">🔽</span> Lifecycle Funnel
-      </div>
-      <div class="sidebar-item" onclick="showView('contacts')" class="sidebar-item" data-pro-view="true">
-        <span class="si-icon">👥</span> Contact Intelligence
-      </div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Commerce</div>
-      <div class="sidebar-item" onclick="showView('products')" data-view="products">
-        <span class="si-icon">📦</span> Products &amp; Quotes
-      </div>
-      <div class="sidebar-item" onclick="showView('tickets')" data-view="tickets">
-        <span class="si-icon">🎫</span> Service &amp; Tickets
-      </div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Revenue</div>
       <div class="sidebar-item" onclick="showView('revenue')" data-view="revenue">
         <span class="si-icon">💳</span> Revenue Health
       </div>
-      <div class="sidebar-item" onclick="showView('company')" data-view="company">
-        <span class="si-icon">🏢</span> Company Intel
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Contacts & CRM</div>
+      <div class="sidebar-item" onclick="showView('funnel')" data-pro-view="true">
+        <span class="si-icon">🔽</span> Lifecycle Funnel
+      </div>
+      <div class="sidebar-item" onclick="showView('contacts')" data-pro-view="true">
+        <span class="si-icon">👥</span> Contact Intelligence
       </div>
       <div class="sidebar-item" onclick="showView('engagement')" data-view="engagement">
         <span class="si-icon">🔥</span> Engagement
       </div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Team</div>
-      <div class="sidebar-item" onclick="showView('team')" data-view="team">
-        <span class="si-icon">👥</span> Rep Activity &amp; Seats
+      <div class="sidebar-item" onclick="showView('company')" data-view="company">
+        <span class="si-icon">🏢</span> Company Intel
       </div>
     </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Trends</div>
-      <div class="sidebar-item" onclick="showView('trends')" data-view="trends">
-        <span class="si-icon">📈</span> Score Trends
-      </div>
-      <div class="sidebar-item" onclick="showView('roi')" data-view="roi">
-        <span class="si-icon">💰</span> ROI Summary
-      </div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">AI</div>
-      <div class="sidebar-item" onclick="showView('ai')" class="sidebar-item" data-pro-view="true">
-        <span class="si-icon">✦</span> AI Report Builder
-        <span class="si-badge">PRO</span>
-      </div>
-    </div>
+
     <div class="sidebar-section">
       <div class="sidebar-label">Marketing</div>
       <div class="sidebar-item" onclick="showView('marketing')" data-view="marketing">
@@ -496,25 +550,55 @@ nav {
         <span class="si-icon">📋</span> Lists &amp; Segments
       </div>
     </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Service</div>
+      <div class="sidebar-item" onclick="showView('tickets')" data-view="tickets">
+        <span class="si-icon">🎫</span> Tickets &amp; SLA
+      </div>
+      <div class="sidebar-item" onclick="showView('service')" data-view="service">
+        <span class="si-icon">🎧</span> Service Health
+      </div>
+    </div>
+
     <div class="sidebar-section">
       <div class="sidebar-label">Automation</div>
       <div class="sidebar-item" onclick="showView('automation')" data-view="automation">
         <span class="si-icon">⚙️</span> Workflow Health
       </div>
     </div>
+
     <div class="sidebar-section">
-      <div class="sidebar-label">Service</div>
-      <div class="sidebar-item" onclick="showView('service')" data-view="service">
-        <span class="si-icon">🎧</span> Service Health
+      <div class="sidebar-label">Data &amp; Commerce</div>
+      <div class="sidebar-item" onclick="showView('products')" data-view="products">
+        <span class="si-icon">📦</span> Products &amp; Quotes
+      </div>
+      <div class="sidebar-item" onclick="showView('team')" data-view="team">
+        <span class="si-icon">👥</span> Rep Activity &amp; Seats
       </div>
     </div>
+
     <div class="sidebar-section">
-      <div class="sidebar-label">History</div>
+      <div class="sidebar-label">Trends &amp; ROI</div>
+      <div class="sidebar-item" onclick="showView('trends')" data-view="trends">
+        <span class="si-icon">📈</span> Score Trends
+      </div>
+      <div class="sidebar-item" onclick="showView('roi')" data-view="roi">
+        <span class="si-icon">💰</span> ROI Summary
+      </div>
       <div class="sidebar-item" onclick="showView('history')" data-view="history">
         <span class="si-icon">🕐</span> Audit History
       </div>
       <div class="sidebar-item" onclick="showView('delta')" data-view="delta">
         <span class="si-icon">↕️</span> Week-over-Week
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">AI</div>
+      <div class="sidebar-item" onclick="showView('ai')" data-pro-view="true">
+        <span class="si-icon">✦</span> AI Report Builder
+        <span class="si-badge">PRO</span>
       </div>
     </div>
   </aside>
@@ -978,7 +1062,7 @@ if (TOKEN) {
   loadData();
 } else {
   // No auth — redirect to dashboard
-  window.location.href = 'dashboard.html';
+  window.location.href = 'index.html';
 }
 
 async function loadFromToken(token) {
@@ -1144,8 +1228,23 @@ async function loadData() {
     const snapshotUrl = TOKEN
       ? API+'/snapshot/'+auditId+'?token='+encodeURIComponent(TOKEN)
       : API+'/snapshot/'+auditId;
-    const res = await fetch(snapshotUrl, {cache:'no-store'});
-    if (!res.ok) throw new Error('Not found');
+    
+    // Add 15s timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    let res;
+    try {
+      res = await fetch(snapshotUrl, {cache:'no-store', signal: controller.signal});
+      clearTimeout(timeout);
+    } catch(fetchErr) {
+      clearTimeout(timeout);
+      if (fetchErr.name === 'AbortError') throw new Error('Request timed out — the server may be waking up, please try refreshing in 30 seconds');
+      throw new Error('Could not reach FixOps server — check your connection and try again');
+    }
+    if (!res.ok) {
+      if (res.status === 404) throw new Error('Audit not found — this link may have expired or the ID is incorrect');
+      throw new Error('Server error (' + res.status + ') — please try again');
+    }
     DATA = await res.json();
     if (!DATA || (!DATA.issues && !DATA.scores)) {
       throw new Error('Audit still running or no data');
@@ -1312,6 +1411,33 @@ function showView(name) {
 }
 
 // ── Initialize all views ─────────────────────────────────────────────────────
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('fixops-theme', theme);
+  // Update active button
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('theme-' + theme);
+  if (btn) btn.classList.add('active');
+  // Adjust Chart.js defaults for light theme
+  const isLight = theme === 'light';
+  Chart.defaults.color = isLight ? 'rgba(15,20,40,.5)' : 'rgba(255,255,255,.5)';
+  Chart.defaults.borderColor = isLight ? 'rgba(0,0,0,.08)' : 'rgba(255,255,255,.06)';
+}
+
+// Apply saved theme on load
+(function() {
+  const saved = localStorage.getItem('fixops-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  // Set active button after DOM ready
+  window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('theme-' + saved);
+    if (btn) {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  });
+})();
+
 function initAllViews() {
   buildOverview();
   buildPipeline();
@@ -3440,11 +3566,11 @@ function buildDelta() {
 
 // ── KPI helper ───────────────────────────────────────────────────────────────
 function kpi(label, value, sub, color) {
-  return \`<div class="kpi-card">
-    <div class="kpi-val" style="color:\${color||'#fff'}">\${value}</div>
-    <div class="kpi-label">\${label}</div>
-    \${sub ? \`<div class="kpi-sub">\${sub}</div>\` : ''}
-  </div>\`;
+  return '<div class="kpi-card">' +
+    '<div class="kpi-val" style="color:' + (color||'#fff') + '">' + value + '</div>' +
+    '<div class="kpi-label">' + label + '</div>' +
+    (sub ? '<div class="kpi-sub">' + sub + '</div>' : '') +
+  '</div>';
 }
 
 </script>

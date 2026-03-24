@@ -496,7 +496,7 @@ function showResults(data) {
         '<div style="font-size:10px;font-weight:800;color:#10b981;letter-spacing:1.5px;margin-bottom:8px;">WEEKLY MONITORING</div>' +
         '<div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px;">Pulse — $299/mo</div>' +
         '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:14px;line-height:1.6;">' +
-          'Full 177-point scan every Monday · new issue alerts · score trends · week-over-week delta report' +
+          'Full 185-point scan every Monday · new issue alerts · score trends · week-over-week delta report' +
         '</div>' +
         '<div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:14px;">' +
           '✓ Score trends over time &nbsp; ✓ What improved this week<br>' +
@@ -665,43 +665,53 @@ function buildFixPlan(data) {
 
   // Map issues to project buckets
   var buckets = {
-    data: {
-      name: 'Data & CRM Cleanup',
-      icon: '🧹',
-      cls: 'data',
-      tagline: 'Fix the foundation your entire revenue operation is built on',
-      color: '#06b6d4',
-      dimensions: ['Data Integrity'],
-      issues: [],
-      impact: 0
-    },
-    automation: {
-      name: 'Workflow & Automation Repair',
-      icon: '⚙️',
-      cls: 'automation',
-      tagline: 'Stop the silent revenue leaks from broken automations',
-      color: '#a78bfa',
-      dimensions: ['Automation Health','Team Adoption'],
-      issues: [],
-      impact: 0
-    },
-    pipeline: {
-      name: 'Pipeline & Sales Operations',
+    sales: {
+      name: 'Sales & Pipeline',
       icon: '📊',
       cls: 'pipeline',
       tagline: 'Turn your pipeline from a liability into an accurate revenue forecast',
       color: '#f59e0b',
-      dimensions: ['Pipeline Integrity'],
+      dimensions: ['Pipeline', 'Pipeline Integrity', 'Sales'],
       issues: [],
       impact: 0
     },
-    reporting: {
-      name: 'Reporting & Revenue Intelligence',
-      icon: '📈',
+    marketing: {
+      name: 'Marketing Hub',
+      icon: '📣',
       cls: 'reporting',
-      tagline: 'Give leadership dashboards they can actually trust',
+      tagline: 'Fix list hygiene, email health, and marketing automation gaps',
+      color: '#3b82f6',
+      dimensions: ['Marketing', 'Marketing Health'],
+      issues: [],
+      impact: 0
+    },
+    service: {
+      name: 'Service Hub',
+      icon: '🎧',
+      cls: 'config',
+      tagline: 'Reduce churn risk with SLA compliance and NPS monitoring',
       color: '#10b981',
-      dimensions: ['Reporting Quality','Marketing Health'],
+      dimensions: ['Service', 'Service Health'],
+      issues: [],
+      impact: 0
+    },
+    automation: {
+      name: 'Automation & Sequences',
+      icon: '⚙️',
+      cls: 'automation',
+      tagline: 'Stop silent revenue leaks from broken workflows and sequences',
+      color: '#a78bfa',
+      dimensions: ['Automation', 'Automation Health', 'Team Adoption'],
+      issues: [],
+      impact: 0
+    },
+    data: {
+      name: 'Data Integrity',
+      icon: '🧹',
+      cls: 'data',
+      tagline: 'Fix the CRM foundation your entire revenue operation depends on',
+      color: '#06b6d4',
+      dimensions: ['Data Integrity', 'Data Quality'],
       issues: [],
       impact: 0
     },
@@ -709,9 +719,9 @@ function buildFixPlan(data) {
       name: 'Configuration & Security',
       icon: '🔧',
       cls: 'config',
-      tagline: 'Lock down your portal and eliminate technical debt',
+      tagline: 'Lock down your portal, reduce risk, and eliminate technical debt',
       color: '#ec4899',
-      dimensions: ['Configuration & Security','Service Health'],
+      dimensions: ['Configuration', 'Configuration & Security', 'Reporting Quality', 'Reporting'],
       issues: [],
       impact: 0
     }
