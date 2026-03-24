@@ -452,7 +452,7 @@ function renderLeaks(data, auditId) {
 
   // 2. Ghost Seats (HubSpot seat waste)
   var ghostSeats = ps.ghostSeats || 0;
-  var ghostWaste = ps.ghostSeatWaste || (ghostSeats * 90);
+  var ghostWaste = ps.ghostSeatWaste || (ghostSeats * 75); // $75/seat matches server.js calculation
   leaks.push({
     id: 'seats',
     icon: '👻',
