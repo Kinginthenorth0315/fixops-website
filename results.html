@@ -553,17 +553,21 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
     var stallPct = ps.openDealsCount > 0 ? pct(ps.stalledDeals||0, ps.openDealsCount) : 0;
     cards.push({ hub:'Sales & Pipeline', icon:'📊',
       stat: pipeVal, desc: 'open pipeline value',
-      tag: stallPct > 30 ? stallPct+'% stalled 21+ days' : ps.dealsNoCloseDate+' deals missing close date',
+      tag: stallPct > 30 && stallPct < 100
+        ? stallPct+'% stalled 21+ days'
+        : (ps.stalledDeals||0) > 0
+          ? fmt(ps.stalledDeals)+' deals stalled 21+ days'
+          : (ps.dealsNoCloseDate||0)+' deals missing close date',
       tagColor: stallPct > 30 ? '#f43f5e' : '#f59e0b' });
   }
 
   // Marketing
   if (ps.forms > 0 || ps.marketingEmailCount > 0 || ps.listCount > 0) {
     var mktStat = ps.marketingEmailCount > 0 ? ps.marketingEmailCount+' emails' : ps.forms+' forms';
-    var mktDesc = ps.avgOpenRate > 0 ? 'avg '+ps.avgOpenRate+'% open rate' : ps.emptyLists+' empty lists';
+    var mktDesc = ps.avgOpenRate > 0 ? 'avg '+ps.avgOpenRate+'% open rate' : (ps.emptyLists||ps.listCount||0)+' lists tracked';
     cards.push({ hub:'Marketing Hub', icon:'📣',
       stat: mktStat, desc: mktDesc,
-      tag: ps.highBounceEmails > 0 ? ps.highBounceEmails+' high-bounce emails' : (ps.emptyLists||0)+' empty lists',
+      tag: ps.highBounceEmails > 0 ? ps.highBounceEmails+' high-bounce emails' : (ps.emptyLists > 0 ? ps.emptyLists+' empty lists' : ps.forms+' forms active'),
       tagColor: ps.highBounceEmails > 0 ? '#f43f5e' : '#f59e0b' });
   }
 
@@ -624,18 +628,18 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
             '<div style="font-size:10px;font-weight:700;font-family:var(--mono);color:var(--v3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">UPGRADE TO DEEP AUDIT</div>' +
             '<div style="font-size:17px;font-weight:800;color:var(--t1);margin-bottom:8px;line-height:1.3;">You\'ve seen '+criticalStr+'. The full picture is deeper.</div>' +
             '<div style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:16px;">' +
-              'This free scan analyzed up to 1,000 contacts. A full Deep Audit scans every record, cross-references all hubs, and gives you the complete dollar impact.' +
+              'This free scan checked up to 1,000 contacts — your full portal has '+fmt(ps.contacts||0)+' records and likely more issues. A Deep Audit scans everything and gives you the real dollar impact.' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:10px 22px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">Get Full Audit →</a>' +
           '</div>' +
           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:240px;">' +
             '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:10px 12px;">' +
-              '<div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Full Contact Scan</div>' +
-              '<div style="font-size:13px;font-weight:700;color:var(--t1);">All '+fmt(ps.contacts||0)+'+ contacts</div>' +
+              '<div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Full Portal Scan</div>' +
+              '<div style="font-size:13px;font-weight:700;color:var(--t1);">All objects &amp; records</div>' +
             '</div>' +
             '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:10px 12px;">' +
-              '<div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">All Hubs Analyzed</div>' +
-              '<div style="font-size:13px;font-weight:700;color:var(--t1);">Sales · Marketing · Service</div>' +
+              '<div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Every Hub Audited</div>' +
+              '<div style="font-size:13px;font-weight:700;color:var(--t1);">Sales · Mktg · Service · Ops</div>' +
             '</div>' +
             '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:10px 12px;">' +
               '<div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Written Fix Plan</div>' +
