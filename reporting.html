@@ -7,373 +7,363 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ── Google Fonts — matching homepage ─────────────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-/* ── Shared tokens ─────────────────────────────────────────────────────── */
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   DESIGN SYSTEM — matches FixOps homepage brand
+   Muted, readable, Power BI-caliber. No neon.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+/* Shared brand tokens */
 :root {
-  --font:    'Outfit', sans-serif;
-  --mono:    'JetBrains Mono', monospace;
+  --font: 'Outfit', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
 
-  /* Brand accent — matches index.html purple */
-  --brand:   #7c3aed;
-  --brand2:  #8b5cf6;
-  --brand3:  #a78bfa;
+  /* Brand purple — matches index.html exactly */
+  --brand:     #7c3aed;
+  --brand-mid: #8b5cf6;
+  --brand-lt:  #a78bfa;
 
-  /* Status colors */
-  --green:   #10b981;
-  --green2:  #34d399;
-  --amber:   #f59e0b;
-  --red:     #f43f5e;
-  --blue:    #3b82f6;
-  --blue2:   #60a5fa;
-  --cyan:    #06b6d4;
-  --purple:  #8b5cf6;
+  /* Muted semantic colors — intentionally desaturated */
+  --c-green:   #059669;   /* emerald-600 — readable, not neon */
+  --c-green-bg: rgba(5,150,105,.1);
+  --c-red:     #dc2626;   /* red-600 */
+  --c-red-bg:  rgba(220,38,38,.1);
+  --c-amber:   #d97706;   /* amber-600 */
+  --c-amber-bg: rgba(217,119,6,.1);
+  --c-blue:    #2563eb;   /* blue-600 */
+  --c-blue-bg: rgba(37,99,235,.1);
+  --c-purple:  #7c3aed;
+  --c-purple-bg: rgba(124,58,237,.1);
 }
 
-/* ── DARK THEME (default, matches index.html) ─────────────────────────── */
-:root,
-[data-theme="dark"] {
-  --bg:          #04040a;
-  --bg2:         #06060f;
-  --surface:     #0c0c14;
-  --surface2:    #10101a;
-  --surface3:    #141420;
-  --border:      #18182a;
-  --border2:     #22223a;
-  --border3:     #2a2a48;
-  --text1:       rgba(255,255,255,.92);
-  --text2:       rgba(255,255,255,.55);
-  --text3:       rgba(255,255,255,.28);
-  --text4:       rgba(255,255,255,.10);
-  --sidebar-bg:  #06060f;
-  --nav-bg:      rgba(4,4,10,.94);
-  --card-bg:     #0c0c14;
-  --card-hover:  #10101a;
-  --input-bg:    #0c0c14;
-  --shadow-sm:   0 1px 3px rgba(0,0,0,.4);
-  --shadow-md:   0 4px 16px rgba(0,0,0,.5);
-  --shadow-lg:   0 8px 32px rgba(0,0,0,.6);
-  --chart-grid:  rgba(255,255,255,.04);
+/* ── DARK (default — same base as homepage) ── */
+:root, [data-theme="dark"] {
+  --bg:        #04040a;
+  --bg2:       #07070f;
+  --s1:        #0c0c14;
+  --s2:        #10101a;
+  --s3:        #14141e;
+  --b1:        #18182a;
+  --b2:        #22223a;
+  --t1:        rgba(255,255,255,.90);
+  --t2:        rgba(255,255,255,.52);
+  --t3:        rgba(255,255,255,.28);
+  --t4:        rgba(255,255,255,.06);
+  --nav-bg:    rgba(4,4,10,.94);
+  --sidebar-bg:#06060e;
+  --card-bg:   #0c0c14;
+  --card-hi:   #10101a;
+  --input-bg:  #0c0c14;
+  --shadow1:   0 1px 4px rgba(0,0,0,.5);
+  --shadow2:   0 4px 20px rgba(0,0,0,.6);
 }
 
-/* ── LIGHT THEME ───────────────────────────────────────────────────────── */
+/* ── LIGHT ── */
 [data-theme="light"] {
-  --bg:          #f0f2f8;
-  --bg2:         #e8eaf3;
-  --surface:     #ffffff;
-  --surface2:    #f8f9fc;
-  --surface3:    #f1f3f9;
-  --border:      #e2e6f0;
-  --border2:     #d0d6e8;
-  --border3:     #b8c2d8;
-  --text1:       rgba(12,14,30,.93);
-  --text2:       rgba(12,14,30,.58);
-  --text3:       rgba(12,14,30,.36);
-  --text4:       rgba(12,14,30,.07);
-  --sidebar-bg:  #ffffff;
-  --nav-bg:      rgba(255,255,255,.96);
-  --card-bg:     #ffffff;
-  --card-hover:  #f8f9fc;
-  --input-bg:    #ffffff;
-  --shadow-sm:   0 1px 3px rgba(0,0,0,.06);
-  --shadow-md:   0 4px 16px rgba(0,0,0,.08);
-  --shadow-lg:   0 8px 32px rgba(0,0,0,.10);
-  --chart-grid:  rgba(0,0,0,.06);
+  --bg:        #f4f5f9;
+  --bg2:       #eceef5;
+  --s1:        #ffffff;
+  --s2:        #f8f9fc;
+  --s3:        #f1f3f8;
+  --b1:        #e3e7f0;
+  --b2:        #cdd4e5;
+  --t1:        rgba(10,12,28,.92);
+  --t2:        rgba(10,12,28,.56);
+  --t3:        rgba(10,12,28,.36);
+  --t4:        rgba(10,12,28,.05);
+  --nav-bg:    rgba(255,255,255,.96);
+  --sidebar-bg:#ffffff;
+  --card-bg:   #ffffff;
+  --card-hi:   #f8f9fc;
+  --input-bg:  #ffffff;
+  --shadow1:   0 1px 4px rgba(0,0,0,.06);
+  --shadow2:   0 4px 20px rgba(0,0,0,.08);
 }
 
-/* ── SLATE THEME (pro dark blue) ───────────────────────────────────────── */
+/* ── SLATE (professional blue-charcoal) ── */
 [data-theme="slate"] {
-  --bg:          #141926;
-  --bg2:         #111622;
-  --surface:     #1a2030;
-  --surface2:    #1e2638;
-  --surface3:    #222d42;
-  --border:      #2a3550;
-  --border2:     #334060;
-  --border3:     #3e4e72;
-  --text1:       rgba(210,225,255,.94);
-  --text2:       rgba(170,195,240,.62);
-  --text3:       rgba(140,170,220,.36);
-  --text4:       rgba(255,255,255,.06);
-  --sidebar-bg:  #111622;
-  --nav-bg:      rgba(17,22,34,.96);
-  --card-bg:     #1a2030;
-  --card-hover:  #1e2638;
-  --input-bg:    #1a2030;
-  --shadow-sm:   0 1px 3px rgba(0,0,0,.3);
-  --shadow-md:   0 4px 16px rgba(0,0,0,.4);
-  --shadow-lg:   0 8px 32px rgba(0,0,0,.5);
-  --chart-grid:  rgba(255,255,255,.05);
+  --bg:        #13182a;
+  --bg2:       #101527;
+  --s1:        #1a2035;
+  --s2:        #1e263f;
+  --s3:        #222d48;
+  --b1:        #2a3554;
+  --b2:        #354268;
+  --t1:        rgba(215,228,255,.92);
+  --t2:        rgba(175,200,248,.58);
+  --t3:        rgba(145,175,235,.35);
+  --t4:        rgba(255,255,255,.05);
+  --nav-bg:    rgba(16,21,40,.96);
+  --sidebar-bg:#101527;
+  --card-bg:   #1a2035;
+  --card-hi:   #1e263f;
+  --input-bg:  #1a2035;
+  --shadow1:   0 1px 4px rgba(0,0,0,.4);
+  --shadow2:   0 4px 20px rgba(0,0,0,.5);
 }
 
-/* ── Reset ─────────────────────────────────────────────────────────────── */
+/* ━━ Reset ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+
 body {
   font-family: var(--font);
   background: var(--bg);
-  color: var(--text1);
+  color: var(--t1);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* Subtle grid overlay — same as index.html */
-body::before {
+/* Very subtle noise texture — no grid lines, just depth */
+body::after {
   content: '';
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
-  background-image:
-    linear-gradient(var(--text4) 1px, transparent 1px),
-    linear-gradient(90deg, var(--text4) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background: radial-gradient(ellipse 120% 80% at 50% -10%,
+    rgba(124,58,237,.06) 0%, transparent 60%);
 }
 
-/* ── Navigation ─────────────────────────────────────────────────────────── */
+/* ━━ Navigation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  height: 58px;
+  height: 56px;
   background: var(--nav-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--b1);
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px;
-  box-shadow: var(--shadow-sm);
+  padding: 0 20px;
 }
-.nav-left  { display: flex; align-items: center; gap: 16px; }
-.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-left  { display: flex; align-items: center; gap: 14px; }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+
 .logo {
-  font-size: 17px; font-weight: 800; color: var(--text1);
-  display: flex; align-items: center; gap: 9px; text-decoration: none;
-  letter-spacing: -.3px;
+  font-size: 16px; font-weight: 800; color: var(--t1);
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none; letter-spacing: -.2px;
 }
 .logo-mark {
-  width: 28px; height: 28px;
+  width: 26px; height: 26px;
   background: linear-gradient(135deg, var(--brand), #5b21b6);
   border-radius: 7px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  box-shadow: 0 0 16px rgba(124,58,237,.35);
+  font-size: 12px; flex-shrink: 0;
 }
-.nav-divider { width: 1px; height: 20px; background: var(--border2); }
+.nav-divider { width: 1px; height: 18px; background: var(--b2); }
 .nav-title {
   font-family: var(--mono); font-size: 10px;
-  color: var(--brand3); letter-spacing: 2px; text-transform: uppercase;
+  color: var(--brand-lt); letter-spacing: 2px; text-transform: uppercase;
 }
 .nav-badge {
-  font-family: var(--mono); font-size: 10px;
-  padding: 3px 10px; border-radius: 20px;
-  border: 1px solid var(--border2); color: var(--text3);
-  display: none;
+  font-family: var(--mono); font-size: 9px;
+  padding: 3px 9px; border-radius: 20px;
+  border: 1px solid var(--b2); color: var(--t3); display: none;
 }
-#nav-loading { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+#nav-loading { font-size: 11px; color: var(--t3); font-family: var(--mono); }
 .nav-btn {
-  padding: 8px 18px;
+  padding: 7px 16px;
   background: var(--brand); color: #fff;
-  border: none; border-radius: 8px;
-  font-size: 13px; font-weight: 700; cursor: pointer;
+  border: none; border-radius: 7px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
   font-family: var(--font); text-decoration: none;
-  transition: all .2s;
+  transition: background .15s;
 }
-.nav-btn:hover { background: var(--brand2); transform: translateY(-1px); }
+.nav-btn:hover { background: var(--brand-mid); }
 
-/* ── Layout shell ───────────────────────────────────────────────────────── */
+/* ━━ Layout ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .layout {
   display: flex;
-  padding-top: 58px;
+  padding-top: 56px;
   min-height: 100vh;
   position: relative; z-index: 1;
 }
 
-/* ── Sidebar ────────────────────────────────────────────────────────────── */
+/* ━━ Sidebar ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .sidebar {
-  width: 224px; flex-shrink: 0;
+  width: 216px; flex-shrink: 0;
   background: var(--sidebar-bg);
-  border-right: 1px solid var(--border);
-  padding: 16px 0 32px;
-  position: sticky; top: 58px;
-  height: calc(100vh - 58px);
+  border-right: 1px solid var(--b1);
+  padding: 12px 0 32px;
+  position: sticky; top: 56px;
+  height: calc(100vh - 56px);
   overflow-y: auto;
 }
-.sidebar::-webkit-scrollbar { width: 4px; }
-.sidebar::-webkit-scrollbar-track { background: transparent; }
-.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--b2); border-radius: 2px; }
 
-.sidebar-section { padding: 0 10px; margin-bottom: 20px; }
-.sidebar-label {
-  font-family: var(--mono); font-size: 9px; font-weight: 700;
-  color: var(--text3); letter-spacing: 2px; text-transform: uppercase;
-  padding: 0 10px; margin-bottom: 4px; display: block;
-}
-.sidebar-item {
-  display: flex; align-items: center; gap: 9px;
-  padding: 8px 10px; border-radius: 7px;
-  font-size: 13px; font-weight: 500; color: var(--text2);
-  cursor: pointer; transition: all .13s;
-  margin-bottom: 1px;
-  border-left: 2px solid transparent;
-  user-select: none;
-}
-.sidebar-item:hover { background: var(--surface2); color: var(--text1); }
-.sidebar-item.active {
-  background: rgba(124,58,237,.12);
-  color: var(--brand3);
-  border-left-color: var(--brand);
-}
-.si-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; opacity: .8; }
-.si-badge {
-  margin-left: auto; font-family: var(--mono); font-size: 9px;
-  padding: 1px 6px; border-radius: 3px;
-  background: rgba(124,58,237,.15); color: var(--brand3);
-}
-.locked-sidebar { opacity: .4 !important; }
-.locked-sidebar::after { content: ' 🔒'; font-size: 9px; }
-
-/* Theme toggle in sidebar */
 .sidebar-themes {
-  display: flex; gap: 5px; align-items: center;
-  padding: 10px 20px 4px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 10px 16px 8px;
+  border-bottom: 1px solid var(--b1);
+  margin-bottom: 8px;
 }
 .sidebar-themes span {
-  font-family: var(--mono); font-size: 9px; color: var(--text3);
-  letter-spacing: 1px; text-transform: uppercase; margin-right: 4px;
+  font-family: var(--mono); font-size: 8px;
+  color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px;
+  margin-right: 3px; flex-shrink: 0;
 }
 .theme-btn {
-  width: 26px; height: 26px; border-radius: 6px;
-  border: 1px solid var(--border2);
+  width: 24px; height: 24px; border-radius: 5px;
+  border: 1px solid var(--b2);
   background: transparent; cursor: pointer; font-size: 12px;
-  transition: all .13s; padding: 0; line-height: 1;
   display: inline-flex; align-items: center; justify-content: center;
-  color: var(--text2);
+  transition: all .12s; padding: 0; color: var(--t2);
 }
-.theme-btn:hover { border-color: var(--brand3); background: var(--surface2); }
-.theme-btn.active { border-color: var(--brand); background: rgba(124,58,237,.15); }
+.theme-btn:hover { border-color: var(--brand-lt); }
+.theme-btn.active { border-color: var(--brand); background: rgba(124,58,237,.12); }
 
-/* ── Main content ───────────────────────────────────────────────────────── */
-.main { flex: 1; min-width: 0; padding: 28px 32px 64px; }
+.sidebar-section { padding: 0 8px; margin-bottom: 16px; }
+.sidebar-label {
+  font-family: var(--mono); font-size: 8.5px; font-weight: 700;
+  color: var(--t3); letter-spacing: 2px; text-transform: uppercase;
+  padding: 0 9px; margin-bottom: 3px; display: block;
+}
+.sidebar-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 9px; border-radius: 6px;
+  font-size: 12.5px; font-weight: 500; color: var(--t2);
+  cursor: pointer; transition: all .12s;
+  margin-bottom: 1px; border-left: 2px solid transparent;
+  user-select: none;
+}
+.sidebar-item:hover { background: var(--s2); color: var(--t1); }
+.sidebar-item.active {
+  background: rgba(124,58,237,.1);
+  color: var(--brand-lt);
+  border-left-color: var(--brand);
+}
+.si-icon { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+.si-badge {
+  margin-left: auto; font-family: var(--mono); font-size: 8px;
+  padding: 1px 6px; border-radius: 3px;
+  background: rgba(124,58,237,.12); color: var(--brand-lt);
+}
+.locked-sidebar { opacity: .38 !important; pointer-events: none !important; }
+.locked-sidebar::after { content: ' 🔒'; font-size: 9px; opacity: .6; }
 
-/* ── Loading state ──────────────────────────────────────────────────────── */
+/* ━━ Main ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.main { flex: 1; min-width: 0; padding: 24px 28px 60px; }
+
+/* ━━ Loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #loading-state { text-align: center; padding: 100px 20px; }
 .load-spinner {
-  width: 44px; height: 44px; border-radius: 50%;
-  border: 2px solid var(--border2);
-  border-top-color: var(--brand);
-  animation: spin 1s linear infinite;
-  margin: 0 auto 16px;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 2px solid var(--b2); border-top-color: var(--brand);
+  animation: spin 1s linear infinite; margin: 0 auto 14px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Views ──────────────────────────────────────────────────────────────── */
+/* ━━ Views ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .view { display: none; }
-.view.active { display: block; animation: fadeIn .2s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.view.active { display: block; animation: fadeIn .18s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 
-/* ── View header ────────────────────────────────────────────────────────── */
+/* ━━ View header ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .view-header {
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--b1);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
 }
+.vh-left {}
 .vh-badge {
   display: inline-block;
-  font-family: var(--mono); font-size: 9px; font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--brand3); padding: 3px 10px;
-  border: 1px solid rgba(124,58,237,.25);
-  background: rgba(124,58,237,.08);
-  border-radius: 20px; margin-bottom: 10px;
+  font-family: var(--mono); font-size: 8.5px; font-weight: 700;
+  letter-spacing: 2.5px; text-transform: uppercase;
+  color: var(--brand-lt); padding: 2px 9px;
+  border: 1px solid rgba(124,58,237,.22);
+  background: rgba(124,58,237,.07);
+  border-radius: 20px; margin-bottom: 8px;
 }
 .vh-title {
-  font-size: 24px; font-weight: 800; letter-spacing: -.5px;
-  color: var(--text1); margin-bottom: 4px;
+  font-size: 22px; font-weight: 800; letter-spacing: -.4px;
+  color: var(--t1); margin-bottom: 3px;
 }
-.view-header p { font-size: 13px; color: var(--text3); font-weight: 300; }
+.view-header p { font-size: 12.5px; color: var(--t3); font-weight: 300; }
 
-/* ── Plan banner ────────────────────────────────────────────────────────── */
+/* ━━ Plan banner ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #plan-banner {
   display: none;
   background: rgba(124,58,237,.06);
-  border: 1px solid rgba(124,58,237,.2);
-  border-radius: 10px;
-  padding: 12px 18px;
-  margin-bottom: 20px;
-  font-size: 12px;
+  border: 1px solid rgba(124,58,237,.18);
+  border-radius: 8px; padding: 10px 16px;
+  margin-bottom: 18px; font-size: 12px;
 }
 
-/* ── KPI cards ──────────────────────────────────────────────────────────── */
-.kpi-row  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
-.kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
-.kpi-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+/* ━━ KPI Cards ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.kpi-row   { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
+.kpi-grid  { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 10px; margin-bottom: 18px; }
+.kpi-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 14px; }
+.kpi-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 14px; }
 
 .kpi-card {
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px 20px;
-  position: relative; overflow: hidden;
-  transition: border-color .15s, box-shadow .15s;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--b1);
+  border-radius: 10px;
+  padding: 16px 18px;
+  position: relative;
+  transition: border-color .15s;
 }
-.kpi-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
+.kpi-card:hover { border-color: var(--b2); }
 
-/* Colored top accent bar */
+/* Left accent stripe instead of neon top bar — subtler, more professional */
 .kpi-card::before {
   content: ''; position: absolute;
-  top: 0; left: 0; right: 0; height: 2px;
+  left: 0; top: 10%; bottom: 10%; width: 3px;
+  border-radius: 0 2px 2px 0;
+  opacity: .6;
 }
-.kpi-card.blue::before   { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
-.kpi-card.green::before  { background: linear-gradient(90deg, #10b981, #34d399); }
-.kpi-card.amber::before  { background: linear-gradient(90deg, #f59e0b, #fb923c); }
-.kpi-card.red::before    { background: linear-gradient(90deg, #f43f5e, #fb7185); }
-.kpi-card.purple::before { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+.kpi-card.blue::before   { background: var(--c-blue); }
+.kpi-card.green::before  { background: var(--c-green); }
+.kpi-card.amber::before  { background: var(--c-amber); }
+.kpi-card.red::before    { background: var(--c-red); }
+.kpi-card.purple::before { background: var(--brand); }
 
 .kpi-label {
-  font-family: var(--mono); font-size: 9.5px; font-weight: 700;
-  color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px;
-  margin-bottom: 10px; display: block;
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 8px; display: block;
 }
 .kpi-value {
-  font-size: 28px; font-weight: 800; letter-spacing: -1px;
-  line-height: 1; margin-bottom: 6px; color: var(--text1);
+  font-size: 26px; font-weight: 800; letter-spacing: -.8px;
+  line-height: 1; margin-bottom: 5px; color: var(--t1);
 }
 .kpi-val {
-  font-size: 26px; font-weight: 800; letter-spacing: -.8px;
-  line-height: 1; margin-bottom: 6px; color: var(--text1);
-  display: block;
+  font-size: 24px; font-weight: 800; letter-spacing: -.6px;
+  line-height: 1; margin-bottom: 5px; color: var(--t1); display: block;
 }
 .kpi-sub {
-  font-size: 11px; color: var(--text3);
+  font-size: 11px; color: var(--t3);
   display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
 }
 .kpi-trend {
-  font-size: 11px; font-weight: 600;
-  padding: 2px 6px; border-radius: 4px;
+  font-size: 10px; font-weight: 700;
+  padding: 2px 5px; border-radius: 3px;
 }
-.trend-up   { color: var(--green); background: rgba(16,185,129,.1); }
-.trend-down { color: var(--red);   background: rgba(244,63,94,.1); }
-.trend-flat { color: var(--text3); }
+.trend-up   { color: var(--c-green); background: var(--c-green-bg); }
+.trend-down { color: var(--c-red);   background: var(--c-red-bg); }
+.trend-flat { color: var(--t3); }
 
-/* ── Cards ──────────────────────────────────────────────────────────────── */
+/* ━━ Card (generic) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .card {
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px 24px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 14px;
   transition: border-color .15s;
 }
-.card:hover { border-color: var(--border2); }
+.card:hover { border-color: var(--b2); }
 .card-h {
-  font-size: 12px; font-weight: 700; color: var(--text2);
-  text-transform: uppercase; letter-spacing: 1.2px;
-  font-family: var(--mono); margin-bottom: 16px; display: block;
+  font-family: var(--mono); font-size: 9.5px; font-weight: 700;
+  color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 14px; display: block;
 }
 
-/* ── Chart cards ────────────────────────────────────────────────────────── */
-.chart-grid { display: grid; gap: 16px; margin-bottom: 16px; }
+/* ━━ Chart cards ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.chart-grid { display: grid; gap: 14px; margin-bottom: 14px; }
 .chart-grid.cols-2   { grid-template-columns: 1fr 1fr; }
 .chart-grid.cols-3   { grid-template-columns: 1fr 1fr 1fr; }
 .chart-grid.cols-1-2 { grid-template-columns: 1fr 2fr; }
@@ -381,272 +371,260 @@ nav {
 
 .chart-card {
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px 22px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 18px 20px;
   transition: border-color .15s;
 }
-.chart-card:hover { border-color: var(--border2); }
-.chart-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
-.chart-title { font-size: 14px; font-weight: 700; color: var(--text1); margin-bottom: 3px; }
-.chart-sub { font-size: 11px; color: var(--text3); }
+.chart-card:hover { border-color: var(--b2); }
+.chart-header {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; margin-bottom: 16px;
+}
+.chart-title { font-size: 13px; font-weight: 700; color: var(--t1); margin-bottom: 2px; }
+.chart-sub   { font-size: 11px; color: var(--t3); }
 .chart-badge {
-  font-family: var(--mono); font-size: 9px;
-  padding: 3px 8px; border-radius: 4px;
-  background: var(--surface3); color: var(--text3); flex-shrink: 0;
+  font-family: var(--mono); font-size: 8.5px;
+  padding: 2px 7px; border-radius: 4px;
+  background: var(--s2); color: var(--t3); flex-shrink: 0;
 }
 
-/* ── View cards (new marketing/service views) ─────────────────────────── */
+/* ━━ View cards (marketing/service views) ━━━━━━━━━━━━━━ */
 .view-card {
   background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 20px 22px;
-  margin-bottom: 16px;
-  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
 }
 .view-card-title {
-  font-family: var(--mono); font-size: 10px; font-weight: 700;
-  color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase;
-  margin-bottom: 14px; display: block;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  color: var(--t3); letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 12px; display: block;
 }
 
-/* ── Data table ─────────────────────────────────────────────────────────── */
+/* ━━ Data table ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .data-table th {
-  font-family: var(--mono); font-size: 9px; color: var(--text3);
+  font-family: var(--mono); font-size: 8.5px; color: var(--t3);
   text-transform: uppercase; letter-spacing: 1.5px;
-  padding: 8px 12px; text-align: left;
-  border-bottom: 1px solid var(--border);
+  padding: 7px 12px; text-align: left; border-bottom: 1px solid var(--b1);
+  font-weight: 600;
 }
 .data-table td {
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text2);
+  padding: 9px 12px; border-bottom: 1px solid var(--b1); color: var(--t2);
 }
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td { background: var(--surface2); }
-.td-value { font-weight: 700; color: var(--text1); font-family: var(--mono); }
+.data-table tr:hover td { background: var(--s2); }
+.td-value { font-weight: 700; color: var(--t1); font-family: var(--mono); }
 .td-badge {
   display: inline-flex; align-items: center;
-  padding: 2px 8px; border-radius: 4px;
-  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  padding: 2px 7px; border-radius: 3px;
+  font-family: var(--mono); font-size: 8.5px; font-weight: 700;
 }
 
-/* ── Progress bar ───────────────────────────────────────────────────────── */
-.prog-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.prog-fill { height: 100%; border-radius: 2px; transition: width .8s ease; }
+/* ━━ Progress bar ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.prog-bar { height: 4px; background: var(--b1); border-radius: 2px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 2px; transition: width .7s ease; }
 
-/* ── Stage funnel rows ──────────────────────────────────────────────────── */
+/* ━━ Funnel rows ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .funnel-row {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 0; border-bottom: 1px solid var(--border);
+  padding: 9px 0; border-bottom: 1px solid var(--b1);
 }
 .funnel-row:last-child { border-bottom: none; }
-.funnel-stage  { font-size: 12px; color: var(--text2); width: 140px; flex-shrink: 0; }
+.funnel-stage  { font-size: 12px; color: var(--t2); width: 140px; flex-shrink: 0; }
 .funnel-bar-wrap { flex: 1; }
-.funnel-meta  { font-family: var(--mono); font-size: 11px; color: var(--text3); width: 80px; text-align: right; flex-shrink: 0; }
-.funnel-count { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--text1); width: 60px; text-align: right; flex-shrink: 0; }
+.funnel-meta  { font-family: var(--mono); font-size: 10px; color: var(--t3); width: 72px; text-align: right; flex-shrink: 0; }
+.funnel-count { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--t1); width: 56px; text-align: right; flex-shrink: 0; }
 
-/* ── Insight / alert banners ────────────────────────────────────────────── */
+/* ━━ Alert / insight banners ━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .insight-banner {
-  background: rgba(16,185,129,.06);
-  border: 1px solid rgba(16,185,129,.2);
-  border-left: 3px solid var(--green);
-  border-radius: 10px;
-  padding: 14px 16px;
-  display: flex; align-items: flex-start; gap: 12px;
-  margin-bottom: 14px;
-  font-size: 13px; color: var(--text2); line-height: 1.6;
+  background: rgba(5,150,105,.06);
+  border: 1px solid rgba(5,150,105,.18);
+  border-left: 3px solid var(--c-green);
+  border-radius: 8px;
+  padding: 12px 15px;
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 12px; font-size: 13px; color: var(--t2); line-height: 1.6;
 }
 .insight-banner.warning {
-  background: rgba(245,158,11,.06);
-  border-color: rgba(245,158,11,.2);
-  border-left-color: var(--amber);
+  background: rgba(217,119,6,.06);
+  border-color: rgba(217,119,6,.18);
+  border-left-color: var(--c-amber);
 }
 .insight-banner.critical {
-  background: rgba(244,63,94,.06);
-  border-color: rgba(244,63,94,.2);
-  border-left-color: var(--red);
+  background: rgba(220,38,38,.06);
+  border-color: rgba(220,38,38,.18);
+  border-left-color: var(--c-red);
 }
 
-/* ── Mini stats ─────────────────────────────────────────────────────────── */
+/* ━━ Mini stats ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .mini-stat {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 16px;
-  text-align: center;
+  background: var(--s2);
+  border: 1px solid var(--b1);
+  border-radius: 8px;
+  padding: 12px 14px; text-align: center;
 }
-.ms-v { font-size: 22px; font-weight: 800; color: var(--text1); line-height: 1; margin-bottom: 4px; }
-.ms-l { font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; }
+.ms-v { font-size: 20px; font-weight: 800; color: var(--t1); line-height: 1; margin-bottom: 4px; }
+.ms-l { font-size: 9px; color: var(--t3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; }
 
-/* ── Metric highlight ───────────────────────────────────────────────────── */
+/* ━━ Metric highlight ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .metric-highlight {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 8px;
-  transition: border-color .13s;
+  background: var(--s2); border: 1px solid var(--b1);
+  border-radius: 8px; padding: 11px 13px;
+  display: flex; align-items: center; gap: 11px;
+  margin-bottom: 7px; transition: border-color .12s;
 }
-.metric-highlight:hover { border-color: var(--border2); }
-.mh-icon    { font-size: 18px; flex-shrink: 0; }
-.mh-label   { font-size: 11px; color: var(--text3); margin-bottom: 2px; font-family: var(--mono); letter-spacing: .5px; }
-.mh-value   { font-size: 18px; font-weight: 800; color: var(--text1); }
-.mh-context { font-size: 11px; color: var(--text3); margin-left: auto; font-family: var(--mono); text-align: right; }
+.metric-highlight:hover { border-color: var(--b2); }
+.mh-icon  { font-size: 16px; flex-shrink: 0; }
+.mh-label { font-size: 10px; color: var(--t3); margin-bottom: 1px; font-family: var(--mono); }
+.mh-value { font-size: 16px; font-weight: 800; color: var(--t1); }
+.mh-context { font-size: 10px; color: var(--t3); margin-left: auto; font-family: var(--mono); text-align: right; }
 
-/* ── Heatmap ────────────────────────────────────────────────────────────── */
-.heatmap { display: grid; gap: 3px; }
-.heatmap-cell {
-  border-radius: 3px; height: 28px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 10px; font-weight: 700;
-  transition: opacity .2s; cursor: default;
-}
-.heatmap-cell:hover { opacity: .8; }
+/* ━━ Empty state ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.empty-state { text-align: center; padding: 48px 20px; }
+.empty-icon  { font-size: 36px; margin-bottom: 10px; opacity: .25; }
+.empty-title { font-size: 15px; font-weight: 700; color: var(--t2); margin-bottom: 5px; }
+.empty-sub   { font-size: 12px; color: var(--t3); }
 
-/* ── Empty state ────────────────────────────────────────────────────────── */
-.empty-state { text-align: center; padding: 52px 20px; }
-.empty-icon  { font-size: 40px; margin-bottom: 12px; opacity: .3; }
-.empty-title { font-size: 16px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
-.empty-sub   { font-size: 13px; color: var(--text3); }
-
-/* ── Score ring (overview) ──────────────────────────────────────────────── */
+/* ━━ Score ring ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .score-hero {
-  display: flex; align-items: center; gap: 28px;
-  padding: 24px; background: var(--card-bg);
-  border-radius: 16px; margin-bottom: 16px;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  display: flex; align-items: center; gap: 24px;
+  padding: 20px 22px; background: var(--card-bg);
+  border-radius: 12px; margin-bottom: 14px;
+  border: 1px solid var(--b1);
 }
 .score-ring-lg {
-  width: 100px; height: 100px; border-radius: 50%;
+  width: 90px; height: 90px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; border: 4px solid;
+  flex-shrink: 0; border: 3px solid;
 }
 
-/* ── AI Report Builder ──────────────────────────────────────────────────── */
+/* ━━ Heatmap ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.heatmap { display: grid; gap: 3px; }
+.heatmap-cell {
+  border-radius: 3px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  transition: opacity .2s; cursor: default;
+}
+
+/* ━━ AI builder ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .ai-builder {
-  background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(59,130,246,.05));
-  border: 1px solid rgba(124,58,237,.2);
-  border-radius: 16px; padding: 28px;
-  margin-bottom: 20px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, rgba(124,58,237,.07), rgba(37,99,235,.04));
+  border: 1px solid rgba(124,58,237,.18);
+  border-radius: 14px; padding: 24px; margin-bottom: 18px;
+  position: relative; overflow: hidden;
 }
 .ai-builder::before {
-  content: ''; position: absolute;
-  top: -40px; right: -40px;
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(124,58,237,.1), transparent 70%);
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(124,58,237,.08), transparent 70%);
   pointer-events: none;
 }
-.ai-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.ai-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .ai-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--brand), var(--blue));
-  border-radius: 10px;
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--brand), #1d4ed8);
+  border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 16px; flex-shrink: 0;
+  font-size: 15px; flex-shrink: 0;
 }
-.ai-title { font-size: 18px; font-weight: 800; color: var(--text1); }
-.ai-sub   { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.ai-title { font-size: 17px; font-weight: 800; color: var(--t1); }
+.ai-sub   { font-size: 11.5px; color: var(--t3); margin-top: 2px; }
 .ai-tab {
-  background: var(--surface2); border: 1px solid var(--border2);
-  border-radius: 6px; padding: 4px 12px;
-  font-size: 10px; font-weight: 700; color: var(--text3);
-  cursor: pointer; font-family: var(--mono); letter-spacing: .5px;
-  transition: all .15s;
+  background: var(--s2); border: 1px solid var(--b2);
+  border-radius: 5px; padding: 3px 10px;
+  font-size: 9.5px; font-weight: 700; color: var(--t3);
+  cursor: pointer; font-family: var(--mono); transition: all .12s;
 }
 .ai-tab:hover, .ai-tab.on { background: var(--brand); border-color: var(--brand); color: #fff; }
-.ai-input-row { display: flex; gap: 10px; }
+.ai-input-row { display: flex; gap: 8px; }
 .ai-input {
   flex: 1; background: var(--input-bg);
-  border: 1px solid var(--border2); border-radius: 10px;
-  padding: 12px 16px; color: var(--text1);
-  font-family: var(--font); font-size: 14px; outline: none;
-  transition: border-color .2s;
+  border: 1px solid var(--b2); border-radius: 8px;
+  padding: 10px 14px; color: var(--t1);
+  font-family: var(--font); font-size: 13.5px; outline: none;
+  transition: border-color .15s;
 }
 .ai-input:focus { border-color: var(--brand); }
-.ai-input::placeholder { color: var(--text3); }
+.ai-input::placeholder { color: var(--t3); }
 .ai-submit {
-  padding: 12px 24px;
-  background: linear-gradient(135deg, var(--brand), #5b21b6);
-  color: #fff; border: none; border-radius: 10px;
-  font-size: 14px; font-weight: 700; cursor: pointer;
-  font-family: var(--font); transition: all .2s;
-  white-space: nowrap; display: flex; align-items: center; gap: 8px;
+  padding: 10px 22px;
+  background: var(--brand); color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  font-family: var(--font); transition: background .15s;
+  white-space: nowrap; display: flex; align-items: center; gap: 7px;
 }
-.ai-submit:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,.3); }
-.ai-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.ai-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.ai-submit:hover { background: var(--brand-mid); }
+.ai-submit:disabled { opacity: .5; cursor: not-allowed; }
+.ai-suggestions { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
 .ai-chip {
-  padding: 5px 12px; background: var(--surface3);
-  border: 1px solid var(--border2); border-radius: 20px;
-  font-size: 11px; color: var(--text2); cursor: pointer;
-  transition: all .15s; font-family: var(--mono);
+  padding: 4px 11px; background: var(--s2);
+  border: 1px solid var(--b2); border-radius: 20px;
+  font-size: 10.5px; color: var(--t2); cursor: pointer;
+  transition: all .12s; font-family: var(--mono);
 }
-.ai-chip:hover { border-color: var(--brand); color: var(--brand3); background: rgba(124,58,237,.08); }
+.ai-chip:hover { border-color: var(--brand); color: var(--brand-lt); background: rgba(124,58,237,.07); }
 .ai-result {
-  margin-top: 20px; background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px; padding: 20px; display: none;
+  margin-top: 18px; background: var(--s1);
+  border: 1px solid var(--b1);
+  border-radius: 10px; padding: 18px; display: none;
 }
-.ai-result.show { display: block; animation: fadeIn .4s ease; }
-.ai-result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-.ai-result-title { font-size: 15px; font-weight: 700; color: var(--text1); }
+.ai-result.show { display: block; animation: fadeIn .3s ease; }
+.ai-result-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.ai-result-title { font-size: 14px; font-weight: 700; color: var(--t1); }
 .ai-insight {
-  background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.15);
-  border-radius: 8px; padding: 12px 14px; margin-top: 14px;
-  font-size: 12px; color: var(--text2); line-height: 1.65;
+  background: rgba(37,99,235,.06); border: 1px solid rgba(37,99,235,.14);
+  border-radius: 7px; padding: 11px 13px; margin-top: 12px;
+  font-size: 12px; color: var(--t2); line-height: 1.65;
 }
-.ai-insight strong { color: var(--blue2); }
-.ai-thinking { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 13px; color: var(--text3); }
+.ai-insight strong { color: var(--c-blue); }
+.ai-thinking { display: flex; align-items: center; gap: 8px; padding: 10px 0; font-size: 12px; color: var(--t3); }
 .ai-dots span { animation: blink 1.4s infinite; }
 .ai-dots span:nth-child(2) { animation-delay: .2s; }
 .ai-dots span:nth-child(3) { animation-delay: .4s; }
-@keyframes blink { 0%,80%,100% { opacity: 0; } 40% { opacity: 1; } }
+@keyframes blink { 0%,80%,100%{opacity:0;} 40%{opacity:1;} }
 
-/* ── History filter ─────────────────────────────────────────────────────── */
+/* ━━ History filter ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 #history-filter select {
-  padding: 8px 14px;
-  background: var(--card-bg);
-  border: 1px solid var(--border2);
-  border-radius: 8px; color: var(--text1);
-  font-size: 13px; font-family: var(--font);
+  padding: 7px 12px; background: var(--card-bg);
+  border: 1px solid var(--b2); border-radius: 7px;
+  color: var(--t1); font-size: 12px; font-family: var(--font);
   cursor: pointer; outline: none;
 }
 #history-filter select:focus { border-color: var(--brand); }
 
-/* ── Responsive ─────────────────────────────────────────────────────────── */
+/* ━━ Pro lock overlay ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+.view { position: relative; }
+.pro-lock-overlay {
+  position: absolute; inset: 0;
+  backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px; z-index: 10;
+}
+[data-theme="dark"]  .pro-lock-overlay { background: rgba(4,4,10,.72); }
+[data-theme="light"] .pro-lock-overlay { background: rgba(244,245,249,.78); }
+[data-theme="slate"] .pro-lock-overlay { background: rgba(16,21,40,.75); }
+
+/* ━━ Responsive ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 @media (max-width: 1100px) {
   .sidebar { display: none; }
-  .kpi-row, .kpi-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-row, .kpi-grid-4 { grid-template-columns: repeat(2,1fr); }
   .chart-grid.cols-2,
   .chart-grid.cols-3,
   .chart-grid.cols-1-2,
   .chart-grid.cols-2-1 { grid-template-columns: 1fr; }
 }
 @media (max-width: 900px) {
-  .kpi-grid-3, .kpi-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .kpi-grid-3, .kpi-grid-4 { grid-template-columns: repeat(2,1fr); }
 }
 @media (max-width: 600px) {
-  .main { padding: 16px; }
-  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .main { padding: 14px; }
   .ai-input-row { flex-direction: column; }
 }
-
-/* ── Pro lock overlay ───────────────────────────────────────────────────── */
-.view { position: relative; }
-.pro-lock-overlay {
-  position: absolute; inset: 0;
-  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-  background: rgba(4,4,10,.75);
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 12px; z-index: 10;
-}
-[data-theme="light"] .pro-lock-overlay { background: rgba(240,242,248,.8); }
 </style>
 </head>
 <body>
@@ -655,7 +633,7 @@ nav {
   <div class="nav-left">
     <a href="index.html" class="logo"><div class="logo-mark">⚡</div>FixOps</a>
     <div class="nav-divider"></div>
-    <span class="nav-title">Portal Snapshot</span><span id="nav-plan-badge" style="margin-left:8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;background:rgba(124,58,237,.15);color:#a78bfa;display:none;"></span>
+    <span class="nav-title">Portal Snapshot</span><span id="nav-plan-badge" style="margin-left:8px;font-size:10px;font-weight:700;padding:2px 8px;border-radius:5px;background:rgba(124,58,237,.1);color:var(--brand-lt);display:none;"></span>
   </div>
   <div class="nav-right">
     <span class="nav-badge" id="portal-badge">Loading…</span>
@@ -1211,8 +1189,8 @@ let aiChartInstance = null;
 const _isDark = document.documentElement.getAttribute('data-theme') !== 'light';
 Chart.defaults.color = _isDark ? 'rgba(255,255,255,.45)' : 'rgba(12,14,30,.45)';
 Chart.defaults.borderColor = _isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.07)';
-Chart.defaults.font.family = "'JetBrains Mono', monospace";
-Chart.defaults.font.size = 10;
+Chart.defaults.font.family = "'Outfit', sans-serif";
+Chart.defaults.font.size = 11;
 
 const COLORS = {
   blue:   ['rgba(59,130,246,.8)',  'rgba(59,130,246,.15)'],
@@ -1224,8 +1202,8 @@ const COLORS = {
 };
 
 const PALETTE = [
-  '#3b82f6','#10b981','#f59e0b','#f43f5e','#8b5cf6',
-  '#06b6d4','#ec4899','#84cc16','#f97316','#a78bfa'
+  '#2563eb','#059669','#d97706','#dc2626','#7c3aed',
+  '#0891b2','#db2777','#65a30d','#ea580c','#a78bfa'
 ];
 
 function fmt(n) { return Number(n||0).toLocaleString(); }
@@ -1271,7 +1249,7 @@ async function loadFromToken(token) {
       navPlanBadge.textContent = planLabel;
       navPlanBadge.style.display = 'inline';
       if (isProOrAbove) navPlanBadge.style.background = 'rgba(16,185,129,.15)';
-      if (isProOrAbove) navPlanBadge.style.color = '#10b981';
+      if (isProOrAbove) navPlanBadge.style.color = '#059669';
     }
 
     // Show the dashboard for everyone
@@ -1351,7 +1329,7 @@ async function loadFromToken(token) {
                  viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
                  'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
               '</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
             '</div>' +
           '</div>';
       });
@@ -1368,7 +1346,7 @@ async function loadFromToken(token) {
               '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
               '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
               '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
             '</div>' +
           '</div>';
         });
@@ -1386,7 +1364,7 @@ async function loadFromToken(token) {
                 '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
                 '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
                 '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
-                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
               '</div>' +
             '</div>';
         }
@@ -1450,7 +1428,7 @@ async function loadData() {
       navPlanBadge.textContent = planLabel;
       navPlanBadge.style.display = 'inline';
       if (isProOrAbove) navPlanBadge.style.background = 'rgba(16,185,129,.15)';
-      if (isProOrAbove) navPlanBadge.style.color = '#10b981';
+      if (isProOrAbove) navPlanBadge.style.color = '#059669';
     }
 
     // Show the dashboard for everyone
@@ -1524,7 +1502,7 @@ async function loadData() {
                  viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
                  'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
               '</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
             '</div>' +
           '</div>';
       });
@@ -1541,7 +1519,7 @@ async function loadData() {
               '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
               '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
               '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
             '</div>' +
           '</div>';
         });
@@ -1559,7 +1537,7 @@ async function loadData() {
                 '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
                 '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
                 '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
-                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
               '</div>' +
             '</div>';
         }
@@ -1726,9 +1704,9 @@ function buildOverview() {
       datasets: [{
         data: dimValues,
         backgroundColor: 'rgba(59,130,246,.15)',
-        borderColor: '#3b82f6',
+        borderColor: '#2563eb',
         borderWidth: 2,
-        pointBackgroundColor: '#3b82f6',
+        pointBackgroundColor: '#2563eb',
         pointRadius: 3
       }]
     },
@@ -1774,7 +1752,7 @@ function buildOverview() {
           Math.round(totalD*.08), Math.round(totalD*.12), Math.round(totalD*.18),
           Math.round(totalD*.22), Math.round(totalD*.18), Math.round(totalD*.22)
         ],
-        backgroundColor: ['#10b981cc','#10b981aa','#f59e0bcc','#f59e0baa','#f43f5ecc','#f43f5eaa'],
+        backgroundColor: ['rgba(5,150,105,.65)','rgba(5,150,105,.5)','rgba(217,119,6,.65)','rgba(217,119,6,.5)','rgba(220,38,38,.65)','rgba(220,38,38,.5)'],
         borderRadius: 4, borderSkipped: false
       }]
     },
@@ -1816,15 +1794,15 @@ function buildOverview() {
     histCard.innerHTML =
       '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">' +
         '<div>' +
-          '<div style="font-size:11px;font-weight:700;color:#10b981;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">📈 Progress Since Week 1 — ' + weeksCount + ' weeks monitored</div>' +
+          '<div style="font-size:11px;font-weight:700;color:var(--c-green);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">📈 Progress Since Week 1 — ' + weeksCount + ' weeks monitored</div>' +
           '<div style="font-size:13px;color:var(--text2);">' +
-            (saved > 0 ? 'Monthly waste reduced by <strong style="color:#10b981;">$' + saved.toLocaleString() + '/mo</strong> · ' : '') +
-            'Score ' + (scoreDelta>=0 ? '<strong style="color:#10b981;">↑' + scoreDelta + ' points</strong>' : '<strong style="color:#f43f5e;">↓' + Math.abs(scoreDelta) + ' points</strong>') + ' from first scan' +
+            (saved > 0 ? 'Monthly waste reduced by <strong style="color:var(--c-green);">$' + saved.toLocaleString() + '/mo</strong> · ' : '') +
+            'Score ' + (scoreDelta>=0 ? '<strong style="color:var(--c-green);">↑' + scoreDelta + ' points</strong>' : '<strong style="color:var(--c-red);">↓' + Math.abs(scoreDelta) + ' points</strong>') + ' from first scan' +
           '</div>' +
         '</div>' +
         '<div style="display:flex;gap:8px;">' +
-          '<button data-nav="trends" style="padding:8px 14px;background:rgba(16,185,129,.15);color:#10b981;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">View Trends</button>' +
-          '<button data-nav="roi" style="padding:8px 14px;background:rgba(16,185,129,.15);color:#10b981;border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">Full ROI</button>' +
+          '<button data-nav="trends" style="padding:8px 14px;background:rgba(16,185,129,.15);color:var(--c-green);border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">View Trends</button>' +
+          '<button data-nav="roi" style="padding:8px 14px;background:rgba(16,185,129,.15);color:var(--c-green);border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">Full ROI</button>' +
         '</div>' +
       '</div>';
 
@@ -1837,9 +1815,9 @@ function buildOverview() {
   if (keyPersonIssue) {
     const riskCard = document.createElement('div');
     riskCard.className = 'card';
-    riskCard.style.cssText = 'margin-top:12px;background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.25);';
+    riskCard.style.cssText = 'margin-top:12px;background:var(--c-amber-bg);border-color:rgba(245,158,11,.25);';
     riskCard.innerHTML =
-      '<div style="font-size:11px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠️ Pipeline Concentration Risk</div>' +
+      '<div style="font-size:11px;font-weight:700;color:var(--c-amber);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠️ Pipeline Concentration Risk</div>' +
       '<div style="font-size:13px;color:var(--text1);margin-bottom:4px;font-weight:600;">' + (keyPersonIssue.title||'') + '</div>' +
       '<div style="font-size:12px;color:var(--text2);">' + (keyPersonIssue.impact||'') + '</div>';
     const ovEl = document.querySelector('#view-overview .card');
@@ -1888,7 +1866,7 @@ function buildPipeline() {
       <div class="funnel-stage">${stage}</div>
       <div class="funnel-bar-wrap">
         <div class="prog-bar">
-          <div class="prog-fill" style="width:${pct}%;background:${pct>50?'#3b82f6':pct>25?'#f59e0b':'#f43f5e'}"></div>
+          <div class="prog-fill" style="width:${pct}%;background:${pct>50?'#2563eb':pct>25?'#d97706':'#dc2626'}"></div>
         </div>
       </div>
       <div class="funnel-count">${fmt(count)}</div>
@@ -1925,11 +1903,11 @@ function buildPipeline() {
   ];
   let tableHtml = '<thead><tr><th>Deal Name</th><th>Stage</th><th>Days Stalled</th><th>Owner</th><th>Value</th><th>Risk</th></tr></thead><tbody>';
   stalledData.forEach(d => {
-    const risk = d.days > 40 ? ['HIGH','#f43f5e'] : d.days > 28 ? ['MED','#f59e0b'] : ['LOW','#10b981'];
+    const risk = d.days > 40 ? ['HIGH','#dc2626'] : d.days > 28 ? ['MED','#d97706'] : ['LOW','#059669'];
     tableHtml += `<tr>
       <td>${d.deal}</td>
       <td><span class="td-badge" style="background:rgba(59,130,246,.1);color:#60a5fa;">${d.stage}</span></td>
-      <td class="td-value" style="color:${d.days>30?'#f43f5e':'#f59e0b'}">${d.days}d</td>
+      <td class="td-value" style="color:${d.days>30?'#dc2626':'#d97706'}">${d.days}d</td>
       <td>${d.owner}</td>
       <td class="td-value">${d.value}</td>
       <td><span class="td-badge" style="background:${risk[1]}15;color:${risk[1]}">${risk[0]}</span></td>
@@ -1962,7 +1940,7 @@ function buildVelocity() {
       datasets: [{
         label: 'Avg Days',
         data: stageDays,
-        backgroundColor: stageDays.map(d => d > 15 ? '#f43f5ecc' : d > 10 ? '#f59e0bcc' : '#10b981cc'),
+        backgroundColor: stageDays.map(d => d > 15 ? 'rgba(220,38,38,.65)' : d > 10 ? 'rgba(217,119,6,.65)' : 'rgba(5,150,105,.65)'),
         borderRadius: 6, borderSkipped: false
       }]
     },
@@ -1975,11 +1953,11 @@ function buildVelocity() {
 
   // Age heatmap
   const ageBuckets = [
-    { label: '<7 days', count: Math.round((ps.deals||0)*.08), pct: 8, color: '#10b981' },
-    { label: '7–14 days', count: Math.round((ps.deals||0)*.12), pct: 12, color: '#34d399' },
-    { label: '14–30 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#f59e0b' },
-    { label: '30–60 days', count: Math.round((ps.deals||0)*.22), pct: 22, color: '#fb923c' },
-    { label: '60–90 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#f43f5e' },
+    { label: '<7 days', count: Math.round((ps.deals||0)*.08), pct: 8, color: '#059669' },
+    { label: '7–14 days', count: Math.round((ps.deals||0)*.12), pct: 12, color: '#16a34a' },
+    { label: '14–30 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#d97706' },
+    { label: '30–60 days', count: Math.round((ps.deals||0)*.22), pct: 22, color: 'rgba(234,88,12,.75)' },
+    { label: '60–90 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#dc2626' },
     { label: '90+ days', count: Math.round((ps.deals||0)*.22), pct: 22, color: '#be123c' },
   ];
   let hmHtml = '';
@@ -2001,7 +1979,7 @@ function buildVelocity() {
     type: 'doughnut',
     data: {
       labels: ['Won', 'Lost', 'Open'],
-      datasets: [{ data: [28, 42, 30], backgroundColor: ['#10b981cc','#f43f5ecc','#3b82f6cc'], borderWidth: 0 }]
+      datasets: [{ data: [28, 42, 30], backgroundColor: ['rgba(5,150,105,.65)','rgba(220,38,38,.65)','rgba(37,99,235,.65)'], borderWidth: 0 }]
     },
     options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
   });
@@ -2010,8 +1988,8 @@ function buildVelocity() {
     metric('🎯', 'Win Rate', '28%', 'Industry avg: 20–30%', 'green') +
     metric('⏱', 'Avg Sales Cycle', fmtDays(avgAge), avgAge > 60 ? 'Above benchmark' : 'Within range', avgAge > 60 ? 'red' : 'green') +
     metric('💸', 'Revenue at Risk', fmtMoney(Math.round((ps.deals||0)*0.22*18000*0.4)), 'stalled deals × avg size', 'red') +
-    `<div style="margin-top:12px;padding:12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px;font-size:11px;color:var(--text2);line-height:1.65;">
-      <strong style="color:#f43f5e;">Loss reason data missing.</strong> Without tracking why deals are lost, win rate improvement is impossible. FixOps builds the close-lost tracking system.
+    `<div style="margin-top:12px;padding:12px;background:var(--c-red-bg);border:1px solid rgba(244,63,94,.15);border-radius:8px;font-size:11px;color:var(--text2);line-height:1.65;">
+      <strong style="color:var(--c-red);">Loss reason data missing.</strong> Without tracking why deals are lost, win rate improvement is impossible. FixOps builds the close-lost tracking system.
     </div>`;
 }
 
@@ -2036,8 +2014,8 @@ function buildForecast() {
     data: {
       labels: months,
       datasets: [
-        { label: 'Pipeline', data: pipe, backgroundColor: '#3b82f633', borderColor: '#3b82f6', borderWidth: 1, borderRadius: 4 },
-        { label: 'Weighted', data: weighted, backgroundColor: '#10b98133', borderColor: '#10b981', borderWidth: 1, borderRadius: 4 }
+        { label: 'Pipeline', data: pipe, backgroundColor: '#3b82f633', borderColor: '#2563eb', borderWidth: 1, borderRadius: 4 },
+        { label: 'Weighted', data: weighted, backgroundColor: '#10b98133', borderColor: '#059669', borderWidth: 1, borderRadius: 4 }
       ]
     },
     options: {
@@ -2053,8 +2031,8 @@ function buildForecast() {
     data: {
       labels: months,
       datasets: [
-        { label: 'Total Pipeline', data: pipe, borderColor: '#3b82f6', backgroundColor: '#3b82f610', tension: .4, fill: true },
-        { label: 'Weighted (28%)', data: weighted, borderColor: '#10b981', backgroundColor: '#10b98110', tension: .4, fill: true }
+        { label: 'Total Pipeline', data: pipe, borderColor: '#2563eb', backgroundColor: '#3b82f610', tension: .4, fill: true },
+        { label: 'Weighted (28%)', data: weighted, borderColor: '#059669', backgroundColor: '#10b98110', tension: .4, fill: true }
       ]
     },
     options: {
@@ -2095,13 +2073,13 @@ function buildFunnel() {
 
   // Full funnel
   const funnelStages = [
-    { name: 'All Contacts', count: totalC, color: '#3b82f6' },
-    { name: 'Has Email', count: Math.round(totalC*0.88), color: '#3b82f6' },
-    { name: 'Lead', count: Math.round(totalC*0.28), color: '#8b5cf6' },
-    { name: 'MQL', count: Math.round(totalC*0.15), color: '#f59e0b' },
-    { name: 'SQL', count: Math.round(totalC*0.10), color: '#f97316' },
-    { name: 'Opportunity (Deal)', count: totalD, color: '#f43f5e' },
-    { name: 'Closed Won', count: Math.round(totalD*0.28), color: '#10b981' },
+    { name: 'All Contacts', count: totalC, color: '#2563eb' },
+    { name: 'Has Email', count: Math.round(totalC*0.88), color: '#2563eb' },
+    { name: 'Lead', count: Math.round(totalC*0.28), color: '#7c3aed' },
+    { name: 'MQL', count: Math.round(totalC*0.15), color: '#d97706' },
+    { name: 'SQL', count: Math.round(totalC*0.10), color: '#ea580c' },
+    { name: 'Opportunity (Deal)', count: totalD, color: '#dc2626' },
+    { name: 'Closed Won', count: Math.round(totalD*0.28), color: '#059669' },
   ];
   let ffHtml = '';
   funnelStages.forEach((s,i) => {
@@ -2123,7 +2101,7 @@ function buildFunnel() {
   ];
   let dcHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">';
   fields.forEach(f => {
-    const c = f.pct >= 80 ? '#10b981' : f.pct >= 60 ? '#f59e0b' : '#f43f5e';
+    const c = f.pct >= 80 ? '#059669' : f.pct >= 60 ? '#d97706' : '#dc2626';
     dcHtml += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface3);border-radius:8px;">
       <div style="flex:1;">
         <div style="font-size:12px;color:var(--text2);margin-bottom:5px;">${f.name}</div>
@@ -2161,7 +2139,7 @@ function buildContacts() {
           Math.round(totalC*.28), Math.round(totalC*.22), Math.round(totalC*.18),
           Math.round(totalC*.10), noOwnerCount || Math.round(totalC*.22)
         ],
-        backgroundColor: [...PALETTE.slice(0,4), '#f43f5e'].map(c=>c+'cc'),
+        backgroundColor: [...PALETTE.slice(0,4), '#dc2626'].map(c=>c+'cc'),
         borderRadius: 6, borderSkipped: false
       }]
     },
@@ -2191,8 +2169,8 @@ function buildContacts() {
       datasets: [{
         label: 'Total Contacts',
         data: growth,
-        borderColor: '#3b82f6', backgroundColor: '#3b82f610', tension: .4, fill: true,
-        pointRadius: 3, pointBackgroundColor: '#3b82f6'
+        borderColor: '#2563eb', backgroundColor: '#3b82f610', tension: .4, fill: true,
+        pointRadius: 3, pointBackgroundColor: '#2563eb'
       }]
     },
     options: {
@@ -2294,7 +2272,7 @@ function buildTickets() {
         labels: ['Same day','1–3 days','3–7 days','7–14 days','14d+'],
         datasets: [{
           data: ageData,
-          backgroundColor: ['#10b981cc','#34d399cc','#f59e0bcc','#f43f5ecc','#be123ccc'],
+          backgroundColor: ['rgba(5,150,105,.65)','rgba(16,185,129,.5)','rgba(217,119,6,.65)','rgba(220,38,38,.65)','rgba(190,18,60,.65)'],
           borderRadius: 6, borderSkipped: false
         }]
       },
@@ -2316,7 +2294,7 @@ function buildTickets() {
           Math.round(totalTickets*.34),
           Math.round(totalTickets*.22),
           noPriorityCount
-        ], backgroundColor: ['#be123ccc','#f43f5ecc','#f59e0bcc','#10b981cc','#3b82f6cc'], borderWidth: 0 }]
+        ], backgroundColor: ['rgba(190,18,60,.65)','rgba(220,38,38,.65)','rgba(217,119,6,.65)','rgba(5,150,105,.65)','rgba(37,99,235,.65)'], borderWidth: 0 }]
       },
       options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
     });
@@ -2324,9 +2302,9 @@ function buildTickets() {
 
   // SLA alert banner if breaching
   if (slaIssue) {
-    const alertHtml = '<div style="margin-bottom:16px;padding:14px 16px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:10px;display:flex;align-items:flex-start;gap:12px;">' +
+    const alertHtml = '<div style="margin-bottom:16px;padding:14px 16px;background:var(--c-red-bg);border:1px solid rgba(244,63,94,.25);border-radius:10px;display:flex;align-items:flex-start;gap:12px;">' +
       '<div style="font-size:20px;">🎫</div>' +
-      '<div><div style="font-size:13px;font-weight:700;color:#f43f5e;margin-bottom:3px;">' + slaIssue.title + '</div>' +
+      '<div><div style="font-size:13px;font-weight:700;color:var(--c-red);margin-bottom:3px;">' + slaIssue.title + '</div>' +
       '<div style="font-size:12px;color:var(--text2);">' + (slaIssue.impact||'Customer churn risk elevated') + '</div></div>' +
     '</div>';
     const kpisEl = document.getElementById('tickets-kpis');
@@ -2336,9 +2314,9 @@ function buildTickets() {
   // Tickets table — use real data if available, show guidance if not
   let tableHtml = '<thead><tr><th>Status</th><th>Tickets Affected</th><th>Impact</th><th>Action</th></tr></thead><tbody>';
   const ticketInsights = [
-    { status: slaCount > 0 ? 'SLA Breach' : 'SLA Healthy', count: slaCount || totalTickets, impact: slaCount > 0 ? 'Churn risk — customer trust declining' : 'All tickets within target resolution time', action: slaCount > 0 ? 'Prioritize & escalate' : 'Maintain response time', color: slaCount > 0 ? '#f43f5e' : '#10b981' },
-    { status: 'No Priority Set', count: noPriorityCount, impact: 'Teams cannot triage without urgency labels', action: 'Set priority on creation', color: noPriorityCount > totalTickets*0.3 ? '#f59e0b' : '#10b981' },
-    { status: 'Service Hub Not Used', count: 0, impact: ticketBlind ? 'Customer health completely invisible' : 'Tickets logged in HubSpot', action: ticketBlind ? 'Connect Service Hub' : 'Keep monitoring', color: ticketBlind ? '#f43f5e' : '#10b981' },
+    { status: slaCount > 0 ? 'SLA Breach' : 'SLA Healthy', count: slaCount || totalTickets, impact: slaCount > 0 ? 'Churn risk — customer trust declining' : 'All tickets within target resolution time', action: slaCount > 0 ? 'Prioritize & escalate' : 'Maintain response time', color: slaCount > 0 ? '#dc2626' : '#059669' },
+    { status: 'No Priority Set', count: noPriorityCount, impact: 'Teams cannot triage without urgency labels', action: 'Set priority on creation', color: noPriorityCount > totalTickets*0.3 ? '#d97706' : '#059669' },
+    { status: 'Service Hub Not Used', count: 0, impact: ticketBlind ? 'Customer health completely invisible' : 'Tickets logged in HubSpot', action: ticketBlind ? 'Connect Service Hub' : 'Keep monitoring', color: ticketBlind ? '#dc2626' : '#059669' },
   ];
   ticketInsights.forEach(t => {
     tableHtml += '<tr>' +
@@ -2375,9 +2353,9 @@ function buildTeam() {
 
     const repRows = reps.slice(0,15).map(r => {
       const total = r.calls + r.meetings;
-      const statusColor = total > 5 ? '#10b981' : total > 0 ? '#f59e0b' : '#f43f5e';
+      const statusColor = total > 5 ? '#059669' : total > 0 ? '#d97706' : '#dc2626';
       const statusLabel = total > 5 ? 'Active' : total > 0 ? 'Low' : 'Dark';
-      const staleCol = r.staleDealCount > 2 ? '#f43f5e' : 'rgba(255,255,255,.5)';
+      const staleCol = r.staleDealCount > 2 ? '#dc2626' : 'rgba(255,255,255,.5)';
       return '<tr style="border-bottom:1px solid var(--border);">' +
         '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:var(--text1);">' + r.name + '</td>' +
         '<td style="padding:10px 12px;text-align:center;font-size:13px;color:var(--text1);">' + r.calls + '</td>' +
@@ -2392,7 +2370,7 @@ function buildTeam() {
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">' +
         '<div class="mini-stat"><div class="ms-v">' + totalCalls + '</div><div class="ms-l">Total Calls</div></div>' +
         '<div class="mini-stat"><div class="ms-v">' + totalMeetings + '</div><div class="ms-l">Total Meetings</div></div>' +
-        '<div class="mini-stat" style="border-color:' + (darkReps.length>0?'rgba(244,63,94,.3)':'rgba(255,255,255,.06)') + ';"><div class="ms-v" style="color:' + (darkReps.length>0?'#f43f5e':'inherit') + ';">' + darkReps.length + '</div><div class="ms-l">Dark Reps</div></div>' +
+        '<div class="mini-stat" style="border-color:' + (darkReps.length>0?'rgba(244,63,94,.3)':'rgba(255,255,255,.06)') + ';"><div class="ms-v" style="color:' + (darkReps.length>0?'#dc2626':'inherit') + ';">' + darkReps.length + '</div><div class="ms-l">Dark Reps</div></div>' +
       '</div>' +
       '<table style="width:100%;border-collapse:collapse;">' +
         '<thead><tr style="border-bottom:1px solid var(--border);">' +
@@ -2404,7 +2382,7 @@ function buildTeam() {
         '</tr></thead>' +
         '<tbody>' + repRows + '</tbody>' +
       '</table>' +
-      (darkReps.length > 0 ? '<div style="margin-top:14px;padding:12px 14px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:8px;font-size:12px;color:var(--text2);">⚠️ Dark reps: <strong style="color:#f43f5e;">' + darkReps.map(r=>r.name).join(', ') + '</strong> — no calls or meetings logged this week</div>' : '') +
+      (darkReps.length > 0 ? '<div style="margin-top:14px;padding:12px 14px;background:var(--c-red-bg);border:1px solid rgba(244,63,94,.2);border-radius:8px;font-size:12px;color:var(--text2);">⚠️ Dark reps: <strong style="color:var(--c-red);">' + darkReps.map(r=>r.name).join(', ') + '</strong> — no calls or meetings logged this week</div>' : '') +
     '</div>';
   } else {
     html += '<div class="card" style="margin-bottom:20px;opacity:.6;">' +
@@ -2423,12 +2401,12 @@ function buildTeam() {
       '<tr style="border-bottom:1px solid var(--border);">' +
         '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:var(--text1);">' + u.name + '</td>' +
         '<td style="padding:10px 12px;font-size:12px;color:var(--text2);">' + (u.email||'—') + '</td>' +
-        '<td style="padding:10px 12px;text-align:right;"><span style="font-size:12px;font-weight:700;color:#f43f5e;">' + u.daysSince + ' days inactive</span></td>' +
+        '<td style="padding:10px 12px;text-align:right;"><span style="font-size:12px;font-weight:700;color:var(--c-red);">' + u.daysSince + ' days inactive</span></td>' +
       '</tr>'
     ).join('');
 
     html += '<div class="card">' +
-      '<div class="card-h">👻 Ghost Seats <span style="font-size:12px;font-weight:400;color:#f43f5e;">$' + waste.toLocaleString() + '–$' + maxWaste.toLocaleString() + '/mo wasted</span></div>' +
+      '<div class="card-h">👻 Ghost Seats <span style="font-size:12px;font-weight:400;color:var(--c-red);">$' + waste.toLocaleString() + '–$' + maxWaste.toLocaleString() + '/mo wasted</span></div>' +
       '<div style="font-size:13px;color:var(--text2);margin-bottom:16px;">' + gd.length + ' paid HubSpot user' + (gd.length!==1?'s':'') + ' with zero logins in 90+ days. Deactivate to stop paying for unused seats immediately.</div>' +
       '<table style="width:100%;border-collapse:collapse;">' +
         '<thead><tr style="border-bottom:1px solid var(--border);">' +
@@ -2474,7 +2452,7 @@ function buildTrends() {
   const criticals = hist.map(h => h.critical_count||0);
   const dim_names = ['dataIntegrity','automationHealth','pipelineIntegrity','marketingHealth','configSecurity','reportingQuality','teamAdoption','serviceHealth'];
   const dim_labels = ['Data','Automation','Pipeline','Marketing','Config','Reporting','Team','Service'];
-  const dimColors = ['#3b82f6','#7c3aed','#10b981','#f59e0b','#f43f5e','#06b6d4','#8b5cf6','#14b8a6'];
+  const dimColors = ['#2563eb','#7c3aed','#059669','#d97706','#dc2626','#0891b2','#7c3aed','#14b8a6'];
 
   // Build per-dimension trend data
   const dimTrends = dim_names.map((d,i) => ({
@@ -2518,7 +2496,7 @@ function buildTrends() {
         dimTrends.map(d => {
           const first = d.data[0]||0, last = d.data[d.data.length-1]||0;
           const delta = last - first;
-          const deltaColor = delta > 0 ? '#10b981' : delta < 0 ? '#f43f5e' : 'rgba(255,255,255,.4)';
+          const deltaColor = delta > 0 ? '#059669' : delta < 0 ? '#dc2626' : 'rgba(255,255,255,.4)';
           const deltaArrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
           return '<div style="background:var(--card-bg);border-radius:10px;padding:12px;">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
@@ -2536,7 +2514,7 @@ function buildTrends() {
       '<div class="card-h">⏳ Issues Present Multiple Weeks</div>' +
       '<div style="font-size:12px;color:var(--text2);margin-bottom:12px;">These issues keep appearing — highest priority for Fix It For Me</div>' +
       persistentIssues.map(i => {
-        const sev = i.severity==='critical'?'#f43f5e':i.severity==='warning'?'#f59e0b':'#3b82f6';
+        const sev = i.severity==='critical'?'#dc2626':i.severity==='warning'?'#d97706':'#2563eb';
         const age = i.count === hist.length ? 'Every scan' : i.count + ' of ' + hist.length + ' weeks';
         return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card-bg);border-radius:8px;margin-bottom:6px;border-left:3px solid '+sev+';">' +
           '<div style="flex:1;font-size:12px;color:var(--text1);">' + (i.title.length>80?i.title.slice(0,80)+'…':i.title) + '</div>' +
@@ -2580,7 +2558,7 @@ function buildTrends() {
     const critCtx = document.getElementById('critHistChart');
     if (critCtx) new Chart(critCtx, {
       type: 'line',
-      data: { labels: weeks, datasets: [{ data: criticals, borderColor: '#f43f5e', backgroundColor: 'rgba(244,63,94,.1)', fill: true, tension: 0.4, pointRadius: 3 }] },
+      data: { labels: weeks, datasets: [{ data: criticals, borderColor: '#dc2626', backgroundColor: 'rgba(244,63,94,.1)', fill: true, tension: 0.4, pointRadius: 3 }] },
       options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,.05)' } }, x: { grid: { display: false } } } }
     });
 
@@ -2649,15 +2627,15 @@ function buildROI() {
     '<div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(91,33,182,.06));border-color:rgba(124,58,237,.3);">' +
       '<div style="text-align:center;padding:20px 0;">' +
         '<div style="font-size:11px;font-weight:700;color:var(--brand3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Since You Started Monitoring</div>' +
-        '<div style="font-size:48px;font-weight:800;color:#10b981;margin-bottom:4px;">$' + wasteSaved.toLocaleString() + '/mo</div>' +
+        '<div style="font-size:48px;font-weight:800;color:var(--c-green);margin-bottom:4px;">$' + wasteSaved.toLocaleString() + '/mo</div>' +
         '<div style="font-size:14px;color:var(--text2);">estimated monthly waste eliminated</div>' +
         (annualSaved > 0 ? '<div style="font-size:13px;color:var(--text3);margin-top:4px;">= $' + annualSaved.toLocaleString() + ' annually</div>' : '') +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;border-top:1px solid rgba(255,255,255,.08);padding-top:20px;">' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:' + (scoreDelta>=0?'#10b981':'#f43f5e') + ';">' + (scoreDelta>=0?'+':'') + scoreDelta + '</div><div style="font-size:11px;color:var(--text3);">Score Change</div></div>' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + resolvedCount + '</div><div style="font-size:11px;color:var(--text3);">Issues Resolved</div></div>' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + critReduced + '</div><div style="font-size:11px;color:var(--text3);">Criticals Fixed</div></div>' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#a78bfa;">' + weeksMonitoring + '</div><div style="font-size:11px;color:var(--text3);">Weeks Monitored</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:' + (scoreDelta>=0?'#059669':'#dc2626') + ';">' + (scoreDelta>=0?'+':'') + scoreDelta + '</div><div style="font-size:11px;color:var(--text3);">Score Change</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:var(--c-green);">' + resolvedCount + '</div><div style="font-size:11px;color:var(--text3);">Issues Resolved</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:var(--c-green);">' + critReduced + '</div><div style="font-size:11px;color:var(--text3);">Criticals Fixed</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:var(--brand-lt);">' + weeksMonitoring + '</div><div style="font-size:11px;color:var(--text3);">Weeks Monitored</div></div>' +
       '</div>' +
     '</div>' +
 
@@ -2665,9 +2643,9 @@ function buildROI() {
     (wasteSaved > 0 ? '<div class="card" style="margin-bottom:16px;">' +
       '<div class="card-h">💳 Subscription ROI</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">' +
-        '<div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">Monthly Savings</div><div style="font-size:24px;font-weight:800;color:#10b981;">$' + wasteSaved.toLocaleString() + '</div></div>' +
+        '<div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">Monthly Savings</div><div style="font-size:24px;font-weight:800;color:var(--c-green);">$' + wasteSaved.toLocaleString() + '</div></div>' +
         '<div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">Subscription Cost</div><div style="font-size:24px;font-weight:800;color:var(--text1);">$' + subscriptionCost.toLocaleString() + '</div></div>' +
-        '<div style="text-align:center;padding:16px;background:' + (roi>0?'rgba(16,185,129,.1)':'var(--surface)') + ';border-radius:10px;border:1px solid ' + (roi>0?'rgba(16,185,129,.3)':'transparent') + ';"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">ROI</div><div style="font-size:24px;font-weight:800;color:' + (roi>0?'#10b981':'var(--text1)') + ';">' + (roi>0?'+':'') + roi + '%</div></div>' +
+        '<div style="text-align:center;padding:16px;background:' + (roi>0?'rgba(16,185,129,.1)':'var(--surface)') + ';border-radius:10px;border:1px solid ' + (roi>0?'rgba(16,185,129,.3)':'transparent') + ';"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">ROI</div><div style="font-size:24px;font-weight:800;color:' + (roi>0?'#059669':'var(--text1)') + ';">' + (roi>0?'+':'') + roi + '%</div></div>' +
       '</div>' +
     '</div>' : '') +
 
@@ -2675,7 +2653,7 @@ function buildROI() {
     (dimImprovements.length ? '<div class="card">' +
       '<div class="card-h">⬡ Dimension Changes Since First Scan</div>' +
       dimImprovements.map(d => {
-        const col = d.delta > 0 ? '#10b981' : '#f43f5e';
+        const col = d.delta > 0 ? '#059669' : '#dc2626';
         const pct = Math.round((d.delta / Math.max(100 - (d.current - d.delta), 1)) * 100);
         return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">' +
           '<div style="width:120px;font-size:12px;color:var(--text2);flex-shrink:0;">' + d.label + '</div>' +
@@ -2715,8 +2693,8 @@ function buildRevenue() {
   const pipeline = ps.openPipelineValue || 0;
 
   // MRR health color
-  const mrrColor = mrr > 0 ? '#10b981' : 'rgba(255,255,255,.4)';
-  const churnColor = churnRate > 25 ? '#f43f5e' : churnRate > 10 ? '#f59e0b' : '#10b981';
+  const mrrColor = mrr > 0 ? '#059669' : 'rgba(255,255,255,.4)';
+  const churnColor = churnRate > 25 ? '#dc2626' : churnRate > 10 ? '#d97706' : '#059669';
 
   // Find relevant issues
   const churnIssue = issues.find(i => i.title?.includes('churn rate'));
@@ -2749,7 +2727,7 @@ function buildRevenue() {
 
     // Alert banners from issues
     [churnIssue, renewIssue, overdueIssue, expiredQIssue].filter(Boolean).map(issue => {
-      const col = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#3b82f6';
+      const col = issue.severity==='critical'?'#dc2626':issue.severity==='warning'?'#d97706':'#2563eb';
       return '<div style="margin-bottom:10px;padding:14px 16px;background:'+col+'10;border:1px solid '+col+'30;border-radius:10px;border-left:3px solid '+col+';">' +
         '<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:4px;">'+issue.title+'</div>' +
         '<div style="font-size:12px;color:var(--text2);">'+(issue.impact||'')+'</div>' +
@@ -2762,8 +2740,8 @@ function buildRevenue() {
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;">' +
         '<div class="mini-stat"><div class="ms-v">'+fmtMoney(pipeline)+'</div><div class="ms-l">Pipeline Value</div></div>' +
         '<div class="mini-stat"><div class="ms-v">'+fmt(ps.openDealsCount||0)+'</div><div class="ms-l">Open Deals</div></div>' +
-        '<div class="mini-stat" style="border-color:'+(ps.zeroDollarDeals>0?'rgba(244,63,94,.3)':'rgba(255,255,255,.06)')+'"><div class="ms-v" style="color:'+(ps.zeroDollarDeals>0?'#f43f5e':'inherit')+'">'+fmt(ps.zeroDollarDeals||0)+'</div><div class="ms-l">$0 Deals</div></div>' +
-        '<div class="mini-stat" style="border-color:'+(ps.stalledDeals>0?'rgba(245,158,11,.3)':'rgba(255,255,255,.06)')+'"><div class="ms-v" style="color:'+(ps.stalledDeals>0?'#f59e0b':'inherit')+'">'+fmt(ps.stalledDeals||0)+'</div><div class="ms-l">Stale 21d+</div></div>' +
+        '<div class="mini-stat" style="border-color:'+(ps.zeroDollarDeals>0?'rgba(244,63,94,.3)':'rgba(255,255,255,.06)')+'"><div class="ms-v" style="color:'+(ps.zeroDollarDeals>0?'#dc2626':'inherit')+'">'+fmt(ps.zeroDollarDeals||0)+'</div><div class="ms-l">$0 Deals</div></div>' +
+        '<div class="mini-stat" style="border-color:'+(ps.stalledDeals>0?'rgba(245,158,11,.3)':'rgba(255,255,255,.06)')+'"><div class="ms-v" style="color:'+(ps.stalledDeals>0?'#d97706':'inherit')+'">'+fmt(ps.stalledDeals||0)+'</div><div class="ms-l">Stale 21d+</div></div>' +
       '</div>' +
     '</div>';
 
@@ -2772,14 +2750,14 @@ function buildRevenue() {
     if (totalSubs > 0 && document.getElementById('subStatusChart')) {
       new Chart(document.getElementById('subStatusChart'), {
         type: 'doughnut',
-        data: { labels: ['Active','Cancelled'], datasets: [{ data: [activeSubs,cancelledSubs], backgroundColor: ['#10b981cc','#f43f5ecc'], borderWidth:0 }] },
+        data: { labels: ['Active','Cancelled'], datasets: [{ data: [activeSubs,cancelledSubs], backgroundColor: ['rgba(5,150,105,.65)','rgba(220,38,38,.65)'], borderWidth:0 }] },
         options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:9}, padding:8, boxWidth:10 } } } }
       });
     }
     if (totalQ > 0 && document.getElementById('quoteConvChart')) {
       new Chart(document.getElementById('quoteConvChart'), {
         type: 'doughnut',
-        data: { labels: ['Accepted','Open','Expired'], datasets: [{ data: [acceptedQ,openQ,expiredQ], backgroundColor: ['#10b981cc','#3b82f6cc','#f43f5ecc'], borderWidth:0 }] },
+        data: { labels: ['Accepted','Open','Expired'], datasets: [{ data: [acceptedQ,openQ,expiredQ], backgroundColor: ['rgba(5,150,105,.65)','rgba(37,99,235,.65)','rgba(220,38,38,.65)'], borderWidth:0 }] },
         options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:9}, padding:8, boxWidth:10 } } } }
       });
     }
@@ -2809,7 +2787,7 @@ function buildCompany() {
 
     // Company health insights from issues
     issues.filter(i => i.dimension === 'Data Integrity' || i.title?.toLowerCase().includes('compan')).slice(0,4).map(issue => {
-      const col = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#3b82f6';
+      const col = issue.severity==='critical'?'#dc2626':issue.severity==='warning'?'#d97706':'#2563eb';
       return '<div style="margin-bottom:10px;padding:14px 16px;background:'+col+'10;border:1px solid '+col+'30;border-radius:10px;border-left:3px solid '+col+';">' +
         '<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:4px;">'+issue.title+'</div>' +
         '<div style="font-size:12px;color:var(--text2);">'+(issue.impact||issue.description||'').slice(0,120)+'…</div>' +
@@ -2825,11 +2803,11 @@ function buildCompany() {
         '<div style="display:flex;flex-direction:column;gap:10px;justify-content:center;">' +
           '<div style="padding:12px;background:var(--card-bg);border-radius:8px;">' +
             '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">OWNER COVERAGE</div>' +
-            '<div style="font-size:20px;font-weight:800;color:'+(noOwner>totalCo*0.2?'#f59e0b':'#10b981')+'">'+(totalCo>0?Math.round((1-noOwner/totalCo)*100):0)+'%</div>' +
+            '<div style="font-size:20px;font-weight:800;color:'+(noOwner>totalCo*0.2?'#d97706':'#059669')+'">'+(totalCo>0?Math.round((1-noOwner/totalCo)*100):0)+'%</div>' +
           '</div>' +
           '<div style="padding:12px;background:var(--card-bg);border-radius:8px;">' +
             '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">REVENUE DATA FILL RATE</div>' +
-            '<div style="font-size:20px;font-weight:800;color:'+(coveragePct>50?'#10b981':coveragePct>20?'#f59e0b':'#f43f5e')+'">'+coveragePct+'%</div>' +
+            '<div style="font-size:20px;font-weight:800;color:'+(coveragePct>50?'#059669':coveragePct>20?'#d97706':'#dc2626')+'">'+coveragePct+'%</div>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -2840,7 +2818,7 @@ function buildCompany() {
     if (ctx && totalCo > 0) {
       new Chart(ctx, {
         type: 'doughnut',
-        data: { labels: ['Owned','No Owner'], datasets: [{ data: [totalCo-noOwner, noOwner], backgroundColor: ['#7c3aedcc','#f43f5ecc'], borderWidth:0 }] },
+        data: { labels: ['Owned','No Owner'], datasets: [{ data: [totalCo-noOwner, noOwner], backgroundColor: ['#7c3aedcc','rgba(220,38,38,.65)'], borderWidth:0 }] },
         options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:9}, padding:8, boxWidth:10 } } } }
       });
     }
@@ -2879,19 +2857,19 @@ function buildContactEngagement() {
     '<div class="card" style="margin-bottom:16px;">' +
       '<div class="card-h">🔥 Engagement Segmentation</div>' +
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">' +
-        '<div style="padding:16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;text-align:center;">' +
-          '<div style="font-size:28px;font-weight:800;color:#10b981;">'+fmt(hot)+'</div>' +
-          '<div style="font-size:11px;color:#10b981;font-weight:600;margin-top:4px;">HOT</div>' +
+        '<div style="padding:16px;background:var(--c-green-bg);border:1px solid rgba(16,185,129,.2);border-radius:10px;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:800;color:var(--c-green);">'+fmt(hot)+'</div>' +
+          '<div style="font-size:11px;color:var(--c-green);font-weight:600;margin-top:4px;">HOT</div>' +
           '<div style="font-size:10px;color:var(--text3);margin-top:2px;">Activity in last 30 days</div>' +
         '</div>' +
-        '<div style="padding:16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:10px;text-align:center;">' +
-          '<div style="font-size:28px;font-weight:800;color:#f59e0b;">'+fmt(warm)+'</div>' +
-          '<div style="font-size:11px;color:#f59e0b;font-weight:600;margin-top:4px;">WARM</div>' +
+        '<div style="padding:16px;background:var(--c-amber-bg);border:1px solid rgba(245,158,11,.2);border-radius:10px;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:800;color:var(--c-amber);">'+fmt(warm)+'</div>' +
+          '<div style="font-size:11px;color:var(--c-amber);font-weight:600;margin-top:4px;">WARM</div>' +
           '<div style="font-size:10px;color:var(--text3);margin-top:2px;">Activity 30–90 days ago</div>' +
         '</div>' +
-        '<div style="padding:16px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:10px;text-align:center;">' +
-          '<div style="font-size:28px;font-weight:800;color:#f43f5e;">'+fmt(cold)+'</div>' +
-          '<div style="font-size:11px;color:#f43f5e;font-weight:600;margin-top:4px;">COLD</div>' +
+        '<div style="padding:16px;background:var(--c-red-bg);border:1px solid rgba(244,63,94,.2);border-radius:10px;text-align:center;">' +
+          '<div style="font-size:28px;font-weight:800;color:var(--c-red);">'+fmt(cold)+'</div>' +
+          '<div style="font-size:11px;color:var(--c-red);font-weight:600;margin-top:4px;">COLD</div>' +
           '<div style="font-size:10px;color:var(--text3);margin-top:2px;">No activity in 90+ days</div>' +
         '</div>' +
       '</div>' +
@@ -2902,10 +2880,10 @@ function buildContactEngagement() {
     '<div class="card">' +
       '<div class="card-h">🧹 Contact Data Quality</div>' +
       [
-        { label: 'Duplicate contacts', count: dupes, color: '#f43f5e', desc: 'causing inflated counts + missed dedup' },
-        { label: 'No email address', count: noEmail, color: '#f59e0b', desc: 'cannot be marketed to or sequenced' },
-        { label: 'No owner assigned', count: noOwner, color: '#f59e0b', desc: 'no one responsible for follow-up' },
-        { label: 'Never contacted', count: neverContacted, color: '#3b82f6', desc: 'imported but never worked' },
+        { label: 'Duplicate contacts', count: dupes, color: '#dc2626', desc: 'causing inflated counts + missed dedup' },
+        { label: 'No email address', count: noEmail, color: '#d97706', desc: 'cannot be marketed to or sequenced' },
+        { label: 'No owner assigned', count: noOwner, color: '#d97706', desc: 'no one responsible for follow-up' },
+        { label: 'Never contacted', count: neverContacted, color: '#2563eb', desc: 'imported but never worked' },
       ].filter(r => r.count > 0).map(r =>
         '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">' +
           '<div style="width:10px;height:10px;border-radius:50%;background:'+r.color+';flex-shrink:0;"></div>' +
@@ -2923,7 +2901,7 @@ function buildContactEngagement() {
         type: 'bar',
         data: {
           labels: ['Hot (30d)','Warm (30–90d)','Cold (90d+)'],
-          datasets: [{ data: [hot, warm, cold], backgroundColor: ['#10b981cc','#f59e0bcc','#f43f5ecc'], borderRadius: 6, borderSkipped: false }]
+          datasets: [{ data: [hot, warm, cold], backgroundColor: ['rgba(5,150,105,.65)','rgba(217,119,6,.65)','rgba(220,38,38,.65)'], borderRadius: 6, borderSkipped: false }]
         },
         options: { indexAxis:'y', responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{color:'rgba(255,255,255,.05)'}},y:{grid:{display:false}}} }
       });
@@ -3114,8 +3092,8 @@ async function runAiReport() {
     }
 
     // Insight block
-    const urgencyColors = { critical: '#f43f5e', warning: '#f59e0b', info: '#3b82f6' };
-    const uc = urgencyColors[parsed.urgency] || '#3b82f6';
+    const urgencyColors = { critical: '#dc2626', warning: '#d97706', info: '#2563eb' };
+    const uc = urgencyColors[parsed.urgency] || '#2563eb';
 
     // Urgency badge
     const badge = document.getElementById('ai-urgency-badge');
@@ -3135,7 +3113,7 @@ async function runAiReport() {
       insightHtml += '</div>';
     }
     if (parsed.recommendation) {
-      insightHtml += `<div style="padding:12px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:12px;color:var(--brand3);line-height:1.6;"><strong style="display:block;margin-bottom:4px;">Recommended action:</strong>${parsed.recommendation}</div>`;
+      insightHtml += `<div style="padding:12px 14px;background:var(--c-blue-bg);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:12px;color:var(--brand3);line-height:1.6;"><strong style="display:block;margin-bottom:4px;">Recommended action:</strong>${parsed.recommendation}</div>`;
     }
     document.getElementById('ai-result-insight').innerHTML = insightHtml;
 
@@ -3154,7 +3132,7 @@ async function runAiReport() {
 
   } catch(e) {
     document.getElementById('ai-result-insight').innerHTML =
-      `<strong style="color:#f43f5e;">Analysis failed.</strong> ${e.message}. Please try again.`;
+      `<strong style="color:var(--c-red);">Analysis failed.</strong> ${e.message}. Please try again.`;
   }
 
   btn.disabled = false;
@@ -3216,10 +3194,10 @@ function generateFollowUps(query, urgency) {
 
 function updateAiHistory() {
   if (aiHistory.length === 0) return;
-  const uc = { critical: '#f43f5e', warning: '#f59e0b', info: '#3b82f6' };
+  const uc = { critical: '#dc2626', warning: '#d97706', info: '#2563eb' };
   document.getElementById('ai-history').innerHTML = aiHistory.slice(0,5).map(h =>
     `<div class="metric-highlight">
-      <div class="mh-icon" style="color:${uc[h.urgency]||'#3b82f6'}">✦</div>
+      <div class="mh-icon" style="color:${uc[h.urgency]||'#2563eb'}">✦</div>
       <div><div class="mh-label">${h.urgency?.toUpperCase()||'ANALYSIS'}</div><div style="font-size:13px;color:var(--text1);">${h.title}</div></div>
     </div>`
   ).join('');
@@ -3227,8 +3205,8 @@ function updateAiHistory() {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function kpi(label, value, sub, color, trend) {
-  const colors = { blue: '#3b82f6', green: '#10b981', amber: '#f59e0b', red: '#f43f5e', purple: '#8b5cf6' };
-  const c = colors[color] || '#3b82f6';
+  const colors = { blue: '#2563eb', green: '#059669', amber: '#d97706', red: '#dc2626', purple: '#7c3aed' };
+  const c = colors[color] || '#2563eb';
   return `<div class="kpi-card ${color}">
     <div class="kpi-label">${label}</div>
     <div class="kpi-value" style="color:${c}">${value}</div>
@@ -3241,7 +3219,7 @@ function insight(type, icon, text) {
 }
 
 function metric(icon, label, value, context, color) {
-  const c = { green: '#10b981', amber: '#f59e0b', red: '#f43f5e', blue: '#3b82f6' }[color] || '#3b82f6';
+  const c = { green: '#059669', amber: '#d97706', red: '#dc2626', blue: '#2563eb' }[color] || '#2563eb';
   return `<div class="metric-highlight">
     <div class="mh-icon">${icon}</div>
     <div><div class="mh-label">${label}</div><div class="mh-value" style="color:${c}">${value}</div></div>
@@ -3262,19 +3240,19 @@ function buildMarketing() {
       i.title.toLowerCase().includes('email')))
   );
 
-  const col = (n) => n >= 80 ? '#10b981' : n >= 60 ? '#f59e0b' : '#f43f5e';
+  const col = (n) => n >= 80 ? '#059669' : n >= 60 ? '#d97706' : '#dc2626';
   const mktScore = DATA.scores?.marketingHealth || 0;
 
   let html = `
     <div class="kpi-grid">
       ${kpi('Marketing Score', mktScore + '/100', mktScore >= 80 ? '✅ Healthy' : mktScore >= 60 ? '⚠️ Needs work' : '🔴 Critical', col(mktScore))}
       ${kpi('Marketing Emails', ps.marketingEmailCount || 0, (ps.publishedEmails||0) + ' published', '#a78bfa')}
-      ${kpi('Avg Open Rate', (ps.avgOpenRate||0) + '%', ps.avgOpenRate >= 20 ? '✅ Good' : ps.avgOpenRate > 0 ? '⚠️ Low' : 'No data', ps.avgOpenRate >= 20 ? '#10b981' : ps.avgOpenRate > 0 ? '#f59e0b' : '#888')}
-      ${kpi('Forms', ps.forms || 0, 'total forms', '#3b82f6')}
-      ${kpi('Lists', ps.listCount || 0, (ps.emptyLists||0) + ' empty', ps.emptyLists > 5 ? '#f59e0b' : '#10b981')}
-      ${kpi('Campaigns', ps.campaigns || 0, 'marketing campaigns', '#10b981')}
-      ${kpi('Email Sub Types', ps.emailSubTypes || 0, ps.emailSubTypes > 20 ? '⚠️ Too many' : '✅ OK', ps.emailSubTypes > 20 ? '#f59e0b' : '#10b981')}
-      ${ps.marketingEventsCount > 0 ? kpi('Events', ps.marketingEventsCount, (ps.cancelledEvents||0) + ' cancelled', ps.cancelledEvents > 0 ? '#f59e0b' : '#10b981') : ''}
+      ${kpi('Avg Open Rate', (ps.avgOpenRate||0) + '%', ps.avgOpenRate >= 20 ? '✅ Good' : ps.avgOpenRate > 0 ? '⚠️ Low' : 'No data', ps.avgOpenRate >= 20 ? '#059669' : ps.avgOpenRate > 0 ? '#d97706' : '#888')}
+      ${kpi('Forms', ps.forms || 0, 'total forms', '#2563eb')}
+      ${kpi('Lists', ps.listCount || 0, (ps.emptyLists||0) + ' empty', ps.emptyLists > 5 ? '#d97706' : '#059669')}
+      ${kpi('Campaigns', ps.campaigns || 0, 'marketing campaigns', '#059669')}
+      ${kpi('Email Sub Types', ps.emailSubTypes || 0, ps.emailSubTypes > 20 ? '⚠️ Too many' : '✅ OK', ps.emailSubTypes > 20 ? '#d97706' : '#059669')}
+      ${ps.marketingEventsCount > 0 ? kpi('Events', ps.marketingEventsCount, (ps.cancelledEvents||0) + ' cancelled', ps.cancelledEvents > 0 ? '#d97706' : '#059669') : ''}
     </div>`;
 
   if (ps.listCount > 0) {
@@ -3284,15 +3262,15 @@ function buildMarketing() {
       <div class="view-card-title">List Health</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:12px;">
         <div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;">
-          <div style="font-size:28px;font-weight:900;color:#a78bfa;">${ps.listCount}</div>
+          <div style="font-size:28px;font-weight:900;color:var(--brand-lt);">${ps.listCount}</div>
           <div style="font-size:11px;color:var(--text2);margin-top:4px;">Total Lists</div>
         </div>
         <div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;">
-          <div style="font-size:28px;font-weight:900;color:${ps.emptyLists > 5 ? '#f59e0b' : '#10b981'};">${ps.emptyLists || 0}</div>
+          <div style="font-size:28px;font-weight:900;color:${ps.emptyLists > 5 ? '#d97706' : '#059669'};">${ps.emptyLists || 0}</div>
           <div style="font-size:11px;color:var(--text2);margin-top:4px;">Empty Lists</div>
         </div>
         <div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;">
-          <div style="font-size:28px;font-weight:900;color:${staticPct > 70 ? '#f59e0b' : '#10b981'};">${staticPct}%</div>
+          <div style="font-size:28px;font-weight:900;color:${staticPct > 70 ? '#d97706' : '#059669'};">${staticPct}%</div>
           <div style="font-size:11px;color:var(--text2);margin-top:4px;">Static Lists</div>
         </div>
       </div>
@@ -3302,7 +3280,7 @@ function buildMarketing() {
   if (mktIssues.length > 0) {
     html += `<div class="view-card"><div class="view-card-title">Marketing Issues (${mktIssues.length})</div>`;
     mktIssues.forEach(i => {
-      const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+      const c = i.severity === 'critical' ? '#dc2626' : i.severity === 'warning' ? '#d97706' : '#a78bfa';
       html += `<div style="padding:12px 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;gap:8px;align-items:flex-start;">
           <span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:${c}20;color:${c};flex-shrink:0;margin-top:2px;">${i.severity.toUpperCase()}</span>
@@ -3339,14 +3317,14 @@ function buildSequences() {
   } else {
     html = `<div class="kpi-grid">
       ${kpi('Total Sequences', ps.sequences || 0, 'configured', '#a78bfa')}
-      ${kpi('Active', ps.activeSequences || 0, 'currently running', '#10b981')}
-      ${kpi('Issues Found', seqIssues.length, seqIssues.length > 0 ? 'need attention' : 'all healthy', seqIssues.length > 0 ? '#f59e0b' : '#10b981')}
+      ${kpi('Active', ps.activeSequences || 0, 'currently running', '#059669')}
+      ${kpi('Issues Found', seqIssues.length, seqIssues.length > 0 ? 'need attention' : 'all healthy', seqIssues.length > 0 ? '#d97706' : '#059669')}
     </div>`;
 
     if (seqIssues.length > 0) {
       html += `<div class="view-card"><div class="view-card-title">Sequence Issues</div>`;
       seqIssues.forEach(i => {
-        const c = i.severity === 'critical' ? '#f43f5e' : '#f59e0b';
+        const c = i.severity === 'critical' ? '#dc2626' : '#d97706';
         html += `<div style="padding:14px 0;border-bottom:1px solid var(--border);">
           <div style="font-size:13px;font-weight:600;color:var(--text1);margin-bottom:4px;">${i.title}</div>
           <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${i.description || ''}</div>
@@ -3371,9 +3349,9 @@ function buildLists() {
 
   let html = `<div class="kpi-grid">
     ${kpi('Total Lists', ps.listCount || 0, 'contact lists', '#a78bfa')}
-    ${kpi('Empty Lists', ps.emptyLists || 0, 'zero contacts', ps.emptyLists > 5 ? '#f59e0b' : '#10b981')}
-    ${kpi('Static Lists', ps.staticLists || 0, 'manually managed', ps.staticLists > (ps.listCount * 0.7) ? '#f59e0b' : '#10b981')}
-    ${kpi('Active Lists', (ps.listCount - ps.staticLists) || 0, 'auto-updating', '#10b981')}
+    ${kpi('Empty Lists', ps.emptyLists || 0, 'zero contacts', ps.emptyLists > 5 ? '#d97706' : '#059669')}
+    ${kpi('Static Lists', ps.staticLists || 0, 'manually managed', ps.staticLists > (ps.listCount * 0.7) ? '#d97706' : '#059669')}
+    ${kpi('Active Lists', (ps.listCount - ps.staticLists) || 0, 'auto-updating', '#059669')}
   </div>`;
 
   const totalLists = ps.listCount || 0;
@@ -3386,17 +3364,17 @@ function buildLists() {
       <div style="margin:16px 0;">
         <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
           <span style="font-size:12px;color:var(--text2);">Active (auto-updating)</span>
-          <span style="font-size:12px;font-weight:700;color:#10b981;">${activePct}%</span>
+          <span style="font-size:12px;font-weight:700;color:var(--c-green);">${activePct}%</span>
         </div>
         <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;margin-bottom:12px;">
-          <div style="background:#10b981;height:100%;width:${activePct}%;border-radius:4px;"></div>
+          <div style="background:var(--c-green);height:100%;width:${activePct}%;border-radius:4px;"></div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
           <span style="font-size:12px;color:var(--text2);">Static (manually managed)</span>
-          <span style="font-size:12px;font-weight:700;color:${staticPct > 70 ? '#f59e0b' : '#a78bfa'};">${staticPct}%</span>
+          <span style="font-size:12px;font-weight:700;color:${staticPct > 70 ? '#d97706' : '#a78bfa'};">${staticPct}%</span>
         </div>
         <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;">
-          <div style="background:${staticPct > 70 ? '#f59e0b' : '#a78bfa'};height:100%;width:${staticPct}%;border-radius:4px;"></div>
+          <div style="background:${staticPct > 70 ? '#d97706' : '#a78bfa'};height:100%;width:${staticPct}%;border-radius:4px;"></div>
         </div>
       </div>
       <div style="font-size:12px;color:var(--text3);margin-top:12px;padding-top:12px;border-top:1px solid #1e1e32;">
@@ -3405,7 +3383,7 @@ function buildLists() {
     </div>`;
 
     if (ps.emptyLists > 0) {
-      html += `<div class="view-card" style="border-color:rgba(245,158,11,.2);">
+      html += `<div class="view-card" style="border-color:rgba(217,119,6,.18);">
         <div class="view-card-title">⚠️ Empty Lists (${ps.emptyLists})</div>
         <div style="font-size:13px;color:var(--text2);margin-top:8px;">
           ${ps.emptyLists} list${ps.emptyLists!==1?'s':''} with zero contacts. These clutter your portal and slow list selection in workflows and emails. Archive lists that have been empty for 90+ days.
@@ -3427,25 +3405,25 @@ function buildAutomation() {
   const issues = DATA.issues || [];
   const autoIssues = issues.filter(i => i.dimension === 'Automation');
   const autoScore = scores.automationHealth || 0;
-  const col = autoScore >= 80 ? '#10b981' : autoScore >= 60 ? '#f59e0b' : '#f43f5e';
+  const col = autoScore >= 80 ? '#059669' : autoScore >= 60 ? '#d97706' : '#dc2626';
 
   let html = `<div class="kpi-grid">
     ${kpi('Automation Score', autoScore + '/100', autoScore >= 80 ? 'Healthy' : 'Needs work', col)}
     ${kpi('Workflows', ps.workflows || 0, 'total configured', '#a78bfa')}
-    ${kpi('Sequences', ps.sequences || 0, 'sales sequences', '#3b82f6')}
-    ${kpi('Forms', ps.forms || 0, 'active forms', '#10b981')}
-    ${kpi('Issues', autoIssues.length, 'automation issues', autoIssues.length > 0 ? '#f43f5e' : '#10b981')}
+    ${kpi('Sequences', ps.sequences || 0, 'sales sequences', '#2563eb')}
+    ${kpi('Forms', ps.forms || 0, 'active forms', '#059669')}
+    ${kpi('Issues', autoIssues.length, 'automation issues', autoIssues.length > 0 ? '#dc2626' : '#059669')}
   </div>`;
 
   const errored = autoIssues.filter(i => i.erroredWorkflows);
   if (errored.length > 0) {
     const wfs = errored[0].erroredWorkflows || [];
     html += `<div class="view-card" style="border-color:rgba(244,63,94,.3);">
-      <div class="view-card-title" style="color:#f43f5e;">🚨 Workflows In Error State (${wfs.length})</div>
+      <div class="view-card-title" style="color:var(--c-red);">🚨 Workflows In Error State (${wfs.length})</div>
       <div style="margin-top:12px;">
         ${wfs.map(wf => `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
           <span style="font-size:13px;color:var(--text1);">${wf.name || wf.id}</span>
-          <span style="font-size:11px;background:rgba(244,63,94,.1);color:#f43f5e;padding:2px 10px;border-radius:10px;font-weight:700;">${wf.errorCount || 0} errors</span>
+          <span style="font-size:11px;background:rgba(244,63,94,.1);color:var(--c-red);padding:2px 10px;border-radius:10px;font-weight:700;">${wf.errorCount || 0} errors</span>
         </div>`).join('')}
       </div>
       <div style="font-size:12px;color:var(--text3);margin-top:12px;">Fix: HubSpot → Automation → Workflows → filter by "Needs attention"</div>
@@ -3455,7 +3433,7 @@ function buildAutomation() {
   if (autoIssues.length > 0) {
     html += `<div class="view-card"><div class="view-card-title">All Automation Issues (${autoIssues.length})</div>`;
     autoIssues.forEach(i => {
-      const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+      const c = i.severity === 'critical' ? '#dc2626' : i.severity === 'warning' ? '#d97706' : '#a78bfa';
       html += `<div style="padding:12px 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;gap:8px;align-items:flex-start;">
           <span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:${c}20;color:${c};flex-shrink:0;margin-top:2px;">${i.severity.toUpperCase()}</span>
@@ -3484,19 +3462,19 @@ function buildService() {
   );
 
   let html = `<div class="kpi-grid">
-    ${kpi('Open Tickets', ps.tickets || 0, 'in queue', ps.tickets > 50 ? '#f59e0b' : '#10b981')}
-    ${kpi('Open Conversations', ps.openConversations || 0, 'in inbox', '#3b82f6')}
-    ${kpi('NPS Responses', ps.npsResponses || 0, 'total', ps.npsResponses > 0 ? '#10b981' : '#f59e0b')}
-    ${kpi('CSAT Responses', ps.csatResponses || 0, 'total', ps.csatResponses > 0 ? '#10b981' : '#a78bfa')}
-    ${kpi('Service Issues', svcIssues.length, 'found', svcIssues.length > 0 ? '#f43f5e' : '#10b981')}
-    ${ps.emailSubTypes > 0 ? kpi('Email Sub Types', ps.emailSubTypes, ps.emailSubTypes > 20 ? 'too many' : 'OK', ps.emailSubTypes > 20 ? '#f59e0b' : '#10b981') : ''}
+    ${kpi('Open Tickets', ps.tickets || 0, 'in queue', ps.tickets > 50 ? '#d97706' : '#059669')}
+    ${kpi('Open Conversations', ps.openConversations || 0, 'in inbox', '#2563eb')}
+    ${kpi('NPS Responses', ps.npsResponses || 0, 'total', ps.npsResponses > 0 ? '#059669' : '#d97706')}
+    ${kpi('CSAT Responses', ps.csatResponses || 0, 'total', ps.csatResponses > 0 ? '#059669' : '#a78bfa')}
+    ${kpi('Service Issues', svcIssues.length, 'found', svcIssues.length > 0 ? '#dc2626' : '#059669')}
+    ${ps.emailSubTypes > 0 ? kpi('Email Sub Types', ps.emailSubTypes, ps.emailSubTypes > 20 ? 'too many' : 'OK', ps.emailSubTypes > 20 ? '#d97706' : '#059669') : ''}
   </div>`;
 
   // NPS section
   const npsIssue = issues.find(i => i.npsData);
   if (npsIssue && npsIssue.npsData) {
     const nd = npsIssue.npsData;
-    const npsCol = nd.score >= 30 ? '#10b981' : nd.score >= 0 ? '#f59e0b' : '#f43f5e';
+    const npsCol = nd.score >= 30 ? '#059669' : nd.score >= 0 ? '#d97706' : '#dc2626';
     html += `<div class="view-card">
       <div class="view-card-title">NPS Score</div>
       <div style="text-align:center;padding:20px 0;">
@@ -3504,22 +3482,22 @@ function buildService() {
         <div style="font-size:13px;color:var(--text2);margin-top:6px;">NPS Score · ${nd.total} responses</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:20px;">
           <div style="text-align:center;padding:12px;background:var(--card-bg);border-radius:8px;">
-            <div style="font-size:22px;font-weight:800;color:#10b981;">${nd.promoters}</div>
+            <div style="font-size:22px;font-weight:800;color:var(--c-green);">${nd.promoters}</div>
             <div style="font-size:10px;color:var(--text2);">Promoters (9-10)</div>
           </div>
           <div style="text-align:center;padding:12px;background:var(--card-bg);border-radius:8px;">
-            <div style="font-size:22px;font-weight:800;color:#f59e0b;">${nd.total - nd.promoters - nd.detractors}</div>
+            <div style="font-size:22px;font-weight:800;color:var(--c-amber);">${nd.total - nd.promoters - nd.detractors}</div>
             <div style="font-size:10px;color:var(--text2);">Passives (7-8)</div>
           </div>
           <div style="text-align:center;padding:12px;background:var(--card-bg);border-radius:8px;">
-            <div style="font-size:22px;font-weight:800;color:#f43f5e;">${nd.detractors}</div>
+            <div style="font-size:22px;font-weight:800;color:var(--c-red);">${nd.detractors}</div>
             <div style="font-size:10px;color:var(--text2);">Detractors (0-6)</div>
           </div>
         </div>
       </div>
     </div>`;
   } else if (ps.npsResponses === 0) {
-    html += `<div class="view-card" style="border-color:rgba(245,158,11,.2);">
+    html += `<div class="view-card" style="border-color:rgba(217,119,6,.18);">
       <div class="view-card-title">⚠️ NPS Not Configured</div>
       <div style="font-size:13px;color:var(--text2);margin-top:8px;">No NPS survey data found. Customer satisfaction measurement is a critical leading indicator of churn and expansion revenue.</div>
       <div style="margin-top:12px;font-size:12px;color:var(--text3);">Setup: Service → Feedback Surveys → Create NPS Survey</div>
@@ -3529,7 +3507,7 @@ function buildService() {
   if (svcIssues.length > 0) {
     html += `<div class="view-card"><div class="view-card-title">Service Issues (${svcIssues.length})</div>`;
     svcIssues.forEach(i => {
-      const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+      const c = i.severity === 'critical' ? '#dc2626' : i.severity === 'warning' ? '#d97706' : '#a78bfa';
       html += `<div style="padding:12px 0;border-bottom:1px solid var(--border);">
         <div style="font-size:13px;font-weight:600;color:var(--text1);margin-bottom:2px;">${i.title}</div>
         <div style="font-size:11px;color:var(--text2);">${i.impact || ''}</div>
@@ -3565,11 +3543,11 @@ function buildAuditHistory() {
   sorted.forEach((h, idx) => {
     const date = h.created_at ? new Date(h.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'Unknown date';
     const score = h.score || 0;
-    const col = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#f43f5e';
+    const col = score >= 80 ? '#059669' : score >= 60 ? '#d97706' : '#dc2626';
     const waste = h.monthly_waste ? '$' + Number(h.monthly_waste).toLocaleString() : '—';
     const delta = idx < sorted.length-1 ? score - (sorted[idx+1].score||0) : null;
     const deltaHtml = delta !== null
-      ? `<span style="font-size:12px;font-weight:700;color:${delta>0?'#10b981':delta<0?'#f43f5e':'#888'};margin-left:8px;">${delta>0?'↑+':'↓'}${delta}</span>`
+      ? `<span style="font-size:12px;font-weight:700;color:${delta>0?'#059669':delta<0?'#dc2626':'#888'};margin-left:8px;">${delta>0?'↑+':'↓'}${delta}</span>`
       : '';
 
     html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
@@ -3611,7 +3589,7 @@ function filterHistory() {
   sorted.forEach((h, idx) => {
     const date = h.created_at ? new Date(h.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
     const score = h.score || 0;
-    const col = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#f43f5e';
+    const col = score >= 80 ? '#059669' : score >= 60 ? '#d97706' : '#dc2626';
     const waste = h.monthly_waste ? '$' + Number(h.monthly_waste).toLocaleString() : '—';
     html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
       <div style="font-size:28px;font-weight:900;color:${col};min-width:52px;">${score}</div>
@@ -3653,7 +3631,7 @@ function buildDelta() {
   const deltaChip = (label, val, invertColor) => {
     const positive = invertColor ? val < 0 : val > 0;
     const neutral = val === 0;
-    const col = neutral ? '#888' : positive ? '#10b981' : '#f43f5e';
+    const col = neutral ? '#888' : positive ? '#059669' : '#dc2626';
     const arrow = val > 0 ? '↑' : val < 0 ? '↓' : '→';
     const display = label === 'Waste' ? '$' + Math.abs(wasteDelta).toLocaleString() : Math.abs(val);
     return `<div style="padding:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;text-align:center;">
@@ -3669,12 +3647,12 @@ function buildDelta() {
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:16px 20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;">
       <div style="text-align:center;">
         <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Previous (${prevDate})</div>
-        <div style="font-size:36px;font-weight:900;color:${(previous.score||0)>=80?'#10b981':(previous.score||0)>=60?'#f59e0b':'#f43f5e'};">${previous.score||0}</div>
+        <div style="font-size:36px;font-weight:900;color:${(previous.score||0)>=80?'#059669':(previous.score||0)>=60?'#d97706':'#dc2626'};">${previous.score||0}</div>
       </div>
       <div style="font-size:28px;color:var(--text3);">→</div>
       <div style="text-align:center;">
         <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Current (${currentDate})</div>
-        <div style="font-size:36px;font-weight:900;color:${(current.score||0)>=80?'#10b981':(current.score||0)>=60?'#f59e0b':'#f43f5e'};">${current.score||0}</div>
+        <div style="font-size:36px;font-weight:900;color:${(current.score||0)>=80?'#059669':(current.score||0)>=60?'#d97706':'#dc2626'};">${current.score||0}</div>
       </div>
     </div>
 
@@ -3692,15 +3670,15 @@ function buildDelta() {
   const fixedIssues   = prevTitles.filter(t => !currentTitles.includes(t));
 
   if (fixedIssues.length > 0) {
-    html += `<div class="view-card" style="border-color:rgba(16,185,129,.2);">
-      <div class="view-card-title" style="color:#10b981;">✅ Fixed This Week (${fixedIssues.length})</div>
+    html += `<div class="view-card" style="border-color:rgba(5,150,105,.18);">
+      <div class="view-card-title" style="color:var(--c-green);">✅ Fixed This Week (${fixedIssues.length})</div>
       ${fixedIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);">✓ ${t}</div>`).join('')}
     </div>`;
   }
 
   if (newIssues.length > 0) {
-    html += `<div class="view-card" style="border-color:rgba(244,63,94,.2);">
-      <div class="view-card-title" style="color:#f43f5e;">🆕 New Issues This Week (${newIssues.length})</div>
+    html += `<div class="view-card" style="border-color:rgba(220,38,38,.18);">
+      <div class="view-card-title" style="color:var(--c-red);">🆕 New Issues This Week (${newIssues.length})</div>
       ${newIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);">• ${t}</div>`).join('')}
     </div>`;
   }
@@ -3726,7 +3704,7 @@ function buildDelta() {
       <div style="position:relative;height:${h}px;margin-top:16px;display:flex;align-items:flex-end;gap:4px;">
         ${last8.map((audit, i) => {
           const pct = Math.round(((audit.score||0) - minScore) / range * (h - 20) + 10);
-          const col2 = (audit.score||0) >= 80 ? '#10b981' : (audit.score||0) >= 60 ? '#f59e0b' : '#f43f5e';
+          const col2 = (audit.score||0) >= 80 ? '#059669' : (audit.score||0) >= 60 ? '#d97706' : '#dc2626';
           const date2 = audit.created_at ? new Date(audit.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
           return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
             <div style="font-size:9px;font-weight:700;color:${col2};">${audit.score||0}</div>
