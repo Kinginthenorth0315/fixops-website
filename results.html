@@ -421,6 +421,8 @@ function showResults(data) {
   // Build rich stats bar grouped by hub
   var salesItems = [], mktItems = [], svcItems = [], configItems = [];
   if(ps.contacts) salesItems.push(Number(ps.contacts).toLocaleString() + ' contacts');
+  if(ps.emailEngagements) salesItems.push(ps.emailEngagements + ' emails logged');
+  if(ps.notes) salesItems.push(ps.notes + ' notes');
   if(ps.companies) salesItems.push(Number(ps.companies).toLocaleString() + ' companies');
   if(ps.deals) salesItems.push(Number(ps.deals).toLocaleString() + ' deals');
   if(ps.leads) salesItems.push(ps.leads + ' leads');
@@ -870,6 +872,8 @@ function renderHubIntelligence(data) {
       stat('Sequences', sequences) +
       (ps.goals ? stat('Active Goals', ps.activeGoals + '/' + ps.goals) : '') +
       (ps.unownedLeads > 0 ? stat('Unowned Leads', ps.unownedLeads, 'critical') : '') +
+      (ps.superAdmins > 5 ? stat('Super Admins', ps.superAdmins, 'warn') : '') +
+      (ps.cartCount > 0 && ps.abandonedCarts > 0 ? stat('Abandoned Carts', ps.abandonedCarts, ps.abandonedCarts > 10 ? 'warn' : '') : '') +
     '</div>' +
     '<div class="intel-issues">' + salesIssues.length + ' issue' + (salesIssues.length!==1?'s':'') + ' in Sales</div>' +
   '</div>';
@@ -880,11 +884,13 @@ function renderHubIntelligence(data) {
     '<div class="intel-header"><span class="intel-icon">📣</span><span class="intel-title">Marketing Hub</span>' +
     '<span class="intel-score" style="color:' + scoreColor(scores.marketingHealth) + '">' + (scores.marketingHealth||0) + '</span></div>' +
     '<div class="intel-stats">' +
+      (ps.marketingEmailCount > 0 ? stat('Marketing Emails', ps.marketingEmailCount) : '') +
+      (ps.avgOpenRate > 0 ? stat('Avg Open Rate', ps.avgOpenRate + '%', ps.avgOpenRate < 15 ? 'warn' : '') : '') +
+      (ps.highBounceEmails > 0 ? stat('High Bounce Emails', ps.highBounceEmails, 'critical') : '') +
       stat('Forms', ps.forms || 0) +
       stat('Lists', ps.listCount || 0) +
       (ps.emptyLists > 0 ? stat('Empty Lists', ps.emptyLists, 'warn') : '') +
       stat('Campaigns', ps.campaigns || 0) +
-      (ps.emailSubTypes ? stat('Email Sub Types', ps.emailSubTypes, ps.emailSubTypes > 20 ? 'warn' : '') : '') +
     '</div>' +
     '<div class="intel-issues">' + mktIssues.length + ' marketing issue' + (mktIssues.length!==1?'s':'') + '</div>' +
   '</div>';

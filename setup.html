@@ -88,7 +88,7 @@ footer{background:#000;border-top:1px solid var(--b1);padding:40px 52px;margin-t
 <div class="page">
   <div class="page-tag">Setup Guide</div>
   <h1>Connect FixOps to Your HubSpot Portal</h1>
-  <p class="hero-sub">Run a full 165-point audit of your HubSpot portal in under 2 minutes. No credit card required. Read-only access — we never modify your data.</p>
+  <p class="hero-sub">Run a full 180-point audit of your HubSpot portal in under 2 minutes. No credit card required. Read-only access — we never modify your data.</p>
 
   <div class="time-bar">
     <div class="time-chip">⏱ <span>Under 2 minutes</span> to connect</div>
@@ -157,16 +157,68 @@ footer{background:#000;border-top:1px solid var(--b1);padding:40px 52px;margin-t
         <div class="highlight">
           <p>🔒 <strong>Security note:</strong> FixOps requests <strong>read-only</strong> access only. We cannot create, modify, or delete any data in your HubSpot portal. You can revoke access at any time from HubSpot → Settings → Integrations → Connected Apps.</p>
         </div>
+        <div class="highlight" style="margin-top:8px">
+          <p>✨ <strong>Tip:</strong> On the HubSpot consent screen, click <strong>"Select all"</strong> next to Optional scopes to enable Marketing, Automation, Service, and Sequence health checks — these only activate if your HubSpot plan supports them. No optional scope will be granted if your plan doesn't include it.</p>
+        </div>
         <div class="step-card" style="margin-top:12px">
-          <h4>Permissions requested (read-only):</h4>
+          <h4>Required permissions (always requested — all read-only):</h4>
           <table class="scope-table">
-            <thead><tr><th>Scope</th><th>What it allows FixOps to read</th></tr></thead>
+            <thead><tr><th>Scope</th><th>What FixOps reads</th></tr></thead>
             <tbody>
-              <tr><td>crm.objects.contacts.read</td><td>Contact records, names, emails, lifecycle stages</td></tr>
-              <tr><td>crm.objects.companies.read</td><td>Company records, domains, industries</td></tr>
-              <tr><td>crm.objects.deals.read</td><td>Deal records, amounts, stages, close dates</td></tr>
-              <tr><td>crm.objects.tickets.read</td><td>Support tickets, stages, creation dates</td></tr>
-              <tr><td>crm.objects.owners.read</td><td>HubSpot user/owner assignments</td></tr>
+              <tr><td>crm.objects.contacts.read</td><td><strong>Contacts</strong> — Email, owner, lifecycle stage, engagement dates, last activity</td></tr>
+              <tr><td>crm.objects.companies.read</td><td><strong>Companies</strong> — Domain, industry, revenue, owner, last modified date</td></tr>
+              <tr><td>crm.objects.deals.read</td><td><strong>Deals</strong> — Stage, amount, close date, pipeline, owner, last modified</td></tr>
+              <tr><td>crm.objects.owners.read</td><td><strong>Owners</strong> — Owner names — identifies unowned records and powers rep scorecard</td></tr>
+              <tr><td>crm.objects.users.read</td><td><strong>Users</strong> — Last login dates — powers ghost seat detection</td></tr>
+              <tr><td>crm.objects.quotes.read</td><td><strong>Quotes</strong> — Status, expiration date, amount — quote conversion and health</td></tr>
+              <tr><td>crm.objects.line_items.read</td><td><strong>Line Items</strong> — Product associations, pricing, discount usage</td></tr>
+              <tr><td>crm.objects.products.read</td><td><strong>Products</strong> — Product catalog names, prices, last modified dates</td></tr>
+              <tr><td>crm.objects.invoices.read</td><td><strong>Invoices</strong> — Status, due date, amount — overdue invoice detection</td></tr>
+              <tr><td>crm.objects.orders.read</td><td><strong>Orders</strong> — Status, created date — ecommerce health</td></tr>
+              <tr><td>crm.objects.subscriptions.read</td><td><strong>Subscriptions</strong> — MRR, status, renewal dates — churn and revenue health</td></tr>
+              <tr><td>crm.objects.goals.read</td><td><strong>Sales Goals</strong> — Targets, current amounts, end dates — active goal tracking</td></tr>
+              <tr><td>crm.schemas.contacts.read</td><td><strong>Contact Properties</strong> — Property definitions — undocumented custom property detection</td></tr>
+              <tr><td>crm.schemas.deals.read</td><td><strong>Deal Pipeline Schema</strong> — Stage names, probabilities, pipeline structure</td></tr>
+              <tr><td>crm.lists.read</td><td><strong>Contact Lists</strong> — List size, type (static vs active), empty list detection</td></tr>
+              <tr><td>tickets</td><td><strong>Tickets</strong> — Subject, stage, priority, owner, SLA timing, created date</td></tr>
+              <tr><td>sales-email-read</td><td><strong>Sales Emails</strong> — One-to-one email engagements, status, activity per rep</td></tr>
+              <tr><td>e-commerce</td><td><strong>E-commerce</strong> — Extended products and line items access for commerce portals</td></tr>
+              <tr><td>account-info.security.read</td><td><strong>Account Security</strong> — Activity logs and security configuration</td></tr>
+              <tr><td>settings.users.read</td><td><strong>User Settings</strong> — Roles and permissions — super admin count, permission audit</td></tr>
+              <tr><td>settings.currencies.read</td><td><strong>Currencies</strong> — Multi-currency configuration check</td></tr>
+              <tr><td>communication_preferences.read</td><td><strong>Email Preferences</strong> — Subscription types — opt-out health, preference center check</td></tr>
+              <tr><td>conversations.read</td><td><strong>Conversations</strong> — Inbox open conversation count and health</td></tr>
+              <tr><td>crm.objects.carts.read</td><td><strong>Carts</strong> — Cart abandonment detection for ecommerce portals</td></tr>
+              <tr><td>crm.objects.marketing_events.read</td><td><strong>Marketing Events</strong> — Event attendance, cancellation, event health</td></tr>
+              <tr><td>crm.objects.emails.read</td><td><strong>Email Engagements</strong> — Email records per contact — rep email logging completeness</td></tr>
+              <tr><td>crm.objects.notes.read</td><td><strong>Notes</strong> — Notes on contacts and deals — rep logging completeness check</td></tr>
+              <tr><td>crm.objects.communications.read</td><td><strong>Communications</strong> — LinkedIn, WhatsApp and other logged activity completeness</td></tr>
+              <tr><td>crm.pipelines.orders.read</td><td><strong>Deal Pipelines</strong> — Pipeline and stage configuration for health checks</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="step-card" style="margin-top:12px">
+          <h4>Optional permissions (requested if available on your HubSpot plan):</h4>
+          <p style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:12px;font-weight:300;">These scopes are only granted if your HubSpot plan supports them. Click <strong style="color:#fff">"Select all"</strong> on the HubSpot consent screen to enable all features FixOps can access for your plan.</p>
+          <table class="scope-table">
+            <thead><tr><th>Scope</th><th>What FixOps reads</th><th>Requires</th></tr></thead>
+            <tbody>
+              <tr><td>automation</td><td><strong>Workflows</strong> — Error states, dead automations, enrollment gaps</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Marketing Hub Pro+</td></tr>
+              <tr><td>automation.sequences.read</td><td><strong>Sequences</strong> — Steps, status, reply rate health</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Sales Hub Pro+</td></tr>
+              <tr><td>forms</td><td><strong>Forms</strong> — Submission counts, broken forms, automation gaps</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Any plan</td></tr>
+              <tr><td>marketing.campaigns.read</td><td><strong>Campaigns</strong> — Campaign performance and asset associations</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Marketing Hub Pro+</td></tr>
+              <tr><td>marketing.campaigns.revenue.read</td><td><strong>Campaign Revenue</strong> — Campaign ROI and revenue attribution</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Marketing Hub Pro+</td></tr>
+              <tr><td>crm.objects.feedback_submissions.read</td><td><strong>NPS / CSAT</strong> — Survey responses, promoter/detractor scoring</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Service Hub Pro+</td></tr>
+              <tr><td>crm.objects.leads.read</td><td><strong>Leads</strong> — Unowned leads, stalled leads, assignment gaps</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Sales Hub Pro+</td></tr>
+              <tr><td>crm.objects.custom.read</td><td><strong>Custom Objects</strong> — Custom object records health</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Enterprise only</td></tr>
+              <tr><td>content</td><td><strong>Marketing Emails + Content</strong> — All built marketing emails, open rates, click rates, bounce rates, send performance, landing pages, blog health</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Marketing Hub Pro+</td></tr>
+              <tr><td>social</td><td><strong>Social</strong> — Connected social accounts and publishing health</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Marketing Hub Pro+</td></tr>
+              <tr><td>business-intelligence</td><td><strong>Analytics</strong> — Traffic sources and attribution data</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Marketing Hub</td></tr>
+              <tr><td>scheduler.meetings.meeting-link.read</td><td><strong>Meeting Links</strong> — Rep meeting link configuration check</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Pro+</td></tr>
+              <tr><td>crm.schemas.custom.read</td><td><strong>Custom Schemas</strong> — Custom object definitions</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Enterprise only</td></tr>
+              <tr><td>crm.objects.projects.read</td><td><strong>Projects</strong> — Customer project tracking health</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Pro / Enterprise</td></tr>
+              <tr><td>settings.users.teams.read</td><td><strong>Teams</strong> — Team structure for rep scorecard grouping</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Pro+</td></tr>
+              <tr><td>crm.objects.postal_mail.read</td><td><strong>Postal Mail</strong> — Direct mail engagement logging completeness</td><td style="font-size:11px;color:rgba(255,255,255,.3);">Any plan</td></tr>
             </tbody>
           </table>
         </div>
@@ -183,14 +235,14 @@ footer{background:#000;border-top:1px solid var(--b1);padding:40px 52px;margin-t
         <div class="step-card">
           <h4>What FixOps checks during the audit:</h4>
           <ul>
-            <li><strong>Data Integrity</strong> — duplicates, missing emails, unowned contacts</li>
-            <li><strong>Pipeline Integrity</strong> — stalled deals, missing close dates, $0 deals</li>
-            <li><strong>Automation Health</strong> — dead workflows, missing goals</li>
-            <li><strong>Marketing Health</strong> — broken forms, empty lists</li>
-            <li><strong>Configuration & Security</strong> — excess super admins, inactive seats</li>
-            <li><strong>Reporting Quality</strong> — missing pipeline values, forecast accuracy</li>
-            <li><strong>Team Adoption</strong> — activity logging, rep engagement</li>
-            <li><strong>Service Health</strong> — ticket management and customer support health</li>
+            <li><strong>Data Integrity</strong> — duplicates, missing emails, unowned contacts, custom property documentation</li>
+            <li><strong>Pipeline Health</strong> — stalled deals, missing close dates, $0 value deals, past-due pipeline</li>
+            <li><strong>Automation Health</strong> — broken workflows, dead sequences, empty sequence steps</li>
+            <li><strong>Marketing Health</strong> — forms, list quality (empty/static), campaign ROI tracking, opt-out health</li>
+            <li><strong>Service Health</strong> — ticket SLA, NPS/CSAT scores, open conversations, knowledge base</li>
+            <li><strong>Configuration &amp; Security</strong> — super admin count, ghost seats, user permissions audit</li>
+            <li><strong>Team Adoption</strong> — rep activity scorecard (calls/meetings/emails/notes), sales goals, leads management</li>
+            <li><strong>Revenue Intelligence</strong> — MRR, overdue invoices, subscription churn, quote conversion</li>
           </ul>
         </div>
         <p class="step-desc">The audit typically completes in 30–60 seconds. The page will automatically redirect to your results when done.</p>
@@ -208,11 +260,13 @@ footer{background:#000;border-top:1px solid var(--b1);padding:40px 52px;margin-t
           <h4>Your results include:</h4>
           <ul>
             <li><strong>Overall health score</strong> — scored 0–100 with a grade (Excellent / Good / Needs Attention / Critical)</li>
-            <li><strong>8 dimension scores</strong> — individual scores for each area of your portal</li>
-            <li><strong>Issue cards</strong> — every issue found with severity, description, and business impact</li>
-            <li><strong>Fix guides</strong> — step-by-step instructions to resolve each issue yourself</li>
-            <li><strong>Monthly waste estimate</strong> — dollar value of inefficiencies found</li>
-            <li><strong>Fix It For Me buttons</strong> — one click to request our team to fix it for you</li>
+            <li><strong>Hub Intelligence cards</strong> — per-hub scores for Sales, Marketing, Service, and Automation</li>
+            <li><strong>Hub filter tabs</strong> — filter issues by Sales / Marketing / Service / Automation / Data Quality</li>
+            <li><strong>Issue cards</strong> — every issue ranked by severity with description, dollar impact, and fix guide</li>
+            <li><strong>Score improvement projection</strong> — estimated score after fixing critical issues</li>
+            <li><strong>Monthly waste estimate</strong> — dollar value of ghost seats, stalled pipeline, and inefficiencies</li>
+            <li><strong>Fix It For Me buttons</strong> — one click to request a scope and quote from our team within 24 hours</li>
+            <li><strong>Portal Snapshot link</strong> — jump to the full 22-view intelligence dashboard (Pro/Agency plans)</li>
             <li><strong>PDF download</strong> — branded report you can share with your team or leadership</li>
           </ul>
         </div>
@@ -278,8 +332,28 @@ footer{background:#000;border-top:1px solid var(--b1);padding:40px 52px;margin-t
     </div>
 
     <div class="faq-item">
+      <div class="faq-q">What do the optional scopes unlock? <span>+</span></div>
+      <div class="faq-a">Optional scopes enable additional audit checks based on your HubSpot plan. Workflow and sequence health requires Marketing Hub or Sales Hub Professional. NPS/CSAT monitoring requires Service Hub Professional. Custom object auditing requires an Enterprise plan. If you grant optional scopes but your plan doesn't include those features, FixOps simply skips those checks — no errors occur.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is the Portal Snapshot dashboard? <span>+</span></div>
+      <div class="faq-a">Pro and Agency customers get access to a 22-view intelligence dashboard with dedicated views for Marketing Health, Sequences, Lists &amp; Segments, Workflow Health, Service Health, NPS/CSAT, Audit History with week filter, and Week-over-Week delta comparisons. It shows what improved and what got worse between each Monday scan.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What do the optional scopes unlock? <span>+</span></div>
+      <div class="faq-a">Optional scopes enable additional audit checks based on your HubSpot plan. Workflow and sequence health requires Marketing Hub or Sales Hub Professional. NPS/CSAT monitoring requires Service Hub Professional. Custom object auditing requires an Enterprise plan. If you grant optional scopes but your plan does not include those features, FixOps simply skips those checks — no errors occur.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">What is the Portal Snapshot dashboard? <span>+</span></div>
+      <div class="faq-a">Pro and Agency customers get access to a 22-view intelligence dashboard with dedicated views for Marketing Health, Sequences, Lists &amp; Segments, Workflow Health, Service Health, NPS/CSAT, Audit History with week filter, and Week-over-Week delta comparisons. It shows what improved and what got worse between each Monday scan.</div>
+    </div>
+
+    <div class="faq-item">
       <div class="faq-q">How do I contact support? <span>+</span></div>
-      <div class="faq-a">Email <a href="/cdn-cgi/l/email-protection#d7bab6a3a3bfb2a097b1beafb8a7a4f9beb8"><span class="__cf_email__" data-cfemail="234e4257574b465463454a5b4c53500d4a4c">[email&#160;protected]</span></a> directly or book a call at calendly.com/matthew-fixops/30min. Our team personally reviews every audit and responds to all inquiries.</div>
+      <div class="faq-a">Email matthew&#64;fixops&#46;io directly or book a call at calendly.com/matthew-fixops/30min. Our team personally reviews every audit and responds to all inquiries.</div>
     </div>
 
   </div>
@@ -287,7 +361,7 @@ footer{background:#000;border-top:1px solid var(--b1);padding:40px 52px;margin-t
   <!-- CTA -->
   <div class="cta-box">
     <h2>Ready to audit your portal?</h2>
-    <p>165 checks. Under 2 minutes. Free.</p>
+    <p>180 checks. Under 2 minutes. Free.</p>
     <a href="index.html" class="cta-btn">⚡ Run Free Portal Audit →</a>
   </div>
 
