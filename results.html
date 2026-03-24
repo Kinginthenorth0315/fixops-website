@@ -398,6 +398,13 @@ function showResults(data) {
     { val: fmt(ps.users||0),      lbl: 'Users' },
     { val: fmt(ps.lists||0),      lbl: 'Lists' },
   ];
+  // Add custom objects if present (Enterprise portals)
+  if (ps.customObjectCount > 0) {
+    var coLabel = ps.customObjectNames && ps.customObjectNames.length > 0
+      ? ps.customObjectNames.slice(0,2).join(', ')
+      : 'Custom Objects';
+    snapItems.push({ val: fmt(ps.customObjectCount), lbl: coLabel });
+  }
   bar.innerHTML = snapItems.map(function(si){
     return '<div class="snap-item"><div class="snap-val">'+esc(si.val)+'</div><div class="snap-lbl">'+esc(si.lbl)+'</div></div>';
   }).join('');
