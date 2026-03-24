@@ -2,1847 +2,784 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your FixOps Audit Results</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FixOps — Audit Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--v:#7c3aed;--v2:#8b5cf6;--v3:#a78bfa;--vg:rgba(124,58,237,.38);--vd:rgba(124,58,237,.1);--vb:rgba(124,58,237,.2);--s1:#0c0c14;--s2:#10101a;--b1:#18182a;--b2:#22223a;--t1:rgba(255,255,255,.9);--t2:rgba(255,255,255,.52);--t3:rgba(255,255,255,.25);--g:#10b981;--r:#f43f5e;--a:#f59e0b;--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:var(--font);background:#000;color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;}
-#stars{position:fixed;inset:0;pointer-events:none;z-index:0;}
-.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,4s) ease-in-out infinite var(--dl,0s);}
-@keyframes tw{0%,100%{opacity:.04}50%{opacity:.5}}
+:root{
+  --bg:#04040a;--s1:#0c0c14;--s2:#10101a;--b1:#18182a;--b2:#22223a;
+  --v:#7c3aed;--v2:#8b5cf6;--v3:#a78bfa;
+  --t1:rgba(255,255,255,.90);--t2:rgba(255,255,255,.52);--t3:rgba(255,255,255,.28);--t4:rgba(255,255,255,.07);
+  --g:#10b981;--r:#f43f5e;--a:#f59e0b;--bl:#3b82f6;
+  --font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:64px;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);}
-.nl{font-size:19px;font-weight:800;color:#fff;display:flex;align-items:center;gap:8px;text-decoration:none;}
-.ni{width:30px;height:30px;background:linear-gradient(135deg,var(--v),#5b21b6);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 0 18px var(--vg);}
-.nav-r{display:flex;gap:10px;align-items:center;}
-#pdf-btn,#snapshot-btn{padding:8px 16px;background:var(--s1);color:var(--t2);font-family:var(--font);font-size:13px;font-weight:600;border-radius:8px;border:1px solid var(--b1);cursor:pointer;display:none;align-items:center;gap:6px;transition:all .2s;}
-#pdf-btn:hover,#snapshot-btn:hover{border-color:var(--vb);color:var(--v3);}
-#pdf-btn.show,#snapshot-btn.show{display:flex;}
-#pdf-btn:hover{border-color:var(--vb);color:var(--v3);}
-#pdf-btn.show{display:flex;}
-.btn-book{padding:8px 16px;background:var(--v);color:#fff;font-family:var(--font);font-size:13px;font-weight:700;border-radius:8px;border:none;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s;}
-.btn-book:hover{background:var(--v2);}
+/* ── Nav ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;background:rgba(4,4,10,.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--b1);}
+.nav-logo{font-size:17px;font-weight:800;display:flex;align-items:center;gap:9px;}
+.logo-mark{width:28px;height:28px;background:linear-gradient(135deg,var(--v),#5b21b6);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.nav-actions{display:flex;align-items:center;gap:10px;}
+.nav-btn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);transition:all .2s;}
+.nav-btn.primary{background:var(--v);color:#fff;border:none;}
+.nav-btn.primary:hover{background:var(--v2);}
+.nav-btn.ghost{background:transparent;color:var(--t2);border:1px solid var(--b2);}
+.nav-btn.ghost:hover{background:var(--s1);color:var(--t1);}
 
-.page{position:relative;z-index:1;padding:90px 48px 80px;max-width:1100px;margin:0 auto;}
+/* ── Page ── */
+.page{padding:76px 0 80px;max-width:1040px;margin:0 auto;padding-left:24px;padding-right:24px;}
 
-/* Loading */
-#loading{text-align:center;padding:100px 24px;}
-.load-orb{width:88px;height:88px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,.5),rgba(124,58,237,.1));border:1px solid rgba(124,58,237,.3);display:flex;align-items:center;justify-content:center;font-size:36px;margin:0 auto 24px;animation:pulse 2s ease-in-out infinite;}
-@keyframes pulse{0%,100%{box-shadow:0 0 20px rgba(124,58,237,.2)}50%{box-shadow:0 0 60px rgba(124,58,237,.5)}}
-.prog-bar{height:2px;background:var(--s2);border-radius:1px;overflow:hidden;max-width:400px;margin:16px auto 10px;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--v),var(--v2));border-radius:1px;width:30%;animation:loading-bar 2s ease-in-out infinite;}
-@keyframes loading-bar{0%{width:10%;margin-left:0}50%{width:40%}100%{width:10%;margin-left:90%}}
+/* ── Score hero ── */
+.score-hero{background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(91,33,182,.05));border:1px solid rgba(124,58,237,.22);border-radius:20px;padding:32px;margin-bottom:24px;display:flex;align-items:center;gap:32px;}
+.score-ring-wrap{flex-shrink:0;}
+.score-ring{width:120px;height:120px;border-radius:50%;border:5px solid;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.score-num{font-size:36px;font-weight:900;letter-spacing:-2px;line-height:1;}
+.score-label{font-size:10px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;opacity:.6;margin-top:2px;}
+.score-meta{flex:1;}
+.score-company{font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:6px;}
+.score-grade{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-weight:700;font-family:var(--mono);letter-spacing:1px;margin-bottom:14px;}
+.score-stats{display:flex;gap:28px;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+.stat-val{font-size:22px;font-weight:800;letter-spacing:-.5px;line-height:1;}
+.stat-lbl{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
 
-/* Error */
-#error-state{display:none;text-align:center;padding:100px 24px;}
+/* ── Snap bar ── */
+.snap-bar{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;gap:0;overflow:hidden;}
+.snap-item{flex:1;text-align:center;padding:0 12px;border-right:1px solid var(--b1);}
+.snap-item:last-child{border-right:none;}
+.snap-val{font-size:18px;font-weight:800;letter-spacing:-.5px;line-height:1;margin-bottom:3px;}
+.snap-lbl{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.8px;}
 
-/* Results */
-#results{display:none;animation:fade-up .6s ease;}
-@keyframes fade-up{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+/* ── Dimension scores ── */
+.dims-section{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:24px;margin-bottom:24px;}
+.section-title{font-size:11px;font-weight:700;font-family:var(--mono);color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;}
+.dims-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.dim-card{background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:16px;}
+.dim-name{font-size:11px;font-weight:600;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.dim-score{font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1;margin-bottom:8px;}
+.dim-bar-bg{height:3px;background:var(--b2);border-radius:2px;overflow:hidden;}
+.dim-bar-fill{height:100%;border-radius:2px;transition:width .8s ease;}
 
-/* Score hero */
-.score-hero{background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.06));border:1px solid rgba(124,58,237,.22);border-radius:20px;padding:36px;display:grid;grid-template-columns:180px 1fr;gap:32px;align-items:center;margin-bottom:22px;position:relative;overflow:hidden;}
-.score-hero::before{content:'';position:absolute;top:-80px;left:-60px;width:300px;height:260px;background:radial-gradient(ellipse,rgba(124,58,237,.1),transparent 70%);pointer-events:none;}
-.score-ring-wrap{text-align:center;}
-.score-ring{width:130px;height:130px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;margin:0 auto 12px;}
-.score-ring-inner{position:absolute;inset:15px;background:#0c0c14;border-radius:50%;z-index:1;}
-.score-inner{position:relative;z-index:2;text-align:center;}
-.score-num{font-size:46px;font-weight:900;letter-spacing:-2px;line-height:1;}
-.score-denom{font-size:13px;color:var(--t2);}
-.score-badge{display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;margin-top:6px;}
-.score-right h1{font-size:26px;font-weight:900;letter-spacing:-.5px;color:#fff;margin-bottom:8px;}
-.score-right .sub{font-size:14px;color:var(--t2);font-weight:300;line-height:1.65;margin-bottom:20px;}
-.stats-row{display:flex;gap:12px;flex-wrap:wrap;}
-.stat{padding:10px 16px;border-radius:10px;text-align:center;}
-.stat-n{font-size:22px;font-weight:900;line-height:1;}
-.stat-l{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+/* ── Hub Intelligence ── */
+.hub-intel{background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:24px;margin-bottom:24px;}
+.hub-intel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.intel-card{background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:16px;}
+.intel-hub{font-size:10px;font-weight:700;font-family:var(--mono);color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.intel-stat{font-size:22px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px;}
+.intel-desc{font-size:12px;color:var(--t2);line-height:1.5;}
+.intel-tag{display:inline-block;font-size:9px;font-weight:700;font-family:var(--mono);padding:2px 7px;border-radius:4px;margin-top:8px;}
 
-.sec-h{font-size:14px;font-weight:800;color:#fff;margin:28px 0 12px;}
+/* ── Issues ── */
+.issues-section{margin-bottom:24px;}
+.issues-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px;}
+.issues-h{font-size:18px;font-weight:800;letter-spacing:-.3px;}
+#hub-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.hub-tab{padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.45);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .18s;}
+.hub-tab:hover{border-color:rgba(255,255,255,.28);color:var(--t2);}
+.hub-tab.active{background:var(--v);border-color:var(--v);color:#fff;}
+.issues-list{display:flex;flex-direction:column;gap:8px;}
 
-/* Dimensions */
-.dim-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.dim-card{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px;transition:border-color .2s;}
-.dim-card:hover{border-color:var(--b2);}
-.dim-emo{font-size:20px;margin-bottom:8px;}
-.dim-name{font-size:11px;font-weight:600;color:var(--t2);margin-bottom:6px;}
-.dim-score{font-size:30px;font-weight:900;letter-spacing:-1px;line-height:1;margin-bottom:8px;}
-.dim-bar-t{height:3px;background:var(--s2);border-radius:2px;overflow:hidden;}
-.dim-bar-f{height:100%;border-radius:2px;}
-
-/* Issues */
-.hub-tab{padding:7px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.45);font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;white-space:nowrap;}
-.hub-tab:hover{border-color:rgba(124,58,237,.5);color:rgba(255,255,255,.75);}
-.hub-tab.active{background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.5);color:#a78bfa;}
-.intel-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:18px 20px;transition:border-color .2s;}
-.intel-card:hover{border-color:var(--b2);}
-.intel-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--b1);}
-.intel-icon{font-size:20px;}
-.intel-title{font-size:14px;font-weight:700;color:#fff;flex:1;}
-.intel-score{font-size:20px;font-weight:900;}
-.intel-stats{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.intel-stat{display:flex;justify-content:space-between;align-items:center;}
-.intel-stat-label{font-size:12px;color:rgba(255,255,255,.4);}
-.intel-stat-val{font-size:12px;font-weight:700;}
-.intel-issues{font-size:11px;color:rgba(255,255,255,.3);padding-top:10px;border-top:1px solid var(--b1);}
-.issue-list{display:flex;flex-direction:column;gap:10px;}
+/* ── Issue card ── */
 .issue-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;}
 .issue-card:hover{border-color:var(--b2);transform:translateY(-1px);}
-.issue-card.open{border-color:var(--b2);}
-.issue-top{display:grid;grid-template-columns:3px 1fr auto;gap:16px;padding:18px 20px;align-items:start;}
-.sev-bar{width:3px;border-radius:2px;min-height:50px;margin-top:2px;flex-shrink:0;}
+.issue-top{display:grid;grid-template-columns:3px 1fr auto;gap:16px;padding:16px 18px;align-items:start;}
+.sev-bar{width:3px;border-radius:2px;min-height:44px;margin-top:2px;flex-shrink:0;}
 .i-body{flex:1;}
-.i-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px;}
-.i-title{font-size:14px;font-weight:700;color:#fff;line-height:1.3;flex:1;}
+.i-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.i-title{font-size:14px;font-weight:700;color:#fff;line-height:1.35;flex:1;}
 .sev-tag{font-size:9px;font-weight:700;padding:3px 8px;border-radius:5px;font-family:var(--mono);white-space:nowrap;flex-shrink:0;margin-top:2px;}
-.sev-c{background:rgba(244,63,94,.12);color:var(--r);}
-.sev-w{background:rgba(245,158,11,.12);color:var(--a);}
-.sev-i{background:var(--vd);color:var(--v3);}
-.i-desc{font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:10px;font-weight:300;}
+.sev-tag.critical{background:rgba(244,63,94,.18);color:#f43f5e;}
+.sev-tag.warning{background:rgba(245,158,11,.18);color:#f59e0b;}
+.sev-tag.info{background:rgba(59,130,246,.15);color:#60a5fa;}
+.i-desc{font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:8px;font-weight:300;}
 .i-impact{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--a);font-family:var(--mono);flex-wrap:wrap;}
-.i-dim{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:var(--vd);color:var(--v3);font-family:var(--mono);}
-.i-arrow{font-size:16px;color:var(--t3);transition:transform .3s;flex-shrink:0;margin-top:4px;line-height:1;}
-.issue-card.open .i-arrow{transform:rotate(180deg);color:var(--v3);}
-.issue-expand{display:none;padding:0 20px 20px 35px;}
+.i-dim{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;background:rgba(124,58,237,.15);color:var(--v3);font-family:var(--mono);}
+.i-arrow{font-size:14px;color:var(--t3);transition:transform .2s;align-self:center;flex-shrink:0;}
+.issue-card.open .i-arrow{transform:rotate(180deg);}
+.issue-expand{display:none;padding:0 18px 18px;border-top:1px solid var(--b1);padding-top:16px;}
 .issue-card.open .issue-expand{display:block;}
-
-/* Detail block */
-.detail-block{background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:10px;padding:14px 16px;margin-bottom:14px;}
+.detail-block{background:rgba(255,255,255,.03);border:1px solid var(--b1);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
 .detail-label{font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;}
 .detail-text{font-size:12.5px;color:rgba(255,255,255,.55);line-height:1.65;font-weight:300;}
+.guide-block{background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.14);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+.guide-label{font-size:10px;font-weight:700;color:var(--g);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;}
+.guide-step{display:flex;gap:10px;margin-bottom:8px;font-size:12.5px;color:rgba(255,255,255,.6);line-height:1.5;}
+.guide-step:last-child{margin-bottom:0;}
+.guide-num{width:20px;height:20px;border-radius:50%;background:rgba(16,185,129,.2);color:var(--g);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.fix-me-btn{width:100%;padding:10px;background:linear-gradient(135deg,var(--v),#5b21b6);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);}
+.no-issues-empty{text-align:center;padding:40px 20px;color:var(--t3);font-size:14px;display:none;}
 
-/* Guide */
-.guide-block{background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.14);border-radius:10px;padding:14px 16px;margin-bottom:14px;}
-.guide-label{font-size:10px;font-weight:700;color:var(--g);font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;}
-.guide-steps{display:flex;flex-direction:column;gap:10px;}
-.guide-step{display:flex;gap:12px;font-size:13px;color:var(--t2);line-height:1.6;font-weight:300;}
-.step-num{width:22px;height:22px;border-radius:50%;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.22);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--g);flex-shrink:0;font-family:var(--mono);}
-
-/* Action buttons */
-.action-btns{display:flex;gap:8px;flex-wrap:wrap;}
-.act-btn{padding:10px 18px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:var(--mono);transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
-.btn-fixme{background:rgba(124,58,237,.12);color:var(--v3);border:1px solid var(--vb);}
-.btn-fixme:hover{background:rgba(124,58,237,.2);transform:translateY(-1px);}
-.btn-call{background:var(--s2);color:var(--t2);border:1px solid var(--b2);}
-.btn-call:hover{color:var(--t1);border-color:var(--b2);}
-
-/* CTA */
-.cta-section{background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.25);border-radius:20px;padding:40px;text-align:center;margin-top:32px;}
-.cta-h{font-size:28px;font-weight:900;letter-spacing:-.8px;color:#fff;margin-bottom:10px;}
-.cta-p{font-size:15px;color:var(--t2);font-weight:300;line-height:1.7;margin-bottom:28px;max-width:560px;margin-left:auto;margin-right:auto;}
-.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-.cta-primary{padding:15px 30px;background:var(--v);color:#fff;font-size:15px;font-weight:700;border-radius:10px;border:none;cursor:pointer;font-family:var(--font);transition:all .2s;display:inline-flex;align-items:center;gap:8px;}
-.cta-primary:hover{background:var(--v2);transform:translateY(-2px);box-shadow:0 14px 40px var(--vg);}
-.cta-secondary{padding:15px 30px;background:transparent;color:var(--t2);font-size:15px;border-radius:10px;border:1px solid rgba(255,255,255,.15);cursor:pointer;font-family:var(--font);text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all .2s;}
-.cta-secondary:hover{color:#fff;border-color:rgba(255,255,255,.3);}
-
-/* Fix Plan Section */
-.fix-plan{margin-top:48px;}
-.fp-header{text-align:center;margin-bottom:40px;}
-.fp-eyebrow{font-size:11px;font-weight:700;color:var(--v3);font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;}
-.fp-title{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.1;color:#fff;margin-bottom:12px;}
-.fp-sub{font-size:15px;color:var(--t2);font-weight:300;line-height:1.7;max-width:520px;margin:0 auto;}
-.fp-buckets{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:32px;}
+/* ── Fix Plan ── */
+.fixplan-section{margin-bottom:24px;}
+.fixplan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;}
 .fp-bucket{background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:24px;position:relative;overflow:hidden;transition:all .2s;}
 .fp-bucket:hover{border-color:var(--b2);transform:translateY(-2px);}
-.fp-bucket::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-.fp-bucket.data::before{background:linear-gradient(90deg,#06b6d4,#3b82f6);}
-.fp-bucket.automation::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa);}
-.fp-bucket.pipeline::before{background:linear-gradient(90deg,#f59e0b,#f97316);}
-.fp-bucket.reporting::before{background:linear-gradient(90deg,#10b981,#06b6d4);}
-.fp-bucket.config::before{background:linear-gradient(90deg,#ec4899,#8b5cf6);}
-.fp-bucket-icon{font-size:28px;margin-bottom:12px;}
-.fp-bucket-name{font-size:16px;font-weight:800;color:#fff;margin-bottom:6px;}
-.fp-bucket-desc{font-size:13px;color:var(--t2);font-weight:300;line-height:1.6;margin-bottom:16px;}
-.fp-bucket-issues{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
-.fp-issue-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--t2);line-height:1.5;}
-.fp-issue-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-.fp-impact-tag{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;font-family:var(--mono);margin-top:8px;display:inline-block;}
-.fp-stats{display:flex;gap:16px;padding:14px 0;border-top:1px solid var(--b1);border-bottom:1px solid var(--b1);margin-bottom:24px;}
-.fp-stat{text-align:center;flex:1;}
-.fp-stat-v{font-size:22px;font-weight:900;line-height:1;}
-.fp-stat-l{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;margin-top:3px;}
-.fp-cta-wrap{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:40px;text-align:center;position:relative;overflow:hidden;}
-.fp-cta-wrap::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:400px;height:200px;background:radial-gradient(ellipse,rgba(124,58,237,.15),transparent 70%);pointer-events:none;}
-.fp-cta-title{font-size:28px;font-weight:900;letter-spacing:-.8px;color:#fff;margin-bottom:10px;}
-.fp-cta-sub{font-size:14px;color:var(--t2);font-weight:300;line-height:1.7;margin-bottom:28px;max-width:500px;margin-left:auto;margin-right:auto;}
-.fp-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:var(--v);color:#fff;font-size:15px;font-weight:700;border-radius:12px;text-decoration:none;transition:all .2s;font-family:var(--font);}
-.fp-cta-btn:hover{background:var(--v2);transform:translateY(-2px);box-shadow:0 16px 48px rgba(124,58,237,.4);}
-.fp-proof{display:flex;justify-content:center;gap:28px;margin-top:20px;flex-wrap:wrap;}
-.fp-proof-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--t3);}
-.fp-proof-dot{color:var(--g);font-size:14px;}
-@media(max-width:700px){.fp-title{font-size:26px;}.fp-buckets{grid-template-columns:1fr;}}
+.fp-bucket-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
+.fp-icon{font-size:28px;flex-shrink:0;}
+.fp-name{font-size:16px;font-weight:800;letter-spacing:-.2px;margin-bottom:4px;}
+.fp-tagline{font-size:12px;color:var(--t3);line-height:1.5;}
+.fp-accent{position:absolute;top:0;left:0;right:0;height:2px;}
+.fp-issues{margin-bottom:14px;}
+.fp-issue-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--t2);margin-bottom:7px;line-height:1.5;}
+.fp-issue-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.fp-issue-more{font-size:11px;color:var(--t3);font-family:var(--mono);margin-top:4px;}
+.fp-footer{display:flex;align-items:center;justify-content:space-between;}
+.fp-count-tag{font-size:10px;font-weight:700;padding:3px 10px;border-radius:12px;font-family:var(--mono);}
 
-/* Toast */
-#toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:var(--s2);border:1px solid var(--b2);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px;max-width:400px;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(0,0,0,.6);}
-#toast.show{transform:translateY(0);opacity:1;}
+/* ── CTA ── */
+.cta-section{background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:40px;text-align:center;margin-bottom:24px;}
+.cta-badge{font-size:10px;font-weight:700;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--v3);margin-bottom:12px;}
+.cta-title{font-size:28px;font-weight:900;letter-spacing:-.5px;margin-bottom:10px;}
+.cta-desc{font-size:14px;color:var(--t2);line-height:1.65;max-width:520px;margin:0 auto 24px;}
+.cta-btn{display:inline-block;padding:14px 32px;background:var(--v);color:#fff;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;transition:all .2s;}
+.cta-btn:hover{background:var(--v2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(124,58,237,.35);}
 
-@media(max-width:900px){nav{padding:0 20px;}.page{padding:90px 20px 60px;}.score-hero{grid-template-columns:1fr;}.dim-grid{grid-template-columns:repeat(2,1fr);}}
+/* ── Toast ── */
+#toast-container{position:fixed;top:76px;right:20px;z-index:500;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;max-width:340px;animation:slideIn .3s ease;box-shadow:0 8px 32px rgba(0,0,0,.5);}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.toast-icon{font-size:18px;flex-shrink:0;}
+.toast-title{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px;}
+.toast-sub{font-size:12px;color:var(--t3);}
+
+@media(max-width:640px){
+  .score-hero{flex-direction:column;text-align:center;}
+  .score-stats{justify-content:center;}
+  .snap-bar{flex-wrap:wrap;}
+  .snap-item{min-width:45%;border-right:none;border-bottom:1px solid var(--b1);padding:10px;}
+  .snap-item:last-child{border-bottom:none;}
+}
 </style>
-<!-- cf-email-obfuscation: disable -->
 </head>
 <body>
-<div id="stars"></div>
+
 <nav>
-  <a href="index.html" class="nl"><div class="ni">⚡</div>Fix<span style="color:#a78bfa">Ops</span><span style="color:rgba(255,255,255,.28);font-size:15px;font-weight:400">.io</span></a>
-  <div class="nav-r">
-    <button id="pdf-btn" onclick="downloadPDF()">📄 Download PDF Report</button>
-    <a id="snapshot-btn" href="#" target="_blank">📊 View Snapshot</a>
-    <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="btn-book">Book a Call ↗</a>
+  <div class="nav-logo">
+    <div class="logo-mark">⚡</div>
+    Fix<span style="color:var(--v3)">Ops</span><span style="color:var(--t3);font-weight:400;font-size:13px;">.io</span>
+  </div>
+  <div class="nav-actions">
+    <button class="nav-btn ghost" onclick="downloadPDF()">📄 Download PDF Report</button>
+    <a href="reporting.html" class="nav-btn ghost">📊 View Snapshot</a>
+    <a href="https://fixops.io/#pricing" class="nav-btn primary">Book a Call ↗</a>
   </div>
 </nav>
 
-<div class="page">
-  <!-- Loading -->
-  <div id="loading">
-    <div class="load-orb">⚡</div>
-    <h2 style="font-size:22px;font-weight:800;color:#fff;margin-bottom:8px" id="load-msg">Loading your results…</h2>
-    <p style="font-size:13px;color:var(--t3);font-family:var(--mono);margin-bottom:4px" id="load-sub">Fetching audit data from database</p>
-    <div class="prog-bar"><div class="prog-fill"></div></div>
-    <p style="font-size:11px;color:var(--t3);font-family:var(--mono)" id="load-attempt"></p>
-  </div>
-
-  <!-- Error -->
-  <div id="error-state">
-    <div style="font-size:52px;margin-bottom:20px">⚠️</div>
-    <h2 style="font-size:26px;font-weight:900;color:#fff;margin-bottom:12px">Something went wrong</h2>
-    <p style="font-size:15px;color:var(--t2);margin-bottom:28px;line-height:1.6;max-width:480px;margin-left:auto;margin-right:auto" id="err-msg">Unable to load results. Please try the link from your email again.</p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <a href="index.html" class="cta-secondary" style="text-decoration:none">Run New Audit</a>
-      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="cta-primary" style="text-decoration:none">Book a Call ↗</a>
+<div class="page" id="main-page">
+  <!-- Score hero -->
+  <div class="score-hero" id="score-hero" style="display:none;">
+    <div class="score-ring-wrap">
+      <div class="score-ring" id="score-ring">
+        <div class="score-num" id="score-num">—</div>
+        <div class="score-label">/ 100</div>
+      </div>
     </div>
-  </div>
-
-  <!-- Results -->
-  <div id="results">
-    <!-- Score hero -->
-    <div class="score-hero">
-      <div class="score-ring-wrap">
-        <div class="score-ring" id="score-ring">
-          <div class="score-ring-inner"></div>
-          <div class="score-inner">
-            <div class="score-num" id="score-num">--</div>
-            <div class="score-denom">/100</div>
-          </div>
+    <div class="score-meta">
+      <div class="score-company" id="score-company">Loading…</div>
+      <div class="score-grade" id="score-grade"></div>
+      <div class="score-stats">
+        <div class="stat-item">
+          <div class="stat-val" id="stat-critical" style="color:var(--r);">—</div>
+          <div class="stat-lbl">Critical</div>
         </div>
-        <div class="score-badge" id="score-badge">--</div>
-      </div>
-      <div class="score-right">
-        <h1>Your HubSpot Portal Audit Is Complete</h1>
-        <p class="sub">We'll personally review these findings and reach out with a prioritized fix plan. Your full report has also been emailed to you.</p>
-        <div class="stats-row" id="stats-row"></div>
+        <div class="stat-item">
+          <div class="stat-val" id="stat-warnings" style="color:var(--a);">—</div>
+          <div class="stat-lbl">Warnings</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="stat-waste" style="color:var(--g);">—</div>
+          <div class="stat-lbl">Monthly Waste</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="stat-checks" style="color:var(--v3);">185</div>
+          <div class="stat-lbl">Checks Run</div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="sec-h">⬡ Health Dimensions</div>
-    <div class="dim-grid" id="dim-grid"></div>
+  <!-- Portal snap bar -->
+  <div class="snap-bar" id="portal-snap-bar" style="display:none;"></div>
 
-    <!-- Hub Intelligence Cards -->
-    <div class="sec-h">🏢 Hub Intelligence</div>
-    <div id="hub-intelligence" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:32px;"></div>
+  <!-- Dimension scores -->
+  <div class="dims-section" id="dims-section" style="display:none;">
+    <div class="section-title">Health Dimensions</div>
+    <div class="dims-grid" id="dims-grid"></div>
+  </div>
 
-    <div class="sec-h" id="issues-header">Issues Found</div>
+  <!-- Hub Intelligence -->
+  <div class="hub-intel" id="hub-intel-section" style="display:none;">
+    <div class="section-title">Hub Intelligence</div>
+    <div class="hub-intel-grid" id="hub-intel-grid"></div>
+  </div>
 
-    <!-- Hub filter tabs -->
-    <div id="hub-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-      <button class="hub-tab active" onclick="filterHub('all')" id="tab-all">All</button>
-      <button class="hub-tab" onclick="filterHub('Sales')" id="tab-sales">Sales</button>
-      <button class="hub-tab" onclick="filterHub('Marketing')" id="tab-marketing">Marketing</button>
-      <button class="hub-tab" onclick="filterHub('Service')" id="tab-service">Service</button>
-      <button class="hub-tab" onclick="filterHub('Automation')" id="tab-automation">Automation</button>
-      <button class="hub-tab" onclick="filterHub('Data Integrity')" id="tab-data">Data Quality</button>
-      <button class="hub-tab" onclick="filterHub('Pipeline')" id="tab-pipeline">Pipeline</button>
-      <button class="hub-tab" onclick="filterHub('Reporting')" id="tab-reporting">Reporting</button>
+  <!-- Issues -->
+  <div class="issues-section" id="issues-section" style="display:none;">
+    <div class="issues-header-row">
+      <div class="issues-h" id="issues-header">Issues Found</div>
+      <div id="hub-tabs">
+        <button class="hub-tab active" onclick="filterHub('all')" id="tab-all">All</button>
+        <button class="hub-tab" onclick="filterHub('Sales')" id="tab-sales">Sales &amp; Pipeline</button>
+        <button class="hub-tab" onclick="filterHub('Marketing')" id="tab-marketing">Marketing</button>
+        <button class="hub-tab" onclick="filterHub('Service')" id="tab-service">Service</button>
+        <button class="hub-tab" onclick="filterHub('Automation')" id="tab-automation">Automation</button>
+        <button class="hub-tab" onclick="filterHub('Data Integrity')" id="tab-data">Data &amp; Config</button>
+      </div>
     </div>
+    <div class="issues-list" id="issues-list"></div>
+    <div class="no-issues-empty" id="no-issues-msg">No issues found in this category 🎉</div>
+  </div>
 
-    <div class="issue-list" id="issue-list"></div>
+  <!-- Fix Plan -->
+  <div class="fixplan-section" id="fixplan-section" style="display:none;">
+    <div style="margin-bottom:16px;">
+      <div class="section-title">Your Prioritized Fix Plan</div>
+      <div style="font-size:14px;color:var(--t2);">Issues grouped by hub — tackle in priority order</div>
+    </div>
+    <div class="fixplan-grid" id="fixplan-grid"></div>
+  </div>
 
-    <div id="fix-plan-section"></div>
+  <!-- CTA -->
+  <div class="cta-section" id="cta-section" style="display:none;">
+    <div class="cta-badge">Free 30-Minute Strategy Call</div>
+    <div class="cta-title">Get Your Prioritized Fix Plan</div>
+    <div class="cta-desc">We will personally review every finding, walk you through what to fix first, and send you a written action plan with flat-rate pricing for each item. No obligation, no sales pitch.</div>
+    <a href="https://fixops.io/#pricing" class="cta-btn">Book Your Free Strategy Call →</a>
+  </div>
+
+  <!-- Loading state -->
+  <div id="loading-state" style="text-align:center;padding:100px 20px;">
+    <div style="width:44px;height:44px;border-radius:50%;border:2px solid var(--b2);border-top-color:var(--v);animation:spin 1s linear infinite;margin:0 auto 16px;"></div>
+    <div style="font-size:15px;font-weight:600;color:var(--t2);margin-bottom:6px;">Running your 185-point audit…</div>
+    <div style="font-size:12px;color:var(--t3);">Analyzing contacts, pipeline, workflows, and more</div>
   </div>
 </div>
 
-<div id="toast">
-  <div style="font-size:20px;flex-shrink:0" id="t-ico">⚡</div>
-  <div style="flex:1">
-    <strong id="t-title" style="display:block;font-size:13px;font-weight:700;color:#fff;margin-bottom:3px"></strong>
-    <span id="t-sub" style="font-size:11px;color:var(--t2);font-family:var(--mono)"></span>
-  </div>
-  <div onclick="hideToast()" style="color:var(--t3);cursor:pointer;font-size:16px;padding:4px">✕</div>
-</div>
+<div id="toast-container"></div>
 
-<script data-cfasync="false">
-const API = 'https://fixops-api-production.up.railway.app';
-const P = new URLSearchParams(window.location.search);
-const auditId = P.get('id');
-let AUDIT_DATA = null;
+<script>
+'use strict';
+var AUDIT_DATA = null;
+var API = 'https://fixops-api-production.up.railway.app';
 
-// Stars
-(function(){
-  var c = document.getElementById('stars');
-  for(var i=0;i<80;i++){
-    var s = document.createElement('div');
-    s.className = 'star';
-    var sz = Math.random()<.15?2.5:1.5;
-    s.style.cssText = 'left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+sz+'px;height:'+sz+'px;--d:'+(2+Math.random()*6)+'s;--dl:-'+Math.random()*6+'s';
-    c.appendChild(s);
-  }
-})();
+// ── Helpers ─────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmt(n) { return Number(n||0).toLocaleString(); }
+function fmtMoney(n) {
+  n = Number(n||0);
+  if(n>=1000000) return '$'+Math.round(n/100000)/10+'M';
+  if(n>=1000) return '$'+Math.round(n/100)/10+'K';
+  return '$'+Math.round(n).toLocaleString();
+}
+function pct(a,b) { return b > 0 ? Math.round(a/b*100) : 0; }
 
-// Dimension config
-var DM = {
-  dataIntegrity:    {l:'Data Integrity',    e:'🗄️'},
-  automationHealth: {l:'Automation Health', e:'⚙️'},
-  pipelineIntegrity:{l:'Pipeline',          e:'📊'},
-  marketingHealth:  {l:'Marketing Health',  e:'📧'},
-  configSecurity:   {l:'Configuration',     e:'🔧'},
-  reportingQuality: {l:'Reporting Quality', e:'📈'},
-  teamAdoption:     {l:'Team Adoption',     e:'👥'},
-  serviceHealth:    {l:'Service Health',    e:'🎫'}
-};
-
-if(!auditId) {
-  showError('No audit ID found. Please use the link from your email or run a new audit.');
-} else {
-  loadWithRetry(auditId, 0);
+// ── Toast ────────────────────────────────────────────────────────────────────
+function showToast(icon, title, sub) {
+  var c = document.getElementById('toast-container');
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<div class="toast-icon">'+icon+'</div><div><div class="toast-title">'+esc(title)+'</div>'+(sub?'<div class="toast-sub">'+esc(sub)+'</div>':'')+'</div>';
+  c.appendChild(t);
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 4000);
 }
 
-function loadWithRetry(id, attempt) {
-  attempt = attempt || 0;
-  var maxAttempts = 150;
-  var elapsed = Math.round((attempt * 8) / 60);
+// ── Load data ────────────────────────────────────────────────────────────────
+(function init() {
+  var params = new URLSearchParams(window.location.search);
+  var auditId = params.get('id');
+  var token   = params.get('token');
 
-  if(attempt === 0) {
-    document.getElementById('load-msg').textContent = 'Loading your results...';
-    document.getElementById('load-sub').textContent = 'Fetching audit data...';
-  } else if(attempt < 4) {
-    document.getElementById('load-sub').textContent = 'Audit in progress — results arriving shortly...';
-  } else {
-    document.getElementById('load-msg').textContent = 'Still scanning your portal...';
-    document.getElementById('load-sub').textContent = 'Large portal detected' + (elapsed > 0 ? ' — ' + elapsed + ' min elapsed' : '') + ' · check your email when complete';
+  if (!auditId && !token) {
+    document.getElementById('loading-state').innerHTML =
+      '<div style="font-size:40px;margin-bottom:12px;">🔍</div>' +
+      '<div style="font-size:18px;font-weight:700;margin-bottom:8px;">No audit found</div>' +
+      '<div style="font-size:13px;color:var(--t3);margin-bottom:20px;">Start a free audit to see your results</div>' +
+      '<a href="index.html" style="display:inline-block;padding:12px 24px;background:var(--v);color:#fff;border-radius:10px;font-weight:700;font-size:14px;">Start Free Audit →</a>';
+    return;
   }
 
-  if(attempt > 0) {
-    document.getElementById('load-attempt').textContent = 'Checking every 8 seconds' + (elapsed > 0 ? ' · ' + elapsed + ' min elapsed' : '');
-  }
+  var endpoint = token
+    ? API + '/auth/results?token=' + encodeURIComponent(token)
+    : API + '/audit/result?id=' + auditId;
 
-  fetch(API + '/audit/status/' + id, {cache:'no-store'})
-    .then(function(r) {
-      // 404 means audit expired or not found - stop retrying immediately
-      if(r.status === 404) {
-        showError('This audit link has expired (results are stored for 7 days). Please run a new audit at fixops.io or contact matthew@fixops.io');
-        return null;
-      }
-      if(!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    })
+  var ctrl = new AbortController();
+  var timeout = setTimeout(function(){ ctrl.abort(); }, 20000);
+
+  fetch(endpoint, { signal: ctrl.signal, cache: 'no-store' })
+    .then(function(r) { clearTimeout(timeout); return r.json(); })
     .then(function(data) {
-      if(!data) return; // 404 handled above
-      console.log('Status:', data.status, 'attempt:', attempt, 'has issues:', !!(data.issues), 'score:', data.summary && data.summary.overallScore);
-      // Multiple ways to detect a complete audit
-      const isComplete = 
-        data.status === 'complete' || 
-        (data.issues && data.scores && data.summary && data.summary.overallScore !== undefined) ||
-        (data.issues && data.issues.length >= 0 && data.scores && Object.keys(data.scores).length > 0);
-      if(isComplete) {
+      if (data.status === 'complete' || data.issues) {
         showResults(data);
-      } else if(data.status === 'error') {
-        showError(data.message || 'Audit failed. Please contact matthew@fixops.io');
+      } else if (data.status === 'running') {
+        document.getElementById('loading-state').innerHTML =
+          '<div style="font-size:36px;margin-bottom:12px;">⚙️</div>' +
+          '<div style="font-size:16px;font-weight:700;margin-bottom:8px;">Audit in progress…</div>' +
+          '<div style="font-size:13px;color:var(--t3);">This usually takes 30–60 seconds. Refresh to check.</div>';
       } else {
-        // Still running — show fallback button after 30 seconds
-        if(attempt === 4) {
-          document.getElementById('load-attempt').innerHTML =
-            'Still scanning · <a href="javascript:void(0)" onclick="loadWithRetry(\''+id+'\',0)" style="color:#a78bfa;text-decoration:underline;">Refresh now</a>';
-        }
-        if(attempt < maxAttempts) {
-          setTimeout(function(){ loadWithRetry(id, attempt + 1); }, attempt < 3 ? 3000 : 8000);
-        } else {
-          showError('Audit is taking longer than expected. You will receive an email when complete. contact matthew@fixops.io');
-        }
+        showError('Unexpected response from server.');
       }
     })
     .catch(function(err) {
-      console.error('Fetch error:', err.message);
-      if(attempt < maxAttempts) {
-        setTimeout(function(){ loadWithRetry(id, attempt + 1); }, attempt < 3 ? 3000 : 8000);
-      } else {
-        showError('Could not connect. Check your email for results or contact matthew@fixops.io');
-      }
+      clearTimeout(timeout);
+      showError('Could not load audit results. ' + (err.name === 'AbortError' ? 'Request timed out.' : ''));
     });
-}
+})();
 
 function showError(msg) {
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('error-state').style.display = 'block';
-  document.getElementById('err-msg').textContent = msg;
+  document.getElementById('loading-state').innerHTML =
+    '<div style="font-size:36px;margin-bottom:12px;">⚠️</div>' +
+    '<div style="font-size:15px;font-weight:700;margin-bottom:8px;">'+esc(msg)+'</div>' +
+    '<a href="index.html" style="display:inline-block;padding:10px 20px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:13px;margin-top:12px;">← Back to Home</a>';
 }
 
-function esc(str) {
-  if(!str) return '';
-  var d = document.createElement('div');
-  d.textContent = String(str);
-  return d.innerHTML;
-}
-
+// ── Main render ──────────────────────────────────────────────────────────────
 function showResults(data) {
   AUDIT_DATA = data;
-  console.log('showResults called, issues:', data.issues ? data.issues.length : 0);
+  var summary  = data.summary   || {};
+  var scores   = data.scores    || {};
+  var issues   = data.issues    || [];
+  var portal   = data.portalInfo|| {};
+  var ps       = portal.portalStats || {};
+  var plan     = portal.plan    || 'free';
 
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('pdf-btn').classList.add('show');
-  var snapBtn = document.getElementById('snapshot-btn');
-  if(snapBtn && auditId) {
-    snapBtn.href = 'reporting.html?id=' + auditId;
-    snapBtn.classList.add('show');
-  }
+  var ovr      = summary.overallScore || 0;
+  var criticals= summary.criticalCount|| 0;
+  var warnings = summary.warningCount || 0;
+  var waste    = summary.monthlyWaste || 0;
+  var company  = portal.company || 'Your Portal';
 
-  var summary = data.summary || {};
-  var scores = data.scores || {};
-  var issues = data.issues || [];
-  var portalInfo = data.portalInfo || {};
-
-  var overallScore = summary.overallScore || 0;
-  var col = overallScore >= 80 ? '#10b981' : overallScore >= 60 ? '#f59e0b' : '#f43f5e';
-  var grade = overallScore >= 85 ? 'Excellent' : overallScore >= 70 ? 'Good' : overallScore >= 55 ? 'Needs Attention' : 'Critical';
-
-  // Score ring
-  var ring = document.getElementById('score-ring');
-  ring.style.background = 'conic-gradient(' + col + ' 0% ' + overallScore + '%, #10101a ' + overallScore + '% 100%)';
-  document.getElementById('score-num').textContent = overallScore;
-  document.getElementById('score-num').style.color = col;
-  var badge = document.getElementById('score-badge');
-  badge.textContent = grade;
-  badge.style.cssText = 'display:inline-block;padding:4px 14px;border-radius:999px;font-size:11px;font-weight:700;margin-top:6px;background:' + col + '18;color:' + col + ';border:1px solid ' + col + '44;';
-
-  // Portal stats bar
-  var ps = portalInfo.portalStats || {};
-  // Build rich stats bar grouped by hub
-  var salesItems = [], mktItems = [], svcItems = [], configItems = [];
-  if(ps.contacts) salesItems.push(Number(ps.contacts).toLocaleString() + ' contacts');
-  if(ps.emailEngagements) salesItems.push(ps.emailEngagements + ' emails logged');
-  if(ps.notes) salesItems.push(ps.notes + ' notes');
-  if(ps.companies) salesItems.push(Number(ps.companies).toLocaleString() + ' companies');
-  if(ps.deals) salesItems.push(Number(ps.deals).toLocaleString() + ' deals');
-  if(ps.leads) salesItems.push(ps.leads + ' leads');
-  if(ps.quotes) salesItems.push(ps.quotes + ' quotes');
-  if(ps.sequences) salesItems.push(ps.sequences + ' sequences');
-  if(ps.goals) salesItems.push(ps.goals + ' goals');
-
-  if(ps.forms) mktItems.push(ps.forms + ' forms');
-  if(ps.campaigns) mktItems.push(ps.campaigns + ' campaigns');
-  if(ps.listCount) mktItems.push(ps.listCount + ' lists');
-
-  if(ps.tickets) svcItems.push(ps.tickets + ' tickets');
-  if(ps.feedbackTotal) svcItems.push(ps.feedbackTotal + ' feedback responses');
-  if(ps.openConversations) svcItems.push(ps.openConversations + ' open conversations');
-
-  if(ps.workflows !== undefined) configItems.push(ps.workflows + ' workflows');
-  if(ps.users) configItems.push(ps.users + ' users');
-  if(ps.tasks) configItems.push(ps.tasks + ' tasks');
-  if(ps.meetings) configItems.push(ps.meetings + ' meetings');
-  if(ps.calls) configItems.push(ps.calls + ' calls');
-
-  var items = salesItems.concat(mktItems).concat(svcItems).concat(configItems);
-
-  if(items.length) {
-    var oldBar = document.getElementById('portal-snap-bar');
-    if(oldBar) oldBar.remove();
-    var bar = document.createElement('div');
-    bar.id = 'portal-snap-bar';
-    bar.style.cssText = 'font-size:11px;color:rgba(255,255,255,.22);font-family:var(--mono);margin-bottom:16px;padding:9px 13px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.05);line-height:1.8;';
-    bar.textContent = '📊 Portal snapshot: ' + items.join(' · ');
-    var h1 = document.querySelector('.score-right h1');
-    if(h1) h1.before(bar);
-  }
-
-  // Show upgrade banner for free plan
-  if(portalInfo.isLimited) {
-    var limits = portalInfo.limits || {};
-    var upgradeBar = document.createElement('div');
-    // Smart upgrade messaging based on what was found
-    var hasCritical = (summary.criticalCount||0) >= 3;
-    var monthlyWaste = Number(summary.monthlyWaste||0);
-    var scoreImprovement = Math.min(35, (summary.criticalCount||0) * 4 + (summary.warningCount||0) * 2);
-    var projectedScore = Math.min(97, (summary.overallScore||0) + scoreImprovement);
-
-    upgradeBar.style.cssText = 'background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:20px 24px;margin-bottom:20px;';
-
-    // Build two option cards
-    var scoreImproveMsg = scoreImprovement > 0
-      ? '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:6px;">If you fix the critical issues found, your score could reach <strong style="color:#10b981">' + projectedScore + '/100</strong></div>'
-      : '';
-    var wasteMsg = monthlyWaste > 0
-      ? '<div style="font-size:12px;color:#f59e0b;margin-top:4px;">💸 $' + Number(monthlyWaste).toLocaleString() + '/mo in identified waste</div>'
-      : '';
-
-    var deepCard =
-      '<div style="flex:1;min-width:220px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.4);border-radius:12px;padding:18px 20px;">' +
-        '<div style="font-size:10px;font-weight:800;color:#a78bfa;letter-spacing:1.5px;margin-bottom:8px;">ONE-TIME FIX</div>' +
-        '<div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px;">Deep Audit — $399</div>' +
-        '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:14px;line-height:1.6;">' +
-          'Every object · every record · no caps · written fix plan · 30-min strategy call included' +
-        '</div>' +
-        '<div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:14px;">' +
-          '✓ Full workflow audit &nbsp; ✓ Marketing health &nbsp; ✓ NPS/CSAT analysis<br>' +
-          '✓ Sequences &amp; campaigns &nbsp; ✓ Prioritized action plan' +
-        '</div>' +
-        '<a href="https://buy.stripe.com/eVqdR96HMbnc8POdBH8Ra0a" target="_blank" style="display:block;text-align:center;padding:11px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">Get Deep Audit →</a>' +
-      '</div>';
-
-    var pulseCard =
-      '<div style="flex:1;min-width:220px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:18px 20px;">' +
-        '<div style="font-size:10px;font-weight:800;color:#10b981;letter-spacing:1.5px;margin-bottom:8px;">WEEKLY MONITORING</div>' +
-        '<div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px;">Pulse — $299/mo</div>' +
-        '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:14px;line-height:1.6;">' +
-          'Full 185-point scan every Monday · new issue alerts · score trends · week-over-week delta report' +
-        '</div>' +
-        '<div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:14px;">' +
-          '✓ Score trends over time &nbsp; ✓ What improved this week<br>' +
-          '✓ What got worse &nbsp; ✓ Monday morning email report' +
-        '</div>' +
-        '<a href="https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06" target="_blank" style="display:block;text-align:center;padding:11px;background:#059669;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">Start Monitoring →</a>' +
-      '</div>';
-
-    // Required variables for upgradeBar.innerHTML
-    var upgradeTitle = hasCritical
-      ? (summary.criticalCount||0) + ' critical issues found — your portal needs immediate attention'
-      : 'Upgrade for deeper insights and ongoing monitoring';
-    var upgradeDesc = (summary.monthlyWaste||0) > 0
-      ? 'FixOps identified $' + Number(summary.monthlyWaste||0).toLocaleString() + '/mo in waste and inefficiencies'
-      : 'Get weekly monitoring, score trends, and the full 22-view intelligence dashboard';
-    var cardsHtml = deepCard + pulseCard;
-
-    upgradeBar.innerHTML =
-      '<div style="margin-bottom:16px;">' +
-        '<div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:5px;">' + upgradeTitle + '</div>' +
-        '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:4px;">' + upgradeDesc + '</div>' +
-        scoreImproveMsg +
-        wasteMsg +
-      '</div>' +
-      '<div style="display:flex;gap:12px;flex-wrap:wrap;">' + cardsHtml + '</div>';
-    var resultsDiv = document.getElementById('results');
-    resultsDiv.insertBefore(upgradeBar, resultsDiv.firstChild);
-  }
-
-  // Stats chips
-  var recordsScanned = summary.recordsScanned || 0;
-  var pipeVal = ps.openPipelineValue ? '$' + Number(ps.openPipelineValue).toLocaleString() : null;
-  var mrrVal  = ps.mrrTotal > 0 ? '$' + Number(ps.mrrTotal).toLocaleString() : null;
-  document.getElementById('stats-row').innerHTML =
-    '<div class="stat" style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18)"><div class="stat-n" style="color:#f43f5e">' + (summary.criticalCount||0) + '</div><div class="stat-l">Critical</div></div>' +
-    '<div class="stat" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18)"><div class="stat-n" style="color:#f59e0b">' + (summary.warningCount||0) + '</div><div class="stat-l">Warnings</div></div>' +
-    '<div class="stat" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18)"><div class="stat-n" style="color:#a78bfa">$' + Number(summary.monthlyWaste||0).toLocaleString() + '</div><div class="stat-l">Waste/mo</div></div>' +
-    '<div class="stat" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18)"><div class="stat-n" style="color:#10b981">' + Number(recordsScanned).toLocaleString() + '</div><div class="stat-l">Records Scanned</div></div>' +
-    (pipeVal ? '<div class="stat" style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.18)"><div class="stat-n" style="color:#3b82f6">' + pipeVal + '</div><div class="stat-l">Open Pipeline</div></div>' : '') +
-    (mrrVal  ? '<div class="stat" style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15)"><div class="stat-n" style="color:#10b981">' + mrrVal + '</div><div class="stat-l">MRR</div></div>' : '') +
-    (ps.sequences ? '<div class="stat" style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15)"><div class="stat-n" style="color:#fbbf24">' + ps.sequences + '</div><div class="stat-l">Sequences</div></div>' : '') +
-    (ps.listCount  ? '<div class="stat" style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15)"><div class="stat-n" style="color:#a78bfa">' + ps.listCount + '</div><div class="stat-l">Lists</div></div>' : '');
-
-  // Dimension grid
-  var dimHtml = '';
-  var scoreKeys = Object.keys(scores);
-  for(var ki=0; ki<scoreKeys.length; ki++) {
-    var k = scoreKeys[ki];
-    var v = scores[k];
-    var d = DM[k] || {l:k, e:'⬡'};
-    var c = v>=80?'#10b981':v>=60?'#f59e0b':'#f43f5e';
-    dimHtml += '<div class="dim-card"><div class="dim-emo">' + d.e + '</div><div class="dim-name">' + d.l + '</div><div class="dim-score" style="color:' + c + '">' + v + '</div><div class="dim-bar-t"><div class="dim-bar-f" style="width:' + v + '%;background:' + c + '"></div></div></div>';
-  }
-  document.getElementById('dim-grid').innerHTML = dimHtml;
-
-  // Issues
-  // Render hub intelligence cards
-  renderHubIntelligence(data);
-
-  var sorted = issues.slice().sort(function(a,b){
-    var order = {critical:0, warning:1, info:2};
-    return (order[a.severity]||3) - (order[b.severity]||3);
+  // Hide loading, show sections
+  document.getElementById('loading-state').style.display = 'none';
+  ['score-hero','dims-section','hub-intel-section',
+   'issues-section','fixplan-section','cta-section'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(el) el.style.display = '';
   });
 
-  document.getElementById('issues-header').textContent = sorted.length + ' Issue' + (sorted.length!==1?'s':'') + ' Found — ' + (summary.criticalCount||0) + ' Critical, ' + (summary.warningCount||0) + ' Warnings';
+  // ── Score ring ────────────────────────────────────────────────────────────
+  var color = ovr>=80 ? '#10b981' : ovr>=60 ? '#f59e0b' : '#f43f5e';
+  var grade = ovr>=85 ? 'Excellent' : ovr>=70 ? 'Good' : ovr>=55 ? 'Needs Attention' : 'Critical';
+  var gradeBg = ovr>=80 ? 'rgba(16,185,129,.15)' : ovr>=60 ? 'rgba(245,158,11,.15)' : 'rgba(244,63,94,.15)';
 
-  // Build issue cards using DOM - NO template literals
-  var list = document.getElementById('issue-list');
+  document.getElementById('score-num').textContent = ovr;
+  document.getElementById('score-num').style.color = color;
+  document.getElementById('score-ring').style.borderColor = color;
+  document.getElementById('score-company').textContent = company;
+  var gradeEl = document.getElementById('score-grade');
+  gradeEl.textContent = grade;
+  gradeEl.style.background = gradeBg;
+  gradeEl.style.color = color;
+  document.getElementById('stat-critical').textContent = criticals;
+  document.getElementById('stat-warnings').textContent = warnings;
+  document.getElementById('stat-waste').textContent = fmtMoney(waste)+'/mo';
+
+  // ── Snap bar ──────────────────────────────────────────────────────────────
+  var oldBar = document.getElementById('portal-snap-bar');
+  if(oldBar) oldBar.remove();
+  var bar = document.createElement('div');
+  bar.id = 'portal-snap-bar';
+  bar.className = 'snap-bar';
+
+  var snapItems = [
+    { val: fmt(ps.contacts||0),   lbl: 'Contacts' },
+    { val: fmt(ps.companies||0),  lbl: 'Companies' },
+    { val: fmt(ps.deals||0),      lbl: 'Open Deals' },
+    { val: fmt(ps.tickets||0),    lbl: 'Tickets' },
+    { val: fmt(ps.workflows||0),  lbl: 'Workflows' },
+    { val: fmt(ps.forms||0),      lbl: 'Forms' },
+    { val: fmt(ps.users||0),      lbl: 'Users' },
+    { val: fmt(ps.lists||0),      lbl: 'Lists' },
+  ];
+  bar.innerHTML = snapItems.map(function(si){
+    return '<div class="snap-item"><div class="snap-val">'+esc(si.val)+'</div><div class="snap-lbl">'+esc(si.lbl)+'</div></div>';
+  }).join('');
+
+  var page = document.getElementById('main-page');
+  var heroEl = document.getElementById('score-hero');
+  page.insertBefore(bar, heroEl.nextSibling);
+  bar.style.display = '';
+
+  // ── Dimension scores ──────────────────────────────────────────────────────
+  var DIM_META = {
+    dataIntegrity:    { label:'Data Integrity',    icon:'🗄️',  color:'#3b82f6' },
+    automationHealth: { label:'Automation',         icon:'⚙️',  color:'#8b5cf6' },
+    pipelineIntegrity:{ label:'Pipeline',           icon:'📊',  color:'#f59e0b' },
+    marketingHealth:  { label:'Marketing',          icon:'📣',  color:'#ec4899' },
+    configSecurity:   { label:'Configuration',      icon:'🔧',  color:'#06b6d4' },
+    reportingQuality: { label:'Reporting',          icon:'📈',  color:'#10b981' },
+    teamAdoption:     { label:'Team Adoption',      icon:'👥',  color:'#f59e0b' },
+    serviceHealth:    { label:'Service',            icon:'🎧',  color:'#10b981' },
+  };
+
+  var dimsGrid = document.getElementById('dims-grid');
+  dimsGrid.innerHTML = '';
+  Object.keys(DIM_META).forEach(function(key) {
+    var score = scores[key];
+    if (score === null || score === undefined) return;
+    var meta  = DIM_META[key];
+    var sc    = Number(score);
+    var col   = sc>=80 ? '#10b981' : sc>=60 ? '#f59e0b' : '#f43f5e';
+    var card  = document.createElement('div');
+    card.className = 'dim-card';
+    card.innerHTML =
+      '<div class="dim-name">'+esc(meta.icon)+' '+esc(meta.label)+'</div>'+
+      '<div class="dim-score" style="color:'+col+'">'+sc+'<span style="font-size:14px;color:var(--t3);font-weight:400;">/100</span></div>'+
+      '<div class="dim-bar-bg"><div class="dim-bar-fill" style="width:'+sc+'%;background:'+col+';"></div></div>';
+    dimsGrid.appendChild(card);
+  });
+
+  // ── Hub Intelligence ──────────────────────────────────────────────────────
+  renderHubIntelligence(ps, scores, plan);
+
+  // ── Issues ────────────────────────────────────────────────────────────────
+  var sorted = issues.slice().sort(function(a,b){
+    var sev = {critical:0,warning:1,info:2};
+    return (sev[a.severity]||1) - (sev[b.severity]||1);
+  });
+
+  var list = document.getElementById('issues-list');
   list.innerHTML = '';
+  document.getElementById('issues-header').textContent = sorted.length + ' Issue' + (sorted.length!==1?'s':'') + ' Found';
 
-  for(var ii=0; ii<sorted.length; ii++) {
-    var issue = sorted[ii];
-    var idx = ii;
-    var sc = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#a78bfa';
-    var scC = issue.severity==='critical'?'sev-c':issue.severity==='warning'?'sev-w':'sev-i';
+  sorted.forEach(function(issue, idx) {
+    var sc = issue.severity==='critical' ? '#f43f5e' : issue.severity==='warning' ? '#f59e0b' : '#3b82f6';
+    var scC = issue.severity || 'info';
+
+    var detailHtml = '';
+    if (issue.detail) {
+      detailHtml += '<div class="detail-block"><div class="detail-label">Why This Matters</div><div class="detail-text">'+esc(issue.detail)+'</div></div>';
+    }
+    var guideHtml = '';
+    if (issue.guide && issue.guide.length) {
+      guideHtml = '<div class="guide-block"><div class="guide-label">How to Fix It</div>'+
+        issue.guide.map(function(step, i){
+          return '<div class="guide-step"><div class="guide-num">'+(i+1)+'</div><div>'+esc(step)+'</div></div>';
+        }).join('')+'</div>';
+    }
 
     var card = document.createElement('div');
     card.className = 'issue-card';
-    card.id = 'ic-' + idx;
     card.setAttribute('data-dimension', issue.dimension || '');
+    card.setAttribute('data-severity', issue.severity || '');
     card.onclick = (function(i){ return function(){ toggleIssue(i); }; })(idx);
-
-    // Build guide steps HTML safely
-    var guidesHtml = '';
-    var guide = issue.guide || [];
-    for(var gi=0; gi<guide.length; gi++) {
-      guidesHtml += '<div class="guide-step"><div class="step-num">' + (gi+1) + '</div><div>' + esc(guide[gi]) + '</div></div>';
-    }
-
-    var detailHtml = issue.detail ? '<div class="detail-block"><div class="detail-label">🔍 Why This Matters</div><div class="detail-text">' + esc(issue.detail) + '</div></div>' : '';
-    var guideHtml = guidesHtml ? '<div class="guide-block"><div class="guide-label">✓ Best Practice Fix Guide</div><div class="guide-steps">' + guidesHtml + '</div></div>' : '';
-    var autoBtn = '';
+    card.id = 'ic-'+idx;
 
     card.innerHTML =
-      '<div class="issue-top">' +
-        '<div class="sev-bar" style="background:' + sc + '"></div>' +
-        '<div class="i-body">' +
-          '<div class="i-header">' +
-            '<div class="i-title">' + esc(issue.title) + '</div>' +
-            '<div class="sev-tag ' + scC + '">' + (issue.severity||'').toUpperCase() + '</div>' +
-          '</div>' +
-          '<div class="i-desc">' + esc(issue.description) + '</div>' +
-          '<div class="i-impact"><span>💸</span><span>' + esc(issue.impact) + '</span>' + (issue.dimension ? '<span class="i-dim">' + esc(issue.dimension) + '</span>' : '') + '</div>' +
-        '</div>' +
-        '<div class="i-arrow">▾</div>' +
-      '</div>' +
-      '<div class="issue-expand">' +
-        detailHtml +
-        guideHtml +
-        (issue.severity !== 'info' ? '<div class="action-btns"><button class="act-btn btn-fixme" onclick="event.stopPropagation();fixItForMe(' + idx + ')">🛠 Fix It For Me</button></div>' : '') +
+      '<div class="issue-top">'+
+        '<div class="sev-bar" style="background:'+sc+';"></div>'+
+        '<div class="i-body">'+
+          '<div class="i-header">'+
+            '<div class="i-title">'+esc(issue.title)+'</div>'+
+            '<div class="sev-tag '+scC+'">'+scC.toUpperCase()+'</div>'+
+          '</div>'+
+          '<div class="i-desc">'+esc(issue.description)+'</div>'+
+          '<div class="i-impact">'+
+            '<span>💸</span>'+
+            '<span>'+esc(issue.impact||'')+'</span>'+
+            (issue.dimension ? '<span class="i-dim">'+esc(issue.dimension)+'</span>' : '')+
+          '</div>'+
+        '</div>'+
+        '<div class="i-arrow">▾</div>'+
+      '</div>'+
+      '<div class="issue-expand">'+
+        detailHtml + guideHtml +
+        '<button class="fix-me-btn" onclick="event.stopPropagation();fixItForMe('+idx+')">🛠 Fix It For Me — Get a Quote</button>'+
       '</div>';
 
     list.appendChild(card);
-  }
-
-  // CTA section
-  buildFixPlan(data);
-  console.log('showResults complete - rendered ' + sorted.length + ' issues');
-}
-
-
-function toggleIssue(idx) {
-  var c = document.getElementById('ic-' + idx);
-  var was = c.classList.contains('open');
-  var all = document.querySelectorAll('.issue-card');
-  for(var i=0;i<all.length;i++) all[i].classList.remove('open');
-  if(!was) c.classList.add('open');
-}
-
-async function fixItForMe(idx) {
-  var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
-  if(!issue) return;
-  showToast('🛠','Sending Fix Request...',"We'll reach out to scope this for you");
-  try {
-    var res = await fetch(API + '/fix-request', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        issueTitle: issue.title, issueImpact: issue.impact,
-        issueDimension: issue.dimension,
-        portalCompany: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.company,
-        portalEmail: AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.email,
-        auditId: AUDIT_DATA.auditId
-      })
-    });
-    var d = await res.json();
-    if(d.success) {
-      showToast('✅','Request Sent!',"We'll reach out within a few hours to discuss and quote");
-      var btn = document.querySelector('#ic-' + idx + ' .btn-fixme');
-      if(btn){ btn.textContent='✅ Request Sent'; btn.disabled=true; btn.style.opacity='0.6'; }
-    } else { throw new Error(d.error); }
-  } catch(e) { showToast('📧','Contact FixOps Support','matthew@fixops.io'); }
-}
-
-
-
-// ── Fix Plan Section ──────────────────────────────────────────────────────────
-function buildFixPlan(data) {
-  var issues = data.issues || [];
-  var summary = data.summary || {};
-  var portalInfo = data.portalInfo || {};
-  var scores = data.scores || {};
-  var company = portalInfo.company || 'Your Portal';
-  var criticalCount = summary.criticalCount || 0;
-  var warningCount = summary.warningCount || 0;
-  var waste = summary.monthlyWaste || 0;
-
-  // Map issues to project buckets
-  var buckets = {
-    sales: {
-      name: 'Sales & Pipeline',
-      icon: '📊',
-      cls: 'pipeline',
-      tagline: 'Turn your pipeline from a liability into an accurate revenue forecast',
-      color: '#f59e0b',
-      dimensions: ['Pipeline', 'Pipeline Integrity', 'Sales'],
-      issues: [],
-      impact: 0
-    },
-    marketing: {
-      name: 'Marketing Hub',
-      icon: '📣',
-      cls: 'reporting',
-      tagline: 'Fix list hygiene, email health, and marketing automation gaps',
-      color: '#3b82f6',
-      dimensions: ['Marketing', 'Marketing Health'],
-      issues: [],
-      impact: 0
-    },
-    service: {
-      name: 'Service Hub',
-      icon: '🎧',
-      cls: 'config',
-      tagline: 'Reduce churn risk with SLA compliance and NPS monitoring',
-      color: '#10b981',
-      dimensions: ['Service', 'Service Health'],
-      issues: [],
-      impact: 0
-    },
-    automation: {
-      name: 'Automation & Sequences',
-      icon: '⚙️',
-      cls: 'automation',
-      tagline: 'Stop silent revenue leaks from broken workflows and sequences',
-      color: '#a78bfa',
-      dimensions: ['Automation', 'Automation Health', 'Team Adoption'],
-      issues: [],
-      impact: 0
-    },
-    data: {
-      name: 'Data Integrity',
-      icon: '🧹',
-      cls: 'data',
-      tagline: 'Fix the CRM foundation your entire revenue operation depends on',
-      color: '#06b6d4',
-      dimensions: ['Data Integrity', 'Data Quality'],
-      issues: [],
-      impact: 0
-    },
-    config: {
-      name: 'Configuration & Security',
-      icon: '🔧',
-      cls: 'config',
-      tagline: 'Lock down your portal, reduce risk, and eliminate technical debt',
-      color: '#ec4899',
-      dimensions: ['Configuration', 'Configuration & Security', 'Reporting Quality', 'Reporting'],
-      issues: [],
-      impact: 0
-    }
-  };
-
-  // Sort issues into buckets
-  issues.forEach(function(issue) {
-    var dim = issue.dimension || '';
-    var assigned = false;
-    Object.keys(buckets).forEach(function(key) {
-      if (!assigned && buckets[key].dimensions.some(function(d){ return dim.toLowerCase().includes(d.toLowerCase().split(' ')[0]); })) {
-        buckets[key].issues.push(issue);
-        assigned = true;
-      }
-    });
-    if (!assigned) buckets.config.issues.push(issue);
   });
 
-  // Only show buckets with issues
-  var activeBuckets = Object.values(buckets).filter(function(b){ return b.issues.length > 0; });
+  // ── Fix Plan ─────────────────────────────────────────────────────────────
+  buildFixPlan(data);
 
-  // Calendly URL with context
-  var calendlyBase = 'https://calendly.com/matthew-fixops/30min';
-  var calendlyParams = '?name=' + encodeURIComponent(company) +
-    '&a1=' + encodeURIComponent('Audit Score: ' + (summary.overallScore||0) + '/100 · ' + criticalCount + ' critical · $' + Number(waste).toLocaleString() + '/mo waste · Audit ID: ' + (data.auditId||''));
-  var calendlyUrl = calendlyBase + calendlyParams;
+  // CTA
+  document.getElementById('cta-section').style.display = '';
 
-  // Build bucket cards
-  var bucketsHtml = activeBuckets.map(function(bucket) {
-    var critIssues = bucket.issues.filter(function(i){ return i.severity === 'critical'; });
-    var warnIssues = bucket.issues.filter(function(i){ return i.severity === 'warning'; });
-    var allIssues = bucket.issues.slice(0, 4);
+  console.log('showResults: rendered '+sorted.length+' issues');
+}
 
-    var issueListHtml = allIssues.map(function(i) {
-      var dot_color = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+// ── Hub Intelligence ─────────────────────────────────────────────────────────
+function renderHubIntelligence(ps, scores, plan) {
+  var grid = document.getElementById('hub-intel-grid');
+  if (!grid) return;
+  var cards = [];
+
+  // Sales & Pipeline
+  if (ps.openDealsCount > 0 || ps.stalledDeals > 0) {
+    var pipeVal = ps.openPipelineValue > 0 ? fmtMoney(ps.openPipelineValue) : fmt(ps.openDealsCount)+' deals';
+    var stallPct = ps.openDealsCount > 0 ? pct(ps.stalledDeals||0, ps.openDealsCount) : 0;
+    cards.push({ hub:'Sales & Pipeline', icon:'📊',
+      stat: pipeVal, desc: 'open pipeline value',
+      tag: stallPct > 30 ? stallPct+'% stalled 21+ days' : ps.dealsNoCloseDate+' deals missing close date',
+      tagColor: stallPct > 30 ? '#f43f5e' : '#f59e0b' });
+  }
+
+  // Marketing
+  if (ps.forms > 0 || ps.marketingEmailCount > 0 || ps.listCount > 0) {
+    var mktStat = ps.marketingEmailCount > 0 ? ps.marketingEmailCount+' emails' : ps.forms+' forms';
+    var mktDesc = ps.avgOpenRate > 0 ? 'avg '+ps.avgOpenRate+'% open rate' : ps.emptyLists+' empty lists';
+    cards.push({ hub:'Marketing Hub', icon:'📣',
+      stat: mktStat, desc: mktDesc,
+      tag: ps.highBounceEmails > 0 ? ps.highBounceEmails+' high-bounce emails' : (ps.emptyLists||0)+' empty lists',
+      tagColor: ps.highBounceEmails > 0 ? '#f43f5e' : '#f59e0b' });
+  }
+
+  // Service
+  if (ps.tickets > 0) {
+    cards.push({ hub:'Service Hub', icon:'🎧',
+      stat: fmt(ps.tickets), desc: 'total tickets',
+      tag: ps.npsResponses > 0 ? ps.npsResponses+' NPS responses' : 'No NPS data collected',
+      tagColor: '#10b981' });
+  }
+
+  // Automation
+  if (ps.workflows > 0 || ps.sequences > 0) {
+    cards.push({ hub:'Automation', icon:'⚙️',
+      stat: fmt(ps.workflows||0)+' workflows',
+      desc: fmt(ps.sequences||0)+' sequences',
+      tag: ps.activeSequences > 0 ? ps.activeSequences+' active sequences' : 'No active sequences',
+      tagColor: ps.activeSequences > 0 ? '#10b981' : '#f59e0b' });
+  }
+
+  // Data
+  if (ps.contacts > 0) {
+    cards.push({ hub:'Data Integrity', icon:'🗄️',
+      stat: fmt(ps.contacts), desc: 'total contacts',
+      tag: ps.undocumentedProps > 0 ? ps.undocumentedProps+' undocumented properties' : ps.customContactProps+' custom properties',
+      tagColor: ps.undocumentedProps > 10 ? '#f59e0b' : '#10b981' });
+  }
+
+  // Team
+  if (ps.users > 0) {
+    cards.push({ hub:'Team', icon:'👥',
+      stat: fmt(ps.users)+' users',
+      desc: 'HubSpot seats active',
+      tag: ps.superAdmins > 5 ? ps.superAdmins+' super admins (high risk)' : ps.superAdmins+' super admins',
+      tagColor: ps.superAdmins > 5 ? '#f43f5e' : '#10b981' });
+  }
+
+  // Upgrade prompt for free users
+  var upgradeTitle = '', upgradeDesc = '', cardsHtml = '';
+  var isPaid = plan && plan !== 'free';
+  if (!isPaid) {
+    upgradeTitle = 'Unlock Full Portal Intelligence';
+    upgradeDesc  = 'Upgrade to Deep Audit for a complete scan across all your data — contacts, deals, workflows, and more.';
+    cardsHtml = '<div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:20px;text-align:center;grid-column:1/-1;">' +
+      '<div style="font-size:24px;margin-bottom:10px;">✦</div>' +
+      '<div style="font-size:15px;font-weight:800;margin-bottom:6px;">'+esc(upgradeTitle)+'</div>' +
+      '<div style="font-size:12px;color:var(--t3);margin-bottom:14px;">'+esc(upgradeDesc)+'</div>' +
+      '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:10px 24px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">See Plans →</a>' +
+      '</div>';
+  }
+
+  grid.innerHTML = cards.map(function(c){
+    return '<div class="intel-card">' +
+      '<div class="intel-hub">'+esc(c.icon)+' '+esc(c.hub)+'</div>' +
+      '<div class="intel-stat">'+esc(c.stat)+'</div>' +
+      '<div class="intel-desc">'+esc(c.desc)+'</div>' +
+      '<span class="intel-tag" style="background:'+c.tagColor+'22;color:'+c.tagColor+';">'+esc(c.tag)+'</span>' +
+      '</div>';
+  }).join('') + (cardsHtml || '');
+}
+
+// ── Toggle issue ─────────────────────────────────────────────────────────────
+function toggleIssue(idx) {
+  var c = document.getElementById('ic-'+idx);
+  var was = c.classList.contains('open');
+  document.querySelectorAll('.issue-card').forEach(function(el){ el.classList.remove('open'); });
+  if (!was) c.classList.add('open');
+}
+
+// ── Fix It For Me ─────────────────────────────────────────────────────────────
+async function fixItForMe(idx) {
+  var issue = AUDIT_DATA && AUDIT_DATA.issues && AUDIT_DATA.issues[idx];
+  if (!issue) return;
+  showToast('🛠', 'Sending Fix Request…', 'We\'ll reach out to scope this for you');
+  try {
+    var portal = AUDIT_DATA.portalInfo || {};
+    await fetch(API+'/fix-request', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email: portal.email, issue: issue.title, dimension: issue.dimension, severity: issue.severity })
+    });
+  } catch(e) { /* silent */ }
+}
+
+// ── Hub filter ────────────────────────────────────────────────────────────────
+function filterHub(hub) {
+  // Tab → dimension strings mapping
+  // Exact match: issue.dimension must be IN this array to show under this tab
+  var TAB_DIMS = {
+    'all':            null,
+    'Sales':          ['Pipeline', 'Sales', 'Team Adoption'],
+    'Marketing':      ['Marketing'],
+    'Service':        ['Service'],
+    'Automation':     ['Automation'],
+    'Data Integrity': ['Data Integrity', 'Configuration', 'Reporting'],
+  };
+
+  // Activate correct tab button
+  document.querySelectorAll('.hub-tab').forEach(function(t){ t.classList.remove('active'); });
+  var tabIds = {
+    'all':'tab-all', 'Sales':'tab-sales', 'Marketing':'tab-marketing',
+    'Service':'tab-service', 'Automation':'tab-automation', 'Data Integrity':'tab-data'
+  };
+  var activeEl = document.getElementById(tabIds[hub]);
+  if (activeEl) activeEl.classList.add('active');
+
+  // Filter cards
+  var cards   = document.querySelectorAll('.issue-card');
+  var allowed = TAB_DIMS[hub];
+  var visible = 0;
+
+  cards.forEach(function(card) {
+    var dim  = (card.getAttribute('data-dimension') || '').trim();
+    var show = (hub === 'all') || (allowed && allowed.indexOf(dim) !== -1);
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+
+  // Update header
+  var header = document.getElementById('issues-header');
+  if (header) {
+    if (hub === 'all') {
+      header.textContent = cards.length + ' Issue' + (cards.length !== 1 ? 's' : '') + ' Found';
+    } else {
+      var label = hub === 'Sales' ? 'Sales & Pipeline' : hub === 'Data Integrity' ? 'Data & Config' : hub;
+      header.textContent = visible + ' ' + label + ' Issue' + (visible !== 1 ? 's' : '');
+    }
+  }
+
+  // Empty state
+  var noMsg = document.getElementById('no-issues-msg');
+  if (noMsg) noMsg.style.display = (visible === 0 && hub !== 'all') ? '' : 'none';
+}
+
+// ── Build Fix Plan ────────────────────────────────────────────────────────────
+function buildFixPlan(data) {
+  var issues  = data.issues || [];
+  var portal  = data.portalInfo || {};
+  var summary = data.summary || {};
+
+  var buckets = {
+    sales: {
+      name:'Sales & Pipeline', icon:'📊', cls:'sales',
+      tagline:'Turn your pipeline from a liability into an accurate revenue forecast',
+      color:'#f59e0b',
+      dims:['Pipeline','Sales','Team Adoption'],
+      issues:[], impact:0
+    },
+    marketing: {
+      name:'Marketing Hub', icon:'📣', cls:'marketing',
+      tagline:'Fix list hygiene, email health, and marketing automation gaps',
+      color:'#3b82f6',
+      dims:['Marketing'],
+      issues:[], impact:0
+    },
+    service: {
+      name:'Service Hub', icon:'🎧', cls:'service',
+      tagline:'Reduce churn risk with SLA compliance and NPS monitoring',
+      color:'#10b981',
+      dims:['Service'],
+      issues:[], impact:0
+    },
+    automation: {
+      name:'Automation & Sequences', icon:'⚙️', cls:'automation',
+      tagline:'Stop silent revenue leaks from broken workflows and sequences',
+      color:'#8b5cf6',
+      dims:['Automation'],
+      issues:[], impact:0
+    },
+    data: {
+      name:'Data & Configuration', icon:'🧹', cls:'data',
+      tagline:'Fix the CRM foundation your entire revenue operation depends on',
+      color:'#06b6d4',
+      dims:['Data Integrity','Configuration','Reporting'],
+      issues:[], impact:0
+    },
+  };
+
+  // Sort issues into buckets by dimension
+  issues.forEach(function(issue) {
+    var dim = (issue.dimension || '').trim();
+    var placed = false;
+    Object.keys(buckets).forEach(function(key) {
+      if (!placed && buckets[key].dims.indexOf(dim) !== -1) {
+        buckets[key].issues.push(issue);
+        placed = true;
+      }
+    });
+    if (!placed) buckets.data.issues.push(issue); // fallback
+  });
+
+  var grid = document.getElementById('fixplan-grid');
+  grid.innerHTML = '';
+
+  Object.keys(buckets).forEach(function(key) {
+    var b = buckets[key];
+    if (b.issues.length === 0) return;
+
+    var critCount = b.issues.filter(function(i){ return i.severity==='critical'; }).length;
+    var warnCount = b.issues.filter(function(i){ return i.severity==='warning'; }).length;
+    var tagText = critCount > 0
+      ? critCount+' critical issue'+(critCount!==1?'s':'')+' need immediate attention'
+      : warnCount+' warning'+(warnCount!==1?'s':'')+' to address';
+    var tagColor = critCount > 0 ? '#f43f5e' : '#f59e0b';
+    var tagBg    = critCount > 0 ? 'rgba(244,63,94,.15)' : 'rgba(245,158,11,.15)';
+
+    var shown = b.issues.slice(0, 4);
+    var extra = b.issues.length - 4;
+
+    var issueListHtml = shown.map(function(iss) {
+      var dotColor = iss.severity==='critical' ? '#f43f5e' : iss.severity==='warning' ? '#f59e0b' : '#3b82f6';
       return '<div class="fp-issue-item">' +
-        '<div class="fp-issue-dot" style="background:' + dot_color + '"></div>' +
-        '<span>' + esc(i.title) + '</span>' +
+        '<div class="fp-issue-dot" style="background:'+dotColor+'"></div>' +
+        '<span>'+esc(iss.title)+'</span>' +
         '</div>';
     }).join('');
 
-    if (bucket.issues.length > 4) {
-      issueListHtml += '<div class="fp-issue-item"><div class="fp-issue-dot" style="background:var(--t3)"></div><span style="color:var(--t3)">+' + (bucket.issues.length - 4) + ' more findings</span></div>';
+    if (extra > 0) {
+      issueListHtml += '<div class="fp-issue-more">+'+extra+' more issue'+(extra!==1?'s':'')+'</div>';
     }
 
-    var severityTag = critIssues.length > 0
-      ? '<span class="fp-impact-tag" style="background:rgba(244,63,94,.1);color:#f43f5e;">' + critIssues.length + ' critical issue' + (critIssues.length!==1?'s':'') + ' need immediate attention</span>'
-      : warnIssues.length > 0
-        ? '<span class="fp-impact-tag" style="background:rgba(245,158,11,.1);color:#f59e0b;">' + warnIssues.length + ' warning' + (warnIssues.length!==1?'s':'') + ' to address</span>'
-        : '';
-
-    return '<div class="fp-bucket ' + bucket.cls + '">' +
-      '<div class="fp-bucket-icon">' + bucket.icon + '</div>' +
-      '<div class="fp-bucket-name">' + bucket.name + '</div>' +
-      '<div class="fp-bucket-desc">' + bucket.tagline + '</div>' +
-      '<div class="fp-bucket-issues">' + issueListHtml + '</div>' +
-      severityTag +
+    var card = document.createElement('div');
+    card.className = 'fp-bucket';
+    card.innerHTML =
+      '<div class="fp-accent" style="background:'+b.color+';"></div>'+
+      '<div class="fp-bucket-top">'+
+        '<div class="fp-icon">'+b.icon+'</div>'+
+        '<div>'+
+          '<div class="fp-name">'+esc(b.name)+'</div>'+
+          '<div class="fp-tagline">'+esc(b.tagline)+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="fp-issues">'+issueListHtml+'</div>'+
+      '<div class="fp-footer">'+
+        '<span class="fp-count-tag" style="background:'+tagBg+';color:'+tagColor+';">'+esc(tagText)+'</span>'+
       '</div>';
-  }).join('');
 
-  // Calculate total annual waste
-  var annualWaste = waste * 12;
-
-  // Score context
-  var scoreContext = summary.overallScore >= 80
-    ? 'Your portal is in good shape — targeted fixes will push it to elite performance.'
-    : summary.overallScore >= 60
-      ? 'Your portal has real gaps costing you revenue every week. A focused engagement fixes this.'
-      : 'Your portal needs significant work. The good news: every issue here is fixable, usually within days.';
-
-  var html = '<div class="fix-plan">' +
-
-    // Header
-    '<div class="fp-header">' +
-      '<div class="fp-eyebrow">Your Personalized Fix Plan</div>' +
-      '<div class="fp-title">Here\'s What Fixing<br>' + esc(company) + ' Looks Like</div>' +
-      '<div class="fp-sub">' + scoreContext + ' Below is a breakdown of every area that needs work, built directly from your audit findings.</div>' +
-    '</div>' +
-
-    // Stats bar
-    '<div class="fp-stats">' +
-      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--r)">' + criticalCount + '</div><div class="fp-stat-l">Critical Issues</div></div>' +
-      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--a)">' + warningCount + '</div><div class="fp-stat-l">Warnings</div></div>' +
-      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--v3)">' + activeBuckets.length + '</div><div class="fp-stat-l">Fix Areas</div></div>' +
-      '<div class="fp-stat"><div class="fp-stat-v" style="color:var(--g)">$' + Number(annualWaste).toLocaleString() + '</div><div class="fp-stat-l">Annual Waste Est.</div></div>' +
-    '</div>' +
-
-    // Buckets grid
-    '<div class="fp-buckets">' + bucketsHtml + '</div>' +
-
-    // CTA block
-    '<div class="fp-cta-wrap">' +
-      '<div class="fp-eyebrow" style="margin-bottom:14px;">Free 30-Minute Strategy Call</div>' +
-      '<div class="fp-cta-title">Get Your Prioritized Fix Plan</div>' +
-      '<div class="fp-cta-sub">We will personally review every finding in your audit, walk you through what to fix first, and send you a written action plan with flat-rate pricing for each item. No obligation, no sales pitch.</div>' +
-      '<a href="' + calendlyUrl + '" target="_blank" class="fp-cta-btn">📅 Book Your Free Strategy Call →</a>' +
-      '<div class="fp-proof">' +
-        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>We review before the call</div>' +
-        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Written action plan included</div>' +
-        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>Flat-rate pricing, no surprises</div>' +
-        '<div class="fp-proof-item"><span class="fp-proof-dot">✓</span>No commitment required</div>' +
-      '</div>' +
-      '<div style="margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);">' +
-        '<button class="cta-primary" onclick="downloadPDF()" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--t2);font-size:13px;padding:10px 22px;">📄 Download Full PDF Report</button>' +
-      '</div>' +
-    '</div>' +
-
-  '</div>';
-
-  var el = document.getElementById('fix-plan-section');
-  if (el) el.innerHTML = html;
-}
-
-
-function filterHub(hub) {
-  // Update active tab
-  var tabs = document.querySelectorAll('.hub-tab');
-  tabs.forEach(function(t){ t.classList.remove('active'); });
-  var activeMap = {
-    'all':'tab-all',
-    'Sales':'tab-sales',
-    'Marketing':'tab-marketing',
-    'Service':'tab-service',
-    'Automation':'tab-automation',
-    'Data Integrity':'tab-data',
-    'Configuration':'tab-data',  // Config issues show under Data Quality tab
-    'Reporting':'tab-reporting',
-    'Pipeline':'tab-pipeline',
-    'Team Adoption':'tab-sales'  // Team issues show under Sales tab
-  };
-  var activeId = activeMap[hub];
-  if(activeId) { var at = document.getElementById(activeId); if(at) at.classList.add('active'); }
-
-  // Filter issue cards
-  var cards = document.querySelectorAll('.issue-card');
-  var visible = 0;
-  cards.forEach(function(card) {
-    var dim = card.getAttribute('data-dimension') || '';
-    var show = hub === 'all' || dim === hub;
-    card.style.display = show ? '' : 'none';
-    if(show) visible++;
+    grid.appendChild(card);
   });
-
-  // Update header count
-  var header = document.getElementById('issues-header');
-  if(header) {
-    if(hub === 'all') {
-      var tot = cards.length;
-      header.textContent = tot + ' Issue' + (tot!==1?'s':'') + ' Found';
-    } else {
-      header.textContent = visible + ' ' + hub + ' Issue' + (visible!==1?'s':'');
-    }
-  }
 }
 
-function renderHubIntelligence(data) {
-  var ps = (data.portalInfo || {}).portalStats || {};
-  var summary = data.summary || {};
-  var scores = data.scores || {};
-  var issues = data.issues || [];
-
-  // Build hub intelligence cards
-  var intel = document.getElementById('hub-intelligence');
-  if(!intel) return;
-
-  var cards = '';
-
-  // ── SALES HUB ────────────────────────────────────────────────────────────
-  var salesIssues = issues.filter(function(i){ return i.dimension==='Pipeline' || i.dimension==='Data Integrity' || i.dimension==='Team Adoption'; });
-  var pipelineValue = ps.openPipelineValue || 0;
-  var stalledDeals = ps.stalledDeals || 0;
-  var leads = ps.leads || 0;
-  var sequences = ps.sequences || 0;
-
-  cards += '<div class="intel-card">' +
-    '<div class="intel-header"><span class="intel-icon">💼</span><span class="intel-title">Sales Hub</span>' +
-    '<span class="intel-score" style="color:' + scoreColor(scores.pipelineIntegrity) + '">' + (scores.pipelineIntegrity||0) + '</span></div>' +
-    '<div class="intel-stats">' +
-      stat('Pipeline Value', '$' + Number(pipelineValue).toLocaleString()) +
-      stat('Stalled Deals', stalledDeals, stalledDeals > 3 ? 'warn' : '') +
-      stat('Leads', leads) +
-      stat('Sequences', sequences) +
-      (ps.goals ? stat('Active Goals', ps.activeGoals + '/' + ps.goals) : '') +
-      (ps.unownedLeads > 0 ? stat('Unowned Leads', ps.unownedLeads, 'critical') : '') +
-      (ps.superAdmins > 5 ? stat('Super Admins', ps.superAdmins, 'warn') : '') +
-      (ps.cartCount > 0 && ps.abandonedCarts > 0 ? stat('Abandoned Carts', ps.abandonedCarts, ps.abandonedCarts > 10 ? 'warn' : '') : '') +
-    '</div>' +
-    '<div class="intel-issues">' + salesIssues.length + ' issue' + (salesIssues.length!==1?'s':'') + ' in Sales</div>' +
-  '</div>';
-
-  // ── MARKETING HUB ────────────────────────────────────────────────────────
-  var mktIssues = issues.filter(function(i){ return i.dimension==='Marketing' || (i.title && (i.title.includes('form') || i.title.includes('list') || i.title.includes('campaign') || i.title.includes('email'))); });
-  cards += '<div class="intel-card">' +
-    '<div class="intel-header"><span class="intel-icon">📣</span><span class="intel-title">Marketing Hub</span>' +
-    '<span class="intel-score" style="color:' + scoreColor(scores.marketingHealth) + '">' + (scores.marketingHealth||0) + '</span></div>' +
-    '<div class="intel-stats">' +
-      (ps.marketingEmailCount > 0 ? stat('Marketing Emails', ps.marketingEmailCount) : '') +
-      (ps.avgOpenRate > 0 ? stat('Avg Open Rate', ps.avgOpenRate + '%', ps.avgOpenRate < 15 ? 'warn' : '') : '') +
-      (ps.highBounceEmails > 0 ? stat('High Bounce Emails', ps.highBounceEmails, 'critical') : '') +
-      stat('Forms', ps.forms || 0) +
-      stat('Lists', ps.listCount || 0) +
-      (ps.emptyLists > 0 ? stat('Empty Lists', ps.emptyLists, 'warn') : '') +
-      stat('Campaigns', ps.campaigns || 0) +
-    '</div>' +
-    '<div class="intel-issues">' + mktIssues.length + ' marketing issue' + (mktIssues.length!==1?'s':'') + '</div>' +
-  '</div>';
-
-  // ── SERVICE HUB ──────────────────────────────────────────────────────────
-  var svcIssues = issues.filter(function(i){ return i.dimension==='Service' || (i.title && i.title.includes('ticket')); });
-  var nps = ps.npsResponses || 0;
-  cards += '<div class="intel-card">' +
-    '<div class="intel-header"><span class="intel-icon">🎧</span><span class="intel-title">Service Hub</span>' +
-    '<span class="intel-score" style="color:' + scoreColor(scores.teamAdoption) + '">' + (scores.teamAdoption||0) + '</span></div>' +
-    '<div class="intel-stats">' +
-      stat('Open Tickets', ps.tickets || 0) +
-      (ps.openConversations ? stat('Open Conversations', ps.openConversations) : '') +
-      (nps > 0 ? stat('NPS Responses', nps) : stat('NPS', 'Not set up', 'warn')) +
-      (ps.csatResponses ? stat('CSAT Responses', ps.csatResponses) : '') +
-    '</div>' +
-    '<div class="intel-issues">' + svcIssues.length + ' service issue' + (svcIssues.length!==1?'s':'') + '</div>' +
-  '</div>';
-
-  // ── AUTOMATION ───────────────────────────────────────────────────────────
-  var autoIssues = issues.filter(function(i){ return i.dimension==='Automation'; });
-  cards += '<div class="intel-card">' +
-    '<div class="intel-header"><span class="intel-icon">⚡</span><span class="intel-title">Automation</span>' +
-    '<span class="intel-score" style="color:' + scoreColor(scores.automationHealth) + '">' + (scores.automationHealth||0) + '</span></div>' +
-    '<div class="intel-stats">' +
-      stat('Workflows', ps.workflows || 0) +
-      stat('Sequences', ps.activeSequences || ps.sequences || 0) +
-      (ps.forms ? stat('Forms', ps.forms) : '') +
-    '</div>' +
-    '<div class="intel-issues">' + autoIssues.length + ' automation issue' + (autoIssues.length!==1?'s':'') + '</div>' +
-  '</div>';
-
-  intel.innerHTML = cards;
-}
-
-function stat(label, value, type) {
-  var color = type === 'critical' ? '#f43f5e' : type === 'warn' ? '#f59e0b' : 'rgba(255,255,255,.7)';
-  return '<div class="intel-stat"><span class="intel-stat-label">' + label + '</span><span class="intel-stat-val" style="color:' + color + '">' + value + '</span></div>';
-}
-
-function scoreColor(s) {
-  s = s || 0;
-  return s >= 80 ? '#10b981' : s >= 60 ? '#f59e0b' : '#f43f5e';
-}
-
+// ── Download PDF ──────────────────────────────────────────────────────────────
 function downloadPDF() {
-  if(!AUDIT_DATA){ showToast('⚠️','No data','Please wait for results to load'); return; }
-  var jsPDF = window.jspdf && window.jspdf.jsPDF;
-  if(!jsPDF){ showToast('⚠️','PDF Error','Please refresh and try again'); return; }
-  showToast('📄','Building PDF...','One moment');
-  setTimeout(function(){ try { _buildPDF(jsPDF); } catch(e){ console.error('PDF',e); showToast('❌','PDF Error',String(e.message||e).substring(0,80)); } }, 150);
+  if (!AUDIT_DATA) { showToast('⚠️','No audit data','Run an audit first'); return; }
+  var auditId = AUDIT_DATA.auditId || (new URLSearchParams(window.location.search).get('id'));
+  if (!auditId) { showToast('⚠️','No audit ID found',''); return; }
+  showToast('📄','Generating PDF…','Your report will download shortly');
+  window.open(API+'/audit/pdf?id='+auditId, '_blank');
 }
-
-function _buildPDF(jsPDF) {
-
-  // ── DOC SETUP ────────────────────────────────────────────────────────────
-  var doc = new jsPDF({ orientation:'portrait', unit:'pt', format:'a4' });
-  var PW=595.28, PH=841.89;
-  var ML=40, MR=40, CW=PW-ML-MR;   // 515.28pt content width
-  var SAFE = PH-60;                  // last safe y
-
-  // ── DATA ────────────────────────────────────────────────────────────────
-  var dat=AUDIT_DATA, sum=dat.summary||{}, scores=dat.scores||{};
-  var pi=dat.portalInfo||{}, ps=pi.portalStats||{};
-  var issues=(dat.issues||[]).slice().sort(function(a,b){
-    return ({'critical':0,'warning':1,'info':2}[a.severity]||3)-({'critical':0,'warning':1,'info':2}[b.severity]||3);
-  });
-  var ovr=sum.overallScore||0;
-  var company=String(pi.company||'Your Portal').substring(0,45);
-  var grade=ovr>=85?'Excellent':ovr>=70?'Good':ovr>=55?'Needs Attention':'Critical';
-  var today=new Date();
-  var dt=today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  var fname='FixOps-Audit-'+company.replace(/[^a-zA-Z0-9]/g,'-')+'-'+today.toISOString().split('T')[0]+'.pdf';
-
-  // safe string
-  function ss(v){
-    if(v==null) return '';
-    return String(v).replace(/[^\x20-\x7E]/g,function(c){
-      var m={'\u2192':'>','\u2013':'-','\u2014':'-','\u2018':"'",'\u2019':"'",
-             '\u201C':'"','\u201D':'"','\u2022':'*','\u2713':'v','\u2714':'v',
-             '\xAE':'(R)','\xA0':' ','\u2026':'...','\u00e2\u20ac\u2122':"'"};
-      return m[c]||'';
-    });
-  }
-
-  // ── BRAND COLOURS (website exact) ───────────────────────────────────────
-  var PURPLE=[124,58,237],  PURP_DK=[91,33,182],  PURP_BG=[237,233,254];
-  var GREEN=[16,185,129],   GREEN_BG=[236,253,245];
-  var RED=[244,63,94],      RED_BG=[255,241,242];
-  var AMBER=[245,158,11],   AMBER_BG=[255,251,235];
-  var BLUE=[59,130,246],    BLUE_BG=[239,246,255];
-  var INK=[15,14,26];       // near-black headings
-  var INK2=[72,68,95];      // body text
-  var INK3=[139,136,163];   // captions
-  var INK4=[209,205,224];   // rules / dividers
-  var WHITE=[255,255,255];
-
-  var SCOL=ovr>=80?GREEN:ovr>=60?AMBER:RED;
-  var SCBG=ovr>=80?GREEN_BG:ovr>=60?AMBER_BG:RED_BG;
-
-  function sevCol(sv){ return sv==='critical'?RED:sv==='warning'?AMBER:BLUE; }
-  function sevBg(sv){ return sv==='critical'?RED_BG:sv==='warning'?AMBER_BG:BLUE_BG; }
-  function dimCol(v){ return v>=80?GREEN:v>=60?AMBER:RED; }
-  function dimBg(v){ return v>=80?GREEN_BG:v>=60?AMBER_BG:RED_BG; }
-
-  // ── DRAWING PRIMITIVES ───────────────────────────────────────────────────
-  function fc(rgb){ doc.setFillColor(rgb[0],rgb[1],rgb[2]); }
-  function SD(rgb,w){ doc.setDrawColor(rgb[0],rgb[1],rgb[2]); doc.setLineWidth(w||0.5); }
-  function tc(rgb){ doc.setTextColor(rgb[0],rgb[1],rgb[2]); }
-  function F(sz,bold,col){
-    doc.setFontSize(sz);
-    doc.setFont('helvetica',bold?'bold':'normal');
-    if(col) tc(col);
-  }
-  function RR(x,y,w,h,r,sty){ doc.roundedRect(x,y,w,h,r||3,r||3,sty||'F'); }
-
-  // wrap text returning array of lines
-  function wrap(txt,maxW,sz){
-    F(sz||9,false);
-    return doc.splitTextToSize(ss(txt)||' ', maxW);
-  }
-
-  // draw text block, return new Y
-  function textBlock(txt,x,y,maxW,sz,bold,col,lh){
-    F(sz||9,bold||false,col||INK2);
-    var lines=doc.splitTextToSize(ss(txt)||' ',maxW);
-    var h=lh||(sz||9)*1.45;
-    doc.text(lines,x,y);
-    return y+lines.length*h;
-  }
-
-  // ── PAGE / HEADER / FOOTER ───────────────────────────────────────────────
-  var pageNum=1;
-
-  function drawHeader(){
-    // Purple strip
-    fc(PURPLE); doc.rect(0,0,PW,5,'F');
-    // White header
-    fc(WHITE); doc.rect(0,5,PW,44,'F');
-    SD(INK4,0.5); doc.line(0,49,PW,49);
-    // Logo pill
-    fc(PURPLE); RR(ML,10,24,24,5,'F');
-    F(9.5,true,WHITE); doc.text('FO',ML+4,26.5);
-    // Brand
-    F(12,true,INK); doc.text('FixOps.io',ML+32,24);
-    F(8,false,INK3); doc.text('HubSpot Portal Intelligence',ML+32,36);
-    // Right side
-    F(8,false,INK3); doc.text('Page '+pageNum,PW-MR,24,{align:'right'});
-    F(8,true,INK2); doc.text(company,PW-MR,36,{align:'right'});
-  }
-
-  function drawFooter(){
-    SD(INK4,0.5); doc.line(ML,PH-28,PW-MR,PH-28);
-    F(7,false,INK4);
-    doc.text('fixops.io  |  matthew@fixops.io  |  HubSpot Systems. Fixed.',ML,PH-16);
-    doc.text(dt,PW-MR,PH-16,{align:'right'});
-  }
-
-  function newPage(){
-    drawFooter();
-    doc.addPage(); pageNum++;
-    fc(WHITE); doc.rect(0,0,PW,PH,'F');
-    drawHeader();
-    return 68;
-  }
-
-  function chk(y,need){ return (y+need>SAFE)?newPage():y; }
-
-  // ── CALLOUT BOX ──────────────────────────────────────────────────────────
-  // Returns height used so caller can advance Y
-  function callout(x,y,w,label,body,accent,bg){
-    var lines=wrap(body,w-28,8.5);
-    var n=lines.length;
-    // Confirmed spacing: top_pad=14, label_to_body=14, line_h=13, bot_pad=18
-    var totalH=14+14+(n>1?(n-1)*13:0)+18;
-    fc(bg); RR(x,y,w,totalH,4,'F');
-    fc(accent); doc.rect(x,y,4,totalH,'F');
-    // Label baseline at y+14 (14pt from box top)
-    F(7.5,true,accent); doc.text(ss(label),x+14,y+14);
-    // Body starts at y+28 (label+14pt gap), each line 13pt
-    F(8.5,false,INK2);
-    for(var li=0;li<lines.length;li++){
-      doc.text(lines[li],x+14,y+28+li*13);
-    }
-    return totalH+8;
-  }
-
-  // ── SECTION HEADING ──────────────────────────────────────────────────────
-  function H1(y,title,sub){
-    y=chk(y,40);
-    F(20,true,INK); doc.text(ss(title),ML,y);
-    y+=22;
-    if(sub){ F(9.5,false,INK3); doc.text(ss(sub),ML,y); y+=14; }
-    SD(INK4,0.5); doc.line(ML,y,PW-MR,y);
-    return y+18;
-  }
-
-  // ════════════════════════════════════════════════════════════════════════
-  // PAGE 1 — COVER
-  // ════════════════════════════════════════════════════════════════════════
-  fc(WHITE); doc.rect(0,0,PW,PH,'F');
-
-  // Purple cover header band
-  fc(PURPLE); doc.rect(0,0,PW,82,'F');
-  // Logo pill on cover
-  fc(WHITE); RR(ML,14,34,34,6,'F');
-  F(12,true,PURPLE); doc.text('FO',ML+7,35.5);
-  F(20,true,WHITE); doc.text('FixOps.io',ML+46,30);
-  F(9.5,false,[196,181,253]); doc.text('HubSpot Portal Intelligence',ML+46,45);
-  F(9,false,[196,181,253]); doc.text(dt,PW-MR,30,{align:'right'});
-
-  // Company name
-  F(30,true,INK); doc.text(ss(company),ML,112);
-  F(11,false,INK3); doc.text('HubSpot Portal Health Audit Report',ML,128);
-  SD(INK4,0.5); doc.line(ML,136,PW-MR,136);
-
-  // ── Score hero ──────────────────────────────────────────────────────────
-  var SY=148;
-  F(58,true,SCOL); doc.text(String(ovr),ML,SY+52);
-  F(13,false,INK3); doc.text('/100',ML+78,SY+30);
-  F(11.5,true,SCOL); doc.text(grade,ML,SY+68);
-  SD(INK4,0.5); doc.line(ML+130,SY,ML+130,SY+74);
-
-  // 3 stat tiles
-  var statData=[
-    {v:String(sum.criticalCount||0),l:'Critical Issues',c:RED,bg:RED_BG},
-    {v:String(sum.warningCount||0),l:'Warnings',c:AMBER,bg:AMBER_BG},
-    {v:'$'+Number(sum.monthlyWaste||0).toLocaleString(),l:'Est. Waste / Month',c:PURPLE,bg:PURP_BG}
-  ];
-  var TW=(CW-146)/3;
-  for(var si=0;si<3;si++){
-    var TX=ML+140+si*(TW+8);
-    fc(statData[si].bg); RR(TX,SY,TW,78,5,'F');
-    F(si===2?20:28,true,statData[si].c);
-    doc.text(ss(statData[si].v),TX+TW/2,SY+38,{align:'center'});
-    F(8,false,INK3); doc.text(ss(statData[si].l),TX+TW/2,SY+56,{align:'center'});
-  }
-
-  // Portal stats strip
-  var snap=[];
-  if(ps.contacts) snap.push(Number(ps.contacts).toLocaleString()+' contacts');
-  if(ps.companies) snap.push(Number(ps.companies).toLocaleString()+' companies');
-  if(ps.deals) snap.push(Number(ps.deals).toLocaleString()+' deals');
-  if(ps.tickets) snap.push(Number(ps.tickets).toLocaleString()+' tickets');
-  if(ps.users>0) snap.push(ps.users+' users');
-  if(snap.length){
-    SD(INK4,0.5); doc.line(ML,SY+82,PW-MR,SY+82);
-    F(8,false,INK3); doc.text('Scanned:  '+snap.join('  /  '),ML,SY+96);
-  }
-
-  // ── Dimension grid ──────────────────────────────────────────────────────
-  var DY=SY+114;
-  F(12,true,INK); doc.text('Health Dimension Scores',ML,DY);
-  SD(INK4,0.4); doc.line(ML,DY+4,PW-MR,DY+4);
-  DY+=18;
-
-  var dkeys=['dataIntegrity','automationHealth','pipelineIntegrity','marketingHealth',
-             'configSecurity','reportingQuality','teamAdoption','serviceHealth'];
-  var dnames={dataIntegrity:'Data Integrity',automationHealth:'Automation Health',
-              pipelineIntegrity:'Pipeline Integrity',marketingHealth:'Marketing Health',
-              configSecurity:'Config & Security',reportingQuality:'Reporting Quality',
-              teamAdoption:'Team Adoption',serviceHealth:'Service Health'};
-  var DCW=(CW-10)/2, DRH=20;
-  for(var di=0;di<dkeys.length;di++){
-    var dk=dkeys[di],dv=scores[dk];
-    if(dv===undefined) continue;
-    var dc2=dimCol(dv),db=dimBg(dv);
-    var dc=di%2, dr=Math.floor(di/2);
-    var DX=ML+dc*(DCW+10), DY2=DY+dr*DRH;
-    // Score pill — right aligned
-    fc(db); RR(DX+DCW-32,DY2-1,30,14,3,'F');
-    F(8,true,dc2); doc.text(String(dv),DX+DCW-17,DY2+9.5,{align:'center'});
-    // Dim name
-    F(9,false,INK2); doc.text(ss(dnames[dk]||dk),DX,DY2+9);
-    // Progress bar
-    var BX=DX+90, BW=DCW-130;
-    if(BW>20){
-      fc(INK4); RR(BX,DY2+4,BW,4,2,'F');
-      fc(dc2); RR(BX,DY2+4,BW*(dv/100),4,2,'F');
-    }
-  }
-
-  // ── CTA on cover ────────────────────────────────────────────────────────
-  var CTAY=DY+Math.ceil(dkeys.length/2)*DRH+16;
-  fc(PURP_BG); RR(ML,CTAY,CW,52,5,'F');
-  fc(PURPLE); doc.rect(ML,CTAY,4,52,'F');
-  F(11,true,PURPLE); doc.text("Let's Fix Your Portal",ML+14,CTAY+17);
-  F(8.5,false,INK2); doc.text('We review every audit personally and build a prioritized fix plan.',ML+14,CTAY+31);
-  F(8.5,true,GREEN); doc.text('Book your free 30-min call:',ML+14,CTAY+45);
-  F(8.5,false,INK2); doc.text('  fixops.io/book',ML+14+doc.getTextWidth('Book your free 30-min call:'),CTAY+45);
-
-  drawFooter();
-
-  // ════════════════════════════════════════════════════════════════════════
-  // PAGE 2 — ISSUE INDEX
-  // ════════════════════════════════════════════════════════════════════════
-  var y=newPage();
-  y=H1(y,'Issue Summary','All findings at a glance — detailed breakdown follows in subsequent pages');
-
-  // Table header
-  fc([245,243,252]); doc.rect(ML,y,CW,20,'F');
-  SD(PURPLE,0.4); doc.line(ML,y,ML+CW,y); doc.line(ML,y+20,ML+CW,y+20);
-  F(7.5,true,PURPLE);
-  doc.text('#',ML+4,y+14);
-  doc.text('SEVERITY',ML+18,y+14);
-  doc.text('ISSUE TITLE',ML+74,y+14);
-  doc.text('DIMENSION',PW-MR-70,y+14);
-  y+=22;
-
-  for(var ti=0;ti<issues.length;ti++){
-    var iss=issues[ti], sv=ss(iss.severity||'info');
-    y=chk(y,22);
-    fc(ti%2===0?WHITE:[250,249,253]); doc.rect(ML,y,CW,20,'F');
-    SD(INK4,0.2); doc.line(ML,y+20,ML+CW,y+20);
-    // Number
-    F(8,false,INK3); doc.text(String(ti+1),ML+4,y+13);
-    // Badge
-    var bc=sevCol(sv), bb=sevBg(sv);
-    fc(bb); RR(ML+18,y+4,46,13,3,'F');
-    F(7,true,bc); doc.text(sv.toUpperCase(),ML+41,y+13.5,{align:'center'});
-    // Title
-    F(8.5,false,INK);
-    var short=ss(iss.title||'');
-    while(short.length>4 && doc.getTextWidth(short)>CW-170){ short=short.slice(0,-1); }
-    if(short.length<ss(iss.title||'').length) short=short.slice(0,-1)+'...';
-    doc.text(short,ML+74,y+13);
-    // Dimension
-    F(7.5,false,INK3); doc.text(ss(iss.dimension||'').substring(0,20),PW-MR,y+13,{align:'right'});
-    y+=22;
-  }
-  y+=10;
-
-  // Monthly waste summary
-  if((sum.monthlyWaste||0)>0){
-    y=chk(y,70);
-    var wh=callout(ML,y,CW,'Estimated Monthly Waste: $'+Number(sum.monthlyWaste||0).toLocaleString(),
-      'This figure represents the combined revenue impact of the issues found across your portal. Addressing the critical items alone typically recovers 60-80% of this within 30 days.',
-      PURPLE,PURP_BG);
-    y+=wh;
-  }
-
-  // ════════════════════════════════════════════════════════════════════════
-  // PAGES 3+ — DETAILED FINDINGS
-  // ════════════════════════════════════════════════════════════════════════
-  y=newPage();
-  y=H1(y,'Detailed Findings','Full analysis, context, and step-by-step fix guide for every issue');
-
-  for(var i=0;i<issues.length;i++){
-    var iss=issues[i], sv=ss(iss.severity||'info');
-    var ic=sevCol(sv), ib=sevBg(sv);
-    var guide=(iss.guide||[]).map(function(g){ return ss(g); });
-
-    // Estimate block height for smart page breaking
-    F(8.5,false);
-    var tlines=doc.splitTextToSize(ss(iss.title||''),CW).length;
-    var dlines=doc.splitTextToSize(ss(iss.description||''),CW).length;
-    var wlines=iss.detail?doc.splitTextToSize(ss(iss.detail),CW-24).length:0;
-    var glines=0; guide.forEach(function(g){ glines+=doc.splitTextToSize(g||' ',CW-22).length; });
-    var estH=28+tlines*18+4+dlines*14+(iss.impact?40:0)+(wlines?wlines*13+36:0)+(glines?glines*13+guide.length*8+24:0)+16;
-
-    if(i>0 && y+Math.min(estH,140)>SAFE) y=newPage();
-
-    // ── Issue header bar ─────────────────────────────────────────────────
-    y=chk(y,28);
-    fc(ib); doc.rect(ML,y,CW,26,'F');
-    fc(ic); doc.rect(ML,y,4,26,'F');
-    // Severity badge inside header
-    fc(ic); RR(ML+12,y+6.5,52,13,3,'F');
-    F(7.5,true,WHITE); doc.text(sv.toUpperCase(),ML+38,y+15,{align:'center'});
-    // Counter
-    F(7.5,false,INK3); doc.text('Issue '+(i+1)+' of '+issues.length,ML+72,y+15.5);
-    // Dimension tag right
-    if(iss.dimension){
-      F(7.5,false,INK3); doc.text(ss(iss.dimension).toUpperCase(),PW-MR,y+15.5,{align:'right'});
-    }
-    y+=36;
-
-    // ── Title ────────────────────────────────────────────────────────────
-    y=chk(y,24);
-    F(14,true,INK);
-    var tl=doc.splitTextToSize(ss(iss.title||''),CW);
-    doc.text(tl,ML,y);
-    y+=tl.length*19+8;
-
-    // ── Description ──────────────────────────────────────────────────────
-    y=chk(y,16);
-    F(8.5,false,INK2);
-    var dl=doc.splitTextToSize(ss(iss.description||''),CW);
-    doc.text(dl,ML,y);
-    y+=dl.length*14+12;
-
-    // ── Impact ───────────────────────────────────────────────────────────
-    if(iss.impact){
-      y=chk(y,44);
-      var ih=callout(ML,y,CW,'IMPACT',ss(iss.impact),AMBER,AMBER_BG);
-      y+=ih;
-    }
-
-    // ── Why This Matters ─────────────────────────────────────────────────
-    if(iss.detail){
-      y=chk(y,44);
-      var dh=callout(ML,y,CW,'Why This Matters',ss(iss.detail),BLUE,BLUE_BG);
-      y+=dh;
-    }
-
-    // ── Fix Guide ────────────────────────────────────────────────────────
-    if(guide.length){
-      y=chk(y,28);
-      F(9.5,true,GREEN); doc.text('Fix Guide',ML,y);
-      SD(GREEN,1); doc.line(ML,y+4,ML+46,y+4);
-      y+=20;
-      for(var g=0;g<guide.length;g++){
-        var glines2=doc.splitTextToSize(String(guide[g]||' '),CW-26);
-        var gh=glines2.length*14+14;
-        y=chk(y,gh);
-        // Circle number
-        fc(PURP_BG); doc.circle(ML+8,y+5,8,'F');
-        F(7.5,true,PURPLE); doc.text(String(g+1),ML+8,y+7.5,{align:'center'});
-        // Step text
-        F(8.5,false,INK); doc.text(glines2,ML+22,y+5);
-        y+=gh;
-      }
-      y+=4;
-    }
-
-    // ── Separator ────────────────────────────────────────────────────────
-    if(i<issues.length-1){
-      y=chk(y,20);
-      SD(INK4,0.4); doc.line(ML,y,PW-MR,y);
-      y+=22;
-    }
-  }
-
-  // ════════════════════════════════════════════════════════════════════════
-  // FINAL PAGE — NEXT STEPS
-  // ════════════════════════════════════════════════════════════════════════
-  y=chk(y,180);
-  y=H1(y,'Next Steps','Every issue has a clear solution and a path forward');
-
-  // Left: score recap
-  F(48,true,SCOL); doc.text(String(ovr),ML,y+52);
-  F(12,false,INK3); doc.text('/100',ML+68,y+30);
-  F(12,true,SCOL); doc.text(grade,ML,y+70);
-  SD(INK4,0.4); doc.line(ML,y+78,ML+110,y+78);
-  F(8.5,false,INK3); doc.text((sum.criticalCount||0)+' Critical  /  '+(sum.warningCount||0)+' Warnings',ML,y+92);
-  F(8.5,false,INK3); doc.text('$'+Number(sum.monthlyWaste||0).toLocaleString()+' est. monthly waste',ML,y+106);
-
-  // Right: CTA block
-  var rcx=ML+130, rcw=CW-130;
-  fc(PURP_BG); RR(rcx,y,rcw,118,5,'F');
-  fc(PURPLE); doc.rect(rcx,y,4,118,'F');
-  F(12,true,PURPLE); doc.text("Let's Fix Your Portal",rcx+14,y+20);
-  F(8.5,false,INK2);
-  var ctaMsg='We review every audit personally and build a prioritized action plan with flat-rate pricing. No surprise costs, no open-ended billing, ever.';
-  var ctaLines=doc.splitTextToSize(ctaMsg,rcw-24);
-  doc.text(ctaLines,rcx+14,y+36);
-  F(8.5,true,GREEN); doc.text('Book your free 30-min strategy call:',rcx+14,y+80);
-  F(8.5,false,INK2); doc.text('calendly.com/matthew-fixops/30min',rcx+14,y+95);
-  F(8.5,false,INK3); doc.text('matthew@fixops.io',rcx+14,y+110);
-
-  drawFooter();
-  doc.save(fname);
-  showToast('✅','PDF Ready — '+issues.length+' issues — '+pageNum+' pages','Saved to downloads');
-}
-
-
-function buildPDF(jsPDF) {
-  var doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
-
-  // ── PAGE CONSTANTS ──────────────────────────────────────────────────────────
-  var PW = 210, PH = 297;
-  var ML = 22, MR = 22, MT = 28, CW = 166;
-  var SAFE = 272;  // last safe y before footer
-
-  // ── DATA ───────────────────────────────────────────────────────────────────
-  var d   = AUDIT_DATA, s = d.summary||{}, sc = d.scores||{};
-  var pi  = d.portalInfo||{}, ps = pi.portalStats||{};
-  var issues = (d.issues||[]).slice().sort(function(a,b){
-    return ({'critical':0,'warning':1,'info':2}[a.severity]||3) -
-           ({'critical':0,'warning':1,'info':2}[b.severity]||3);
-  });
-  var ovr     = s.overallScore || 0;
-  var company = String(pi.company || 'Your Portal').substring(0,45);
-  var grade   = ovr>=85?'Excellent':ovr>=70?'Good':ovr>=55?'Needs Attention':'Critical';
-  var today   = new Date();
-  var dt      = today.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
-  var fname   = 'FixOps-Audit-'+company.replace(/[^a-zA-Z0-9]/g,'-')+'-'+today.toISOString().split('T')[0]+'.pdf';
-
-  // safe string
-  function ss(v){ return (v==null)?'':String(v).replace(/[^\x20-\x7E]/g,function(c){
-    var m={'\u2192':' > ','\u2013':'-','\u2014':'-','\u2018':"'",'\u2019':"'",'\u201C':'"','\u201D':'"','\u2022':'*','\u2713':'v','\xAE':'(R)','\xA0':' '};
-    return m[c]||'';
-  }); }
-
-  // ── COLOURS ─────────────────────────────────────────────────────────────────
-  // White background throughout — like the competitor
-  var INK1   = [20,  18,  30];   // headings
-  var INK2   = [60,  56,  80];   // body
-  var INK3   = [120,116,140];    // captions / labels
-  var INK4   = [180,176,196];    // rules / dividers
-  var PURPLE = [108, 48, 210];   // brand accent
-  var PURPLT = [237,228,255];    // brand tint bg
-  var GREEN  = [ 22,140, 88];
-  var GREENLT= [234,250,242];
-  var AMBER  = [175,108,  8];
-  var AMBERLT= [255,246,220];
-  var RED    = [195, 38, 58];
-  var REDLT  = [255,235,240];
-  var BLUE   = [ 38,110,200];
-  var BLUELT = [229,240,255];
-
-  var SCOL  = ovr>=80?GREEN:ovr>=60?AMBER:RED;
-  var SCBG  = ovr>=80?GREENLT:ovr>=60?AMBERLT:REDLT;
-
-  function sevC(sv){ return sv==='critical'?RED:sv==='warning'?AMBER:BLUE; }
-  function sevBg(sv){ return sv==='critical'?REDLT:sv==='warning'?AMBERLT:BLUELT; }
-  function dimC(v){ return v>=80?GREEN:v>=60?AMBER:RED; }
-
-  // ── DRAW HELPERS ─────────────────────────────────────────────────────────────
-  function fc(c){ doc.setFillColor(c[0],c[1],c[2]); }
-  function dc(c,w){ doc.setDrawColor(c[0],c[1],c[2]); doc.setLineWidth(w||0.25); }
-  function tc(c){ doc.setTextColor(c[0],c[1],c[2]); }
-  function font(sz, bold, col){
-    doc.setFontSize(sz);
-    doc.setFont('helvetica', bold?'bold':'normal');
-    if(col) tc(col);
-  }
-  function rr(x,y,w,h,r,sty){ doc.roundedRect(x,y,w,h,r||2,r||2,sty||'F'); }
-
-  // wrap text, return new Y
-  function textWrap(txt, x, y, maxW, sz, bold, col, lh){
-    font(sz||8, bold||false, col||INK2);
-    var lines = doc.splitTextToSize(ss(txt), maxW||CW);
-    var lineH = lh || (sz||8)*0.42+1.4;
-    doc.text(lines, x, y);
-    return y + lines.length*lineH;
-  }
-
-  // ── PAGE TRACKING ─────────────────────────────────────────────────────────
-  var pageNum = 1;
-
-  function header(){
-    // Thin purple top bar
-    fc(PURPLE); doc.rect(0, 0, PW, 1.5, 'F');
-    // White bg
-    fc([255,255,255]); doc.rect(0, 1.5, PW, 11, 'F');
-    dc(INK4, 0.25); doc.line(0, 12.5, PW, 12.5);
-    // Left: logo pill + brand
-    fc(PURPLE); rr(ML, 3, 7, 7, 1.5, 'F');
-    font(5, true, [255,255,255]); doc.text('FO', ML+1.3, 7.8);
-    font(8, true, INK1); doc.text('FixOps.io', ML+10, 7.5);
-    font(6, false, INK3); doc.text('HubSpot Portal Intelligence', ML+10, 11.5);
-    // Right: company + page
-    font(6, false, INK3); doc.text('Page '+pageNum, PW-MR, 7.5, {align:'right'});
-    font(6.5, true, INK2); doc.text(company, PW-MR, 11.5, {align:'right'});
-  }
-
-  function footer(){
-    dc(INK4, 0.25); doc.line(ML, 284, PW-MR, 284);
-    font(5.5, false, INK4);
-    doc.text('fixops.io  |  matthew@fixops.io  |  HubSpot Systems. Fixed.', ML, 289);
-    doc.text(dt, PW-MR, 289, {align:'right'});
-  }
-
-  function newPage(){
-    footer();
-    doc.addPage();
-    pageNum++;
-    fc([255,255,255]); doc.rect(0,0,PW,PH,'F');
-    header();
-    return MT;
-  }
-
-  function chk(y, need){
-    return (y + need > SAFE) ? newPage() : y;
-  }
-
-  // ── SECTION HEADING (large, like competitor) ────────────────────────────
-  function sectionH1(y, title){
-    y = chk(y, 14);
-    font(18, true, INK1);
-    doc.text(ss(title), ML, y);
-    return y + 10;
-  }
-
-  // ── SUBSECTION ──────────────────────────────────────────────────────────
-  function sectionH2(y, title, col){
-    y = chk(y, 10);
-    font(11, true, col||INK1);
-    doc.text(ss(title), ML, y);
-    dc(col||INK4, 0.3); doc.line(ML, y+2, PW-MR, y+2);
-    return y + 7;
-  }
-
-  // ── CALLOUT BOX (green tip, amber warning, purple note) ─────────────────
-  function callout(y, icon, heading, body, bg, accent){
-    bg = bg||GREENLT; accent = accent||GREEN;
-    font(7, false);
-    var bLines = doc.splitTextToSize(ss(body), CW-16);
-    var h = bLines.length*4.5 + 16;
-    y = chk(y, h+2);
-    fc(bg); rr(ML, y, CW, h, 2, 'F');
-    dc(accent, 0.4); rr(ML, y, CW, h, 2, 'S');
-    // Left accent bar
-    fc(accent); doc.rect(ML, y, 3, h, 'F');
-    font(7.5, true, accent); doc.text(ss(icon+' '+heading), ML+7, y+7);
-    font(7, false, INK2); doc.text(bLines, ML+7, y+13);
-    return y + h + 4;
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // PAGE 1 — COVER
-  // ─────────────────────────────────────────────────────────────────────────
-  fc([255,255,255]); doc.rect(0,0,PW,PH,'F');
-
-  // Top purple band (cover only — taller, more impact)
-  fc(PURPLE); doc.rect(0, 0, PW, 52, 'F');
-
-  // Brand on cover
-  fc([255,255,255]); rr(ML, 10, 13, 13, 2.5, 'F');
-  font(8.5, true, PURPLE); doc.text('FO', ML+2.5, 19);
-  font(16, true, [255,255,255]); doc.text('FixOps.io', ML+18, 19);
-  font(8, false, [200,185,240]); doc.text('HubSpot Portal Intelligence', ML+18, 26);
-  font(7, false, [200,185,240]); doc.text(dt, PW-MR, 19, {align:'right'});
-
-  // Company name below band
-  font(26, true, INK1);
-  var clines = doc.splitTextToSize(company, CW);
-  doc.text(clines[0]||company, ML, 70);
-  font(10, false, INK3); doc.text('HubSpot Portal Health Audit Report', ML, 80);
-
-  // Horizontal rule
-  dc(INK4, 0.5); doc.line(ML, 84, PW-MR, 84);
-
-  // ── Score summary row ─────────────────────────────────────────────────
-  var sy = 92;
-
-  // Large score
-  font(52, true, SCOL);
-  doc.text(String(ovr), ML, sy+28);
-  font(10, false, INK3); doc.text('/100', ML+32, sy+28);
-  font(9, true, SCOL); doc.text(grade, ML, sy+37);
-
-  // Vertical divider
-  dc(INK4, 0.4); doc.line(ML+65, sy, ML+65, sy+45);
-
-  // 3 stat columns
-  var cols = [
-    { v:String(s.criticalCount||0), l:'Critical Issues', c:RED },
-    { v:String(s.warningCount||0),  l:'Warnings',        c:AMBER },
-    { v:'$'+Number(s.monthlyWaste||0).toLocaleString(), l:'Est. Waste / Month', c:PURPLE }
-  ];
-  var colW = (CW-70)/3;
-  for(var ci=0; ci<3; ci++){
-    var cx = ML+70 + ci*(colW+5);
-    // Tinted bg
-    fc(ci===0?REDLT:ci===1?AMBERLT:PURPLT); rr(cx, sy, colW, 40, 3, 'F');
-    font(22, true, cols[ci].c); doc.text(ss(cols[ci].v), cx+colW/2, sy+18, {align:'center'});
-    font(6.5, false, INK3); doc.text(ss(cols[ci].l), cx+colW/2, sy+26, {align:'center'});
-  }
-
-  // Portal stats
-  var snap = [];
-  if(ps.contacts) snap.push(Number(ps.contacts).toLocaleString()+' contacts');
-  if(ps.companies) snap.push(Number(ps.companies).toLocaleString()+' companies');
-  if(ps.deals) snap.push(Number(ps.deals).toLocaleString()+' deals');
-  if(ps.tickets) snap.push(Number(ps.tickets).toLocaleString()+' tickets');
-  if(ps.users>0) snap.push(ps.users+' users');
-  if(snap.length){
-    var snapY = sy+50;
-    dc(INK4,0.25); doc.line(ML,snapY,PW-MR,snapY);
-    font(7, false, INK3); doc.text('Scanned: '+snap.join('  /  '), ML, snapY+6);
-  }
-
-  // ── Dimension scores grid ─────────────────────────────────────────────
-  var dimY = sy+68;
-  font(11, true, INK1); doc.text('Health Dimension Scores', ML, dimY);
-  dc(INK4,0.3); doc.line(ML, dimY+2.5, PW-MR, dimY+2.5);
-  dimY += 8;
-
-  var dkeys = ['dataIntegrity','automationHealth','pipelineIntegrity','marketingHealth',
-               'configSecurity','reportingQuality','teamAdoption','serviceHealth'];
-  var dnames = { dataIntegrity:'Data Integrity', automationHealth:'Automation Health',
-                 pipelineIntegrity:'Pipeline Integrity', marketingHealth:'Marketing Health',
-                 configSecurity:'Config & Security', reportingQuality:'Reporting Quality',
-                 teamAdoption:'Team Adoption', serviceHealth:'Service Health' };
-
-  var dcw = (CW-6)/2, drh = 14;
-  for(var di=0; di<dkeys.length; di++){
-    var dk = dkeys[di], dv = sc[dk];
-    if(dv === undefined) continue;
-    var dr = dimC(dv), drbg = dv>=80?GREENLT:dv>=60?AMBERLT:REDLT;
-    var col2 = di%2, row2 = Math.floor(di/2);
-    var dx = ML + col2*(dcw+6), dy2 = dimY + row2*drh;
-    // Row bg on alternating
-    if(col2===0 && row2%2===1){ fc([250,249,252]); doc.rect(ML, dy2, CW, drh-2, 'F'); }
-    // Score pill
-    fc(drbg); rr(dx+dcw-16, dy2+2, 14, 7, 2, 'F');
-    font(7, true, dr); doc.text(String(dv), dx+dcw-9, dy2+7.5, {align:'center'});
-    // Name
-    font(7.5, true, INK2); doc.text(ss(dnames[dk]||dk), dx+2, dy2+7.5);
-    // Mini bar
-    var bx2 = dx+2, bw2 = dcw-24;
-    dc(INK4,0.2); doc.line(bx2, dy2+10.5, bx2+bw2, dy2+10.5);
-    dc(dr, 0.8); doc.line(bx2, dy2+10.5, bx2+bw2*(dv/100), dy2+10.5);
-  }
-
-  // ── CTA block at bottom of cover ──────────────────────────────────────
-  var ctaY2 = Math.max(dimY + Math.ceil(dkeys.length/2)*drh + 10, 238);
-  fc(PURPLT); rr(ML, ctaY2, CW, 22, 3, 'F');
-  fc(PURPLE); doc.rect(ML, ctaY2, 3, 22, 'F');
-  font(9.5, true, PURPLE); doc.text("Let's Fix Your Portal", ML+8, ctaY2+9);
-  font(7, false, INK2); doc.text('We review every audit personally and build a prioritized fix plan.', ML+8, ctaY2+15.5);
-  font(7, true, GREEN); doc.text('Book your free 30-min call: ', ML+8, ctaY2+21);
-  var callW = doc.getTextWidth('Book your free 30-min call: ');
-  font(7, false, INK2); doc.text('calendly.com/matthew-fixops/30min', ML+8+callW, ctaY2+21);
-
-  footer();
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // PAGE 2 — ISSUE INDEX (summary table)
-  // ─────────────────────────────────────────────────────────────────────────
-  var y = newPage();
-  y = sectionH1(y, 'Issue Summary');
-  font(9, false, INK3);
-  doc.text(issues.length+' issues found  |  '+(s.criticalCount||0)+' critical  |  '+(s.warningCount||0)+' warnings  |  est. $'+Number(s.monthlyWaste||0).toLocaleString()+'/mo waste', ML, y);
-  y += 8;
-
-  // Table header
-  fc([245,243,252]); doc.rect(ML, y, CW, 8, 'F');
-  dc(PURPLE, 0.3); doc.line(ML, y, ML+CW, y); doc.line(ML, y+8, ML+CW, y+8);
-  font(6, true, PURPLE);
-  doc.text('#',     ML+2,  y+5.5);
-  doc.text('SEV',   ML+9,  y+5.5);
-  doc.text('ISSUE', ML+32, y+5.5);
-  doc.text('DIMENSION', PW-MR-34, y+5.5);
-  y += 9;
-
-  for(var ti=0; ti<issues.length; ti++){
-    var iss = issues[ti];
-    var sv = iss.severity||'info';
-    y = chk(y, 9);
-    if(ti%2===0){ fc([252,251,254]); doc.rect(ML, y-1, CW, 9, 'F'); }
-    dc(INK4, 0.15); doc.line(ML, y+7.5, ML+CW, y+7.5);
-    // Number
-    font(6.5, false, INK3); doc.text(String(ti+1), ML+2, y+5);
-    // Severity badge
-    var sc2 = sevC(sv), sb = sevBg(sv);
-    fc(sb); rr(ML+8, y+1, 20, 6, 1.5, 'F');
-    font(5, true, sc2); doc.text(sv.toUpperCase(), ML+18, y+5.5, {align:'center'});
-    // Title — truncate to fit
-    font(6.5, false, INK1);
-    var titleShort = ss(iss.title||'');
-    while(titleShort.length>4 && doc.getTextWidth(titleShort)>CW-74){ titleShort=titleShort.slice(0,-1); }
-    if(titleShort.length<ss(iss.title||'').length) titleShort=titleShort.slice(0,-1)+'...';
-    doc.text(titleShort, ML+32, y+5);
-    // Dimension
-    font(6, false, INK3); doc.text(ss(iss.dimension||'').substring(0,22), PW-MR, y+5, {align:'right'});
-    y += 9;
-  }
-  y += 6;
-
-  // Monthly waste callout
-  if((s.monthlyWaste||0)>0){
-    y = callout(y, '>', 'Estimated Monthly Waste: $'+Number(s.monthlyWaste||0).toLocaleString(),
-      'This figure represents the combined revenue impact of the issues found. Fixing the critical items typically recovers 60-80% of this within 30 days.',
-      PURPLT, PURPLE);
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // PAGES 3+ — ONE ISSUE PER PAGE BLOCK
-  // ─────────────────────────────────────────────────────────────────────────
-  y = newPage();
-  y = sectionH1(y, 'Detailed Findings');
-  font(9, false, INK3); doc.text('Full analysis, context, and step-by-step fix guide for every issue', ML, y); y+=10;
-
-  for(var i=0; i<issues.length; i++){
-    var iss = issues[i];
-    var sv  = iss.severity||'info';
-    var ic  = sevC(sv), ib = sevBg(sv);
-    var guide = (iss.guide||[]).map(function(g){ return ss(g); });
-
-    // Estimate height
-    font(8, false);
-    var tl  = doc.splitTextToSize(ss(iss.title||''), CW).length;
-    var dl  = doc.splitTextToSize(ss(iss.description||''), CW).length;
-    var wl2 = iss.detail ? doc.splitTextToSize(ss(iss.detail), CW-10).length : 0;
-    var gl  = 0; guide.forEach(function(g){ gl += doc.splitTextToSize(g||' ', CW-14).length; });
-    var estH = 14 + tl*6 + 4 + dl*4.5 + (iss.impact?12:0) + (wl2?wl2*4.3+12:0) + (gl?gl*4.5+guide.length*5+12:0) + 10;
-
-    if(y + Math.min(estH, 100) > SAFE){ y = newPage(); }
-
-    // ── Issue number + severity header ───────────────────────────────────
-    y = chk(y, 14);
-    // Full-width tinted header row
-    fc(ib); doc.rect(ML, y, CW, 11, 'F');
-    fc(ic); doc.rect(ML, y, 4, 11, 'F');
-    font(6.5, true, ic); doc.text(sv.toUpperCase(), ML+8, y+7.5);
-    font(6, false, INK3); doc.text('Issue '+(i+1)+' of '+issues.length, ML+42, y+7.5);
-    if(iss.dimension){ font(6, false, INK3); doc.text(ss(iss.dimension).toUpperCase(), PW-MR, y+7.5, {align:'right'}); }
-    y += 14;
-
-    // ── Title ─────────────────────────────────────────────────────────────
-    y = chk(y, 12);
-    font(12, true, INK1);
-    var tlines = doc.splitTextToSize(ss(iss.title||''), CW);
-    doc.text(tlines, ML, y);
-    y += tlines.length*6 + 3;
-
-    // ── Description ───────────────────────────────────────────────────────
-    y = chk(y, 8);
-    font(8, false, INK2);
-    var descLines = doc.splitTextToSize(ss(iss.description||''), CW);
-    doc.text(descLines, ML, y);
-    y += descLines.length*4.5 + 5;
-
-    // ── Impact strip ──────────────────────────────────────────────────────
-    if(iss.impact){
-      y = chk(y, 12);
-      font(7, false);
-      var impLines = doc.splitTextToSize(ss(iss.impact), CW-28);
-      var impH = impLines.length*4.3 + 10;
-      fc(AMBERLT); rr(ML, y, CW, impH, 2, 'F');
-      fc(AMBER); doc.rect(ML, y, 3, impH, 'F');
-      font(6, true, AMBER); doc.text('IMPACT', ML+7, y+4.5);
-      font(7, false, INK2); doc.text(impLines, ML+26, y+4.5);
-      y += impH + 4;
-    }
-
-    // ── Why This Matters callout ──────────────────────────────────────────
-    if(iss.detail){
-      y = chk(y, 14);
-      font(7, false);
-      var detLines = doc.splitTextToSize(ss(iss.detail), CW-10);
-      var detH = detLines.length*4.3 + 12;
-      fc(BLUELT); rr(ML, y, CW, detH, 2, 'F');
-      fc(BLUE); doc.rect(ML, y, 3, detH, 'F');
-      font(6.5, true, BLUE); doc.text('Why This Matters', ML+7, y+6);
-      font(7, false, INK2); doc.text(detLines, ML+7, y+11.5);
-      y += detH + 4;
-    }
-
-    // ── Fix Guide ─────────────────────────────────────────────────────────
-    if(guide.length){
-      y = chk(y, 14);
-      font(6.5, true, GREEN); doc.text('Fix Guide', ML, y);
-      dc(GREEN, 0.3); doc.line(ML, y+2, ML+25, y+2);
-      y += 7;
-      for(var g=0; g<guide.length; g++){
-        font(7, false);
-        var glines = doc.splitTextToSize(String(guide[g]||' '), CW-14);
-        var gh = glines.length*4.5 + 5;
-        y = chk(y, gh);
-        // Step circle
-        fc(PURPLT); doc.circle(ML+3.5, y+2.5, 3.5, 'F');
-        font(6, true, PURPLE); doc.text(String(g+1), ML+3.5, y+4.5, {align:'center'});
-        font(7.5, false, INK1); doc.text(glines, ML+10, y+2.5);
-        y += gh;
-      }
-      y += 2;
-    }
-
-    // ── Separator between issues ──────────────────────────────────────────
-    if(i < issues.length-1){
-      y = chk(y, 10);
-      dc(INK4, 0.25); doc.line(ML, y, PW-MR, y);
-      y += 10;
-    }
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // FINAL PAGE — NEXT STEPS
-  // ─────────────────────────────────────────────────────────────────────────
-  y = chk(y, 60);
-  y = sectionH1(y, 'Next Steps');
-  font(9, false, INK3); doc.text('Every issue in this report has a clear solution.', ML, y); y += 12;
-
-  // Score recap — left column
-  var ncx = ML, ncy = y;
-  // Big score
-  font(42, true, SCOL); doc.text(String(ovr), ncx+15, ncy+22, {align:'center'});
-  font(9, false, INK3); doc.text('/100', ncx+25, ncy+22);
-  font(9, true, SCOL); doc.text(grade, ncx, ncy+30);
-  dc(INK4,0.3); doc.line(ncx, ncy+34, ncx+55, ncy+34);
-  font(6.5, false, INK3); doc.text((s.criticalCount||0)+' Critical  /  '+(s.warningCount||0)+' Warnings', ncx, ncy+40);
-  font(6.5, false, INK3); doc.text('$'+Number(s.monthlyWaste||0).toLocaleString()+' est. monthly waste', ncx, ncy+47);
-
-  // CTA block — right column
-  var rcx = ML+62, rcw = CW-62;
-  fc(PURPLT); rr(rcx, ncy, rcw, 55, 3, 'F');
-  fc(PURPLE); doc.rect(rcx, ncy, 3, 55, 'F');
-  font(10, true, PURPLE); doc.text("Let's Fix Your Portal", rcx+8, ncy+11);
-  font(7.5, false, INK2);
-  var ctaMsg = 'We review every audit personally and build a prioritized fix plan with flat-rate pricing. No surprise costs. No open-ended billing.';
-  var ctaLines = doc.splitTextToSize(ctaMsg, rcw-14);
-  doc.text(ctaLines, rcx+8, ncy+20);
-  font(7.5, true, GREEN); doc.text('Book your free 30-min strategy call:', rcx+8, ncy+38);
-  font(7.5, false, INK2); doc.text('calendly.com/matthew-fixops/30min', rcx+8, ncy+44.5);
-  font(7.5, false, INK3); doc.text('matthew@fixops.io', rcx+8, ncy+51);
-
-  footer();
-  doc.save(fname);
-  showToast('✅', 'PDF Ready  -  '+issues.length+' issues  -  '+pageNum+' pages', 'Saved to your downloads');
-}
-
-
-
-var toastTimer;
-function showToast(ico,title,sub){
-  document.getElementById('t-ico').textContent=ico;
-  document.getElementById('t-title').textContent=title;
-  document.getElementById('t-sub').textContent=sub;
-  document.getElementById('toast').classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(hideToast,7000);
-}
-function hideToast(){ document.getElementById('toast').classList.remove('show'); }
 
 </script>
+
+<style>
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </body>
 </html>
