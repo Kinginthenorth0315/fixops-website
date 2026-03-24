@@ -384,6 +384,16 @@ nav {
     content: ' 🔒';
     font-size: 10px;
   }
+
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+.kpi-card{background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;padding:16px 18px;text-align:center;}
+.kpi-val{font-size:26px;font-weight:900;line-height:1;margin-bottom:6px;}
+.kpi-label{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.kpi-sub{font-size:10px;color:rgba(255,255,255,.25);margin-top:3px;}
+/* View Cards */
+.view-card{background:#0c0c16;border:1px solid #1e1e32;border-radius:14px;padding:20px 22px;margin-bottom:16px;}
+.view-card-title{font-size:12px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
 </style>
 </head>
 <body>
@@ -472,6 +482,39 @@ nav {
       <div class="sidebar-item" onclick="showView('ai')" class="sidebar-item" data-pro-view="true">
         <span class="si-icon">✦</span> AI Report Builder
         <span class="si-badge">PRO</span>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Marketing</div>
+      <div class="sidebar-item" onclick="showView('marketing')" data-view="marketing">
+        <span class="si-icon">📣</span> Marketing Health
+      </div>
+      <div class="sidebar-item" onclick="showView('sequences')" data-view="sequences">
+        <span class="si-icon">📧</span> Sequences
+      </div>
+      <div class="sidebar-item" onclick="showView('lists')" data-view="lists">
+        <span class="si-icon">📋</span> Lists &amp; Segments
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Automation</div>
+      <div class="sidebar-item" onclick="showView('automation')" data-view="automation">
+        <span class="si-icon">⚙️</span> Workflow Health
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Service</div>
+      <div class="sidebar-item" onclick="showView('service')" data-view="service">
+        <span class="si-icon">🎧</span> Service Health
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">History</div>
+      <div class="sidebar-item" onclick="showView('history')" data-view="history">
+        <span class="si-icon">🕐</span> Audit History
+      </div>
+      <div class="sidebar-item" onclick="showView('delta')" data-view="delta">
+        <span class="si-icon">↕️</span> Week-over-Week
       </div>
     </div>
   </aside>
@@ -808,6 +851,86 @@ nav {
         <p>Rep activity scorecard and inactive seat detection — updated every Monday</p>
       </div>
       <div id="team-content"></div>
+    </div>
+
+
+    <!-- Marketing Hub View -->
+    <div class="view" id="view-marketing">
+      <div class="view-header">
+        <div class="vh-badge">Marketing Hub</div>
+        <h1 class="vh-title">📣 Marketing Health</h1>
+        <p>Forms, lists, campaigns, and email subscription health</p>
+      </div>
+      <div id="marketing-content"></div>
+    </div>
+
+    <!-- Sequences View -->
+    <div class="view" id="view-sequences">
+      <div class="view-header">
+        <div class="vh-badge">Sales Hub Pro</div>
+        <h1 class="vh-title">📧 Sequences</h1>
+        <p>Email sequence performance, reply rates, and configuration health</p>
+      </div>
+      <div id="sequences-content"></div>
+    </div>
+
+    <!-- Lists View -->
+    <div class="view" id="view-lists">
+      <div class="view-header">
+        <div class="vh-badge">Marketing Hub</div>
+        <h1 class="vh-title">📋 Lists &amp; Segments</h1>
+        <p>Contact list health, segmentation quality, and static vs active breakdown</p>
+      </div>
+      <div id="lists-content"></div>
+    </div>
+
+    <!-- Automation View -->
+    <div class="view" id="view-automation">
+      <div class="view-header">
+        <div class="vh-badge">Marketing Hub Pro</div>
+        <h1 class="vh-title">⚙️ Workflow Health</h1>
+        <p>Workflow errors, dead automations, and enrollment gaps</p>
+      </div>
+      <div id="automation-content"></div>
+    </div>
+
+    <!-- Service View -->
+    <div class="view" id="view-service">
+      <div class="view-header">
+        <div class="vh-badge">Service Hub</div>
+        <h1 class="vh-title">🎧 Service Health</h1>
+        <p>Ticket SLA, conversations inbox, NPS/CSAT, and knowledge base</p>
+      </div>
+      <div id="service-content"></div>
+    </div>
+
+    <!-- Audit History View -->
+    <div class="view" id="view-history">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">🕐 Audit History</h1>
+        <p>All historical scans for this portal — filter by week or select any audit</p>
+      </div>
+      <div id="history-filter" style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
+        <select id="history-week-filter" onchange="filterHistory()" style="padding:8px 14px;background:#1a1a2e;border:1px solid #2a2a40;border-radius:8px;color:#fff;font-size:13px;font-family:'Outfit',sans-serif;">
+          <option value="all">All Time</option>
+          <option value="4">Last 4 weeks</option>
+          <option value="8">Last 8 weeks</option>
+          <option value="12">Last 12 weeks</option>
+        </select>
+        <span id="history-count" style="font-size:12px;color:rgba(255,255,255,.4);"></span>
+      </div>
+      <div id="history-content"></div>
+    </div>
+
+    <!-- Week-over-Week Delta View -->
+    <div class="view" id="view-delta">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">↕️ Week-over-Week</h1>
+        <p>What improved and what got worse since your last audit</p>
+      </div>
+      <div id="delta-content"></div>
     </div>
 
     </div><!-- /views -->
@@ -1204,6 +1327,13 @@ function initAllViews() {
   buildRevenue();
   buildCompany();
   buildContactEngagement();
+  buildMarketing();
+  buildSequences();
+  buildLists();
+  buildAutomation();
+  buildService();
+  buildAuditHistory();
+  buildDelta();
 }
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
@@ -2815,6 +2945,504 @@ function metric(icon, label, value, context, color) {
     <div class="mh-context">${context}</div>
   </div>`;
 }
+
+
+// ── MARKETING HEALTH VIEW ────────────────────────────────────────────────────
+function buildMarketing() {
+  const ps = (DATA.portalInfo || {}).portalStats || {};
+  const issues = DATA.issues || [];
+  const mktIssues = issues.filter(i =>
+    ['Marketing', 'Data Integrity'].includes(i.dimension) ||
+    (i.title && (i.title.toLowerCase().includes('form') ||
+      i.title.toLowerCase().includes('list') ||
+      i.title.toLowerCase().includes('campaign') ||
+      i.title.toLowerCase().includes('email')))
+  );
+
+  const col = (n) => n >= 80 ? '#10b981' : n >= 60 ? '#f59e0b' : '#f43f5e';
+  const mktScore = DATA.scores?.marketingHealth || 0;
+
+  let html = `
+    <div class="kpi-grid">
+      ${kpi('Marketing Score', mktScore + '/100', mktScore >= 80 ? '✅ Healthy' : mktScore >= 60 ? '⚠️ Needs work' : '🔴 Critical', col(mktScore))}
+      ${kpi('Forms', ps.forms || 0, 'total forms', '#a78bfa')}
+      ${kpi('Lists', ps.listCount || 0, (ps.emptyLists||0) + ' empty', ps.emptyLists > 5 ? '#f59e0b' : '#10b981')}
+      ${kpi('Campaigns', ps.campaigns || 0, 'marketing campaigns', '#3b82f6')}
+      ${kpi('Email Sub Types', ps.emailSubTypes || 0, ps.emailSubTypes > 20 ? '⚠️ Too many' : '✅ OK', ps.emailSubTypes > 20 ? '#f59e0b' : '#10b981')}
+    </div>`;
+
+  if (ps.listCount > 0) {
+    const staticPct = ps.staticLists ? Math.round(ps.staticLists / ps.listCount * 100) : 0;
+    html += `
+    <div class="view-card">
+      <div class="view-card-title">List Health</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:12px;">
+        <div style="text-align:center;padding:16px;background:#0c0c16;border-radius:10px;">
+          <div style="font-size:28px;font-weight:900;color:#a78bfa;">${ps.listCount}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;">Total Lists</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#0c0c16;border-radius:10px;">
+          <div style="font-size:28px;font-weight:900;color:${ps.emptyLists > 5 ? '#f59e0b' : '#10b981'};">${ps.emptyLists || 0}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;">Empty Lists</div>
+        </div>
+        <div style="text-align:center;padding:16px;background:#0c0c16;border-radius:10px;">
+          <div style="font-size:28px;font-weight:900;color:${staticPct > 70 ? '#f59e0b' : '#10b981'};">${staticPct}%</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;">Static Lists</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  if (mktIssues.length > 0) {
+    html += `<div class="view-card"><div class="view-card-title">Marketing Issues (${mktIssues.length})</div>`;
+    mktIssues.forEach(i => {
+      const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+      html += `<div style="padding:12px 0;border-bottom:1px solid #1e1e32;">
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:${c}20;color:${c};flex-shrink:0;margin-top:2px;">${i.severity.toUpperCase()}</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;">${i.title}</div>
+            <div style="font-size:11px;color:rgba(255,255,255,.4);">${i.impact || ''}</div>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  } else {
+    html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="color:rgba(255,255,255,.5);">No marketing issues found</div></div>`;
+  }
+
+  const el = document.getElementById('marketing-content');
+  if (el) el.innerHTML = html;
+}
+
+// ── SEQUENCES VIEW ───────────────────────────────────────────────────────────
+function buildSequences() {
+  const ps = (DATA.portalInfo || {}).portalStats || {};
+  const issues = DATA.issues || [];
+  const seqIssues = issues.filter(i => i.title && i.title.toLowerCase().includes('sequence'));
+
+  let html = '';
+
+  if (!ps.sequences && ps.sequences !== 0) {
+    html = `<div class="view-card" style="text-align:center;padding:40px;">
+      <div style="font-size:32px;margin-bottom:12px;">🔒</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Sequences require Sales Hub Pro or Enterprise</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.4);">Upgrade your HubSpot plan to unlock sequence health monitoring.</div>
+    </div>`;
+  } else {
+    html = `<div class="kpi-grid">
+      ${kpi('Total Sequences', ps.sequences || 0, 'configured', '#a78bfa')}
+      ${kpi('Active', ps.activeSequences || 0, 'currently running', '#10b981')}
+      ${kpi('Issues Found', seqIssues.length, seqIssues.length > 0 ? 'need attention' : 'all healthy', seqIssues.length > 0 ? '#f59e0b' : '#10b981')}
+    </div>`;
+
+    if (seqIssues.length > 0) {
+      html += `<div class="view-card"><div class="view-card-title">Sequence Issues</div>`;
+      seqIssues.forEach(i => {
+        const c = i.severity === 'critical' ? '#f43f5e' : '#f59e0b';
+        html += `<div style="padding:14px 0;border-bottom:1px solid #1e1e32;">
+          <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:4px;">${i.title}</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.45);margin-bottom:8px;">${i.description || ''}</div>
+          ${(i.guide || []).map((g,gi) => `<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:4px;">${gi+1}. ${g}</div>`).join('')}
+        </div>`;
+      });
+      html += '</div>';
+    } else if (ps.sequences > 0) {
+      html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="color:rgba(255,255,255,.5);">All sequences healthy</div></div>`;
+    } else {
+      html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">📧</div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;">No sequences configured</div><div style="font-size:12px;color:rgba(255,255,255,.4);">Sequences are automated email outreach tools in Sales Hub Pro. Set them up to scale prospecting without manual follow-up.</div></div>`;
+    }
+  }
+
+  const el = document.getElementById('sequences-content');
+  if (el) el.innerHTML = html;
+}
+
+// ── LISTS VIEW ───────────────────────────────────────────────────────────────
+function buildLists() {
+  const ps = (DATA.portalInfo || {}).portalStats || {};
+
+  let html = `<div class="kpi-grid">
+    ${kpi('Total Lists', ps.listCount || 0, 'contact lists', '#a78bfa')}
+    ${kpi('Empty Lists', ps.emptyLists || 0, 'zero contacts', ps.emptyLists > 5 ? '#f59e0b' : '#10b981')}
+    ${kpi('Static Lists', ps.staticLists || 0, 'manually managed', ps.staticLists > (ps.listCount * 0.7) ? '#f59e0b' : '#10b981')}
+    ${kpi('Active Lists', (ps.listCount - ps.staticLists) || 0, 'auto-updating', '#10b981')}
+  </div>`;
+
+  const totalLists = ps.listCount || 0;
+  if (totalLists > 0) {
+    const staticPct = ps.staticLists ? Math.round(ps.staticLists / totalLists * 100) : 0;
+    const activePct = 100 - staticPct;
+
+    html += `<div class="view-card">
+      <div class="view-card-title">List Type Breakdown</div>
+      <div style="margin:16px 0;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:12px;color:rgba(255,255,255,.5);">Active (auto-updating)</span>
+          <span style="font-size:12px;font-weight:700;color:#10b981;">${activePct}%</span>
+        </div>
+        <div style="background:#1e1e32;border-radius:4px;height:8px;overflow:hidden;margin-bottom:12px;">
+          <div style="background:#10b981;height:100%;width:${activePct}%;border-radius:4px;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:12px;color:rgba(255,255,255,.5);">Static (manually managed)</span>
+          <span style="font-size:12px;font-weight:700;color:${staticPct > 70 ? '#f59e0b' : '#a78bfa'};">${staticPct}%</span>
+        </div>
+        <div style="background:#1e1e32;border-radius:4px;height:8px;overflow:hidden;">
+          <div style="background:${staticPct > 70 ? '#f59e0b' : '#a78bfa'};height:100%;width:${staticPct}%;border-radius:4px;"></div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,.35);margin-top:12px;padding-top:12px;border-top:1px solid #1e1e32;">
+        ${staticPct > 70 ? '⚠️ Most lists are static — contacts go stale without auto-updating criteria. Convert to active lists for better segmentation.' : '✅ Good mix of active and static lists.'}
+      </div>
+    </div>`;
+
+    if (ps.emptyLists > 0) {
+      html += `<div class="view-card" style="border-color:rgba(245,158,11,.2);">
+        <div class="view-card-title">⚠️ Empty Lists (${ps.emptyLists})</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:8px;">
+          ${ps.emptyLists} list${ps.emptyLists!==1?'s':''} with zero contacts. These clutter your portal and slow list selection in workflows and emails. Archive lists that have been empty for 90+ days.
+        </div>
+      </div>`;
+    }
+  } else {
+    html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">📋</div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;">No lists found</div><div style="font-size:12px;color:rgba(255,255,255,.4);">Create contact lists in Marketing to segment your audience for emails, workflows, and reporting.</div></div>`;
+  }
+
+  const el = document.getElementById('lists-content');
+  if (el) el.innerHTML = html;
+}
+
+// ── AUTOMATION VIEW ──────────────────────────────────────────────────────────
+function buildAutomation() {
+  const ps = (DATA.portalInfo || {}).portalStats || {};
+  const scores = DATA.scores || {};
+  const issues = DATA.issues || [];
+  const autoIssues = issues.filter(i => i.dimension === 'Automation');
+  const autoScore = scores.automationHealth || 0;
+  const col = autoScore >= 80 ? '#10b981' : autoScore >= 60 ? '#f59e0b' : '#f43f5e';
+
+  let html = `<div class="kpi-grid">
+    ${kpi('Automation Score', autoScore + '/100', autoScore >= 80 ? 'Healthy' : 'Needs work', col)}
+    ${kpi('Workflows', ps.workflows || 0, 'total configured', '#a78bfa')}
+    ${kpi('Sequences', ps.sequences || 0, 'sales sequences', '#3b82f6')}
+    ${kpi('Forms', ps.forms || 0, 'active forms', '#10b981')}
+    ${kpi('Issues', autoIssues.length, 'automation issues', autoIssues.length > 0 ? '#f43f5e' : '#10b981')}
+  </div>`;
+
+  const errored = autoIssues.filter(i => i.erroredWorkflows);
+  if (errored.length > 0) {
+    const wfs = errored[0].erroredWorkflows || [];
+    html += `<div class="view-card" style="border-color:rgba(244,63,94,.3);">
+      <div class="view-card-title" style="color:#f43f5e;">🚨 Workflows In Error State (${wfs.length})</div>
+      <div style="margin-top:12px;">
+        ${wfs.map(wf => `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1e1e32;">
+          <span style="font-size:13px;color:#fff;">${wf.name || wf.id}</span>
+          <span style="font-size:11px;background:rgba(244,63,94,.1);color:#f43f5e;padding:2px 10px;border-radius:10px;font-weight:700;">${wf.errorCount || 0} errors</span>
+        </div>`).join('')}
+      </div>
+      <div style="font-size:12px;color:rgba(255,255,255,.35);margin-top:12px;">Fix: HubSpot → Automation → Workflows → filter by "Needs attention"</div>
+    </div>`;
+  }
+
+  if (autoIssues.length > 0) {
+    html += `<div class="view-card"><div class="view-card-title">All Automation Issues (${autoIssues.length})</div>`;
+    autoIssues.forEach(i => {
+      const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+      html += `<div style="padding:12px 0;border-bottom:1px solid #1e1e32;">
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:${c}20;color:${c};flex-shrink:0;margin-top:2px;">${i.severity.toUpperCase()}</span>
+          <div><div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;">${i.title}</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.4);">${i.impact || ''}</div></div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  } else {
+    html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="color:rgba(255,255,255,.5);">All automation healthy</div></div>`;
+  }
+
+  const el = document.getElementById('automation-content');
+  if (el) el.innerHTML = html;
+}
+
+// ── SERVICE VIEW ─────────────────────────────────────────────────────────────
+function buildService() {
+  const ps = (DATA.portalInfo || {}).portalStats || {};
+  const scores = DATA.scores || {};
+  const issues = DATA.issues || [];
+  const svcIssues = issues.filter(i =>
+    i.dimension === 'Service' ||
+    (i.title && (i.title.toLowerCase().includes('ticket') || i.title.toLowerCase().includes('nps') || i.title.toLowerCase().includes('sla')))
+  );
+
+  let html = `<div class="kpi-grid">
+    ${kpi('Open Tickets', ps.tickets || 0, 'in queue', ps.tickets > 50 ? '#f59e0b' : '#10b981')}
+    ${kpi('Open Conversations', ps.openConversations || 0, 'in inbox', '#3b82f6')}
+    ${kpi('NPS Responses', ps.npsResponses || 0, 'total', ps.npsResponses > 0 ? '#10b981' : '#f59e0b')}
+    ${kpi('CSAT Responses', ps.csatResponses || 0, 'total', ps.csatResponses > 0 ? '#10b981' : '#a78bfa')}
+    ${kpi('Service Issues', svcIssues.length, 'found', svcIssues.length > 0 ? '#f43f5e' : '#10b981')}
+  </div>`;
+
+  // NPS section
+  const npsIssue = issues.find(i => i.npsData);
+  if (npsIssue && npsIssue.npsData) {
+    const nd = npsIssue.npsData;
+    const npsCol = nd.score >= 30 ? '#10b981' : nd.score >= 0 ? '#f59e0b' : '#f43f5e';
+    html += `<div class="view-card">
+      <div class="view-card-title">NPS Score</div>
+      <div style="text-align:center;padding:20px 0;">
+        <div style="font-size:56px;font-weight:900;color:${npsCol};line-height:1;">${nd.score}</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px;">NPS Score · ${nd.total} responses</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:20px;">
+          <div style="text-align:center;padding:12px;background:#0c0c16;border-radius:8px;">
+            <div style="font-size:22px;font-weight:800;color:#10b981;">${nd.promoters}</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.4);">Promoters (9-10)</div>
+          </div>
+          <div style="text-align:center;padding:12px;background:#0c0c16;border-radius:8px;">
+            <div style="font-size:22px;font-weight:800;color:#f59e0b;">${nd.total - nd.promoters - nd.detractors}</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.4);">Passives (7-8)</div>
+          </div>
+          <div style="text-align:center;padding:12px;background:#0c0c16;border-radius:8px;">
+            <div style="font-size:22px;font-weight:800;color:#f43f5e;">${nd.detractors}</div>
+            <div style="font-size:10px;color:rgba(255,255,255,.4);">Detractors (0-6)</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  } else if (ps.npsResponses === 0) {
+    html += `<div class="view-card" style="border-color:rgba(245,158,11,.2);">
+      <div class="view-card-title">⚠️ NPS Not Configured</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:8px;">No NPS survey data found. Customer satisfaction measurement is a critical leading indicator of churn and expansion revenue.</div>
+      <div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,.35);">Setup: Service → Feedback Surveys → Create NPS Survey</div>
+    </div>`;
+  }
+
+  if (svcIssues.length > 0) {
+    html += `<div class="view-card"><div class="view-card-title">Service Issues (${svcIssues.length})</div>`;
+    svcIssues.forEach(i => {
+      const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
+      html += `<div style="padding:12px 0;border-bottom:1px solid #1e1e32;">
+        <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;">${i.title}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);">${i.impact || ''}</div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+
+  const el = document.getElementById('service-content');
+  if (el) el.innerHTML = html;
+}
+
+// ── AUDIT HISTORY VIEW ───────────────────────────────────────────────────────
+function buildAuditHistory() {
+  const history = DATA.history || [];
+  const el = document.getElementById('history-content');
+  const countEl = document.getElementById('history-count');
+
+  if (!history || history.length === 0) {
+    if (el) el.innerHTML = `<div class="view-card" style="text-align:center;padding:40px;">
+      <div style="font-size:32px;margin-bottom:12px;">🕐</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">No history yet</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.4);">Audit history builds up over time with Pulse or Pro weekly scans. After your first Monday rescan, you will see trend data here.</div>
+    </div>`;
+    return;
+  }
+
+  if (countEl) countEl.textContent = history.length + ' audit' + (history.length!==1?'s':'') + ' recorded';
+
+  const sorted = history.slice().sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+
+  let html = '<div style="display:flex;flex-direction:column;gap:10px;">';
+  sorted.forEach((h, idx) => {
+    const date = h.created_at ? new Date(h.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'Unknown date';
+    const score = h.score || 0;
+    const col = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#f43f5e';
+    const waste = h.monthly_waste ? '$' + Number(h.monthly_waste).toLocaleString() : '—';
+    const delta = idx < sorted.length-1 ? score - (sorted[idx+1].score||0) : null;
+    const deltaHtml = delta !== null
+      ? `<span style="font-size:12px;font-weight:700;color:${delta>0?'#10b981':delta<0?'#f43f5e':'#888'};margin-left:8px;">${delta>0?'↑+':'↓'}${delta}</span>`
+      : '';
+
+    html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
+      <div style="font-size:28px;font-weight:900;color:${col};min-width:52px;">${score}${deltaHtml}</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">${date}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);">${h.critical_count||0} critical · ${h.warning_count||0} warnings · ${waste} waste/mo · ${Number(h.records_scanned||0).toLocaleString()} records</div>
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);">View full report →</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  if (el) el.innerHTML = html;
+}
+
+function filterHistory() {
+  const weeks = parseInt(document.getElementById('history-week-filter').value);
+  const history = DATA.history || [];
+  const countEl = document.getElementById('history-count');
+
+  const cutoff = isNaN(weeks) ? null : new Date(Date.now() - weeks * 7 * 24 * 3600 * 1000);
+  const filtered = cutoff
+    ? history.filter(h => new Date(h.created_at||0) >= cutoff)
+    : history;
+
+  if (countEl) countEl.textContent = filtered.length + ' audit' + (filtered.length!==1?'s':'') + ' in range';
+
+  const sorted = filtered.slice().sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+  const el = document.getElementById('history-content');
+  if (!el) return;
+
+  if (sorted.length === 0) {
+    el.innerHTML = '<div class="view-card" style="text-align:center;padding:32px;color:rgba(255,255,255,.4);">No audits in this time range</div>';
+    return;
+  }
+
+  let html = '<div style="display:flex;flex-direction:column;gap:10px;">';
+  sorted.forEach((h, idx) => {
+    const date = h.created_at ? new Date(h.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '—';
+    const score = h.score || 0;
+    const col = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#f43f5e';
+    const waste = h.monthly_waste ? '$' + Number(h.monthly_waste).toLocaleString() : '—';
+    html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
+      <div style="font-size:28px;font-weight:900;color:${col};min-width:52px;">${score}</div>
+      <div style="flex:1;">
+        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">${date}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);">${h.critical_count||0} critical · ${h.warning_count||0} warnings · ${waste} waste/mo</div>
+      </div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);">View →</div>
+    </div>`;
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+// ── WEEK-OVER-WEEK DELTA VIEW ────────────────────────────────────────────────
+function buildDelta() {
+  const history = DATA.history || [];
+  const el = document.getElementById('delta-content');
+  if (!el) return;
+
+  if (!history || history.length < 2) {
+    el.innerHTML = `<div class="view-card" style="text-align:center;padding:40px;">
+      <div style="font-size:32px;margin-bottom:12px;">↕️</div>
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Need at least 2 audits for comparison</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.4);">Week-over-week analysis becomes available after your second Monday rescan. This view shows exactly what improved and what got worse each week.</div>
+    </div>`;
+    return;
+  }
+
+  const sorted = history.slice().sort((a,b) => new Date(b.created_at||0) - new Date(a.created_at||0));
+  const current = sorted[0];
+  const previous = sorted[1];
+
+  const scoreDelta = (current.score||0) - (previous.score||0);
+  const critDelta  = (current.critical_count||0) - (previous.critical_count||0);
+  const warnDelta  = (current.warning_count||0) - (previous.warning_count||0);
+  const wasteDelta = (current.monthly_waste||0) - (previous.monthly_waste||0);
+
+  const deltaChip = (label, val, invertColor) => {
+    const positive = invertColor ? val < 0 : val > 0;
+    const neutral = val === 0;
+    const col = neutral ? '#888' : positive ? '#10b981' : '#f43f5e';
+    const arrow = val > 0 ? '↑' : val < 0 ? '↓' : '→';
+    const display = label === 'Waste' ? '$' + Math.abs(wasteDelta).toLocaleString() : Math.abs(val);
+    return `<div style="padding:20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;text-align:center;">
+      <div style="font-size:32px;font-weight:900;color:${col};">${arrow}${display}</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;">${label}</div>
+    </div>`;
+  };
+
+  const currentDate = current.created_at ? new Date(current.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'Latest';
+  const prevDate    = previous.created_at ? new Date(previous.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'Previous';
+
+  let html = `
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:16px 20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;">
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;">Previous (${prevDate})</div>
+        <div style="font-size:36px;font-weight:900;color:${(previous.score||0)>=80?'#10b981':(previous.score||0)>=60?'#f59e0b':'#f43f5e'};">${previous.score||0}</div>
+      </div>
+      <div style="font-size:28px;color:rgba(255,255,255,.2);">→</div>
+      <div style="text-align:center;">
+        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;">Current (${currentDate})</div>
+        <div style="font-size:36px;font-weight:900;color:${(current.score||0)>=80?'#10b981':(current.score||0)>=60?'#f59e0b':'#f43f5e'};">${current.score||0}</div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+      ${deltaChip('Score', scoreDelta, false)}
+      ${deltaChip('Critical Issues', critDelta, true)}
+      ${deltaChip('Warnings', warnDelta, true)}
+      ${deltaChip('Waste', wasteDelta, true)}
+    </div>`;
+
+  // Comparison of issue titles
+  const currentTitles = (current.issue_titles || []);
+  const prevTitles    = (previous.issue_titles || []);
+  const newIssues     = currentTitles.filter(t => !prevTitles.includes(t));
+  const fixedIssues   = prevTitles.filter(t => !currentTitles.includes(t));
+
+  if (fixedIssues.length > 0) {
+    html += `<div class="view-card" style="border-color:rgba(16,185,129,.2);">
+      <div class="view-card-title" style="color:#10b981;">✅ Fixed This Week (${fixedIssues.length})</div>
+      ${fixedIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid #1e1e32;font-size:13px;color:rgba(255,255,255,.6);">✓ ${t}</div>`).join('')}
+    </div>`;
+  }
+
+  if (newIssues.length > 0) {
+    html += `<div class="view-card" style="border-color:rgba(244,63,94,.2);">
+      <div class="view-card-title" style="color:#f43f5e;">🆕 New Issues This Week (${newIssues.length})</div>
+      ${newIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid #1e1e32;font-size:13px;color:rgba(255,255,255,.6);">• ${t}</div>`).join('')}
+    </div>`;
+  }
+
+  if (fixedIssues.length === 0 && newIssues.length === 0) {
+    html += `<div class="view-card" style="text-align:center;padding:24px;">
+      <div style="font-size:24px;margin-bottom:8px;">📊</div>
+      <div style="color:rgba(255,255,255,.5);font-size:13px;">Same issues as last week — no new fixes and no new problems detected.</div>
+    </div>`;
+  }
+
+  // Full history score sparkline if we have 3+ data points
+  if (sorted.length >= 3) {
+    const last8 = sorted.slice(0,8).reverse();
+    const maxScore = Math.max(...last8.map(h => h.score||0));
+    const minScore = Math.min(...last8.map(h => h.score||0));
+    const range = maxScore - minScore || 1;
+    const h = 80;
+    const w = 100 / last8.length;
+
+    html += `<div class="view-card">
+      <div class="view-card-title">Score Trend (Last ${last8.length} Audits)</div>
+      <div style="position:relative;height:${h}px;margin-top:16px;display:flex;align-items:flex-end;gap:4px;">
+        ${last8.map((audit, i) => {
+          const pct = Math.round(((audit.score||0) - minScore) / range * (h - 20) + 10);
+          const col2 = (audit.score||0) >= 80 ? '#10b981' : (audit.score||0) >= 60 ? '#f59e0b' : '#f43f5e';
+          const date2 = audit.created_at ? new Date(audit.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="font-size:9px;font-weight:700;color:${col2};">${audit.score||0}</div>
+            <div style="width:100%;background:${col2};border-radius:4px 4px 0 0;height:${pct}px;min-height:4px;"></div>
+            <div style="font-size:8px;color:rgba(255,255,255,.3);white-space:nowrap;">${date2}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+// ── KPI helper ───────────────────────────────────────────────────────────────
+function kpi(label, value, sub, color) {
+  return \`<div class="kpi-card">
+    <div class="kpi-val" style="color:\${color||'#fff'}">\${value}</div>
+    <div class="kpi-label">\${label}</div>
+    \${sub ? \`<div class="kpi-sub">\${sub}</div>\` : ''}
+  </div>\`;
+}
+
 </script>
 </body>
 </html>

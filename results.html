@@ -73,6 +73,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .dim-bar-f{height:100%;border-radius:2px;}
 
 /* Issues */
+.hub-tab{padding:7px 16px;border-radius:20px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(255,255,255,.45);font-size:12px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;white-space:nowrap;}
+.hub-tab:hover{border-color:rgba(124,58,237,.5);color:rgba(255,255,255,.75);}
+.hub-tab.active{background:rgba(124,58,237,.2);border-color:rgba(124,58,237,.5);color:#a78bfa;}
+.intel-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:18px 20px;transition:border-color .2s;}
+.intel-card:hover{border-color:var(--b2);}
+.intel-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--b1);}
+.intel-icon{font-size:20px;}
+.intel-title{font-size:14px;font-weight:700;color:#fff;flex:1;}
+.intel-score{font-size:20px;font-weight:900;}
+.intel-stats{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.intel-stat{display:flex;justify-content:space-between;align-items:center;}
+.intel-stat-label{font-size:12px;color:rgba(255,255,255,.4);}
+.intel-stat-val{font-size:12px;font-weight:700;}
+.intel-issues{font-size:11px;color:rgba(255,255,255,.3);padding-top:10px;border-top:1px solid var(--b1);}
 .issue-list{display:flex;flex-direction:column;gap:10px;}
 .issue-card{background:var(--s1);border:1px solid var(--b1);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;}
 .issue-card:hover{border-color:var(--b2);transform:translateY(-1px);}
@@ -225,7 +239,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <div class="sec-h">⬡ Health Dimensions</div>
     <div class="dim-grid" id="dim-grid"></div>
 
+    <!-- Hub Intelligence Cards -->
+    <div class="sec-h">🏢 Hub Intelligence</div>
+    <div id="hub-intelligence" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:32px;"></div>
+
     <div class="sec-h" id="issues-header">Issues Found</div>
+
+    <!-- Hub filter tabs -->
+    <div id="hub-tabs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      <button class="hub-tab active" onclick="filterHub('all')" id="tab-all">All</button>
+      <button class="hub-tab" onclick="filterHub('Sales')" id="tab-sales">Sales</button>
+      <button class="hub-tab" onclick="filterHub('Marketing')" id="tab-marketing">Marketing</button>
+      <button class="hub-tab" onclick="filterHub('Service')" id="tab-service">Service</button>
+      <button class="hub-tab" onclick="filterHub('Automation')" id="tab-automation">Automation</button>
+      <button class="hub-tab" onclick="filterHub('Data Integrity')" id="tab-data">Data Quality</button>
+      <button class="hub-tab" onclick="filterHub('Pipeline')" id="tab-pipeline">Pipeline</button>
+      <button class="hub-tab" onclick="filterHub('Reporting')" id="tab-reporting">Reporting</button>
+    </div>
+
     <div class="issue-list" id="issue-list"></div>
 
     <div id="fix-plan-section"></div>
@@ -387,18 +418,31 @@ function showResults(data) {
 
   // Portal stats bar
   var ps = portalInfo.portalStats || {};
-  var items = [];
-  if(ps.contacts) items.push(Number(ps.contacts).toLocaleString() + ' contacts');
-  if(ps.companies) items.push(Number(ps.companies).toLocaleString() + ' companies');
-  if(ps.deals) items.push(Number(ps.deals).toLocaleString() + ' deals');
-  if(ps.tickets) items.push(ps.tickets + ' tickets');
-  if(ps.tasks) items.push(ps.tasks + ' tasks');
-  if(ps.meetings) items.push(ps.meetings + ' meetings');
-  if(ps.calls) items.push(ps.calls + ' calls');
-  if(ps.workflows !== undefined) items.push(ps.workflows + ' workflows');
-  if(ps.forms) items.push(ps.forms + ' forms');
-  if(ps.users) items.push(ps.users + ' users');
-  if(ps.quotes) items.push(ps.quotes + ' quotes');
+  // Build rich stats bar grouped by hub
+  var salesItems = [], mktItems = [], svcItems = [], configItems = [];
+  if(ps.contacts) salesItems.push(Number(ps.contacts).toLocaleString() + ' contacts');
+  if(ps.companies) salesItems.push(Number(ps.companies).toLocaleString() + ' companies');
+  if(ps.deals) salesItems.push(Number(ps.deals).toLocaleString() + ' deals');
+  if(ps.leads) salesItems.push(ps.leads + ' leads');
+  if(ps.quotes) salesItems.push(ps.quotes + ' quotes');
+  if(ps.sequences) salesItems.push(ps.sequences + ' sequences');
+  if(ps.goals) salesItems.push(ps.goals + ' goals');
+
+  if(ps.forms) mktItems.push(ps.forms + ' forms');
+  if(ps.campaigns) mktItems.push(ps.campaigns + ' campaigns');
+  if(ps.listCount) mktItems.push(ps.listCount + ' lists');
+
+  if(ps.tickets) svcItems.push(ps.tickets + ' tickets');
+  if(ps.feedbackTotal) svcItems.push(ps.feedbackTotal + ' feedback responses');
+  if(ps.openConversations) svcItems.push(ps.openConversations + ' open conversations');
+
+  if(ps.workflows !== undefined) configItems.push(ps.workflows + ' workflows');
+  if(ps.users) configItems.push(ps.users + ' users');
+  if(ps.tasks) configItems.push(ps.tasks + ' tasks');
+  if(ps.meetings) configItems.push(ps.meetings + ' meetings');
+  if(ps.calls) configItems.push(ps.calls + ' calls');
+
+  var items = salesItems.concat(mktItems).concat(svcItems).concat(configItems);
 
   if(items.length) {
     var bar = document.createElement('div');
@@ -412,58 +456,56 @@ function showResults(data) {
   if(portalInfo.isLimited) {
     var limits = portalInfo.limits || {};
     var upgradeBar = document.createElement('div');
-    upgradeBar.style.cssText = 'background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:18px 20px;margin-bottom:20px;';
-    // Smart upgrade — pick best option based on what was found
+    // Smart upgrade messaging based on what was found
     var hasCritical = (summary.criticalCount||0) >= 3;
-    var hasWorkflowIssues = (summary.dimensions||{}).automationHealth < 60;
-    var totalContacts = Number(summary.totalContacts||0);
     var monthlyWaste = Number(summary.monthlyWaste||0);
+    var scoreImprovement = Math.min(35, (summary.criticalCount||0) * 4 + (summary.warningCount||0) * 2);
+    var projectedScore = Math.min(97, (summary.overallScore||0) + scoreImprovement);
+
+    upgradeBar.style.cssText = 'background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(91,33,182,.08));border:1px solid rgba(124,58,237,.3);border-radius:12px;padding:20px 24px;margin-bottom:20px;';
 
     // Build two option cards
+    var scoreImproveMsg = scoreImprovement > 0
+      ? '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-top:6px;">If you fix the critical issues found, your score could reach <strong style="color:#10b981">' + projectedScore + '/100</strong></div>'
+      : '';
+    var wasteMsg = monthlyWaste > 0
+      ? '<div style="font-size:12px;color:#f59e0b;margin-top:4px;">💸 $' + Number(monthlyWaste).toLocaleString() + '/mo in identified waste</div>'
+      : '';
+
     var deepCard =
-      '<div style="flex:1;min-width:200px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.4);border-radius:10px;padding:14px 16px;">' +
-        '<div style="font-size:11px;font-weight:700;color:#a78bfa;letter-spacing:.06em;margin-bottom:6px;">ONE-TIME AUDIT</div>' +
-        '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Deep Audit — $399</div>' +
-        '<div style="font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:10px;">All objects · all records · no caps · written action plan · 30-min strategy call with our team</div>' +
-        '<a href="https://buy.stripe.com/eVqdR96HMbnc8POdBH8Ra0a" target="_blank" style="display:block;text-align:center;padding:9px;background:#7c3aed;color:#fff;font-size:12.5px;font-weight:700;border-radius:7px;text-decoration:none;">Get Deep Audit →</a>' +
+      '<div style="flex:1;min-width:220px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.4);border-radius:12px;padding:18px 20px;">' +
+        '<div style="font-size:10px;font-weight:800;color:#a78bfa;letter-spacing:1.5px;margin-bottom:8px;">ONE-TIME FIX</div>' +
+        '<div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px;">Deep Audit — $399</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:14px;line-height:1.6;">' +
+          'Every object · every record · no caps · written fix plan · 30-min strategy call included' +
+        '</div>' +
+        '<div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:14px;">' +
+          '✓ Full workflow audit &nbsp; ✓ Marketing health &nbsp; ✓ NPS/CSAT analysis<br>' +
+          '✓ Sequences &amp; campaigns &nbsp; ✓ Prioritized action plan' +
+        '</div>' +
+        '<a href="https://buy.stripe.com/eVqdR96HMbnc8POdBH8Ra0a" target="_blank" style="display:block;text-align:center;padding:11px;background:#7c3aed;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">Get Deep Audit →</a>' +
       '</div>';
 
     var pulseCard =
-      '<div style="flex:1;min-width:200px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);border-radius:10px;padding:14px 16px;">' +
-        '<div style="font-size:11px;font-weight:700;color:#10b981;letter-spacing:.06em;margin-bottom:6px;">ONGOING MONITORING</div>' +
-        '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Pulse — $299/mo</div>' +
-        '<div style="font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:10px;">Full portal scan every Monday — all objects, all records · new issue alerts · score history · PDF every week</div>' +
-        '<a href="https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06" target="_blank" style="display:block;text-align:center;padding:9px;background:rgba(16,185,129,.2);color:#10b981;font-size:12.5px;font-weight:700;border-radius:7px;text-decoration:none;border:1px solid rgba(16,185,129,.4);">Get Pulse →</a>' +
+      '<div style="flex:1;min-width:220px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:18px 20px;">' +
+        '<div style="font-size:10px;font-weight:800;color:#10b981;letter-spacing:1.5px;margin-bottom:8px;">WEEKLY MONITORING</div>' +
+        '<div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px;">Pulse — $299/mo</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:14px;line-height:1.6;">' +
+          'Full 177-point scan every Monday · new issue alerts · score trends · week-over-week delta report' +
+        '</div>' +
+        '<div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:14px;">' +
+          '✓ Score trends over time &nbsp; ✓ What improved this week<br>' +
+          '✓ What got worse &nbsp; ✓ Monday morning email report' +
+        '</div>' +
+        '<a href="https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06" target="_blank" style="display:block;text-align:center;padding:11px;background:#059669;color:#fff;font-size:13px;font-weight:700;border-radius:8px;text-decoration:none;">Start Monitoring →</a>' +
       '</div>';
 
-    var proAuditCard =
-      '<div style="flex:1;min-width:200px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:14px 16px;">' +
-        '<div style="font-size:11px;font-weight:700;color:#f59e0b;letter-spacing:.06em;margin-bottom:6px;">EXPERT REVIEW + ROADMAP</div>' +
-        '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Pro Audit — $699</div>' +
-        '<div style="font-size:11.5px;color:rgba(255,255,255,.55);margin-bottom:10px;">All objects · all records · workflow conflict analysis · security audit · 60-min call · 90-day written roadmap</div>' +
-        '<a href="https://buy.stripe.com/6oU8wP8PU9f4d644178Ra07" target="_blank" style="display:block;text-align:center;padding:9px;background:rgba(245,158,11,.15);color:#f59e0b;font-size:12.5px;font-weight:700;border-radius:7px;text-decoration:none;border:1px solid rgba(245,158,11,.35);">Get Pro Audit →</a>' +
-      '</div>';
-
-    // Choose which cards to show based on what we found
-    var upgradeTitle, upgradeDesc, cardsHtml;
-    if (hasCritical && hasWorkflowIssues) {
-      upgradeTitle = '⚡ ' + (summary.criticalCount||0) + ' critical issues found — your portal needs expert attention';
-      upgradeDesc = 'Broken workflows and critical data issues were found. A Pro Audit includes a 60-min strategy call and 90-day roadmap to fix everything systematically.';
-      cardsHtml = proAuditCard + deepCard;
-    } else if (totalContacts > 1000) {
-      upgradeTitle = '⚡ Partial scan — free plan scans up to 1,000 records per object';
-      upgradeDesc = monthlyWaste > 0 ? 'We found $' + Number(monthlyWaste).toLocaleString() + '/mo in waste scanning only part of your portal. A Deep Audit scans every contact, company, deal, ticket, workflow, form, integration, and user — no caps.' : 'Free plan scans up to 1,000 records per object. A Deep Audit covers every object and every record in your portal, plus a 30-min strategy call.';
-      cardsHtml = deepCard + pulseCard;
-    } else {
-      upgradeTitle = '✅ Full scan complete — want to catch new issues automatically?';
-      upgradeDesc = 'Your portal was fully scanned. Pulse monitors it every Monday and alerts you the moment something breaks.';
-      cardsHtml = pulseCard + deepCard;
-    }
-
-    upgradeBar.innerHTML =
-      '<div style="margin-bottom:14px;">' +
-        '<div style="font-size:13.5px;font-weight:700;color:#fff;margin-bottom:5px;">' + upgradeTitle + '</div>' +
-        '<div style="font-size:12px;color:rgba(255,255,255,.5);">' + upgradeDesc + '</div>' +
+        upgradeBar.innerHTML =
+      '<div style="margin-bottom:16px;">' +
+        '<div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:5px;">' + upgradeTitle + '</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:4px;">' + upgradeDesc + '</div>' +
+        scoreImproveMsg +
+        wasteMsg +
       '</div>' +
       '<div style="display:flex;gap:12px;flex-wrap:wrap;">' + cardsHtml + '</div>';
     var resultsDiv = document.getElementById('results');
@@ -472,11 +514,17 @@ function showResults(data) {
 
   // Stats chips
   var recordsScanned = summary.recordsScanned || 0;
+  var pipeVal = ps.openPipelineValue ? '$' + Number(ps.openPipelineValue).toLocaleString() : null;
+  var mrrVal  = ps.mrrTotal > 0 ? '$' + Number(ps.mrrTotal).toLocaleString() : null;
   document.getElementById('stats-row').innerHTML =
     '<div class="stat" style="background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.18)"><div class="stat-n" style="color:#f43f5e">' + (summary.criticalCount||0) + '</div><div class="stat-l">Critical</div></div>' +
     '<div class="stat" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18)"><div class="stat-n" style="color:#f59e0b">' + (summary.warningCount||0) + '</div><div class="stat-l">Warnings</div></div>' +
-    '<div class="stat" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18)"><div class="stat-n" style="color:#a78bfa">$' + Number(summary.monthlyWaste||0).toLocaleString() + '</div><div class="stat-l">Est. Waste/mo</div></div>' +
-    '<div class="stat" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18)"><div class="stat-n" style="color:#10b981">' + Number(recordsScanned).toLocaleString() + '</div><div class="stat-l">Records Scanned</div></div>';
+    '<div class="stat" style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.18)"><div class="stat-n" style="color:#a78bfa">$' + Number(summary.monthlyWaste||0).toLocaleString() + '</div><div class="stat-l">Waste/mo</div></div>' +
+    '<div class="stat" style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.18)"><div class="stat-n" style="color:#10b981">' + Number(recordsScanned).toLocaleString() + '</div><div class="stat-l">Records Scanned</div></div>' +
+    (pipeVal ? '<div class="stat" style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.18)"><div class="stat-n" style="color:#3b82f6">' + pipeVal + '</div><div class="stat-l">Open Pipeline</div></div>' : '') +
+    (mrrVal  ? '<div class="stat" style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15)"><div class="stat-n" style="color:#10b981">' + mrrVal + '</div><div class="stat-l">MRR</div></div>' : '') +
+    (ps.sequences ? '<div class="stat" style="background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15)"><div class="stat-n" style="color:#fbbf24">' + ps.sequences + '</div><div class="stat-l">Sequences</div></div>' : '') +
+    (ps.listCount  ? '<div class="stat" style="background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.15)"><div class="stat-n" style="color:#a78bfa">' + ps.listCount + '</div><div class="stat-l">Lists</div></div>' : '');
 
   // Dimension grid
   var dimHtml = '';
@@ -491,6 +539,9 @@ function showResults(data) {
   document.getElementById('dim-grid').innerHTML = dimHtml;
 
   // Issues
+  // Render hub intelligence cards
+  renderHubIntelligence(data);
+
   var sorted = issues.slice().sort(function(a,b){
     var order = {critical:0, warning:1, info:2};
     return (order[a.severity]||3) - (order[b.severity]||3);
@@ -511,6 +562,7 @@ function showResults(data) {
     var card = document.createElement('div');
     card.className = 'issue-card';
     card.id = 'ic-' + idx;
+    card.setAttribute('data-dimension', issue.dimension || '');
     card.onclick = (function(i){ return function(){ toggleIssue(i); }; })(idx);
 
     // Build guide steps HTML safely
@@ -758,6 +810,125 @@ function buildFixPlan(data) {
   if (el) el.innerHTML = html;
 }
 
+
+function filterHub(hub) {
+  // Update active tab
+  var tabs = document.querySelectorAll('.hub-tab');
+  tabs.forEach(function(t){ t.classList.remove('active'); });
+  var activeMap = {'all':'tab-all','Sales':'tab-sales','Marketing':'tab-marketing','Service':'tab-service','Automation':'tab-automation','Data Integrity':'tab-data','Pipeline':'tab-pipeline','Reporting':'tab-reporting'};
+  var activeId = activeMap[hub];
+  if(activeId) { var at = document.getElementById(activeId); if(at) at.classList.add('active'); }
+
+  // Filter issue cards
+  var cards = document.querySelectorAll('.issue-card');
+  var visible = 0;
+  cards.forEach(function(card) {
+    var dim = card.getAttribute('data-dimension') || '';
+    var show = hub === 'all' || dim === hub;
+    card.style.display = show ? '' : 'none';
+    if(show) visible++;
+  });
+
+  // Update header count
+  var header = document.getElementById('issues-header');
+  if(header) {
+    if(hub === 'all') {
+      var tot = cards.length;
+      header.textContent = tot + ' Issue' + (tot!==1?'s':'') + ' Found';
+    } else {
+      header.textContent = visible + ' ' + hub + ' Issue' + (visible!==1?'s':'');
+    }
+  }
+}
+
+function renderHubIntelligence(data) {
+  var ps = (data.portalInfo || {}).portalStats || {};
+  var summary = data.summary || {};
+  var scores = data.scores || {};
+  var issues = data.issues || [];
+
+  // Build hub intelligence cards
+  var intel = document.getElementById('hub-intelligence');
+  if(!intel) return;
+
+  var cards = '';
+
+  // ── SALES HUB ────────────────────────────────────────────────────────────
+  var salesIssues = issues.filter(function(i){ return i.dimension==='Pipeline' || i.dimension==='Data Integrity' || i.dimension==='Team Adoption'; });
+  var pipelineValue = ps.openPipelineValue || 0;
+  var stalledDeals = ps.stalledDeals || 0;
+  var leads = ps.leads || 0;
+  var sequences = ps.sequences || 0;
+
+  cards += '<div class="intel-card">' +
+    '<div class="intel-header"><span class="intel-icon">💼</span><span class="intel-title">Sales Hub</span>' +
+    '<span class="intel-score" style="color:' + scoreColor(scores.pipelineIntegrity) + '">' + (scores.pipelineIntegrity||0) + '</span></div>' +
+    '<div class="intel-stats">' +
+      stat('Pipeline Value', '$' + Number(pipelineValue).toLocaleString()) +
+      stat('Stalled Deals', stalledDeals, stalledDeals > 3 ? 'warn' : '') +
+      stat('Leads', leads) +
+      stat('Sequences', sequences) +
+      (ps.goals ? stat('Active Goals', ps.activeGoals + '/' + ps.goals) : '') +
+      (ps.unownedLeads > 0 ? stat('Unowned Leads', ps.unownedLeads, 'critical') : '') +
+    '</div>' +
+    '<div class="intel-issues">' + salesIssues.length + ' issue' + (salesIssues.length!==1?'s':'') + ' in Sales</div>' +
+  '</div>';
+
+  // ── MARKETING HUB ────────────────────────────────────────────────────────
+  var mktIssues = issues.filter(function(i){ return i.dimension==='Marketing' || (i.title && (i.title.includes('form') || i.title.includes('list') || i.title.includes('campaign') || i.title.includes('email'))); });
+  cards += '<div class="intel-card">' +
+    '<div class="intel-header"><span class="intel-icon">📣</span><span class="intel-title">Marketing Hub</span>' +
+    '<span class="intel-score" style="color:' + scoreColor(scores.marketingHealth) + '">' + (scores.marketingHealth||0) + '</span></div>' +
+    '<div class="intel-stats">' +
+      stat('Forms', ps.forms || 0) +
+      stat('Lists', ps.listCount || 0) +
+      (ps.emptyLists > 0 ? stat('Empty Lists', ps.emptyLists, 'warn') : '') +
+      stat('Campaigns', ps.campaigns || 0) +
+      (ps.emailSubTypes ? stat('Email Sub Types', ps.emailSubTypes, ps.emailSubTypes > 20 ? 'warn' : '') : '') +
+    '</div>' +
+    '<div class="intel-issues">' + mktIssues.length + ' marketing issue' + (mktIssues.length!==1?'s':'') + '</div>' +
+  '</div>';
+
+  // ── SERVICE HUB ──────────────────────────────────────────────────────────
+  var svcIssues = issues.filter(function(i){ return i.dimension==='Service' || (i.title && i.title.includes('ticket')); });
+  var nps = ps.npsResponses || 0;
+  cards += '<div class="intel-card">' +
+    '<div class="intel-header"><span class="intel-icon">🎧</span><span class="intel-title">Service Hub</span>' +
+    '<span class="intel-score" style="color:' + scoreColor(scores.teamAdoption) + '">' + (scores.teamAdoption||0) + '</span></div>' +
+    '<div class="intel-stats">' +
+      stat('Open Tickets', ps.tickets || 0) +
+      (ps.openConversations ? stat('Open Conversations', ps.openConversations) : '') +
+      (nps > 0 ? stat('NPS Responses', nps) : stat('NPS', 'Not set up', 'warn')) +
+      (ps.csatResponses ? stat('CSAT Responses', ps.csatResponses) : '') +
+    '</div>' +
+    '<div class="intel-issues">' + svcIssues.length + ' service issue' + (svcIssues.length!==1?'s':'') + '</div>' +
+  '</div>';
+
+  // ── AUTOMATION ───────────────────────────────────────────────────────────
+  var autoIssues = issues.filter(function(i){ return i.dimension==='Automation'; });
+  cards += '<div class="intel-card">' +
+    '<div class="intel-header"><span class="intel-icon">⚡</span><span class="intel-title">Automation</span>' +
+    '<span class="intel-score" style="color:' + scoreColor(scores.automationHealth) + '">' + (scores.automationHealth||0) + '</span></div>' +
+    '<div class="intel-stats">' +
+      stat('Workflows', ps.workflows || 0) +
+      stat('Sequences', ps.activeSequences || ps.sequences || 0) +
+      (ps.forms ? stat('Forms', ps.forms) : '') +
+    '</div>' +
+    '<div class="intel-issues">' + autoIssues.length + ' automation issue' + (autoIssues.length!==1?'s':'') + '</div>' +
+  '</div>';
+
+  intel.innerHTML = cards;
+}
+
+function stat(label, value, type) {
+  var color = type === 'critical' ? '#f43f5e' : type === 'warn' ? '#f59e0b' : 'rgba(255,255,255,.7)';
+  return '<div class="intel-stat"><span class="intel-stat-label">' + label + '</span><span class="intel-stat-val" style="color:' + color + '">' + value + '</span></div>';
+}
+
+function scoreColor(s) {
+  s = s || 0;
+  return s >= 80 ? '#10b981' : s >= 60 ? '#f59e0b' : '#f43f5e';
+}
 
 function downloadPDF() {
   if(!AUDIT_DATA){ showToast('⚠️','No data','Please wait for results to load'); return; }
