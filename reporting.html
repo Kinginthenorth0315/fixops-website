@@ -1208,6 +1208,18 @@ if (TOKEN) {
   window.location.href = 'index.html';
 }
 
+// ── showView — top-level so sidebar buttons work ──────────────────────────
+function showView(name) {
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+  document.querySelectorAll('.sidebar-item').forEach(function(s){ s.classList.remove('active'); });
+  var view = document.getElementById('view-' + name);
+  if (view) view.classList.add('active');
+  var sItem = document.querySelector('.sidebar-item[data-view="' + name + '"]');
+  // sidebar item lookup handled above
+  if (sItem) sItem.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
 async function loadFromToken(token) {
   try {
     const res = await fetch(API+'/auth/verify?token='+encodeURIComponent(token), {cache:'no-store'});
@@ -1360,6 +1372,33 @@ async function loadFromToken(token) {
     }
   });
 })();
+  } catch(e) {
+    console.error('Dashboard load error:', e);
+    var ls = document.getElementById('loading-state');
+    if (ls) ls.innerHTML =
+      '<div style="text-align:center;padding:60px 20px;">' +
+      '<div style="font-size:36px;margin-bottom:12px;">⚠️</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:8px;">Failed to load dashboard</div>' +
+      '<div style="font-size:13px;color:var(--t3);margin-bottom:16px;">' + (e.message||'Unknown error') + '</div>' +
+      '<a href="index.html" style="display:inline-block;padding:10px 20px;background:var(--brand);color:#fff;border-radius:8px;font-weight:700;font-size:13px;">← Back to Home</a>' +
+      '</div>';
+  }
+}
+
+
+// Apply saved theme on load
+(function() {
+  const saved = localStorage.getItem('fixops-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  // Set active button after DOM ready
+  window.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('theme-' + saved);
+    if (btn) {
+      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+  });
+})
 
 function initAllViews() {
   buildOverview();
@@ -3648,11 +3687,20 @@ function buildDelta() {
   el.innerHTML = html;
 }
 
-
-  } catch(e) { console.warn('Dashboard error:', e); }
-} // end loadData function
-
 // ── KPI helper ───────────────────────────────────────────────────────────────
+// ── Theme switcher ────────────────────────────────────────────────────────────
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('fixops-theme', theme);
+  document.querySelectorAll('.theme-btn').forEach(function(b){ b.classList.remove('active'); });
+  var btn = document.getElementById('theme-' + theme);
+  if (btn) btn.classList.add('active');
+  var isLt = theme === 'light';
+  Chart.defaults.color = isLt ? 'rgba(60,65,80,.55)' : 'rgba(180,188,208,.5)';
+  Chart.defaults.borderColor = isLt ? 'rgba(0,0,0,.06)' : 'rgba(255,255,255,.05)';
+}
+
+
 function kpi(label, value, sub, color, trend) {
   var colorVarMap = {
     blue:   'var(--steel2)',
