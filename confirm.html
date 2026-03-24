@@ -92,7 +92,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
       <div class="ec-divider"></div>
       <div class="ec-row"><span class="ec-icon">⏱</span><span>Estimated delivery: <strong style="color:rgba(255,255,255,.7)">5–15 minutes</strong> depending on portal size</span></div>
       <div class="ec-row" style="margin-top:8px"><span class="ec-icon">🔒</span><span>Read-only access · your data is never modified</span></div>
-      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="087a6d78677a7c7b486e617067787b266167">[email&#160;protected]</a></strong> · check spam if not received</span></div>
+      <div class="ec-row" style="margin-top:8px"><span class="ec-icon">📧</span><span>Email from <strong style="color:rgba(255,255,255,.7)" id="from-email">reports&#64;fixops&#46;io</strong> · check spam if not received</span></div>
     </div>
 
     <div class="steps" id="step-list">
@@ -120,7 +120,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const API    = 'https://fixops-api-production.up.railway.app';
 const params = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
@@ -195,36 +195,66 @@ stepTimings.forEach(({step, delay}) => {
   setTimeout(() => advanceStep(step), delay);
 });
 
-// Poll for completion — every 8 seconds for up to 15 minutes
+// Poll for completion — smart intervals: fast at start, slower later
 let attempts = 0;
 const MAX = 112; // 15 min
+
+function showComplete() {
+  completeAllSteps();
+  setTimeout(() => {
+    document.getElementById('running-state').style.display = 'none';
+    const cs = document.getElementById('complete-state');
+    cs.style.display = 'block';
+    document.getElementById('complete-email').textContent = email || 'your inbox';
+    document.getElementById('results-link').href = 'results.html?id=' + auditId;
+    setTimeout(() => { window.location.href = 'results.html?id=' + auditId; }, 3000);
+  }, 800);
+}
 
 function poll() {
   if(!auditId) return;
   attempts++;
 
-  fetch(`${API}/audit/status/${auditId}`, {cache:'no-store'})
+  fetch(API + '/audit/status/' + auditId, {cache:'no-store'})
     .then(r => r.ok ? r.json() : null)
     .then(data => {
-      if(!data) { if(attempts < MAX) setTimeout(poll, 8000); return; }
+      if(!data) {
+        // Retry with smart interval
+        const interval = attempts < 5 ? 3000 : attempts < 15 ? 5000 : 8000;
+        if(attempts < MAX) setTimeout(poll, interval);
+        return;
+      }
+
+      // Use progress to update steps if available
+      if(data.progress && !data.status !== 'complete') {
+        const p = data.progress;
+        if(p >= 20 && currentStep < 1) advanceStep(1);
+        if(p >= 38 && currentStep < 2) advanceStep(2);
+        if(p >= 50 && currentStep < 3) advanceStep(3);
+        if(p >= 73 && currentStep < 4) advanceStep(4);
+        if(p >= 90 && currentStep < 5) advanceStep(5);
+      }
 
       if(data.status === 'complete') {
-        // Mark all steps done
-        completeAllSteps();
-        // Show complete state after brief pause
-        setTimeout(() => {
-          document.getElementById('running-state').style.display = 'none';
-          const cs = document.getElementById('complete-state');
-          cs.style.display = 'block';
-          document.getElementById('complete-email').textContent = email || 'your inbox';
-          document.getElementById('results-link').href = `results.html?id=${auditId}`;
-          // Auto redirect after 3 seconds
-          setTimeout(() => { window.location.href = `results.html?id=${auditId}`; }, 3000);
-        }, 800);
-
+        showComplete();
       } else if(data.status === 'error') {
         document.getElementById('status-note').textContent = 'Audit encountered an error — our team has been notified and will follow up.';
       } else {
-        // Still running
-        if(attempts < MAX) setTimeout(poll, 8000);
-        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email when 
+        // Still running — smart interval
+        const interval = attempts < 5 ? 3000 : attempts < 15 ? 5000 : 8000;
+        if(attempts < MAX) setTimeout(poll, interval);
+        else document.getElementById('status-note').textContent = 'Taking longer than expected — your results will arrive by email whenelse document.getElementById('status-note').textContent = 'Taking longer than expected — check your email for results.';
+      }
+    })
+    .catch(() => {
+      const interval = attempts < 5 ? 3000 : 8000;
+      if(attempts < MAX) setTimeout(poll, interval);
+    });
+}
+
+// Start polling immediately
+poll();
+
+</script>
+</body>
+</html>
