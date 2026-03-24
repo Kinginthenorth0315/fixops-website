@@ -305,8 +305,8 @@ function showToast(icon, title, sub) {
   }
 
   var endpoint = token
-    ? API + '/auth/results?token=' + encodeURIComponent(token)
-    : API + '/audit/result?id=' + auditId;
+    ? API + '/auth/verify?token=' + encodeURIComponent(token)
+    : API + '/audit/status/' + auditId;
 
   var ctrl = new AbortController();
   var timeout = setTimeout(function(){ ctrl.abort(); }, 20000);
@@ -314,8 +314,10 @@ function showToast(icon, title, sub) {
   fetch(endpoint, { signal: ctrl.signal, cache: 'no-store' })
     .then(function(r) { clearTimeout(timeout); return r.json(); })
     .then(function(data) {
-      if (data.status === 'complete' || data.issues) {
-        showResults(data);
+      // /auth/verify returns {valid, latestResult} — unwrap it
+      var result = data.latestResult || data;
+      if (result.status === 'complete' || result.issues) {
+        showResults(result);
       } else if (data.status === 'running') {
         document.getElementById('loading-state').innerHTML =
           '<div style="font-size:36px;margin-bottom:12px;">⚙️</div>' +

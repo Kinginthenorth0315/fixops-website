@@ -1220,6 +1220,56 @@ function showView(name) {
   window.scrollTo(0, 0);
 }
 
+// ── loadData — called when ?id= is in URL (no token) ─────────────────────────
+async function loadData() {
+  try {
+    var ctrl = new AbortController();
+    var tid = setTimeout(function(){ ctrl.abort(); }, 20000);
+    var r = await fetch(API + '/audit/status/' + auditId, { signal: ctrl.signal, cache: 'no-store' });
+    clearTimeout(tid);
+    if (!r.ok) throw new Error('Audit not found (HTTP ' + r.status + ')');
+    var data = await r.json();
+    if (!data || data.error) throw new Error(data.message || 'Audit not found');
+    if (data.status === 'running') {
+      document.getElementById('loading-state').innerHTML =
+        '<div style="text-align:center;padding:60px 20px;">' +
+        '<div style="font-size:36px;margin-bottom:12px;">⚙️</div>' +
+        '<div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px;">Audit still running…</div>' +
+        '<div style="font-size:13px;color:var(--t3);">Refresh in 30 seconds to check progress.</div>' +
+        '</div>';
+      return;
+    }
+    DATA = data;
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('views').style.display = 'block';
+    var company = (DATA.portalInfo && DATA.portalInfo.company) || 'Your Portal';
+    document.getElementById('portal-badge').textContent = company + ' · Snapshot';
+    document.title = 'FixOps Intelligence — ' + company;
+    var auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
+    var isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
+    var isPulseOrAbove = ['pulse','pro','command','pro-audit','deep'].includes(auditPlan);
+    var isFree = !isPulseOrAbove;
+    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
+    var navBadge = document.getElementById('nav-plan-badge');
+    if (navBadge) {
+      navBadge.textContent = auditPlan.toUpperCase();
+      navBadge.style.display = 'inline-block';
+    }
+    initAllViews();
+    setupAiSuggestions();
+  } catch(e) {
+    console.error('loadData error:', e);
+    var ls = document.getElementById('loading-state');
+    if (ls) ls.innerHTML =
+      '<div style="text-align:center;padding:60px 20px;">' +
+      '<div style="font-size:36px;margin-bottom:12px;">⚠️</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:8px;">Could not load dashboard</div>' +
+      '<div style="font-size:13px;color:var(--t3);margin-bottom:16px;">' + (e.message||'Unknown error') + '</div>' +
+      '<a href="index.html" style="display:inline-block;padding:10px 20px;background:var(--brand);color:#fff;border-radius:8px;font-weight:700;font-size:13px;">← Back to Home</a>' +
+      '</div>';
+  }
+}
+
 async function loadFromToken(token) {
   try {
     const res = await fetch(API+'/auth/verify?token='+encodeURIComponent(token), {cache:'no-store'});
@@ -1234,7 +1284,7 @@ async function loadFromToken(token) {
     document.getElementById('portal-badge').textContent = company + ' · Snapshot';
     document.title = 'FixOps Intelligence — '+company;
     // Tiered access — everyone sees snapshot, Pro/Agency unlock premium sections
-    const auditPlan = DATA.plan || 'free';
+    const auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
     const isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
     const isPulseOrAbove = ['pulse','pro','command','pro-audit','deep'].includes(auditPlan);
     const isFree = !isPulseOrAbove;
