@@ -305,11 +305,13 @@ function showToast(icon, title, sub) {
   fetch(endpoint, { signal: ctrl.signal, cache: 'no-store' })
     .then(function(r) { clearTimeout(timeout); return r.json(); })
     .then(function(data) {
+      console.log('[FixOps] Raw response:', JSON.stringify(data).substring(0,200));
       // /auth/verify returns {valid, latestResult} — unwrap it
       var result = data.latestResult || data;
-      if (result.status === 'complete' || result.issues) {
+      console.log('[FixOps] Result status:', result.status, '| issues:', (result.issues||[]).length);
+      if (result.status === 'complete' || result.issues !== undefined || result.portalInfo) {
         showResults(result);
-      } else if (data.status === 'running') {
+      } else if (result.status === 'running' || data.status === 'running') {
         document.getElementById('loading-state').innerHTML =
           '<div style="font-size:36px;margin-bottom:12px;">⚙️</div>' +
           '<div style="font-size:16px;font-weight:700;margin-bottom:8px;">Audit in progress…</div>' +
@@ -784,12 +786,27 @@ function buildFixPlan(data) {
 }
 
 // ── Download PDF ──────────────────────────────────────────────────────────────
-function downloadPDF() {
+async function downloadPDF() {
   if (!AUDIT_DATA) { showToast('⚠️','No audit data','Run an audit first'); return; }
   var auditId = AUDIT_DATA.auditId || (new URLSearchParams(window.location.search).get('id'));
   if (!auditId) { showToast('⚠️','No audit ID found',''); return; }
-  showToast('📄','Opening Report…','Use Ctrl+P or ⌘+P to save as PDF');
-  window.open(API+'/audit/pdf?id='+auditId+'&print=1', '_blank');
+  showToast('📄','Generating PDF…','Your print dialog will open automatically');
+  try {
+    var r = await fetch(API + '/audit/pdf?id=' + auditId, { cache: 'no-store' });
+    if (!r.ok) throw new Error('Server error ' + r.status);
+    var html = await r.text();
+    var blob = new Blob([html], { type: 'text/html; charset=utf-8' });
+    var blobUrl = URL.createObjectURL(blob);
+    var iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:none;';
+    iframe.src = blobUrl;
+    document.body.appendChild(iframe);
+    iframe.onload = function() {
+      try { iframe.contentWindow.focus(); iframe.contentWindow.print(); }
+      catch(e) { window.open(blobUrl, '_blank'); }
+      setTimeout(function(){ document.body.removeChild(iframe); URL.revokeObjectURL(blobUrl); }, 60000);
+    };
+  } catch(e) { showToast('❌','PDF Error',e.message); }
 }
 
 </script>
