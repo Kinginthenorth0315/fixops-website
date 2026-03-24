@@ -7,382 +7,629 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
+/* ── Google Fonts — matching homepage ─────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ── Shared tokens ─────────────────────────────────────────────────────── */
 :root {
-  /* ── Shared ───────────────────────────────── */
-  --accent: #3b82f6;
-  --accent2: #60a5fa;
-  --accent3: #93c5fd;
-  --green: #10b981;
-  --green2: #34d399;
-  --amber: #f59e0b;
-  --red: #f43f5e;
-  --purple: #8b5cf6;
-  --cyan: #06b6d4;
-  --font: 'DM Sans', sans-serif;
-  --display: 'Syne', sans-serif;
-  --mono: 'JetBrains Mono', monospace;
+  --font:    'Outfit', sans-serif;
+  --mono:    'JetBrains Mono', monospace;
+
+  /* Brand accent — matches index.html purple */
+  --brand:   #7c3aed;
+  --brand2:  #8b5cf6;
+  --brand3:  #a78bfa;
+
+  /* Status colors */
+  --green:   #10b981;
+  --green2:  #34d399;
+  --amber:   #f59e0b;
+  --red:     #f43f5e;
+  --blue:    #3b82f6;
+  --blue2:   #60a5fa;
+  --cyan:    #06b6d4;
+  --purple:  #8b5cf6;
 }
 
-/* ── DARK THEME (default) ──────────────────── */
-[data-theme="dark"], :root {
-  --bg: #050810;
-  --s1: #080d1a;
-  --s2: #0c1220;
-  --s3: #111828;
-  --s4: #162035;
-  --b1: #1a2540;
-  --b2: #243050;
-  --b3: #2e3d62;
-  --t1: rgba(255,255,255,.95);
-  --t2: rgba(255,255,255,.6);
-  --t3: rgba(255,255,255,.3);
-  --t4: rgba(255,255,255,.08);
-  --sidebar-bg: #060b16;
-  --nav-bg: rgba(5,8,16,.95);
-  --card-bg: #080d1a;
-  --chart-grid: rgba(255,255,255,.05);
-  --shadow: 0 4px 24px rgba(0,0,0,.4);
+/* ── DARK THEME (default, matches index.html) ─────────────────────────── */
+:root,
+[data-theme="dark"] {
+  --bg:          #04040a;
+  --bg2:         #06060f;
+  --surface:     #0c0c14;
+  --surface2:    #10101a;
+  --surface3:    #141420;
+  --border:      #18182a;
+  --border2:     #22223a;
+  --border3:     #2a2a48;
+  --text1:       rgba(255,255,255,.92);
+  --text2:       rgba(255,255,255,.55);
+  --text3:       rgba(255,255,255,.28);
+  --text4:       rgba(255,255,255,.10);
+  --sidebar-bg:  #06060f;
+  --nav-bg:      rgba(4,4,10,.94);
+  --card-bg:     #0c0c14;
+  --card-hover:  #10101a;
+  --input-bg:    #0c0c14;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.4);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.5);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,.6);
+  --chart-grid:  rgba(255,255,255,.04);
 }
 
-/* ── LIGHT THEME ───────────────────────────── */
+/* ── LIGHT THEME ───────────────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg: #f4f6fa;
-  --s1: #ffffff;
-  --s2: #f8f9fc;
-  --s3: #f0f2f7;
-  --s4: #e8ecf3;
-  --b1: #d1d9e8;
-  --b2: #b8c4d8;
-  --b3: #9aacc8;
-  --t1: rgba(15,20,40,.95);
-  --t2: rgba(15,20,40,.6);
-  --t3: rgba(15,20,40,.35);
-  --t4: rgba(15,20,40,.06);
-  --sidebar-bg: #ffffff;
-  --nav-bg: rgba(255,255,255,.95);
-  --card-bg: #ffffff;
-  --chart-grid: rgba(0,0,0,.06);
-  --shadow: 0 2px 12px rgba(0,0,0,.08);
+  --bg:          #f0f2f8;
+  --bg2:         #e8eaf3;
+  --surface:     #ffffff;
+  --surface2:    #f8f9fc;
+  --surface3:    #f1f3f9;
+  --border:      #e2e6f0;
+  --border2:     #d0d6e8;
+  --border3:     #b8c2d8;
+  --text1:       rgba(12,14,30,.93);
+  --text2:       rgba(12,14,30,.58);
+  --text3:       rgba(12,14,30,.36);
+  --text4:       rgba(12,14,30,.07);
+  --sidebar-bg:  #ffffff;
+  --nav-bg:      rgba(255,255,255,.96);
+  --card-bg:     #ffffff;
+  --card-hover:  #f8f9fc;
+  --input-bg:    #ffffff;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.06);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.08);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,.10);
+  --chart-grid:  rgba(0,0,0,.06);
 }
 
-/* ── SLATE THEME (professional mid-tone) ────── */
+/* ── SLATE THEME (pro dark blue) ───────────────────────────────────────── */
 [data-theme="slate"] {
-  --bg: #1a1f2e;
-  --s1: #1f2535;
-  --s2: #242b3d;
-  --s3: #2a3248;
-  --s4: #303a54;
-  --b1: #3a4560;
-  --b2: #445070;
-  --b3: #505c80;
-  --t1: rgba(220,230,255,.95);
-  --t2: rgba(180,200,240,.65);
-  --t3: rgba(160,185,225,.35);
-  --t4: rgba(255,255,255,.06);
-  --sidebar-bg: #171c2a;
-  --nav-bg: rgba(26,31,46,.96);
-  --card-bg: #1f2535;
-  --chart-grid: rgba(255,255,255,.06);
-  --shadow: 0 4px 20px rgba(0,0,0,.3);
+  --bg:          #141926;
+  --bg2:         #111622;
+  --surface:     #1a2030;
+  --surface2:    #1e2638;
+  --surface3:    #222d42;
+  --border:      #2a3550;
+  --border2:     #334060;
+  --border3:     #3e4e72;
+  --text1:       rgba(210,225,255,.94);
+  --text2:       rgba(170,195,240,.62);
+  --text3:       rgba(140,170,220,.36);
+  --text4:       rgba(255,255,255,.06);
+  --sidebar-bg:  #111622;
+  --nav-bg:      rgba(17,22,34,.96);
+  --card-bg:     #1a2030;
+  --card-hover:  #1e2638;
+  --input-bg:    #1a2030;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:   0 4px 16px rgba(0,0,0,.4);
+  --shadow-lg:   0 8px 32px rgba(0,0,0,.5);
+  --chart-grid:  rgba(255,255,255,.05);
 }
-* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ── Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
   font-family: var(--font);
   background: var(--bg);
-  color: var(--t1);
+  color: var(--text1);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* ── Grid bg ── */
+/* Subtle grid overlay — same as index.html */
 body::before {
   content: '';
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
-    linear-gradient(rgba(59,130,246,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59,130,246,.03) 1px, transparent 1px);
+    linear-gradient(var(--text4) 1px, transparent 1px),
+    linear-gradient(90deg, var(--text4) 1px, transparent 1px);
   background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
 }
 
-/* ── Nav ── */
+/* ── Navigation ─────────────────────────────────────────────────────────── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-  height: 56px;
-  background: rgba(5,8,16,.92);
+  height: 58px;
+  background: var(--nav-bg);
   backdrop-filter: blur(24px);
-  border-bottom: 1px solid var(--b1);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 24px;
+  box-shadow: var(--shadow-sm);
 }
-.nav-left { display: flex; align-items: center; gap: 20px; }
-.logo { font-family: var(--display); font-size: 16px; font-weight: 800; color: var(--t1); display: flex; align-items: center; gap: 8px; text-decoration: none; }
-.logo-mark { width: 26px; height: 26px; background: linear-gradient(135deg, var(--accent), #1d4ed8); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
-.nav-divider { width: 1px; height: 20px; background: var(--b2); }
-.nav-title { font-family: var(--mono); font-size: 11px; color: var(--accent2); letter-spacing: 1.5px; text-transform: uppercase; }
+.nav-left  { display: flex; align-items: center; gap: 16px; }
 .nav-right { display: flex; align-items: center; gap: 10px; }
-.nav-badge { font-family: var(--mono); font-size: 10px; padding: 3px 10px; border-radius: 20px; border: 1px solid var(--b2); color: var(--t3); }
-.nav-btn { padding: 7px 16px; background: var(--accent); color: #fff; border: none; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: var(--font); text-decoration: none; transition: background .2s; }
-.nav-btn:hover { background: #2563eb; }
+.logo {
+  font-size: 17px; font-weight: 800; color: var(--text1);
+  display: flex; align-items: center; gap: 9px; text-decoration: none;
+  letter-spacing: -.3px;
+}
+.logo-mark {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, var(--brand), #5b21b6);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+  box-shadow: 0 0 16px rgba(124,58,237,.35);
+}
+.nav-divider { width: 1px; height: 20px; background: var(--border2); }
+.nav-title {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--brand3); letter-spacing: 2px; text-transform: uppercase;
+}
+.nav-badge {
+  font-family: var(--mono); font-size: 10px;
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--border2); color: var(--text3);
+  display: none;
+}
+#nav-loading { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+.nav-btn {
+  padding: 8px 18px;
+  background: var(--brand); color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  font-family: var(--font); text-decoration: none;
+  transition: all .2s;
+}
+.nav-btn:hover { background: var(--brand2); transform: translateY(-1px); }
 
-/* ── Layout ── */
-.layout { display: flex; padding-top: 56px; min-height: 100vh; position: relative; z-index: 1; }
+/* ── Layout shell ───────────────────────────────────────────────────────── */
+.layout {
+  display: flex;
+  padding-top: 58px;
+  min-height: 100vh;
+  position: relative; z-index: 1;
+}
 
-/* ── Sidebar ── */
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
 .sidebar {
-  width: 220px; flex-shrink: 0;
-  background: var(--s1);
-  border-right: 1px solid var(--b1);
-  padding: 20px 0;
-  position: sticky; top: 56px; height: calc(100vh - 56px);
+  width: 224px; flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  padding: 16px 0 32px;
+  position: sticky; top: 58px;
+  height: calc(100vh - 58px);
   overflow-y: auto;
 }
-.sidebar-section { padding: 0 12px; margin-bottom: 24px; }
-.sidebar-label { font-family: var(--mono); font-size: 9px; color: var(--t3); letter-spacing: 2px; text-transform: uppercase; padding: 0 8px; margin-bottom: 6px; }
-.sidebar-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 8px 10px; border-radius: 8px;
-  font-size: 13px; color: var(--t2); font-weight: 500;
-  cursor: pointer; transition: all .15s; margin-bottom: 2px;
-  border: 1px solid transparent;
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.sidebar-section { padding: 0 10px; margin-bottom: 20px; }
+.sidebar-label {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  color: var(--text3); letter-spacing: 2px; text-transform: uppercase;
+  padding: 0 10px; margin-bottom: 4px; display: block;
 }
-.sidebar-item:hover { background: var(--s3); color: var(--t1); }
-.sidebar-item.active { background: rgba(59,130,246,.1); color: var(--accent2); border-color: rgba(59,130,246,.2); }
-.sidebar-item .si-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
-.sidebar-item .si-badge { margin-left: auto; font-family: var(--mono); font-size: 9px; padding: 1px 6px; border-radius: 3px; background: var(--b1); color: var(--t3); }
+.sidebar-item {
+  display: flex; align-items: center; gap: 9px;
+  padding: 8px 10px; border-radius: 7px;
+  font-size: 13px; font-weight: 500; color: var(--text2);
+  cursor: pointer; transition: all .13s;
+  margin-bottom: 1px;
+  border-left: 2px solid transparent;
+  user-select: none;
+}
+.sidebar-item:hover { background: var(--surface2); color: var(--text1); }
+.sidebar-item.active {
+  background: rgba(124,58,237,.12);
+  color: var(--brand3);
+  border-left-color: var(--brand);
+}
+.si-icon { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; opacity: .8; }
+.si-badge {
+  margin-left: auto; font-family: var(--mono); font-size: 9px;
+  padding: 1px 6px; border-radius: 3px;
+  background: rgba(124,58,237,.15); color: var(--brand3);
+}
+.locked-sidebar { opacity: .4 !important; }
+.locked-sidebar::after { content: ' 🔒'; font-size: 9px; }
 
-/* ── Main content ── */
-.main { flex: 1; min-width: 0; padding: 28px 28px 60px; }
+/* Theme toggle in sidebar */
+.sidebar-themes {
+  display: flex; gap: 5px; align-items: center;
+  padding: 10px 20px 4px;
+}
+.sidebar-themes span {
+  font-family: var(--mono); font-size: 9px; color: var(--text3);
+  letter-spacing: 1px; text-transform: uppercase; margin-right: 4px;
+}
+.theme-btn {
+  width: 26px; height: 26px; border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: transparent; cursor: pointer; font-size: 12px;
+  transition: all .13s; padding: 0; line-height: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text2);
+}
+.theme-btn:hover { border-color: var(--brand3); background: var(--surface2); }
+.theme-btn.active { border-color: var(--brand); background: rgba(124,58,237,.15); }
 
-/* ── Loading ── */
-#loading-state { text-align: center; padding: 80px 20px; }
-.load-spinner { width: 48px; height: 48px; border-radius: 50%; border: 2px solid var(--b2); border-top-color: var(--accent); animation: spin 1s linear infinite; margin: 0 auto 16px; }
+/* ── Main content ───────────────────────────────────────────────────────── */
+.main { flex: 1; min-width: 0; padding: 28px 32px 64px; }
+
+/* ── Loading state ──────────────────────────────────────────────────────── */
+#loading-state { text-align: center; padding: 100px 20px; }
+.load-spinner {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 2px solid var(--border2);
+  border-top-color: var(--brand);
+  animation: spin 1s linear infinite;
+  margin: 0 auto 16px;
+}
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Section views ── */
+/* ── Views ──────────────────────────────────────────────────────────────── */
 .view { display: none; }
-.view.active { display: block; animation: fadeIn .3s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.view.active { display: block; animation: fadeIn .2s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-/* ── Page header ── */
-.page-header { margin-bottom: 24px; }
-.page-header h1 { font-family: var(--display); font-size: 26px; font-weight: 800; letter-spacing: -.5px; color: var(--t1); margin-bottom: 4px; }
-.page-header p { font-size: 13px; color: var(--t3); font-weight: 300; }
-
-/* ── KPI row ── */
-.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-.kpi-card {
-  background: var(--s2);
-  border: 1px solid var(--b1);
-  border-radius: 12px;
-  padding: 18px;
-  position: relative;
-  overflow: hidden;
-  transition: border-color .2s;
+/* ── View header ────────────────────────────────────────────────────────── */
+.view-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
 }
-.kpi-card:hover { border-color: var(--b2); }
-.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
-.kpi-card.blue::before { background: linear-gradient(90deg, var(--accent), var(--cyan)); }
-.kpi-card.green::before { background: linear-gradient(90deg, var(--green), #34d399); }
-.kpi-card.amber::before { background: linear-gradient(90deg, var(--amber), #fb923c); }
-.kpi-card.red::before { background: linear-gradient(90deg, var(--red), #fb7185); }
-.kpi-card.purple::before { background: linear-gradient(90deg, var(--purple), #a78bfa); }
-.kpi-label { font-family: var(--mono); font-size: 10px; color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
-.kpi-value { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 6px; }
-.kpi-sub { font-size: 11px; color: var(--t3); display: flex; align-items: center; gap: 4px; }
-.kpi-trend { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
-.trend-up { color: var(--green); background: rgba(16,185,129,.1); }
-.trend-down { color: var(--red); background: rgba(244,63,94,.1); }
-.trend-flat { color: var(--t3); }
+.vh-badge {
+  display: inline-block;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--brand3); padding: 3px 10px;
+  border: 1px solid rgba(124,58,237,.25);
+  background: rgba(124,58,237,.08);
+  border-radius: 20px; margin-bottom: 10px;
+}
+.vh-title {
+  font-size: 24px; font-weight: 800; letter-spacing: -.5px;
+  color: var(--text1); margin-bottom: 4px;
+}
+.view-header p { font-size: 13px; color: var(--text3); font-weight: 300; }
 
-/* ── Chart cards ── */
+/* ── Plan banner ────────────────────────────────────────────────────────── */
+#plan-banner {
+  display: none;
+  background: rgba(124,58,237,.06);
+  border: 1px solid rgba(124,58,237,.2);
+  border-radius: 10px;
+  padding: 12px 18px;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+/* ── KPI cards ──────────────────────────────────────────────────────────── */
+.kpi-row  { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 16px; }
+.kpi-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+
+.kpi-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  position: relative; overflow: hidden;
+  transition: border-color .15s, box-shadow .15s;
+  box-shadow: var(--shadow-sm);
+}
+.kpi-card:hover { border-color: var(--border2); box-shadow: var(--shadow-md); }
+
+/* Colored top accent bar */
+.kpi-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+}
+.kpi-card.blue::before   { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
+.kpi-card.green::before  { background: linear-gradient(90deg, #10b981, #34d399); }
+.kpi-card.amber::before  { background: linear-gradient(90deg, #f59e0b, #fb923c); }
+.kpi-card.red::before    { background: linear-gradient(90deg, #f43f5e, #fb7185); }
+.kpi-card.purple::before { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+
+.kpi-label {
+  font-family: var(--mono); font-size: 9.5px; font-weight: 700;
+  color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 10px; display: block;
+}
+.kpi-value {
+  font-size: 28px; font-weight: 800; letter-spacing: -1px;
+  line-height: 1; margin-bottom: 6px; color: var(--text1);
+}
+.kpi-val {
+  font-size: 26px; font-weight: 800; letter-spacing: -.8px;
+  line-height: 1; margin-bottom: 6px; color: var(--text1);
+  display: block;
+}
+.kpi-sub {
+  font-size: 11px; color: var(--text3);
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+}
+.kpi-trend {
+  font-size: 11px; font-weight: 600;
+  padding: 2px 6px; border-radius: 4px;
+}
+.trend-up   { color: var(--green); background: rgba(16,185,129,.1); }
+.trend-down { color: var(--red);   background: rgba(244,63,94,.1); }
+.trend-flat { color: var(--text3); }
+
+/* ── Cards ──────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color .15s;
+}
+.card:hover { border-color: var(--border2); }
+.card-h {
+  font-size: 12px; font-weight: 700; color: var(--text2);
+  text-transform: uppercase; letter-spacing: 1.2px;
+  font-family: var(--mono); margin-bottom: 16px; display: block;
+}
+
+/* ── Chart cards ────────────────────────────────────────────────────────── */
 .chart-grid { display: grid; gap: 16px; margin-bottom: 16px; }
-.chart-grid.cols-2 { grid-template-columns: 1fr 1fr; }
-.chart-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+.chart-grid.cols-2   { grid-template-columns: 1fr 1fr; }
+.chart-grid.cols-3   { grid-template-columns: 1fr 1fr 1fr; }
 .chart-grid.cols-1-2 { grid-template-columns: 1fr 2fr; }
 .chart-grid.cols-2-1 { grid-template-columns: 2fr 1fr; }
+
 .chart-card {
-  background: var(--s2);
-  border: 1px solid var(--b1);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 20px;
-  transition: border-color .2s;
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color .15s;
 }
-.chart-card:hover { border-color: var(--b2); }
+.chart-card:hover { border-color: var(--border2); }
 .chart-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
-.chart-title { font-family: var(--display); font-size: 14px; font-weight: 700; color: var(--t1); margin-bottom: 3px; }
-.chart-sub { font-size: 11px; color: var(--t3); }
-.chart-badge { font-family: var(--mono); font-size: 9px; padding: 3px 8px; border-radius: 4px; background: var(--b1); color: var(--t3); flex-shrink: 0; }
-.chart-wrap { position: relative; }
+.chart-title { font-size: 14px; font-weight: 700; color: var(--text1); margin-bottom: 3px; }
+.chart-sub { font-size: 11px; color: var(--text3); }
+.chart-badge {
+  font-family: var(--mono); font-size: 9px;
+  padding: 3px 8px; border-radius: 4px;
+  background: var(--surface3); color: var(--text3); flex-shrink: 0;
+}
 
-/* ── Table ── */
+/* ── View cards (new marketing/service views) ─────────────────────────── */
+.view-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.view-card-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: var(--text3); letter-spacing: 1.5px; text-transform: uppercase;
+  margin-bottom: 14px; display: block;
+}
+
+/* ── Data table ─────────────────────────────────────────────────────────── */
 .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.data-table th { font-family: var(--mono); font-size: 9px; color: var(--t3); text-transform: uppercase; letter-spacing: 1.5px; padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--b1); }
-.data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.04); color: var(--t2); }
+.data-table th {
+  font-family: var(--mono); font-size: 9px; color: var(--text3);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  padding: 8px 12px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td { background: var(--s3); }
-.td-value { font-weight: 700; color: var(--t1); font-family: var(--mono); }
-.td-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-family: var(--mono); font-size: 9px; font-weight: 700; }
+.data-table tr:hover td { background: var(--surface2); }
+.td-value { font-weight: 700; color: var(--text1); font-family: var(--mono); }
+.td-badge {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 4px;
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+}
 
-/* ── Progress bar ── */
-.prog-bar { height: 4px; background: var(--b1); border-radius: 2px; overflow: hidden; }
+/* ── Progress bar ───────────────────────────────────────────────────────── */
+.prog-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
 .prog-fill { height: 100%; border-radius: 2px; transition: width .8s ease; }
 
-/* ── Stage funnel ── */
-.funnel-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+/* ── Stage funnel rows ──────────────────────────────────────────────────── */
+.funnel-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
 .funnel-row:last-child { border-bottom: none; }
-.funnel-stage { font-size: 12px; color: var(--t2); width: 140px; flex-shrink: 0; }
+.funnel-stage  { font-size: 12px; color: var(--text2); width: 140px; flex-shrink: 0; }
 .funnel-bar-wrap { flex: 1; }
-.funnel-meta { font-family: var(--mono); font-size: 11px; color: var(--t3); width: 80px; text-align: right; flex-shrink: 0; }
-.funnel-count { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--t1); width: 60px; text-align: right; flex-shrink: 0; }
+.funnel-meta  { font-family: var(--mono); font-size: 11px; color: var(--text3); width: 80px; text-align: right; flex-shrink: 0; }
+.funnel-count { font-family: var(--mono); font-size: 11px; font-weight: 700; color: var(--text1); width: 60px; text-align: right; flex-shrink: 0; }
 
+/* ── Insight / alert banners ────────────────────────────────────────────── */
+.insight-banner {
+  background: rgba(16,185,129,.06);
+  border: 1px solid rgba(16,185,129,.2);
+  border-left: 3px solid var(--green);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 14px;
+  font-size: 13px; color: var(--text2); line-height: 1.6;
+}
+.insight-banner.warning {
+  background: rgba(245,158,11,.06);
+  border-color: rgba(245,158,11,.2);
+  border-left-color: var(--amber);
+}
+.insight-banner.critical {
+  background: rgba(244,63,94,.06);
+  border-color: rgba(244,63,94,.2);
+  border-left-color: var(--red);
+}
 
-.ai-tab{background:var(--s2);border:1px solid var(--s4);border-radius:6px;padding:4px 12px;font-size:10px;font-weight:700;color:var(--t3);cursor:pointer;font-family:var(--mono);letter-spacing:.5px;transition:all .15s;}
-.ai-tab:hover,.ai-tab.on{background:var(--accent);border-color:var(--accent);color:#fff;}
-.ai-result-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+/* ── Mini stats ─────────────────────────────────────────────────────────── */
+.mini-stat {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+}
+.ms-v { font-size: 22px; font-weight: 800; color: var(--text1); line-height: 1; margin-bottom: 4px; }
+.ms-l { font-size: 10px; color: var(--text3); font-family: var(--mono); text-transform: uppercase; letter-spacing: 1px; }
 
-/* ── AI Report Builder ── */
+/* ── Metric highlight ───────────────────────────────────────────────────── */
+.metric-highlight {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px;
+  transition: border-color .13s;
+}
+.metric-highlight:hover { border-color: var(--border2); }
+.mh-icon    { font-size: 18px; flex-shrink: 0; }
+.mh-label   { font-size: 11px; color: var(--text3); margin-bottom: 2px; font-family: var(--mono); letter-spacing: .5px; }
+.mh-value   { font-size: 18px; font-weight: 800; color: var(--text1); }
+.mh-context { font-size: 11px; color: var(--text3); margin-left: auto; font-family: var(--mono); text-align: right; }
+
+/* ── Heatmap ────────────────────────────────────────────────────────────── */
+.heatmap { display: grid; gap: 3px; }
+.heatmap-cell {
+  border-radius: 3px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  transition: opacity .2s; cursor: default;
+}
+.heatmap-cell:hover { opacity: .8; }
+
+/* ── Empty state ────────────────────────────────────────────────────────── */
+.empty-state { text-align: center; padding: 52px 20px; }
+.empty-icon  { font-size: 40px; margin-bottom: 12px; opacity: .3; }
+.empty-title { font-size: 16px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
+.empty-sub   { font-size: 13px; color: var(--text3); }
+
+/* ── Score ring (overview) ──────────────────────────────────────────────── */
+.score-hero {
+  display: flex; align-items: center; gap: 28px;
+  padding: 24px; background: var(--card-bg);
+  border-radius: 16px; margin-bottom: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.score-ring-lg {
+  width: 100px; height: 100px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; border: 4px solid;
+}
+
+/* ── AI Report Builder ──────────────────────────────────────────────────── */
 .ai-builder {
-  background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.05));
-  border: 1px solid rgba(59,130,246,.2);
-  border-radius: 16px;
-  padding: 28px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(59,130,246,.05));
+  border: 1px solid rgba(124,58,237,.2);
+  border-radius: 16px; padding: 28px;
+  margin-bottom: 20px; position: relative; overflow: hidden;
 }
 .ai-builder::before {
-  content: '';
-  position: absolute;
+  content: ''; position: absolute;
   top: -40px; right: -40px;
   width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(59,130,246,.08), transparent 70%);
+  background: radial-gradient(circle, rgba(124,58,237,.1), transparent 70%);
   pointer-events: none;
 }
 .ai-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-.ai-icon { width: 36px; height: 36px; background: linear-gradient(135deg, var(--accent), var(--purple)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-.ai-title { font-family: var(--display); font-size: 18px; font-weight: 800; color: var(--t1); }
-.ai-sub { font-size: 12px; color: var(--t3); margin-top: 2px; }
+.ai-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--brand), var(--blue));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.ai-title { font-size: 18px; font-weight: 800; color: var(--text1); }
+.ai-sub   { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.ai-tab {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 6px; padding: 4px 12px;
+  font-size: 10px; font-weight: 700; color: var(--text3);
+  cursor: pointer; font-family: var(--mono); letter-spacing: .5px;
+  transition: all .15s;
+}
+.ai-tab:hover, .ai-tab.on { background: var(--brand); border-color: var(--brand); color: #fff; }
 .ai-input-row { display: flex; gap: 10px; }
 .ai-input {
-  flex: 1;
-  background: var(--s1);
-  border: 1px solid var(--b2);
-  border-radius: 10px;
-  padding: 12px 16px;
-  color: var(--t1);
-  font-family: var(--font);
-  font-size: 14px;
-  outline: none;
+  flex: 1; background: var(--input-bg);
+  border: 1px solid var(--border2); border-radius: 10px;
+  padding: 12px 16px; color: var(--text1);
+  font-family: var(--font); font-size: 14px; outline: none;
   transition: border-color .2s;
 }
-.ai-input:focus { border-color: var(--accent); }
-.ai-input::placeholder { color: var(--t3); }
+.ai-input:focus { border-color: var(--brand); }
+.ai-input::placeholder { color: var(--text3); }
 .ai-submit {
   padding: 12px 24px;
-  background: linear-gradient(135deg, var(--accent), #2563eb);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: var(--font);
-  transition: all .2s;
-  white-space: nowrap;
-  display: flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--brand), #5b21b6);
+  color: #fff; border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  font-family: var(--font); transition: all .2s;
+  white-space: nowrap; display: flex; align-items: center; gap: 8px;
 }
-.ai-submit:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(59,130,246,.3); }
+.ai-submit:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,.3); }
 .ai-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 .ai-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .ai-chip {
-  padding: 5px 12px;
-  background: var(--s3);
-  border: 1px solid var(--b2);
-  border-radius: 20px;
-  font-size: 11px;
-  color: var(--t2);
-  cursor: pointer;
-  transition: all .15s;
-  font-family: var(--mono);
+  padding: 5px 12px; background: var(--surface3);
+  border: 1px solid var(--border2); border-radius: 20px;
+  font-size: 11px; color: var(--text2); cursor: pointer;
+  transition: all .15s; font-family: var(--mono);
 }
-.ai-chip:hover { background: var(--s4); border-color: var(--accent); color: var(--accent2); }
+.ai-chip:hover { border-color: var(--brand); color: var(--brand3); background: rgba(124,58,237,.08); }
 .ai-result {
-  margin-top: 20px;
-  background: var(--s1);
-  border: 1px solid var(--b1);
-  border-radius: 12px;
-  padding: 20px;
-  display: none;
+  margin-top: 20px; background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px; display: none;
 }
 .ai-result.show { display: block; animation: fadeIn .4s ease; }
 .ai-result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-.ai-result-title { font-family: var(--display); font-size: 15px; font-weight: 700; color: var(--t1); }
-.ai-insight { background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.15); border-radius: 8px; padding: 12px 14px; margin-top: 14px; font-size: 12px; color: var(--t2); line-height: 1.65; }
-.ai-insight strong { color: var(--accent2); }
-.ai-thinking { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 13px; color: var(--t3); }
+.ai-result-title { font-size: 15px; font-weight: 700; color: var(--text1); }
+.ai-insight {
+  background: rgba(59,130,246,.06); border: 1px solid rgba(59,130,246,.15);
+  border-radius: 8px; padding: 12px 14px; margin-top: 14px;
+  font-size: 12px; color: var(--text2); line-height: 1.65;
+}
+.ai-insight strong { color: var(--blue2); }
+.ai-thinking { display: flex; align-items: center; gap: 10px; padding: 12px 0; font-size: 13px; color: var(--text3); }
 .ai-dots span { animation: blink 1.4s infinite; }
 .ai-dots span:nth-child(2) { animation-delay: .2s; }
 .ai-dots span:nth-child(3) { animation-delay: .4s; }
 @keyframes blink { 0%,80%,100% { opacity: 0; } 40% { opacity: 1; } }
 
-/* ── Empty state ── */
-.empty-state { text-align: center; padding: 48px 20px; }
-.empty-icon { font-size: 40px; margin-bottom: 12px; opacity: .4; }
-.empty-title { font-family: var(--display); font-size: 16px; font-weight: 700; color: var(--t2); margin-bottom: 6px; }
-.empty-sub { font-size: 12px; color: var(--t3); }
-
-/* ── Heatmap ── */
-.heatmap { display: grid; gap: 3px; }
-.heatmap-cell { border-radius: 3px; height: 28px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; font-weight: 700; transition: opacity .2s; cursor: default; }
-.heatmap-cell:hover { opacity: .8; }
-
-/* ── Metric highlight ── */
-.metric-highlight {
-  background: var(--s3);
-  border-radius: 8px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
+/* ── History filter ─────────────────────────────────────────────────────── */
+#history-filter select {
+  padding: 8px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border2);
+  border-radius: 8px; color: var(--text1);
+  font-size: 13px; font-family: var(--font);
+  cursor: pointer; outline: none;
 }
-.mh-icon { font-size: 18px; flex-shrink: 0; }
-.mh-label { font-size: 11px; color: var(--t3); margin-bottom: 2px; }
-.mh-value { font-family: var(--display); font-size: 18px; font-weight: 800; }
-.mh-context { font-size: 11px; color: var(--t3); margin-left: auto; font-family: var(--mono); text-align: right; }
+#history-filter select:focus { border-color: var(--brand); }
 
-/* ── Insight banner ── */
-.insight-banner {
-  background: linear-gradient(135deg, rgba(16,185,129,.08), rgba(6,182,212,.05));
-  border: 1px solid rgba(16,185,129,.2);
-  border-radius: 10px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  color: var(--t2);
-  line-height: 1.6;
-}
-.insight-banner.warning {
-  background: rgba(245,158,11,.06);
-  border-color: rgba(245,158,11,.2);
-}
-.insight-banner.critical {
-  background: rgba(244,63,94,.06);
-  border-color: rgba(244,63,94,.2);
-}
-
+/* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 1100px) {
   .sidebar { display: none; }
-  .kpi-row { grid-template-columns: repeat(2, 1fr); }
-  .chart-grid.cols-2, .chart-grid.cols-3, .chart-grid.cols-1-2, .chart-grid.cols-2-1 { grid-template-columns: 1fr; }
+  .kpi-row, .kpi-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid.cols-2,
+  .chart-grid.cols-3,
+  .chart-grid.cols-1-2,
+  .chart-grid.cols-2-1 { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  .kpi-grid-3, .kpi-grid-4 { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 600px) {
   .main { padding: 16px; }
@@ -390,87 +637,16 @@ nav {
   .ai-input-row { flex-direction: column; }
 }
 
-  /* Sidebar active item indicator */
-  .sidebar-item.active {
-    background: rgba(124,58,237,.15);
-    color: var(--t1);
-    border-left: 2px solid var(--accent);
-    padding-left: 10px;
-  }
-  .sidebar-item { border-left: 2px solid transparent; transition: all .15s; }
-  .sidebar-item:hover { background: rgba(255,255,255,.04); }
-
-  /* View transition */
-  .view { animation: fadeIn .15s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-
-  /* KPI grid responsive */
-  .kpi-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-bottom: 16px; }
-  .kpi-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 16px; }
-  @media (max-width: 900px) {
-    .kpi-grid-4 { grid-template-columns: repeat(2,1fr); }
-    .kpi-grid-3 { grid-template-columns: repeat(2,1fr); }
-    .layout { flex-direction: column; }
-    .sidebar { width: 100%; max-height: 200px; overflow-y: auto; }
-  }
-
-  /* Score ring on overview */
-  .score-hero { display: flex; align-items: center; gap: 28px; padding: 24px; background: var(--s1); border-radius: 14px; margin-bottom: 16px; border: 1px solid var(--b1); }
-  .score-ring-lg { width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 4px solid; }
-
-  /* Plan tier lock overlays */
-  .view { position: relative; }
-  .pro-lock-overlay {
-    position: absolute; inset: 0;
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    background: rgba(8,6,26,.75);
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 12px; z-index: 10;
-  }
-  [data-pro-view="true"].locked-sidebar {
-    opacity: .5;
-    pointer-events: none;
-  }
-  [data-pro-view="true"].locked-sidebar::after {
-    content: ' 🔒';
-    font-size: 10px;
-  }
-
-/* KPI Cards */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
-.kpi-card{background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;padding:16px 18px;text-align:center;}
-.kpi-val{font-size:26px;font-weight:900;line-height:1;margin-bottom:6px;}
-.kpi-label{font-size:11px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
-.kpi-sub{font-size:10px;color:rgba(255,255,255,.25);margin-top:3px;}
-/* View Cards */
-.view-card{background:#0c0c16;border:1px solid #1e1e32;border-radius:14px;padding:20px 22px;margin-bottom:16px;}
-.view-card-title{font-size:12px;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
-
-/* ── Theme Buttons ───────────────────────── */
-.theme-btn {
-  width:26px;height:26px;border-radius:6px;border:1px solid var(--b1);
-  background:transparent;cursor:pointer;font-size:13px;
-  transition:all .15s;padding:0;line-height:1;
-  display:inline-flex;align-items:center;justify-content:center;
+/* ── Pro lock overlay ───────────────────────────────────────────────────── */
+.view { position: relative; }
+.pro-lock-overlay {
+  position: absolute; inset: 0;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  background: rgba(4,4,10,.75);
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px; z-index: 10;
 }
-.theme-btn:hover { border-color:var(--accent2);background:var(--s3); }
-.theme-btn.active { border-color:var(--accent);background:rgba(59,130,246,.15); }
-
-/* ── Light theme overrides ───────────────── */
-[data-theme="light"] .sidebar { border-right-color: var(--b1); }
-[data-theme="light"] .nav { border-bottom-color: var(--b1); }
-[data-theme="light"] .sidebar-item { color: var(--t2); }
-[data-theme="light"] .sidebar-item:hover { background: var(--s3); color: var(--t1); }
-[data-theme="light"] .sidebar-item.active { background: rgba(59,130,246,.1); color: #2563eb; }
-[data-theme="light"] .card { box-shadow: 0 1px 4px rgba(0,0,0,.06); }
-[data-theme="light"] .view-header { border-bottom-color: var(--b1); }
-[data-theme="light"] .kpi-card { border-color: var(--b1); }
-[data-theme="light"] .view-card { border-color: var(--b1); background: var(--s1); }
-[data-theme="light"] .intel-card { background: var(--s1); border-color: var(--b1); }
-
-/* ── Slate theme overrides ───────────────── */
-[data-theme="slate"] .sidebar-item.active { background: rgba(59,130,246,.18); color: #93c5fd; }
+[data-theme="light"] .pro-lock-overlay { background: rgba(240,242,248,.8); }
 </style>
 </head>
 <body>
@@ -483,7 +659,7 @@ nav {
   </div>
   <div class="nav-right">
     <span class="nav-badge" id="portal-badge">Loading…</span>
-    <a href="dashboard.html" class="nav-btn" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);">← Dashboard</a>
+    <a href="dashboard.html" class="nav-btn" style="background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--text2);">← Dashboard</a>
     <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="nav-btn">Book a Call ↗</a>
   </div>
 </nav>
@@ -493,7 +669,7 @@ nav {
   <aside class="sidebar">
     <!-- Theme toggle -->
     <div style="padding:12px 16px 0;display:flex;gap:6px;align-items:center;justify-content:flex-end;">
-      <span style="font-size:10px;color:var(--t3);font-family:var(--mono);">THEME</span>
+      <span style="font-size:10px;color:var(--text3);font-family:var(--mono);">THEME</span>
       <button onclick="setTheme('dark')" id="theme-dark" class="theme-btn active" title="Dark">🌙</button>
       <button onclick="setTheme('light')" id="theme-light" class="theme-btn" title="Light">☀️</button>
       <button onclick="setTheme('slate')" id="theme-slate" class="theme-btn" title="Slate">🩶</button>
@@ -608,8 +784,8 @@ nav {
     <!-- Loading -->
     <div id="loading-state">
       <div class="load-spinner"></div>
-      <div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">Loading your intelligence dashboard…</div>
-      <div style="font-size:12px;color:var(--t3);font-family:var(--mono);">Fetching audit data</div>
+      <div style="font-family:var(--font);font-size:16px;font-weight:700;color:var(--text2);margin-bottom:6px;">Loading your intelligence dashboard…</div>
+      <div style="font-size:12px;color:var(--text3);font-family:var(--mono);">Fetching audit data</div>
     </div>
 
     <!-- Views -->
@@ -856,8 +1032,8 @@ nav {
             <div id="ai-result-chart-wrap" style="margin-bottom:14px;display:none;"><canvas id="ai-chart" height="180"></canvas></div>
             <div id="ai-result-table" style="overflow-x:auto;margin-bottom:14px;display:none;"><table class="data-table" id="ai-data-table"></table></div>
             <div class="ai-insight" id="ai-result-insight"></div>
-            <div id="ai-result-actions" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--s4);">
-              <div style="font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1px;margin-bottom:8px;">FOLLOW-UP QUESTIONS</div>
+            <div id="ai-result-actions" style="display:none;margin-top:14px;padding-top:14px;border-top:1px solid var(--surface3);">
+              <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;margin-bottom:8px;">FOLLOW-UP QUESTIONS</div>
               <div id="ai-followup-chips" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
             </div>
           </div>
@@ -996,13 +1172,13 @@ nav {
         <p>All historical scans for this portal — filter by week or select any audit</p>
       </div>
       <div id="history-filter" style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
-        <select id="history-week-filter" onchange="filterHistory()" style="padding:8px 14px;background:#1a1a2e;border:1px solid #2a2a40;border-radius:8px;color:#fff;font-size:13px;font-family:'Outfit',sans-serif;">
+        <select id="history-week-filter" onchange="filterHistory()" style="padding:8px 14px;background:var(--surface2);border:1px solid #2a2a40;border-radius:8px;color:var(--text1);font-size:13px;font-family:'Outfit',sans-serif;">
           <option value="all">All Time</option>
           <option value="4">Last 4 weeks</option>
           <option value="8">Last 8 weeks</option>
           <option value="12">Last 12 weeks</option>
         </select>
-        <span id="history-count" style="font-size:12px;color:rgba(255,255,255,.4);"></span>
+        <span id="history-count" style="font-size:12px;color:var(--text2);"></span>
       </div>
       <div id="history-content"></div>
     </div>
@@ -1031,8 +1207,10 @@ let aiHistory = [];
 let aiChartInstance = null;
 
 // Chart defaults
-Chart.defaults.color = 'rgba(255,255,255,.5)';
-Chart.defaults.borderColor = 'rgba(255,255,255,.06)';
+// Chart.js defaults updated by setTheme()
+const _isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+Chart.defaults.color = _isDark ? 'rgba(255,255,255,.45)' : 'rgba(12,14,30,.45)';
+Chart.defaults.borderColor = _isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.07)';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
 Chart.defaults.font.size = 10;
 
@@ -1132,20 +1310,20 @@ async function loadFromToken(token) {
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
             '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--text1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
+              '<div style="font-size:11px;color:var(--text3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
             '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--text1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isPulseOrAbove && !isProOrAbove) {
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
             '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--text1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
+              '<div style="font-size:11px;color:var(--text3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
             '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--text1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
       }
@@ -1165,15 +1343,15 @@ async function loadFromToken(token) {
           '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
             '<div style="text-align:center;max-width:380px;padding:32px;">' +
               '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pro Feature</div>' +
-              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">' +
+              '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pro Feature</div>' +
+              '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">' +
                 (viewName === 'ai' ? 'AI Report Builder — ask any question about your HubSpot data in plain English. Powered by Claude.' :
                  viewName === 'funnel' ? 'Lifecycle Funnel — cross-object funnel HubSpot cannot build without Enterprise.' :
                  viewName === 'velocity' ? 'Deal Velocity — track how fast deals move through each stage.' :
                  viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
                  'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
               '</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
             '</div>' +
           '</div>';
       });
@@ -1188,9 +1366,9 @@ async function loadFromToken(token) {
           el.innerHTML = tc + '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
             '<div style="text-align:center;max-width:380px;padding:32px;">' +
               '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
-              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+              '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
+              '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
             '</div>' +
           '</div>';
         });
@@ -1206,9 +1384,9 @@ async function loadFromToken(token) {
             '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
               '<div style="text-align:center;max-width:380px;padding:32px;">' +
                 '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-                '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
-                '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
-                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+                '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
+                '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
+                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
               '</div>' +
             '</div>';
         }
@@ -1217,8 +1395,8 @@ async function loadFromToken(token) {
   } catch(e) {
     document.getElementById('loading-state').innerHTML =
       '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
-      '<div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">'+e.message+'</div>' +
-      '<div style="font-size:12px;color:var(--t3);"><a href="dashboard.html" style="color:var(--accent2)">Return to dashboard</a></div>';
+      '<div style="font-family:var(--font);font-size:16px;font-weight:700;color:var(--text2);margin-bottom:6px;">'+e.message+'</div>' +
+      '<div style="font-size:12px;color:var(--text3);"><a href="dashboard.html" style="color:var(--brand3)">Return to dashboard</a></div>';
   }
 }
 
@@ -1305,20 +1483,20 @@ async function loadData() {
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
             '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--text1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
+              '<div style="font-size:11px;color:var(--text3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
             '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--text1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isPulseOrAbove && !isProOrAbove) {
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
             '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
+              '<div style="font-size:12px;font-weight:700;color:var(--text1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
+              '<div style="font-size:11px;color:var(--text3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
             '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--accent);color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
+            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--text1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
       }
@@ -1338,15 +1516,15 @@ async function loadData() {
           '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
             '<div style="text-align:center;max-width:380px;padding:32px;">' +
               '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pro Feature</div>' +
-              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">' +
+              '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pro Feature</div>' +
+              '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">' +
                 (viewName === 'ai' ? 'AI Report Builder — ask any question about your HubSpot data in plain English. Powered by Claude.' :
                  viewName === 'funnel' ? 'Lifecycle Funnel — cross-object funnel HubSpot cannot build without Enterprise.' :
                  viewName === 'velocity' ? 'Deal Velocity — track how fast deals move through each stage.' :
                  viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
                  'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
               '</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
             '</div>' +
           '</div>';
       });
@@ -1361,9 +1539,9 @@ async function loadData() {
           el.innerHTML = tc + '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
             '<div style="text-align:center;max-width:380px;padding:32px;">' +
               '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
-              '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+              '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
+              '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
+              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
             '</div>' +
           '</div>';
         });
@@ -1379,9 +1557,9 @@ async function loadData() {
             '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
               '<div style="text-align:center;max-width:380px;padding:32px;">' +
                 '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-                '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Pulse Feature</div>' +
-                '<div style="font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
-                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
+                '<div style="font-size:18px;font-weight:800;color:var(--text1);margin-bottom:8px;">Pulse Feature</div>' +
+                '<div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
+                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:#7c3aed;color:var(--text1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
               '</div>' +
             '</div>';
         }
@@ -1390,8 +1568,8 @@ async function loadData() {
   } catch(e) {
     document.getElementById('loading-state').innerHTML =
       '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
-      '<div style="font-family:var(--display);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">'+e.message+'</div>' +
-      '<div style="font-size:12px;color:var(--t3);">Check your email for the results link or <a href="index.html" style="color:var(--accent2)">run a new audit</a>.</div>';
+      '<div style="font-family:var(--font);font-size:16px;font-weight:700;color:var(--text2);margin-bottom:6px;">'+e.message+'</div>' +
+      '<div style="font-size:12px;color:var(--text3);">Check your email for the results link or <a href="index.html" style="color:var(--brand3)">run a new audit</a>.</div>';
   }
 }
 
@@ -1414,14 +1592,13 @@ function showView(name) {
 function setTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('fixops-theme', theme);
-  // Update active button
   document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
   const btn = document.getElementById('theme-' + theme);
   if (btn) btn.classList.add('active');
-  // Adjust Chart.js defaults for light theme
-  const isLight = theme === 'light';
-  Chart.defaults.color = isLight ? 'rgba(15,20,40,.5)' : 'rgba(255,255,255,.5)';
-  Chart.defaults.borderColor = isLight ? 'rgba(0,0,0,.08)' : 'rgba(255,255,255,.06)';
+  // Update Chart.js color defaults to match theme
+  const light = theme === 'light';
+  Chart.defaults.color = light ? 'rgba(12,14,30,.45)' : 'rgba(255,255,255,.45)';
+  Chart.defaults.borderColor = light ? 'rgba(0,0,0,.07)' : 'rgba(255,255,255,.05)';
 }
 
 // Apply saved theme on load
@@ -1640,7 +1817,7 @@ function buildOverview() {
       '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">' +
         '<div>' +
           '<div style="font-size:11px;font-weight:700;color:#10b981;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">📈 Progress Since Week 1 — ' + weeksCount + ' weeks monitored</div>' +
-          '<div style="font-size:13px;color:var(--t2);">' +
+          '<div style="font-size:13px;color:var(--text2);">' +
             (saved > 0 ? 'Monthly waste reduced by <strong style="color:#10b981;">$' + saved.toLocaleString() + '/mo</strong> · ' : '') +
             'Score ' + (scoreDelta>=0 ? '<strong style="color:#10b981;">↑' + scoreDelta + ' points</strong>' : '<strong style="color:#f43f5e;">↓' + Math.abs(scoreDelta) + ' points</strong>') + ' from first scan' +
           '</div>' +
@@ -1663,8 +1840,8 @@ function buildOverview() {
     riskCard.style.cssText = 'margin-top:12px;background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.25);';
     riskCard.innerHTML =
       '<div style="font-size:11px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠️ Pipeline Concentration Risk</div>' +
-      '<div style="font-size:13px;color:var(--t1);margin-bottom:4px;font-weight:600;">' + (keyPersonIssue.title||'') + '</div>' +
-      '<div style="font-size:12px;color:var(--t2);">' + (keyPersonIssue.impact||'') + '</div>';
+      '<div style="font-size:13px;color:var(--text1);margin-bottom:4px;font-weight:600;">' + (keyPersonIssue.title||'') + '</div>' +
+      '<div style="font-size:12px;color:var(--text2);">' + (keyPersonIssue.impact||'') + '</div>';
     const ovEl = document.querySelector('#view-overview .card');
     if (ovEl && ovEl.parentNode) ovEl.parentNode.appendChild(riskCard);
   }
@@ -1833,7 +2010,7 @@ function buildVelocity() {
     metric('🎯', 'Win Rate', '28%', 'Industry avg: 20–30%', 'green') +
     metric('⏱', 'Avg Sales Cycle', fmtDays(avgAge), avgAge > 60 ? 'Above benchmark' : 'Within range', avgAge > 60 ? 'red' : 'green') +
     metric('💸', 'Revenue at Risk', fmtMoney(Math.round((ps.deals||0)*0.22*18000*0.4)), 'stalled deals × avg size', 'red') +
-    `<div style="margin-top:12px;padding:12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px;font-size:11px;color:rgba(255,255,255,.5);line-height:1.65;">
+    `<div style="margin-top:12px;padding:12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px;font-size:11px;color:var(--text2);line-height:1.65;">
       <strong style="color:#f43f5e;">Loss reason data missing.</strong> Without tracking why deals are lost, win rate improvement is impossible. FixOps builds the close-lost tracking system.
     </div>`;
 }
@@ -1947,9 +2124,9 @@ function buildFunnel() {
   let dcHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">';
   fields.forEach(f => {
     const c = f.pct >= 80 ? '#10b981' : f.pct >= 60 ? '#f59e0b' : '#f43f5e';
-    dcHtml += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s3);border-radius:8px;">
+    dcHtml += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface3);border-radius:8px;">
       <div style="flex:1;">
-        <div style="font-size:12px;color:var(--t2);margin-bottom:5px;">${f.name}</div>
+        <div style="font-size:12px;color:var(--text2);margin-bottom:5px;">${f.name}</div>
         <div class="prog-bar"><div class="prog-fill" style="width:${f.pct}%;background:${c}"></div></div>
       </div>
       <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${c};width:36px;text-align:right;">${f.pct}%</div>
@@ -2091,7 +2268,7 @@ function buildTickets() {
 
   if (totalTickets === 0 && !ticketBlind) {
     document.getElementById('tickets-kpis').innerHTML =
-      '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--t3);font-size:13px;">No ticket data — connect Service Hub or a ticketing integration to enable this view</div>';
+      '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--text3);font-size:13px;">No ticket data — connect Service Hub or a ticketing integration to enable this view</div>';
     return;
   }
 
@@ -2150,7 +2327,7 @@ function buildTickets() {
     const alertHtml = '<div style="margin-bottom:16px;padding:14px 16px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.25);border-radius:10px;display:flex;align-items:flex-start;gap:12px;">' +
       '<div style="font-size:20px;">🎫</div>' +
       '<div><div style="font-size:13px;font-weight:700;color:#f43f5e;margin-bottom:3px;">' + slaIssue.title + '</div>' +
-      '<div style="font-size:12px;color:rgba(255,255,255,.55);">' + (slaIssue.impact||'Customer churn risk elevated') + '</div></div>' +
+      '<div style="font-size:12px;color:var(--text2);">' + (slaIssue.impact||'Customer churn risk elevated') + '</div></div>' +
     '</div>';
     const kpisEl = document.getElementById('tickets-kpis');
     if (kpisEl) kpisEl.insertAdjacentHTML('beforebegin', alertHtml);
@@ -2167,7 +2344,7 @@ function buildTickets() {
     tableHtml += '<tr>' +
       '<td><span style="font-size:12px;font-weight:700;color:' + t.color + ';">' + t.status + '</span></td>' +
       '<td class="td-value">' + (t.count > 0 ? fmt(t.count) : '—') + '</td>' +
-      '<td style="font-size:11px;color:var(--t2);">' + t.impact + '</td>' +
+      '<td style="font-size:11px;color:var(--text2);">' + t.impact + '</td>' +
       '<td><span class="td-badge" style="background:' + t.color + '15;color:' + t.color + ';">' + t.action + '</span></td>' +
     '</tr>';
   });
@@ -2201,10 +2378,10 @@ function buildTeam() {
       const statusColor = total > 5 ? '#10b981' : total > 0 ? '#f59e0b' : '#f43f5e';
       const statusLabel = total > 5 ? 'Active' : total > 0 ? 'Low' : 'Dark';
       const staleCol = r.staleDealCount > 2 ? '#f43f5e' : 'rgba(255,255,255,.5)';
-      return '<tr style="border-bottom:1px solid rgba(255,255,255,.06);">' +
-        '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:#fff;">' + r.name + '</td>' +
-        '<td style="padding:10px 12px;text-align:center;font-size:13px;color:rgba(255,255,255,.7);">' + r.calls + '</td>' +
-        '<td style="padding:10px 12px;text-align:center;font-size:13px;color:rgba(255,255,255,.7);">' + r.meetings + '</td>' +
+      return '<tr style="border-bottom:1px solid var(--border);">' +
+        '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:var(--text1);">' + r.name + '</td>' +
+        '<td style="padding:10px 12px;text-align:center;font-size:13px;color:var(--text1);">' + r.calls + '</td>' +
+        '<td style="padding:10px 12px;text-align:center;font-size:13px;color:var(--text1);">' + r.meetings + '</td>' +
         '<td style="padding:10px 12px;text-align:center;font-size:13px;font-weight:700;color:' + staleCol + ';">' + r.staleDealCount + '</td>' +
         '<td style="padding:10px 12px;text-align:right;"><span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:6px;background:' + statusColor + '20;color:' + statusColor + ';">' + statusLabel + '</span></td>' +
       '</tr>';
@@ -2218,21 +2395,21 @@ function buildTeam() {
         '<div class="mini-stat" style="border-color:' + (darkReps.length>0?'rgba(244,63,94,.3)':'rgba(255,255,255,.06)') + ';"><div class="ms-v" style="color:' + (darkReps.length>0?'#f43f5e':'inherit') + ';">' + darkReps.length + '</div><div class="ms-l">Dark Reps</div></div>' +
       '</div>' +
       '<table style="width:100%;border-collapse:collapse;">' +
-        '<thead><tr style="border-bottom:1px solid rgba(255,255,255,.1);">' +
-          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Rep</th>' +
-          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Calls</th>' +
-          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Meetings</th>' +
-          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Stale Deals</th>' +
-          '<th style="padding:8px 12px;text-align:right;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Status</th>' +
+        '<thead><tr style="border-bottom:1px solid var(--border);">' +
+          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Rep</th>' +
+          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Calls</th>' +
+          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Meetings</th>' +
+          '<th style="padding:8px 12px;text-align:center;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Stale Deals</th>' +
+          '<th style="padding:8px 12px;text-align:right;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Status</th>' +
         '</tr></thead>' +
         '<tbody>' + repRows + '</tbody>' +
       '</table>' +
-      (darkReps.length > 0 ? '<div style="margin-top:14px;padding:12px 14px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:8px;font-size:12px;color:rgba(255,255,255,.6);">⚠️ Dark reps: <strong style="color:#f43f5e;">' + darkReps.map(r=>r.name).join(', ') + '</strong> — no calls or meetings logged this week</div>' : '') +
+      (darkReps.length > 0 ? '<div style="margin-top:14px;padding:12px 14px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:8px;font-size:12px;color:var(--text2);">⚠️ Dark reps: <strong style="color:#f43f5e;">' + darkReps.map(r=>r.name).join(', ') + '</strong> — no calls or meetings logged this week</div>' : '') +
     '</div>';
   } else {
     html += '<div class="card" style="margin-bottom:20px;opacity:.6;">' +
       '<div class="card-h">👥 Rep Activity</div>' +
-      '<div style="font-size:13px;color:rgba(255,255,255,.5);padding:20px 0;text-align:center;">No call or meeting data available — connect HubSpot to Google Calendar or Outlook to enable activity tracking</div>' +
+      '<div style="font-size:13px;color:var(--text2);padding:20px 0;text-align:center;">No call or meeting data available — connect HubSpot to Google Calendar or Outlook to enable activity tracking</div>' +
     '</div>';
   }
 
@@ -2243,30 +2420,30 @@ function buildTeam() {
     const maxWaste = gd.length * 120;
 
     const seatRows = gd.map(u =>
-      '<tr style="border-bottom:1px solid rgba(255,255,255,.06);">' +
-        '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:#fff;">' + u.name + '</td>' +
-        '<td style="padding:10px 12px;font-size:12px;color:rgba(255,255,255,.4);">' + (u.email||'—') + '</td>' +
+      '<tr style="border-bottom:1px solid var(--border);">' +
+        '<td style="padding:10px 12px;font-size:13px;font-weight:600;color:var(--text1);">' + u.name + '</td>' +
+        '<td style="padding:10px 12px;font-size:12px;color:var(--text2);">' + (u.email||'—') + '</td>' +
         '<td style="padding:10px 12px;text-align:right;"><span style="font-size:12px;font-weight:700;color:#f43f5e;">' + u.daysSince + ' days inactive</span></td>' +
       '</tr>'
     ).join('');
 
     html += '<div class="card">' +
       '<div class="card-h">👻 Ghost Seats <span style="font-size:12px;font-weight:400;color:#f43f5e;">$' + waste.toLocaleString() + '–$' + maxWaste.toLocaleString() + '/mo wasted</span></div>' +
-      '<div style="font-size:13px;color:rgba(255,255,255,.6);margin-bottom:16px;">' + gd.length + ' paid HubSpot user' + (gd.length!==1?'s':'') + ' with zero logins in 90+ days. Deactivate to stop paying for unused seats immediately.</div>' +
+      '<div style="font-size:13px;color:var(--text2);margin-bottom:16px;">' + gd.length + ' paid HubSpot user' + (gd.length!==1?'s':'') + ' with zero logins in 90+ days. Deactivate to stop paying for unused seats immediately.</div>' +
       '<table style="width:100%;border-collapse:collapse;">' +
-        '<thead><tr style="border-bottom:1px solid rgba(255,255,255,.1);">' +
-          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">User</th>' +
-          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Email</th>' +
-          '<th style="padding:8px 12px;text-align:right;font-size:10px;color:rgba(255,255,255,.4);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Inactivity</th>' +
+        '<thead><tr style="border-bottom:1px solid var(--border);">' +
+          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">User</th>' +
+          '<th style="padding:8px 12px;text-align:left;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Email</th>' +
+          '<th style="padding:8px 12px;text-align:right;font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.06em;">Inactivity</th>' +
         '</tr></thead>' +
         '<tbody>' + seatRows + '</tbody>' +
       '</table>' +
-      '<div style="margin-top:14px;padding:12px 14px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:8px;font-size:12px;color:rgba(255,255,255,.6);">💡 Settings → Users → sort by last login → deactivate each ghost seat. Their data and records stay intact — only login access is removed.</div>' +
+      '<div style="margin-top:14px;padding:12px 14px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.25);border-radius:8px;font-size:12px;color:var(--text2);">💡 Settings → Users → sort by last login → deactivate each ghost seat. Their data and records stay intact — only login access is removed.</div>' +
     '</div>';
   } else {
     html += '<div class="card" style="opacity:.6;">' +
       '<div class="card-h">👻 Ghost Seats</div>' +
-      '<div style="font-size:13px;color:rgba(255,255,255,.5);padding:20px 0;text-align:center;">No ghost seats detected — all users have logged in within the last 90 days ✓</div>' +
+      '<div style="font-size:13px;color:var(--text2);padding:20px 0;text-align:center;">No ghost seats detected — all users have logged in within the last 90 days ✓</div>' +
     '</div>';
   }
 
@@ -2285,8 +2462,8 @@ function buildTrends() {
   if (!hasH) {
     el.innerHTML = '<div class="card" style="text-align:center;padding:40px;">' +
       '<div style="font-size:36px;margin-bottom:12px;">📈</div>' +
-      '<div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px;">Trend data builds over time</div>' +
-      '<div style="font-size:13px;color:var(--t2);">After your second weekly scan, this view shows 12-week score trends, dimension health over time, and week-over-week comparisons.</div>' +
+      '<div style="font-size:16px;font-weight:700;color:var(--text1);margin-bottom:8px;">Trend data builds over time</div>' +
+      '<div style="font-size:13px;color:var(--text2);">After your second weekly scan, this view shows 12-week score trends, dimension health over time, and week-over-week comparisons.</div>' +
     '</div>';
     return;
   }
@@ -2343,9 +2520,9 @@ function buildTrends() {
           const delta = last - first;
           const deltaColor = delta > 0 ? '#10b981' : delta < 0 ? '#f43f5e' : 'rgba(255,255,255,.4)';
           const deltaArrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
-          return '<div style="background:var(--s1);border-radius:10px;padding:12px;">' +
+          return '<div style="background:var(--card-bg);border-radius:10px;padding:12px;">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
-              '<div style="font-size:11px;font-weight:600;color:var(--t2);">' + d.label + '</div>' +
+              '<div style="font-size:11px;font-weight:600;color:var(--text2);">' + d.label + '</div>' +
               '<div style="font-size:12px;font-weight:700;color:' + deltaColor + ';">' + deltaArrow + Math.abs(delta) + '</div>' +
             '</div>' +
             '<div style="font-size:20px;font-weight:800;color:' + d.color + ';margin-bottom:6px;">' + last + '</div>' +
@@ -2357,12 +2534,12 @@ function buildTrends() {
     // Persistent issues
     (persistentIssues.length ? '<div class="card">' +
       '<div class="card-h">⏳ Issues Present Multiple Weeks</div>' +
-      '<div style="font-size:12px;color:var(--t2);margin-bottom:12px;">These issues keep appearing — highest priority for Fix It For Me</div>' +
+      '<div style="font-size:12px;color:var(--text2);margin-bottom:12px;">These issues keep appearing — highest priority for Fix It For Me</div>' +
       persistentIssues.map(i => {
         const sev = i.severity==='critical'?'#f43f5e':i.severity==='warning'?'#f59e0b':'#3b82f6';
         const age = i.count === hist.length ? 'Every scan' : i.count + ' of ' + hist.length + ' weeks';
-        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--s1);border-radius:8px;margin-bottom:6px;border-left:3px solid '+sev+';">' +
-          '<div style="flex:1;font-size:12px;color:var(--t1);">' + (i.title.length>80?i.title.slice(0,80)+'…':i.title) + '</div>' +
+        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card-bg);border-radius:8px;margin-bottom:6px;border-left:3px solid '+sev+';">' +
+          '<div style="flex:1;font-size:12px;color:var(--text1);">' + (i.title.length>80?i.title.slice(0,80)+'…':i.title) + '</div>' +
           '<div style="font-size:11px;font-weight:700;color:'+sev+';white-space:nowrap;">' + age + '</div>' +
         '</div>';
       }).join('') +
@@ -2431,8 +2608,8 @@ function buildROI() {
   if (!hasH) {
     el.innerHTML = '<div class="card" style="text-align:center;padding:40px;">' +
       '<div style="font-size:36px;margin-bottom:12px;">💰</div>' +
-      '<div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px;">ROI tracking starts after your second scan</div>' +
-      '<div style="font-size:13px;color:var(--t2);">After two weekly scans, this view shows exactly what improved, what you saved, and the ROI of monitoring your portal.</div>' +
+      '<div style="font-size:16px;font-weight:700;color:var(--text1);margin-bottom:8px;">ROI tracking starts after your second scan</div>' +
+      '<div style="font-size:13px;color:var(--text2);">After two weekly scans, this view shows exactly what improved, what you saved, and the ROI of monitoring your portal.</div>' +
     '</div>';
     return;
   }
@@ -2471,16 +2648,16 @@ function buildROI() {
     // Big ROI hero
     '<div class="card" style="margin-bottom:16px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(91,33,182,.06));border-color:rgba(124,58,237,.3);">' +
       '<div style="text-align:center;padding:20px 0;">' +
-        '<div style="font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Since You Started Monitoring</div>' +
+        '<div style="font-size:11px;font-weight:700;color:var(--brand3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">Since You Started Monitoring</div>' +
         '<div style="font-size:48px;font-weight:800;color:#10b981;margin-bottom:4px;">$' + wasteSaved.toLocaleString() + '/mo</div>' +
-        '<div style="font-size:14px;color:var(--t2);">estimated monthly waste eliminated</div>' +
-        (annualSaved > 0 ? '<div style="font-size:13px;color:var(--t3);margin-top:4px;">= $' + annualSaved.toLocaleString() + ' annually</div>' : '') +
+        '<div style="font-size:14px;color:var(--text2);">estimated monthly waste eliminated</div>' +
+        (annualSaved > 0 ? '<div style="font-size:13px;color:var(--text3);margin-top:4px;">= $' + annualSaved.toLocaleString() + ' annually</div>' : '') +
       '</div>' +
       '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;border-top:1px solid rgba(255,255,255,.08);padding-top:20px;">' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:' + (scoreDelta>=0?'#10b981':'#f43f5e') + ';">' + (scoreDelta>=0?'+':'') + scoreDelta + '</div><div style="font-size:11px;color:var(--t3);">Score Change</div></div>' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + resolvedCount + '</div><div style="font-size:11px;color:var(--t3);">Issues Resolved</div></div>' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + critReduced + '</div><div style="font-size:11px;color:var(--t3);">Criticals Fixed</div></div>' +
-        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#a78bfa;">' + weeksMonitoring + '</div><div style="font-size:11px;color:var(--t3);">Weeks Monitored</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:' + (scoreDelta>=0?'#10b981':'#f43f5e') + ';">' + (scoreDelta>=0?'+':'') + scoreDelta + '</div><div style="font-size:11px;color:var(--text3);">Score Change</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + resolvedCount + '</div><div style="font-size:11px;color:var(--text3);">Issues Resolved</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#10b981;">' + critReduced + '</div><div style="font-size:11px;color:var(--text3);">Criticals Fixed</div></div>' +
+        '<div style="text-align:center;"><div style="font-size:22px;font-weight:800;color:#a78bfa;">' + weeksMonitoring + '</div><div style="font-size:11px;color:var(--text3);">Weeks Monitored</div></div>' +
       '</div>' +
     '</div>' +
 
@@ -2488,9 +2665,9 @@ function buildROI() {
     (wasteSaved > 0 ? '<div class="card" style="margin-bottom:16px;">' +
       '<div class="card-h">💳 Subscription ROI</div>' +
       '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">' +
-        '<div style="text-align:center;padding:16px;background:var(--s1);border-radius:10px;"><div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Monthly Savings</div><div style="font-size:24px;font-weight:800;color:#10b981;">$' + wasteSaved.toLocaleString() + '</div></div>' +
-        '<div style="text-align:center;padding:16px;background:var(--s1);border-radius:10px;"><div style="font-size:12px;color:var(--t3);margin-bottom:4px;">Subscription Cost</div><div style="font-size:24px;font-weight:800;color:var(--t1);">$' + subscriptionCost.toLocaleString() + '</div></div>' +
-        '<div style="text-align:center;padding:16px;background:' + (roi>0?'rgba(16,185,129,.1)':'var(--s1)') + ';border-radius:10px;border:1px solid ' + (roi>0?'rgba(16,185,129,.3)':'transparent') + ';"><div style="font-size:12px;color:var(--t3);margin-bottom:4px;">ROI</div><div style="font-size:24px;font-weight:800;color:' + (roi>0?'#10b981':'var(--t1)') + ';">' + (roi>0?'+':'') + roi + '%</div></div>' +
+        '<div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">Monthly Savings</div><div style="font-size:24px;font-weight:800;color:#10b981;">$' + wasteSaved.toLocaleString() + '</div></div>' +
+        '<div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">Subscription Cost</div><div style="font-size:24px;font-weight:800;color:var(--text1);">$' + subscriptionCost.toLocaleString() + '</div></div>' +
+        '<div style="text-align:center;padding:16px;background:' + (roi>0?'rgba(16,185,129,.1)':'var(--surface)') + ';border-radius:10px;border:1px solid ' + (roi>0?'rgba(16,185,129,.3)':'transparent') + ';"><div style="font-size:12px;color:var(--text3);margin-bottom:4px;">ROI</div><div style="font-size:24px;font-weight:800;color:' + (roi>0?'#10b981':'var(--text1)') + ';">' + (roi>0?'+':'') + roi + '%</div></div>' +
       '</div>' +
     '</div>' : '') +
 
@@ -2500,13 +2677,13 @@ function buildROI() {
       dimImprovements.map(d => {
         const col = d.delta > 0 ? '#10b981' : '#f43f5e';
         const pct = Math.round((d.delta / Math.max(100 - (d.current - d.delta), 1)) * 100);
-        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">' +
-          '<div style="width:120px;font-size:12px;color:var(--t2);flex-shrink:0;">' + d.label + '</div>' +
+        return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">' +
+          '<div style="width:120px;font-size:12px;color:var(--text2);flex-shrink:0;">' + d.label + '</div>' +
           '<div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:8px;overflow:hidden;">' +
             '<div style="width:' + d.current + '%;height:100%;background:' + col + ';border-radius:4px;"></div>' +
           '</div>' +
           '<div style="font-size:13px;font-weight:700;color:' + col + ';width:50px;text-align:right;">' + (d.delta>0?'+':'') + d.delta + '</div>' +
-          '<div style="font-size:11px;color:var(--t3);width:36px;text-align:right;">' + d.current + '</div>' +
+          '<div style="font-size:11px;color:var(--text3);width:36px;text-align:right;">' + d.current + '</div>' +
         '</div>';
       }).join('') +
     '</div>' : '');
@@ -2575,7 +2752,7 @@ function buildRevenue() {
       const col = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#3b82f6';
       return '<div style="margin-bottom:10px;padding:14px 16px;background:'+col+'10;border:1px solid '+col+'30;border-radius:10px;border-left:3px solid '+col+';">' +
         '<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:4px;">'+issue.title+'</div>' +
-        '<div style="font-size:12px;color:var(--t2);">'+(issue.impact||'')+'</div>' +
+        '<div style="font-size:12px;color:var(--text2);">'+(issue.impact||'')+'</div>' +
       '</div>';
     }).join('') +
 
@@ -2635,7 +2812,7 @@ function buildCompany() {
       const col = issue.severity==='critical'?'#f43f5e':issue.severity==='warning'?'#f59e0b':'#3b82f6';
       return '<div style="margin-bottom:10px;padding:14px 16px;background:'+col+'10;border:1px solid '+col+'30;border-radius:10px;border-left:3px solid '+col+';">' +
         '<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:4px;">'+issue.title+'</div>' +
-        '<div style="font-size:12px;color:var(--t2);">'+(issue.impact||issue.description||'').slice(0,120)+'…</div>' +
+        '<div style="font-size:12px;color:var(--text2);">'+(issue.impact||issue.description||'').slice(0,120)+'…</div>' +
       '</div>';
     }).join('') +
 
@@ -2646,12 +2823,12 @@ function buildCompany() {
           '<canvas id="companyOwnerChart" height="160"></canvas>' +
         '</div>' +
         '<div style="display:flex;flex-direction:column;gap:10px;justify-content:center;">' +
-          '<div style="padding:12px;background:var(--s1);border-radius:8px;">' +
-            '<div style="font-size:11px;color:var(--t3);margin-bottom:4px;">OWNER COVERAGE</div>' +
+          '<div style="padding:12px;background:var(--card-bg);border-radius:8px;">' +
+            '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">OWNER COVERAGE</div>' +
             '<div style="font-size:20px;font-weight:800;color:'+(noOwner>totalCo*0.2?'#f59e0b':'#10b981')+'">'+(totalCo>0?Math.round((1-noOwner/totalCo)*100):0)+'%</div>' +
           '</div>' +
-          '<div style="padding:12px;background:var(--s1);border-radius:8px;">' +
-            '<div style="font-size:11px;color:var(--t3);margin-bottom:4px;">REVENUE DATA FILL RATE</div>' +
+          '<div style="padding:12px;background:var(--card-bg);border-radius:8px;">' +
+            '<div style="font-size:11px;color:var(--text3);margin-bottom:4px;">REVENUE DATA FILL RATE</div>' +
             '<div style="font-size:20px;font-weight:800;color:'+(coveragePct>50?'#10b981':coveragePct>20?'#f59e0b':'#f43f5e')+'">'+coveragePct+'%</div>' +
           '</div>' +
         '</div>' +
@@ -2705,17 +2882,17 @@ function buildContactEngagement() {
         '<div style="padding:16px;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.2);border-radius:10px;text-align:center;">' +
           '<div style="font-size:28px;font-weight:800;color:#10b981;">'+fmt(hot)+'</div>' +
           '<div style="font-size:11px;color:#10b981;font-weight:600;margin-top:4px;">HOT</div>' +
-          '<div style="font-size:10px;color:var(--t3);margin-top:2px;">Activity in last 30 days</div>' +
+          '<div style="font-size:10px;color:var(--text3);margin-top:2px;">Activity in last 30 days</div>' +
         '</div>' +
         '<div style="padding:16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:10px;text-align:center;">' +
           '<div style="font-size:28px;font-weight:800;color:#f59e0b;">'+fmt(warm)+'</div>' +
           '<div style="font-size:11px;color:#f59e0b;font-weight:600;margin-top:4px;">WARM</div>' +
-          '<div style="font-size:10px;color:var(--t3);margin-top:2px;">Activity 30–90 days ago</div>' +
+          '<div style="font-size:10px;color:var(--text3);margin-top:2px;">Activity 30–90 days ago</div>' +
         '</div>' +
         '<div style="padding:16px;background:rgba(244,63,94,.08);border:1px solid rgba(244,63,94,.2);border-radius:10px;text-align:center;">' +
           '<div style="font-size:28px;font-weight:800;color:#f43f5e;">'+fmt(cold)+'</div>' +
           '<div style="font-size:11px;color:#f43f5e;font-weight:600;margin-top:4px;">COLD</div>' +
-          '<div style="font-size:10px;color:var(--t3);margin-top:2px;">No activity in 90+ days</div>' +
+          '<div style="font-size:10px;color:var(--text3);margin-top:2px;">No activity in 90+ days</div>' +
         '</div>' +
       '</div>' +
       '<canvas id="engagementChart" height="60"></canvas>' +
@@ -2730,11 +2907,11 @@ function buildContactEngagement() {
         { label: 'No owner assigned', count: noOwner, color: '#f59e0b', desc: 'no one responsible for follow-up' },
         { label: 'Never contacted', count: neverContacted, color: '#3b82f6', desc: 'imported but never worked' },
       ].filter(r => r.count > 0).map(r =>
-        '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">' +
+        '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">' +
           '<div style="width:10px;height:10px;border-radius:50%;background:'+r.color+';flex-shrink:0;"></div>' +
-          '<div style="flex:1;font-size:13px;color:var(--t1);">'+r.label+'</div>' +
+          '<div style="flex:1;font-size:13px;color:var(--text1);">'+r.label+'</div>' +
           '<div style="font-size:13px;font-weight:700;color:'+r.color+';">'+fmt(r.count)+'</div>' +
-          '<div style="font-size:11px;color:var(--t3);width:200px;text-align:right;">'+r.desc+'</div>' +
+          '<div style="font-size:11px;color:var(--text3);width:200px;text-align:right;">'+r.desc+'</div>' +
         '</div>'
       ).join('') +
     '</div>';
@@ -2779,10 +2956,10 @@ function renderAiChips(cat) {
 
 function renderReportLibrary() {
   document.getElementById('ai-suggested-reports').innerHTML = REPORT_LIBRARY.map(r =>
-    `<div class="metric-highlight" style="cursor:pointer;" onclick="setAiQuery('${r.q.replace(/'/g,"&#39;")}')" onmouseover="this.style.background='var(--s4)'" onmouseout="this.style.background=''">
+    `<div class="metric-highlight" style="cursor:pointer;" onclick="setAiQuery('${r.q.replace(/'/g,"&#39;")}')" onmouseover="this.style.background='var(--surface3)'" onmouseout="this.style.background=''">
       <div class="mh-icon">${r.icon}</div>
-      <div style="flex:1"><div class="mh-label">${r.badge}</div><div style="font-size:12px;color:var(--t1);margin-top:2px;">${r.q}</div></div>
-      <div class="mh-context" style="font-size:16px;color:var(--accent);">→</div>
+      <div style="flex:1"><div class="mh-label">${r.badge}</div><div style="font-size:12px;color:var(--text1);margin-top:2px;">${r.q}</div></div>
+      <div class="mh-context" style="font-size:16px;color:var(--brand);">→</div>
     </div>`
   ).join('');
 }
@@ -2853,12 +3030,12 @@ function buildAutoInsights() {
   container.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;padding:4px 0;">` +
     insights.map(ins => `
     <div onclick="setAiQuery('${ins.q.replace(/'/g,"&#39;")}');document.querySelector('.ai-submit').click();"
-      style="cursor:pointer;background:var(--s2);border:1px solid var(--s4);border-radius:10px;padding:14px 16px;transition:border-color .15s;"
-      onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--s4)'">
+      style="cursor:pointer;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;transition:border-color .15s;"
+      onmouseover="this.style.borderColor='var(--brand)'" onmouseout="this.style.borderColor='var(--surface3)'">
       <div style="font-size:18px;margin-bottom:8px;">${ins.icon}</div>
       <div style="font-size:12px;font-weight:700;color:${ins.color};margin-bottom:4px;">${ins.title}</div>
-      <div style="font-size:11px;color:var(--t3);line-height:1.5;">${ins.sub}</div>
-      <div style="font-size:10px;color:var(--accent);margin-top:8px;font-weight:600;">Analyze → </div>
+      <div style="font-size:11px;color:var(--text3);line-height:1.5;">${ins.sub}</div>
+      <div style="font-size:10px;color:var(--brand);margin-top:8px;font-weight:600;">Analyze → </div>
     </div>`).join('') + '</div>';
 }
 
@@ -2953,12 +3130,12 @@ async function runAiReport() {
     if (parsed.keyFindings?.length > 0) {
       insightHtml += '<div style="margin-bottom:14px;">';
       parsed.keyFindings.forEach(f => {
-        insightHtml += `<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;padding:8px 12px;background:var(--s2);border-radius:6px;border-left:2px solid ${uc};"><span style="color:${uc};flex-shrink:0;font-size:14px;line-height:1.4;">→</span><span style="font-size:12px;color:var(--t1);line-height:1.5;">${f}</span></div>`;
+        insightHtml += `<div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;padding:8px 12px;background:var(--surface2);border-radius:6px;border-left:2px solid ${uc};"><span style="color:${uc};flex-shrink:0;font-size:14px;line-height:1.4;">→</span><span style="font-size:12px;color:var(--text1);line-height:1.5;">${f}</span></div>`;
       });
       insightHtml += '</div>';
     }
     if (parsed.recommendation) {
-      insightHtml += `<div style="padding:12px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:12px;color:var(--accent2);line-height:1.6;"><strong style="display:block;margin-bottom:4px;">Recommended action:</strong>${parsed.recommendation}</div>`;
+      insightHtml += `<div style="padding:12px 14px;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:8px;font-size:12px;color:var(--brand3);line-height:1.6;"><strong style="display:block;margin-bottom:4px;">Recommended action:</strong>${parsed.recommendation}</div>`;
     }
     document.getElementById('ai-result-insight').innerHTML = insightHtml;
 
@@ -3043,7 +3220,7 @@ function updateAiHistory() {
   document.getElementById('ai-history').innerHTML = aiHistory.slice(0,5).map(h =>
     `<div class="metric-highlight">
       <div class="mh-icon" style="color:${uc[h.urgency]||'#3b82f6'}">✦</div>
-      <div><div class="mh-label">${h.urgency?.toUpperCase()||'ANALYSIS'}</div><div style="font-size:13px;color:var(--t1);">${h.title}</div></div>
+      <div><div class="mh-label">${h.urgency?.toUpperCase()||'ANALYSIS'}</div><div style="font-size:13px;color:var(--text1);">${h.title}</div></div>
     </div>`
   ).join('');
 }
@@ -3106,17 +3283,17 @@ function buildMarketing() {
     <div class="view-card">
       <div class="view-card-title">List Health</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:12px;">
-        <div style="text-align:center;padding:16px;background:#0c0c16;border-radius:10px;">
+        <div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;">
           <div style="font-size:28px;font-weight:900;color:#a78bfa;">${ps.listCount}</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;">Total Lists</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px;">Total Lists</div>
         </div>
-        <div style="text-align:center;padding:16px;background:#0c0c16;border-radius:10px;">
+        <div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;">
           <div style="font-size:28px;font-weight:900;color:${ps.emptyLists > 5 ? '#f59e0b' : '#10b981'};">${ps.emptyLists || 0}</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;">Empty Lists</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px;">Empty Lists</div>
         </div>
-        <div style="text-align:center;padding:16px;background:#0c0c16;border-radius:10px;">
+        <div style="text-align:center;padding:16px;background:var(--card-bg);border-radius:10px;">
           <div style="font-size:28px;font-weight:900;color:${staticPct > 70 ? '#f59e0b' : '#10b981'};">${staticPct}%</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;">Static Lists</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:4px;">Static Lists</div>
         </div>
       </div>
     </div>`;
@@ -3126,12 +3303,12 @@ function buildMarketing() {
     html += `<div class="view-card"><div class="view-card-title">Marketing Issues (${mktIssues.length})</div>`;
     mktIssues.forEach(i => {
       const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
-      html += `<div style="padding:12px 0;border-bottom:1px solid #1e1e32;">
+      html += `<div style="padding:12px 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;gap:8px;align-items:flex-start;">
           <span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:${c}20;color:${c};flex-shrink:0;margin-top:2px;">${i.severity.toUpperCase()}</span>
           <div>
-            <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;">${i.title}</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.4);">${i.impact || ''}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text1);margin-bottom:2px;">${i.title}</div>
+            <div style="font-size:11px;color:var(--text2);">${i.impact || ''}</div>
           </div>
         </div>
       </div>`;
@@ -3156,8 +3333,8 @@ function buildSequences() {
   if (!ps.sequences && ps.sequences !== 0) {
     html = `<div class="view-card" style="text-align:center;padding:40px;">
       <div style="font-size:32px;margin-bottom:12px;">🔒</div>
-      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Sequences require Sales Hub Pro or Enterprise</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.4);">Upgrade your HubSpot plan to unlock sequence health monitoring.</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text1);margin-bottom:8px;">Sequences require Sales Hub Pro or Enterprise</div>
+      <div style="font-size:13px;color:var(--text2);">Upgrade your HubSpot plan to unlock sequence health monitoring.</div>
     </div>`;
   } else {
     html = `<div class="kpi-grid">
@@ -3170,17 +3347,17 @@ function buildSequences() {
       html += `<div class="view-card"><div class="view-card-title">Sequence Issues</div>`;
       seqIssues.forEach(i => {
         const c = i.severity === 'critical' ? '#f43f5e' : '#f59e0b';
-        html += `<div style="padding:14px 0;border-bottom:1px solid #1e1e32;">
-          <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:4px;">${i.title}</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.45);margin-bottom:8px;">${i.description || ''}</div>
-          ${(i.guide || []).map((g,gi) => `<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:4px;">${gi+1}. ${g}</div>`).join('')}
+        html += `<div style="padding:14px 0;border-bottom:1px solid var(--border);">
+          <div style="font-size:13px;font-weight:600;color:var(--text1);margin-bottom:4px;">${i.title}</div>
+          <div style="font-size:12px;color:var(--text2);margin-bottom:8px;">${i.description || ''}</div>
+          ${(i.guide || []).map((g,gi) => `<div style="font-size:11px;color:var(--text3);margin-top:4px;">${gi+1}. ${g}</div>`).join('')}
         </div>`;
       });
       html += '</div>';
     } else if (ps.sequences > 0) {
       html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="color:rgba(255,255,255,.5);">All sequences healthy</div></div>`;
     } else {
-      html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">📧</div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;">No sequences configured</div><div style="font-size:12px;color:rgba(255,255,255,.4);">Sequences are automated email outreach tools in Sales Hub Pro. Set them up to scale prospecting without manual follow-up.</div></div>`;
+      html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">📧</div><div style="font-size:14px;font-weight:600;color:var(--text1);margin-bottom:6px;">No sequences configured</div><div style="font-size:12px;color:var(--text2);">Sequences are automated email outreach tools in Sales Hub Pro. Set them up to scale prospecting without manual follow-up.</div></div>`;
     }
   }
 
@@ -3208,21 +3385,21 @@ function buildLists() {
       <div class="view-card-title">List Type Breakdown</div>
       <div style="margin:16px 0;">
         <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-size:12px;color:rgba(255,255,255,.5);">Active (auto-updating)</span>
+          <span style="font-size:12px;color:var(--text2);">Active (auto-updating)</span>
           <span style="font-size:12px;font-weight:700;color:#10b981;">${activePct}%</span>
         </div>
-        <div style="background:#1e1e32;border-radius:4px;height:8px;overflow:hidden;margin-bottom:12px;">
+        <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;margin-bottom:12px;">
           <div style="background:#10b981;height:100%;width:${activePct}%;border-radius:4px;"></div>
         </div>
         <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-size:12px;color:rgba(255,255,255,.5);">Static (manually managed)</span>
+          <span style="font-size:12px;color:var(--text2);">Static (manually managed)</span>
           <span style="font-size:12px;font-weight:700;color:${staticPct > 70 ? '#f59e0b' : '#a78bfa'};">${staticPct}%</span>
         </div>
-        <div style="background:#1e1e32;border-radius:4px;height:8px;overflow:hidden;">
+        <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden;">
           <div style="background:${staticPct > 70 ? '#f59e0b' : '#a78bfa'};height:100%;width:${staticPct}%;border-radius:4px;"></div>
         </div>
       </div>
-      <div style="font-size:12px;color:rgba(255,255,255,.35);margin-top:12px;padding-top:12px;border-top:1px solid #1e1e32;">
+      <div style="font-size:12px;color:var(--text3);margin-top:12px;padding-top:12px;border-top:1px solid #1e1e32;">
         ${staticPct > 70 ? '⚠️ Most lists are static — contacts go stale without auto-updating criteria. Convert to active lists for better segmentation.' : '✅ Good mix of active and static lists.'}
       </div>
     </div>`;
@@ -3230,13 +3407,13 @@ function buildLists() {
     if (ps.emptyLists > 0) {
       html += `<div class="view-card" style="border-color:rgba(245,158,11,.2);">
         <div class="view-card-title">⚠️ Empty Lists (${ps.emptyLists})</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:8px;">
+        <div style="font-size:13px;color:var(--text2);margin-top:8px;">
           ${ps.emptyLists} list${ps.emptyLists!==1?'s':''} with zero contacts. These clutter your portal and slow list selection in workflows and emails. Archive lists that have been empty for 90+ days.
         </div>
       </div>`;
     }
   } else {
-    html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">📋</div><div style="font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;">No lists found</div><div style="font-size:12px;color:rgba(255,255,255,.4);">Create contact lists in Marketing to segment your audience for emails, workflows, and reporting.</div></div>`;
+    html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">📋</div><div style="font-size:14px;font-weight:600;color:var(--text1);margin-bottom:6px;">No lists found</div><div style="font-size:12px;color:var(--text2);">Create contact lists in Marketing to segment your audience for emails, workflows, and reporting.</div></div>`;
   }
 
   const el = document.getElementById('lists-content');
@@ -3266,12 +3443,12 @@ function buildAutomation() {
     html += `<div class="view-card" style="border-color:rgba(244,63,94,.3);">
       <div class="view-card-title" style="color:#f43f5e;">🚨 Workflows In Error State (${wfs.length})</div>
       <div style="margin-top:12px;">
-        ${wfs.map(wf => `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1e1e32;">
-          <span style="font-size:13px;color:#fff;">${wf.name || wf.id}</span>
+        ${wfs.map(wf => `<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:13px;color:var(--text1);">${wf.name || wf.id}</span>
           <span style="font-size:11px;background:rgba(244,63,94,.1);color:#f43f5e;padding:2px 10px;border-radius:10px;font-weight:700;">${wf.errorCount || 0} errors</span>
         </div>`).join('')}
       </div>
-      <div style="font-size:12px;color:rgba(255,255,255,.35);margin-top:12px;">Fix: HubSpot → Automation → Workflows → filter by "Needs attention"</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:12px;">Fix: HubSpot → Automation → Workflows → filter by "Needs attention"</div>
     </div>`;
   }
 
@@ -3279,11 +3456,11 @@ function buildAutomation() {
     html += `<div class="view-card"><div class="view-card-title">All Automation Issues (${autoIssues.length})</div>`;
     autoIssues.forEach(i => {
       const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
-      html += `<div style="padding:12px 0;border-bottom:1px solid #1e1e32;">
+      html += `<div style="padding:12px 0;border-bottom:1px solid var(--border);">
         <div style="display:flex;gap:8px;align-items:flex-start;">
           <span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:${c}20;color:${c};flex-shrink:0;margin-top:2px;">${i.severity.toUpperCase()}</span>
-          <div><div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;">${i.title}</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.4);">${i.impact || ''}</div></div>
+          <div><div style="font-size:13px;font-weight:600;color:var(--text1);margin-bottom:2px;">${i.title}</div>
+          <div style="font-size:11px;color:var(--text2);">${i.impact || ''}</div></div>
         </div>
       </div>`;
     });
@@ -3324,19 +3501,19 @@ function buildService() {
       <div class="view-card-title">NPS Score</div>
       <div style="text-align:center;padding:20px 0;">
         <div style="font-size:56px;font-weight:900;color:${npsCol};line-height:1;">${nd.score}</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.4);margin-top:6px;">NPS Score · ${nd.total} responses</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:6px;">NPS Score · ${nd.total} responses</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:20px;">
-          <div style="text-align:center;padding:12px;background:#0c0c16;border-radius:8px;">
+          <div style="text-align:center;padding:12px;background:var(--card-bg);border-radius:8px;">
             <div style="font-size:22px;font-weight:800;color:#10b981;">${nd.promoters}</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.4);">Promoters (9-10)</div>
+            <div style="font-size:10px;color:var(--text2);">Promoters (9-10)</div>
           </div>
-          <div style="text-align:center;padding:12px;background:#0c0c16;border-radius:8px;">
+          <div style="text-align:center;padding:12px;background:var(--card-bg);border-radius:8px;">
             <div style="font-size:22px;font-weight:800;color:#f59e0b;">${nd.total - nd.promoters - nd.detractors}</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.4);">Passives (7-8)</div>
+            <div style="font-size:10px;color:var(--text2);">Passives (7-8)</div>
           </div>
-          <div style="text-align:center;padding:12px;background:#0c0c16;border-radius:8px;">
+          <div style="text-align:center;padding:12px;background:var(--card-bg);border-radius:8px;">
             <div style="font-size:22px;font-weight:800;color:#f43f5e;">${nd.detractors}</div>
-            <div style="font-size:10px;color:rgba(255,255,255,.4);">Detractors (0-6)</div>
+            <div style="font-size:10px;color:var(--text2);">Detractors (0-6)</div>
           </div>
         </div>
       </div>
@@ -3344,8 +3521,8 @@ function buildService() {
   } else if (ps.npsResponses === 0) {
     html += `<div class="view-card" style="border-color:rgba(245,158,11,.2);">
       <div class="view-card-title">⚠️ NPS Not Configured</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.5);margin-top:8px;">No NPS survey data found. Customer satisfaction measurement is a critical leading indicator of churn and expansion revenue.</div>
-      <div style="margin-top:12px;font-size:12px;color:rgba(255,255,255,.35);">Setup: Service → Feedback Surveys → Create NPS Survey</div>
+      <div style="font-size:13px;color:var(--text2);margin-top:8px;">No NPS survey data found. Customer satisfaction measurement is a critical leading indicator of churn and expansion revenue.</div>
+      <div style="margin-top:12px;font-size:12px;color:var(--text3);">Setup: Service → Feedback Surveys → Create NPS Survey</div>
     </div>`;
   }
 
@@ -3353,9 +3530,9 @@ function buildService() {
     html += `<div class="view-card"><div class="view-card-title">Service Issues (${svcIssues.length})</div>`;
     svcIssues.forEach(i => {
       const c = i.severity === 'critical' ? '#f43f5e' : i.severity === 'warning' ? '#f59e0b' : '#a78bfa';
-      html += `<div style="padding:12px 0;border-bottom:1px solid #1e1e32;">
-        <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:2px;">${i.title}</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.4);">${i.impact || ''}</div>
+      html += `<div style="padding:12px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:13px;font-weight:600;color:var(--text1);margin-bottom:2px;">${i.title}</div>
+        <div style="font-size:11px;color:var(--text2);">${i.impact || ''}</div>
       </div>`;
     });
     html += '</div>';
@@ -3374,8 +3551,8 @@ function buildAuditHistory() {
   if (!history || history.length === 0) {
     if (el) el.innerHTML = `<div class="view-card" style="text-align:center;padding:40px;">
       <div style="font-size:32px;margin-bottom:12px;">🕐</div>
-      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">No history yet</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.4);">Audit history builds up over time with Pulse or Pro weekly scans. After your first Monday rescan, you will see trend data here.</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text1);margin-bottom:8px;">No history yet</div>
+      <div style="font-size:13px;color:var(--text2);">Audit history builds up over time with Pulse or Pro weekly scans. After your first Monday rescan, you will see trend data here.</div>
     </div>`;
     return;
   }
@@ -3395,13 +3572,13 @@ function buildAuditHistory() {
       ? `<span style="font-size:12px;font-weight:700;color:${delta>0?'#10b981':delta<0?'#f43f5e':'#888'};margin-left:8px;">${delta>0?'↑+':'↓'}${delta}</span>`
       : '';
 
-    html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
+    html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
       <div style="font-size:28px;font-weight:900;color:${col};min-width:52px;">${score}${deltaHtml}</div>
       <div style="flex:1;">
-        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">${date}</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.4);">${h.critical_count||0} critical · ${h.warning_count||0} warnings · ${waste} waste/mo · ${Number(h.records_scanned||0).toLocaleString()} records</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text1);margin-bottom:2px;">${date}</div>
+        <div style="font-size:11px;color:var(--text2);">${h.critical_count||0} critical · ${h.warning_count||0} warnings · ${waste} waste/mo · ${Number(h.records_scanned||0).toLocaleString()} records</div>
       </div>
-      <div style="font-size:11px;color:rgba(255,255,255,.3);">View full report →</div>
+      <div style="font-size:11px;color:var(--text3);">View full report →</div>
     </div>`;
   });
   html += '</div>';
@@ -3426,7 +3603,7 @@ function filterHistory() {
   if (!el) return;
 
   if (sorted.length === 0) {
-    el.innerHTML = '<div class="view-card" style="text-align:center;padding:32px;color:rgba(255,255,255,.4);">No audits in this time range</div>';
+    el.innerHTML = '<div class="view-card" style="text-align:center;padding:32px;color:var(--text2);">No audits in this time range</div>';
     return;
   }
 
@@ -3436,13 +3613,13 @@ function filterHistory() {
     const score = h.score || 0;
     const col = score >= 80 ? '#10b981' : score >= 60 ? '#f59e0b' : '#f43f5e';
     const waste = h.monthly_waste ? '$' + Number(h.monthly_waste).toLocaleString() : '—';
-    html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
+    html += `<div style="display:flex;align-items:center;gap:16px;padding:16px 20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;cursor:pointer;" onclick="window.location.href='results.html?id=${h.audit_id}'">
       <div style="font-size:28px;font-weight:900;color:${col};min-width:52px;">${score}</div>
       <div style="flex:1;">
-        <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:2px;">${date}</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.4);">${h.critical_count||0} critical · ${h.warning_count||0} warnings · ${waste} waste/mo</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text1);margin-bottom:2px;">${date}</div>
+        <div style="font-size:11px;color:var(--text2);">${h.critical_count||0} critical · ${h.warning_count||0} warnings · ${waste} waste/mo</div>
       </div>
-      <div style="font-size:11px;color:rgba(255,255,255,.3);">View →</div>
+      <div style="font-size:11px;color:var(--text3);">View →</div>
     </div>`;
   });
   html += '</div>';
@@ -3458,8 +3635,8 @@ function buildDelta() {
   if (!history || history.length < 2) {
     el.innerHTML = `<div class="view-card" style="text-align:center;padding:40px;">
       <div style="font-size:32px;margin-bottom:12px;">↕️</div>
-      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">Need at least 2 audits for comparison</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.4);">Week-over-week analysis becomes available after your second Monday rescan. This view shows exactly what improved and what got worse each week.</div>
+      <div style="font-size:15px;font-weight:700;color:var(--text1);margin-bottom:8px;">Need at least 2 audits for comparison</div>
+      <div style="font-size:13px;color:var(--text2);">Week-over-week analysis becomes available after your second Monday rescan. This view shows exactly what improved and what got worse each week.</div>
     </div>`;
     return;
   }
@@ -3479,9 +3656,9 @@ function buildDelta() {
     const col = neutral ? '#888' : positive ? '#10b981' : '#f43f5e';
     const arrow = val > 0 ? '↑' : val < 0 ? '↓' : '→';
     const display = label === 'Waste' ? '$' + Math.abs(wasteDelta).toLocaleString() : Math.abs(val);
-    return `<div style="padding:20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;text-align:center;">
+    return `<div style="padding:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;text-align:center;">
       <div style="font-size:32px;font-weight:900;color:${col};">${arrow}${display}</div>
-      <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;">${label}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:6px;">${label}</div>
     </div>`;
   };
 
@@ -3489,14 +3666,14 @@ function buildDelta() {
   const prevDate    = previous.created_at ? new Date(previous.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'Previous';
 
   let html = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:16px 20px;background:#0c0c16;border:1px solid #1e1e32;border-radius:12px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:16px 20px;background:var(--card-bg);border:1px solid var(--border);border-radius:12px;">
       <div style="text-align:center;">
-        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;">Previous (${prevDate})</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Previous (${prevDate})</div>
         <div style="font-size:36px;font-weight:900;color:${(previous.score||0)>=80?'#10b981':(previous.score||0)>=60?'#f59e0b':'#f43f5e'};">${previous.score||0}</div>
       </div>
-      <div style="font-size:28px;color:rgba(255,255,255,.2);">→</div>
+      <div style="font-size:28px;color:var(--text3);">→</div>
       <div style="text-align:center;">
-        <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:4px;">Current (${currentDate})</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:4px;">Current (${currentDate})</div>
         <div style="font-size:36px;font-weight:900;color:${(current.score||0)>=80?'#10b981':(current.score||0)>=60?'#f59e0b':'#f43f5e'};">${current.score||0}</div>
       </div>
     </div>
@@ -3517,14 +3694,14 @@ function buildDelta() {
   if (fixedIssues.length > 0) {
     html += `<div class="view-card" style="border-color:rgba(16,185,129,.2);">
       <div class="view-card-title" style="color:#10b981;">✅ Fixed This Week (${fixedIssues.length})</div>
-      ${fixedIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid #1e1e32;font-size:13px;color:rgba(255,255,255,.6);">✓ ${t}</div>`).join('')}
+      ${fixedIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);">✓ ${t}</div>`).join('')}
     </div>`;
   }
 
   if (newIssues.length > 0) {
     html += `<div class="view-card" style="border-color:rgba(244,63,94,.2);">
       <div class="view-card-title" style="color:#f43f5e;">🆕 New Issues This Week (${newIssues.length})</div>
-      ${newIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid #1e1e32;font-size:13px;color:rgba(255,255,255,.6);">• ${t}</div>`).join('')}
+      ${newIssues.map(t => `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--text2);">• ${t}</div>`).join('')}
     </div>`;
   }
 
@@ -3554,7 +3731,7 @@ function buildDelta() {
           return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
             <div style="font-size:9px;font-weight:700;color:${col2};">${audit.score||0}</div>
             <div style="width:100%;background:${col2};border-radius:4px 4px 0 0;height:${pct}px;min-height:4px;"></div>
-            <div style="font-size:8px;color:rgba(255,255,255,.3);white-space:nowrap;">${date2}</div>
+            <div style="font-size:8px;color:var(--text3);white-space:nowrap;">${date2}</div>
           </div>`;
         }).join('')}
       </div>
@@ -3567,8 +3744,8 @@ function buildDelta() {
 // ── KPI helper ───────────────────────────────────────────────────────────────
 function kpi(label, value, sub, color) {
   return '<div class="kpi-card">' +
-    '<div class="kpi-val" style="color:' + (color||'#fff') + '">' + value + '</div>' +
     '<div class="kpi-label">' + label + '</div>' +
+    '<div class="kpi-val" style="color:' + (color||'var(--text1)') + '">' + value + '</div>' +
     (sub ? '<div class="kpi-sub">' + sub + '</div>' : '') +
   '</div>';
 }
