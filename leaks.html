@@ -468,8 +468,8 @@ function renderLeaks(data, auditId) {
   });
 
   // 3. Dead Workflows (missed automation value)
-  var autoIssue = issues.find(function(i){ return i.title && i.title.includes('workflows') && i.title.includes('zero enrollment'); });
-  var deadWf = autoIssue ? parseInt(autoIssue.title) || 0 : 0;
+  // Read directly from portalStats (server now provides this)
+  var deadWf = ps.deadWorkflowCount || 0;
   var wfLeak = Math.round(deadWf * 22);
   leaks.push({
     id: 'workflows',
@@ -478,7 +478,7 @@ function renderLeaks(data, auditId) {
     amount: wfLeak,
     period: '/mo in missed automation',
     desc: deadWf + ' active workflows enrolling nobody. Each one represents automation that\'s not working.',
-    metric: deadWf + ' dead workflows · avg $22/workflow/mo',
+    metric: deadWf + ' workflows with 0 enrollments · $22/workflow/mo opportunity cost',
     color: '#8b5cf6',
     colorBg: 'rgba(139,92,246,.1)',
     severity: deadWf > 5 ? 'critical' : 'warning',
@@ -486,8 +486,8 @@ function renderLeaks(data, auditId) {
   });
 
   // 4. Duplicate contacts (billing inflation)
-  var dupeIssue = issues.find(function(i){ return i.title && i.title.includes('duplicate'); });
-  var dupes = dupeIssue ? parseInt(dupeIssue.title) || 0 : 0;
+  // Read directly from portalStats (server now provides this)
+  var dupes = ps.duplicateContactCount || 0;
   var dupeLeak = Math.round(dupes * 0.45);
   leaks.push({
     id: 'dupes',
@@ -496,7 +496,7 @@ function renderLeaks(data, auditId) {
     amount: dupeLeak,
     period: '/mo in inflated billing',
     desc: dupes + ' potential duplicate contacts eating into your contact tier limit and billing.',
-    metric: dupes + ' duplicates · ~$0.45 each in billing waste',
+    metric: dupes + ' potential duplicates · ~$0.45 each inflating billing tier',
     color: '#f59e0b',
     colorBg: 'rgba(245,158,11,.1)',
     severity: dupes > 15 ? 'critical' : 'warning',
@@ -505,8 +505,12 @@ function renderLeaks(data, auditId) {
 
   // 5. Email deliverability damage (bounce risk)
   var bounceContacts = ps.highBounceEmails || 0;
+  var noEmailContacts = ps.noEmailContactCount || 0;
   var coldContacts = ps.coldContacts || 0;
-  var emailLeak = Math.round(bounceContacts * 8 + coldContacts * 0.5);
+  // $8/contact with hard bounce (list damage + re-engagement cost)
+  // $1.20/contact with no email (missed nurture value)
+  // $0.30/cold contact (billing cost with zero pipeline value)
+  var emailLeak = Math.round(bounceContacts * 8 + noEmailContacts * 1.2 + coldContacts * 0.3);
   // $8/contact with hard bounce (list damage) + $0.50/cold contact (opportunity cost)
   leaks.push({
     id: 'email',

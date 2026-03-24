@@ -575,10 +575,10 @@ function showResults(data) {
   });
 
   // ── Insight Cards ───────────────────────────────────────────────────────────
-  buildInsightCards(ps, ovr, auditId);
-  buildCertSection(auditId, ovr);
+  try { buildInsightCards(ps, ovr, auditId); } catch(e) { console.warn('insight cards:', e); }
+  try { buildCertSection(auditId, ovr); } catch(e) { console.warn('cert section:', e); }
 
-    // ── Fix Plan ─────────────────────────────────────────────────────────────
+  // ── Fix Plan ─────────────────────────────────────────────────────────────
   buildFixPlan(data);
 
   // CTA
