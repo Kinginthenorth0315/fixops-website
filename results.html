@@ -353,6 +353,10 @@ function showResults(data) {
   var summary  = data.summary   || {};
   var scores   = data.scores    || {};
   var issues   = data.issues    || [];
+  // Debug: show data shape in console and debug panel
+  console.log('[FixOps] showResults called');
+  console.log('[FixOps] issues:', issues.length, '| scores:', Object.keys(scores).length, '| contacts:', (data.portalInfo?.portalStats?.contacts||0));
+
   var portal   = data.portalInfo|| {};
   var ps       = portal.portalStats || {};
   var plan     = portal.plan    || 'free';
@@ -461,7 +465,7 @@ function showResults(data) {
   });
 
   // ── Hub Intelligence ──────────────────────────────────────────────────────
-  renderHubIntelligence(ps, scores, plan);
+  renderHubIntelligence(ps, scores, plan, waste, criticals);
 
   // ── Issues ────────────────────────────────────────────────────────────────
   var sorted = issues.slice().sort(function(a,b){
@@ -536,7 +540,9 @@ function showResults(data) {
 }
 
 // ── Hub Intelligence ─────────────────────────────────────────────────────────
-function renderHubIntelligence(ps, scores, plan) {
+function renderHubIntelligence(ps, scores, plan, waste, criticals) {
+  waste = waste || 0;
+  criticals = criticals || 0;
   var grid = document.getElementById('hub-intel-grid');
   if (!grid) return;
   var cards = [];
