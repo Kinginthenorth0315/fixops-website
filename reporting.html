@@ -592,6 +592,24 @@ nav {
   .main { padding:12px; }
   .ai-input-row { flex-direction:column; }
 }
+
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Free tier data cap notice */
+.free-cap-notice {
+  background: rgba(124,58,237,.06);
+  border: 1px solid rgba(124,58,237,.16);
+  border-left: 3px solid var(--brand);
+  border-radius: 0 8px 8px 0;
+  padding: 10px 14px;
+  font-size: 12px; color: var(--t2);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.free-cap-notice a { color: var(--brand-lt); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -1233,14 +1251,7 @@ async function loadFromToken(token) {
 
     // Dim locked sidebar items for non-Pro
     if (!isProOrAbove) {
-      document.querySelectorAll('[data-pro-view="true"]').forEach(el => {
-        el.classList.add('locked-sidebar');
-        el.style.opacity = '0.45';
-        el.style.cursor = 'default';
-        // Re-enable click so they can still see the blur overlay
-        el.style.pointerEvents = 'auto';
-        el.style.cursor = 'pointer';
-      });
+      
       // Dim team sidebar for free users
       if (isFree) {
         const teamItem = document.querySelector(".sidebar-item[onclick*='team']");
@@ -1255,298 +1266,86 @@ async function loadFromToken(token) {
     if (bannerEl) {
       if (isFree) {
         bannerEl.innerHTML =
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
-            '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+              '<span style="font-size:18px;">✦</span>' +
+              '<div>' +
+                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">Free Snapshot — up to 1,000 contacts scanned</div>' +
+                '<div style="font-size:11px;color:var(--t3);">All views are visible. Upgrade for full portal scans, weekly monitoring, score trends, and unlimited AI analysis.</div>' +
+              '</div>' +
             '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--t1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
+            '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">See Plans →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isPulseOrAbove && !isProOrAbove) {
         bannerEl.innerHTML =
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
-            '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
-            '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--t1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
+          '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<span style="font-size:16px;">📡</span>' +
+            '<div style="font-size:12px;color:var(--t2);">Pulse Plan — weekly monitoring active. <a href="https://fixops.io/#pricing" style="color:var(--brand-lt);font-weight:600;">Upgrade to Pro</a> for full portal scans and rep scorecard.</div>' +
           '</div>';
         bannerEl.style.display = 'block';
       }
     }
 
-    // Lock premium sections for non-Pro with blur overlay
-    if (!isProOrAbove) {
-      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts', 'revenue', 'company', 'engagement'];
-      const pulseViews = ['trends', 'roi'];
-      proViews.forEach(viewName => {
-        const el = document.getElementById('view-' + viewName);
-        if (!el) return;
-        // Wrap content in blur
-        const existingContent = el.innerHTML;
-        el.style.position = 'relative';
-        el.innerHTML = existingContent +
-          '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
-            '<div style="text-align:center;max-width:380px;padding:32px;">' +
-              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Pro Feature</div>' +
-              '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px;">' +
-                (viewName === 'ai' ? 'AI Report Builder — ask any question about your HubSpot data in plain English. Powered by Claude.' :
-                 viewName === 'funnel' ? 'Lifecycle Funnel — cross-object funnel HubSpot cannot build without Enterprise.' :
-                 viewName === 'velocity' ? 'Deal Velocity — track how fast deals move through each stage.' :
-                 viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
-                 'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
-              '</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--t1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
-            '</div>' +
-          '</div>';
-      });
+// ── FREEMIUM ACCESS MODEL ──────────────────────────────────────────────────
+  // Strategy: Show everything with real data. Gate depth, not visibility.
+  // Free = all views open, 3 AI queries, trends/ROI show empty upsell state
+  // Pulse+ = unlimited AI, full trends/ROI/history
+  // Pro+ = everything
 
-      // Lock trends/roi for free users (need Pulse monitoring data)
-      if (!isPulseOrAbove) {
-        ['trends','roi'].forEach(vn => {
-          const el = document.getElementById('view-'+vn);
-          if (!el) return;
-          const tc = el.innerHTML;
-          el.style.position = 'relative';
-          el.innerHTML = tc + '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
-            '<div style="text-align:center;max-width:380px;padding:32px;">' +
-              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Pulse Feature</div>' +
-              '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--t1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
-            '</div>' +
-          '</div>';
-        });
-      }
+  window.AI_QUERIES_USED = 0;
+  window.AI_QUERY_LIMIT = isFree ? 3 : isPulseOrAbove ? 999 : 5;
 
-      // Also lock Team section for non-Pulse (free only)
-      if (isFree) {
-        const teamEl = document.getElementById('view-team');
-        if (teamEl) {
-          const tc = teamEl.innerHTML;
-          teamEl.style.position = 'relative';
-          teamEl.innerHTML = tc +
-            '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
-              '<div style="text-align:center;max-width:380px;padding:32px;">' +
-                '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-                '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Pulse Feature</div>' +
-                '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
-                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--t1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
-              '</div>' +
-            '</div>';
-        }
-      }
-    }
-  } catch(e) {
-    document.getElementById('loading-state').innerHTML =
-      '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
-      '<div style="font-family:var(--font);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">'+e.message+'</div>' +
-      '<div style="font-size:12px;color:var(--t3);"><a href="dashboard.html" style="color:var(--brand-lt)">Return to dashboard</a></div>';
+  // Trends / ROI / History require historical data — only Pulse+ builds that
+  // Show them but with a meaningful empty state explaining the value
+  const historyViews = ['trends', 'roi', 'history'];
+  if (isFree || !isPulseOrAbove) {
+    historyViews.forEach(function(viewName) {
+      var el = document.getElementById('view-' + viewName);
+      if (!el) return;
+      var badge = document.getElementById('sidebar-' + viewName);
+      if (badge) badge.classList.add('locked-sidebar');
+      // Replace with informative empty state — not a blur
+      el.innerHTML =
+        '<div class="view-header"><div class="vh-left">' +
+          '<div class="vh-badge">PULSE FEATURE</div>' +
+          '<div class="vh-title">' + (viewName==='trends'?'Score Trends':viewName==='roi'?'ROI Calculator':'Audit History') + '</div>' +
+          '<p>Tracks your portal health over time — requires weekly monitoring to build data</p>' +
+        '</div></div>' +
+        '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">' +
+          '<div style="font-size:52px;margin-bottom:20px;opacity:.25;">📈</div>' +
+          '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">This view builds over time</div>' +
+          '<div style="font-size:13px;color:var(--t3);max-width:400px;line-height:1.7;margin-bottom:24px;">' +
+            'Pulse Weekly Monitoring runs your audit every week and tracks your score, issue count, and waste estimate over time. ' +
+            'After 4 weeks you\'ll have trend lines, before/after comparisons, and ROI calculations.' +
+          '</div>' +
+          '<a href="https://fixops.io/#pricing" target="_blank" style="padding:12px 28px;background:var(--brand);color:#fff;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Start Pulse Monitoring — $49/mo →</a>' +
+        '</div>';
+    });
   }
-}
 
-async function loadData() {
-  try {
-    // Use snapshot endpoint — enriches with history when token present
-    const snapshotUrl = TOKEN
-      ? API+'/snapshot/'+auditId+'?token='+encodeURIComponent(TOKEN)
-      : API+'/snapshot/'+auditId;
-    
-    // Add 15s timeout
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-    let res;
-    try {
-      res = await fetch(snapshotUrl, {cache:'no-store', signal: controller.signal});
-      clearTimeout(timeout);
-    } catch(fetchErr) {
-      clearTimeout(timeout);
-      if (fetchErr.name === 'AbortError') throw new Error('Request timed out — the server may be waking up, please try refreshing in 30 seconds');
-      throw new Error('Could not reach FixOps server — check your connection and try again');
-    }
-    if (!res.ok) {
-      if (res.status === 404) throw new Error('Audit not found — this link may have expired or the ID is incorrect');
-      throw new Error('Server error (' + res.status + ') — please try again');
-    }
-    DATA = await res.json();
-    if (!DATA || (!DATA.issues && !DATA.scores)) {
-      throw new Error('Audit still running or no data');
-    }
-    // Make history globally available
-    window.HISTORY = DATA.history || [];
-    window.HAS_HISTORY = DATA.hasHistory || false;
-    document.getElementById('loading-state').style.display = 'none';
-    document.getElementById('views').style.display = 'block';
-    const company = DATA.portalInfo?.company || 'Your Portal';
-    document.getElementById('portal-badge').textContent = company + ' · Snapshot';
-    document.title = 'FixOps Intelligence — '+company;
-    // Tiered access — everyone sees snapshot, Pro/Agency unlock premium sections
-    const auditPlan = DATA.plan || 'free';
-    const isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
-    const isPulseOrAbove = ['pulse','pro','command','pro-audit','deep'].includes(auditPlan);
-    const isFree = !isPulseOrAbove;
-
-    // Store globally so views can check
-    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
-    // Show plan badge in nav
-    const navPlanBadge = document.getElementById('nav-plan-badge');
-    if (navPlanBadge) {
-      const planLabel = {free:'FREE',pulse:'PULSE',pro:'PRO',command:'AGENCY','pro-audit':'PRO AUDIT',deep:'DEEP AUDIT'}[auditPlan]||auditPlan.toUpperCase();
-      navPlanBadge.textContent = planLabel;
-      navPlanBadge.style.display = 'inline';
-      if (isProOrAbove) navPlanBadge.style.background = 'rgba(16,185,129,.15)';
-      if (isProOrAbove) navPlanBadge.style.color = '#3b6fd4';
-    }
-
-    // Show the dashboard for everyone
-    initAllViews();
-    setupAiSuggestions();
-
-    // Dim locked sidebar items for non-Pro
-    if (!isProOrAbove) {
-      document.querySelectorAll('[data-pro-view="true"]').forEach(el => {
-        el.classList.add('locked-sidebar');
-        el.style.opacity = '0.45';
-        el.style.cursor = 'default';
-        // Re-enable click so they can still see the blur overlay
-        el.style.pointerEvents = 'auto';
-        el.style.cursor = 'pointer';
-      });
-      // Dim team sidebar for free users
-      if (isFree) {
-        const teamItem = document.querySelector(".sidebar-item[onclick*='team']");
-        if (teamItem) {
-          teamItem.style.opacity = '0.45';
-        }
-      }
-    }
-
-    // Inject plan banner at top of main content
-    const bannerEl = document.getElementById('plan-banner');
-    if (bannerEl) {
-      if (isFree) {
-        bannerEl.innerHTML =
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
-            '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">📊 Preview Mode — based on your free partial scan (up to 1,000 contacts)</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Pro gives you a full portal scan, AI report builder, weekly monitoring, and rep scorecard.</div>' +
-            '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--t1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro →</a>' +
-          '</div>';
-        bannerEl.style.display = 'block';
-      } else if (isPulseOrAbove && !isProOrAbove) {
-        bannerEl.innerHTML =
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
-            '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">⚡ Pulse Plan — AI Report Builder and advanced sections are Pro features</div>' +
-              '<div style="font-size:11px;color:var(--t3);">Upgrade to Pro for AI-powered analysis, lifecycle funnel, deal velocity, and rep scorecard.</div>' +
-            '</div>' +
-            '<a href="index.html#pricing" style="flex-shrink:0;padding:8px 18px;background:var(--brand);color:var(--t1);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade to Pro — $549/mo →</a>' +
-          '</div>';
-        bannerEl.style.display = 'block';
-      }
-    }
-
-    // Lock premium sections for non-Pro with blur overlay
-    if (!isProOrAbove) {
-      const proViews = ['ai', 'funnel', 'velocity', 'forecast', 'contacts', 'revenue', 'company', 'engagement'];
-      const pulseViews = ['trends', 'roi'];
-      proViews.forEach(viewName => {
-        const el = document.getElementById('view-' + viewName);
-        if (!el) return;
-        // Wrap content in blur
-        const existingContent = el.innerHTML;
-        el.style.position = 'relative';
-        el.innerHTML = existingContent +
-          '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
-            '<div style="text-align:center;max-width:380px;padding:32px;">' +
-              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Pro Feature</div>' +
-              '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px;">' +
-                (viewName === 'ai' ? 'AI Report Builder — ask any question about your HubSpot data in plain English. Powered by Claude.' :
-                 viewName === 'funnel' ? 'Lifecycle Funnel — cross-object funnel HubSpot cannot build without Enterprise.' :
-                 viewName === 'velocity' ? 'Deal Velocity — track how fast deals move through each stage.' :
-                 viewName === 'forecast' ? 'Forecast Analysis — revenue projection based on real close dates.' :
-                 'Contact Intelligence — engagement gaps, owner coverage, and data completeness.') +
-              '</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--t1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pro — $549/mo →</a>' +
-            '</div>' +
-          '</div>';
-      });
-
-      // Lock trends/roi for free users (need Pulse monitoring data)
-      if (!isPulseOrAbove) {
-        ['trends','roi'].forEach(vn => {
-          const el = document.getElementById('view-'+vn);
-          if (!el) return;
-          const tc = el.innerHTML;
-          el.style.position = 'relative';
-          el.innerHTML = tc + '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
-            '<div style="text-align:center;max-width:380px;padding:32px;">' +
-              '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-              '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Pulse Feature</div>' +
-              '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px;">Score trends, ROI tracking, and issue history require weekly monitoring data. Available on Pulse and above.</div>' +
-              '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--t1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
-            '</div>' +
-          '</div>';
-        });
-      }
-
-      // Also lock Team section for non-Pulse (free only)
-      if (isFree) {
-        const teamEl = document.getElementById('view-team');
-        if (teamEl) {
-          const tc = teamEl.innerHTML;
-          teamEl.style.position = 'relative';
-          teamEl.innerHTML = tc +
-            '<div style="position:absolute;inset:0;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);background:rgba(8,6,26,.7);display:flex;align-items:center;justify-content:center;border-radius:12px;z-index:10;">' +
-              '<div style="text-align:center;max-width:380px;padding:32px;">' +
-                '<div style="font-size:36px;margin-bottom:12px;">🔒</div>' +
-                '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">Pulse Feature</div>' +
-                '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:20px;">Rep Activity Scorecard and Ghost Seat detection — included with Pulse weekly monitoring.</div>' +
-                '<a href="index.html#pricing" style="display:inline-block;padding:12px 24px;background:var(--brand);color:var(--t1);border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Get Pulse — $299/mo →</a>' +
-              '</div>' +
-            '</div>';
-        }
-      }
-    }
-  } catch(e) {
-    document.getElementById('loading-state').innerHTML =
-      '<div style="font-size:40px;margin-bottom:12px">⚠️</div>' +
-      '<div style="font-family:var(--font);font-size:16px;font-weight:700;color:var(--t2);margin-bottom:6px;">'+e.message+'</div>' +
-      '<div style="font-size:12px;color:var(--t3);">Check your email for the results link or <a href="index.html" style="color:var(--brand-lt)">run a new audit</a>.</div>';
+  // AI Builder — show with free query counter
+  // Intercept runAiReport to enforce limit
+  window._originalRunAiReport = null; // set after function defined
+  
+  // Sidebar locked items for history views
+  if (isFree) {
+    ['sidebar-trends','sidebar-roi','sidebar-history'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.add('locked-sidebar');
+    });
   }
-}
 
-// ── View navigation ──────────────────────────────────────────────────────────
-function showView(name) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
-  const v = document.getElementById('view-'+name);
-  if (v) v.classList.add('active');
-  // Mark active sidebar item
-  const sidebarItem = document.querySelector('.sidebar-item[data-view="'+name+'"]');
-  if (sidebarItem) sidebarItem.classList.add('active');
-  else if (event?.currentTarget) event.currentTarget.classList.add('active');
-  // Scroll main content to top
-  const main = document.querySelector('.main');
-  if (main) main.scrollTop = 0;
-}
-
-// ── Initialize all views ─────────────────────────────────────────────────────
-function setTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('fixops-theme', theme);
-  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('theme-' + theme);
-  if (btn) btn.classList.add('active');
-  // Update Chart.js color defaults to match theme
-  const isLt = theme === 'light';
-  Chart.defaults.color = isLt ? 'rgba(60,65,80,.55)' : 'rgba(180,188,208,.5)';
-  Chart.defaults.borderColor = isLt ? 'rgba(0,0,0,.06)' : 'rgba(255,255,255,.05)';
-}
+  // Contextual upgrade banner — appears after 45s on any view for free users
+  if (isFree) {
+    setTimeout(function() {
+      var banner = document.getElementById('upgrade-float');
+      if (banner) {
+        banner.style.display = 'flex';
+        banner.style.animation = 'slideUp .3s ease';
+      }
+    }, 45000);
+  }
 
 // Apply saved theme on load
 (function() {
@@ -3123,6 +2922,31 @@ function setAiQuery(q) {
 async function runAiReport() {
   const query = document.getElementById('ai-query').value.trim();
   if (!query) return;
+
+  // Free tier: 3 AI queries then soft gate
+  const tier = window.PLAN_TIER || {};
+  if (tier.isFree) {
+    window.AI_QUERIES_USED = (window.AI_QUERIES_USED || 0);
+    if (window.AI_QUERIES_USED >= 3) {
+      document.getElementById('ai-result').classList.add('show');
+      document.getElementById('ai-result-insight').innerHTML =
+        '<div style="text-align:center;padding:20px;">' +
+          '<div style="font-size:32px;margin-bottom:12px;">✦</div>' +
+          '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:8px;">You\'ve used your 3 free analyses</div>' +
+          '<div style="font-size:12px;color:var(--t3);max-width:340px;margin:0 auto 16px;line-height:1.65;">' +
+            'Upgrade to Pulse for unlimited AI report analysis, weekly monitoring, score trends, and full data across all contacts.' +
+          '</div>' +
+          '<a href="https://fixops.io/#pricing" target="_blank" style="display:inline-block;padding:10px 24px;background:var(--brand);color:#fff;border-radius:7px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to Pulse — $49/mo →</a>' +
+        '</div>';
+      document.getElementById('ai-result-title').textContent = 'Analysis Limit Reached';
+      document.getElementById('ai-urgency-badge').style.display = 'none';
+      return;
+    }
+    window.AI_QUERIES_USED++;
+    // Show remaining count
+    const remaining = 3 - window.AI_QUERIES_USED;
+    document.getElementById('ai-btn').title = remaining > 0 ? remaining + ' free analyses remaining' : 'Last free analysis';
+  }
   if (!DATA) { alert('Please wait for audit data to load.'); return; }
 
   const btn = document.getElementById('ai-btn');
@@ -3824,9 +3648,45 @@ function buildDelta() {
   el.innerHTML = html;
 }
 
+
+  } catch(e) { console.warn('Dashboard error:', e); }
+} // end loadData function
+
 // ── KPI helper ───────────────────────────────────────────────────────────────
-
-
+function kpi(label, value, sub, color, trend) {
+  var colorVarMap = {
+    blue:   'var(--steel2)',
+    green:  'var(--pos)',
+    amber:  'var(--warn)',
+    red:    'var(--neg)',
+    purple: 'var(--brand-lt)',
+  };
+  var c = colorVarMap[color] || 'var(--t1)';
+  var cls = color ? ' ' + color : '';
+  var trendHtml = trend ? '<span class="kpi-trend ' + trend + '">' + trend + '</span>' : '';
+  return '<div class="kpi-card' + cls + '">' +
+    '<div class="kpi-label">' + label + '</div>' +
+    '<div class="kpi-value" style="color:' + c + '">' + value + '</div>' +
+    '<div class="kpi-sub">' + (sub||'') + trendHtml + '</div>' +
+  '</div>';
+}
 </script>
+
+  <!-- Floating upgrade nudge for free users -->
+  <div id="upgrade-float" style="display:none;position:fixed;bottom:24px;right:24px;z-index:300;
+    background:var(--card-bg);border:1px solid var(--b1);border-radius:12px;
+    padding:16px 20px;max-width:320px;box-shadow:var(--sh2);
+    align-items:flex-start;gap:12px;">
+    <div style="font-size:24px;flex-shrink:0;">✦</div>
+    <div style="flex:1;">
+      <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px;">Enjoying your snapshot?</div>
+      <div style="font-size:12px;color:var(--t3);line-height:1.55;margin-bottom:12px;">Upgrade to Pulse for weekly monitoring, score trends, unlimited AI analysis, and full data across all your contacts.</div>
+      <div style="display:flex;gap:8px;">
+        <a href="https://fixops.io/#pricing" target="_blank" style="flex:1;text-align:center;padding:8px 0;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;">See Plans</a>
+        <button onclick="document.getElementById('upgrade-float').style.display='none'" style="padding:8px 12px;background:var(--s2);border:1px solid var(--b1);border-radius:6px;font-size:12px;color:var(--t3);cursor:pointer;font-family:var(--font);">Later</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
