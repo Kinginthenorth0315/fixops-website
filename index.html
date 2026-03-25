@@ -954,11 +954,66 @@ var STRIPE_LINKS = {
   'command':  'https://buy.stripe.com/cNi3cv2rw9f46HG69f8Ra09'
 };
 
+var _pendingStripePlan = '';
 function goStripe(plan) {
-  var link = STRIPE_LINKS[plan];
-  if (link) {
-    window.open(link, '_blank');
+  // Monthly plans — go straight to Stripe (email captured at OAuth step)
+  if (['pulse','pro','command'].includes(plan)) {
+    var link = STRIPE_LINKS[plan];
+    if (link) window.open(link, '_blank');
+    return;
   }
+  // One-time audits — collect email + company first, then redirect to Stripe
+  _pendingStripePlan = plan;
+  var label = plan === 'pro_audit' ? 'Pro Audit — $699' : 'Deep Audit — $399';
+  document.getElementById('pre-stripe-plan-label').textContent = label;
+  document.getElementById('pre-stripe-email').value = '';
+  document.getElementById('pre-stripe-company').value = '';
+  document.getElementById('pre-stripe-error').style.display = 'none';
+  document.getElementById('pre-stripe-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ document.getElementById('pre-stripe-email').focus(); }, 100);
+}
+
+function closePreStripeModal() {
+  document.getElementById('pre-stripe-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  _pendingStripePlan = '';
+}
+
+async function proceedToStripe() {
+  var email   = document.getElementById('pre-stripe-email').value.trim();
+  var company = document.getElementById('pre-stripe-company').value.trim();
+  var errEl   = document.getElementById('pre-stripe-error');
+  var btn     = document.getElementById('pre-stripe-btn');
+
+  errEl.style.display = 'none';
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    document.getElementById('pre-stripe-email').focus();
+    return;
+  }
+  if (!company) {
+    errEl.textContent = 'Company name is required so we can personalise your audit.';
+    errEl.style.display = 'block';
+    document.getElementById('pre-stripe-company').focus();
+    return;
+  }
+
+  // Save lead silently
+  fetch('https://fixops-api-production.up.railway.app/lead/capture', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ email, company, plan: _pendingStripePlan, source: 'one-time-pre-stripe' })
+  }).catch(()=>{});
+
+  // Redirect to Stripe with email pre-filled
+  var baseUrl = STRIPE_LINKS[_pendingStripePlan];
+  if (!baseUrl) return;
+  var stripeUrl = baseUrl + '?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + encodeURIComponent(company);
+  btn.textContent = 'Redirecting to payment…';
+  btn.disabled = true;
+  closePreStripeModal();
+  window.open(stripeUrl, '_blank');
 }
 
 function goCalendly() {
@@ -1505,7 +1560,7 @@ function showOnetime() {
       <button onclick="bookPaidCall()" style="width:100%;padding:15px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">
         Book Your Setup Call ↗
       </button>
-      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;">matthew@fixops.io · response within 4 hours</p>
+      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="422f2336362a273502242b3a2d32316c2b2d">[email&#160;protected]</a> · response within 4 hours</p>
     </div>
 
     <!-- STEP 3: Connecting / Demo result -->
@@ -1625,7 +1680,7 @@ function showOnetime() {
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 </style>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Stars
 (()=>{const c=document.getElementById('stars');for(let i=0;i<105;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()<.12?2.5:Math.random()<.4?2:1.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*6}s;--dl:-${Math.random()*6}s`;c.appendChild(s);}})();
 
@@ -2125,11 +2180,33 @@ async function submitAgencyInquiry() {
     btn.disabled = false;
   }
 }
+
 // Close on backdrop click
 document.getElementById('agency-modal').addEventListener('click', function(e){
   if (e.target === this) closeAgencyModal();
 });
 </script>
+
+<!-- ── Pre-Stripe Modal (one-time audits) ──────────────────────────────────── -->
+<div id="pre-stripe-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.87);z-index:9999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closePreStripeModal()">
+  <div style="background:#0c0c14;border:1px solid #22223a;border-radius:20px;padding:36px;max-width:460px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.7);">
+    <button onclick="closePreStripeModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.35);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px;">&#x2715;</button>
+    <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:8px;">One-Time Audit</div>
+    <h3 style="font-size:21px;font-weight:900;color:#fff;margin-bottom:4px;letter-spacing:-.5px;" id="pre-stripe-plan-label">Deep Audit — $399</h3>
+    <p style="font-size:13px;color:rgba(255,255,255,.4);margin-bottom:24px;line-height:1.6;">Enter your details so we can personalise your audit report and reach out to schedule your strategy call after payment.</p>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:monospace;">Email Address <span style="color:#f43f5e;">*</span></label>
+      <input id="pre-stripe-email" type="email" placeholder="you@yourcompany.com" style="width:100%;padding:11px 14px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:'Outfit',sans-serif;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'" onkeydown="if(event.key==='Enter')proceedToStripe()">
+    </div>
+    <div style="margin-bottom:10px;">
+      <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:monospace;">Company / Portal Name <span style="color:#f43f5e;">*</span></label>
+      <input id="pre-stripe-company" type="text" placeholder="Acme Corp" style="width:100%;padding:11px 14px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;font-family:'Outfit',sans-serif;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'" onkeydown="if(event.key==='Enter')proceedToStripe()">
+    </div>
+    <div id="pre-stripe-error" style="display:none;font-size:12px;color:#f43f5e;font-family:monospace;margin-bottom:12px;"></div>
+    <button id="pre-stripe-btn" onclick="proceedToStripe()" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;margin-top:8px;">Continue to Payment &#x2192;</button>
+    <p style="text-align:center;font-size:11px;color:rgba(255,255,255,.2);margin-top:12px;font-family:monospace;">Secured by Stripe · 256-bit encryption</p>
+  </div>
+</div>
 
 </body>
 </html>
