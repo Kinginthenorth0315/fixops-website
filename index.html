@@ -408,13 +408,13 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <div>
         <span class="feat-tag">🛡 Sentinel Monitoring</span>
         <h3 class="feat-h">The alert system HubSpot forgot to build.</h3>
-        <p class="feat-p">Sentinel runs checks on your portal every hour — scanning for workflow errors, expired OAuth tokens, integration failures, email bounce rate spikes, billing tier risks, and new super admin additions.</p>
-        <p class="feat-p">When something breaks, you know within the hour. Via email. Via Slack. Before your team feels the impact, not after.</p>
-        <div class="caveat"><strong>Honest note:</strong> Monitoring uses scheduled API polling (every 60 min — within HubSpot's 5-min minimum guidelines). True real-time push alerts for workflow events require HubSpot Professional or Enterprise webhooks, which we configure if your plan supports it.</div>
+        <p class="feat-p">Sentinel runs a full portal check every day — scanning for workflow errors, broken sequences, email bounce spikes, billing tier risks, ghost seat changes, and new super admin additions.</p>
+        <p class="feat-p">When something breaks, you get an alert the same day. Via email. Via Slack (paste your webhook URL in settings). Before your team feels the impact, not after.</p>
+        <div class="caveat"><strong>How it works:</strong> Sentinel runs daily automated scans using the same read-only API access as your full audit. Weekly deep scans run every Monday and include the full 210-point check. Slack alerts require a Slack incoming webhook URL — free to set up in under 2 minutes.</div>
         <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px">See Plans ↗</a>
       </div>
       <div class="mock-ui">
-        <div class="mock-head"><span>🛡 Sentinel — Live</span><div style="display:flex;gap:4px"><span class="mk mk-r">2 Critical</span><span class="mk mk-a">3 Warning</span></div></div>
+        <div class="mock-head"><span>🛡 Sentinel — Daily Check</span><div style="display:flex;gap:4px"><span class="mk mk-r">2 Critical</span><span class="mk mk-a">1 Warning</span></div></div>
         <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
           <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px">Salesforce sync stopped</div>
           <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">OAuth expired · 23 records queued · 6 min ago</div>
@@ -435,7 +435,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <span class="feat-tag">📄 AutoDoc</span>
         <h3 class="feat-h">Every automation documented. Automatically. Always current.</h3>
         <p class="feat-p">AutoDoc reads your workflows via API and generates plain-English documentation for every automation — what it does, who it affects, what triggers it, what it conflicts with, and whether it has a goal set.</p>
-        <p class="feat-p">New hire onboarding. Agency handoff. RevOps audit. The Workflow Bible exports to PDF in one click and updates itself every time a workflow changes.</p>
+        <p class="feat-p">New hire onboarding. Agency handoff. RevOps audit. The Workflow Bible exports to PDF in one click. Regenerate it anytime — takes under 60 seconds no matter how many workflows you have.</p>
         <div class="caveat"><strong>What's included:</strong> Workflow name, type, status, enrollment triggers, actions (type and sequence), enrollment count, last modified date, conflict detection, and goal status. All readable via the HubSpot Workflows API.</div>
         <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px">See Plans ↗</a>
       </div>
@@ -555,11 +555,62 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <span style="font-size:20px;">🗺</span>
       <div style="text-align:left;">
         <div style="font-size:13px;font-weight:700;color:var(--w);">More coming to the platform</div>
-        <div style="font-size:12px;color:var(--t3);margin-top:2px;">AutoDoc · Deal Risk Scoring · Workflow Conflict Detector · Multi-Portal Dashboard · and more</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;">Deal Risk Scoring · Workflow Conflict Detector · Billing Tier Alerts · Multi-Portal Dashboard · and more</div>
       </div>
       <a href="#roadmap" style="margin-left:12px;font-size:12px;font-weight:700;color:var(--v3);text-decoration:none;white-space:nowrap;">See roadmap →</a>
     </div>
   </div>
+
+    <div class="feat-row r" style="margin-top:60px;">
+      <div>
+        <span class="feat-tag">⚠️ Deal Risk Scoring</span>
+        <h3 class="feat-h">Know which deals are at risk before the quarter ends.</h3>
+        <p class="feat-p">Every open deal gets a risk score based on days without activity, missing close date, no owner, zero probability, and overdue close date. Sort your entire pipeline by risk in seconds — not by gut feel.</p>
+        <p class="feat-p">High-value deals get extra weight. A $50k deal that hasn't moved in 3 weeks is flagged harder than a $500 deal. Finally, a pipeline view your CRO will actually trust.</p>
+        <div class="caveat"><strong>What we score:</strong> Days since last activity, close date status, owner assignment, deal value, probability, and stage age — all from your live HubSpot data. No manual tagging required.</div>
+        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px;">See Plans ↗</a>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-head"><span>⚠️ Deal Risk — Open Pipeline</span><span style="color:var(--r)">4 at risk</span></div>
+        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="font-size:12.5px;font-weight:700;color:var(--w);">Acme Corp Renewal</div><div style="font-size:10px;font-weight:800;color:var(--r);background:rgba(244,63,94,.12);padding:2px 7px;border-radius:4px;">RISK 87</div></div>
+          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">$48,000 · 34 days no activity · close date 12d overdue</div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="font-size:12.5px;font-weight:700;color:var(--w);">TechFlow Inc — Q4</div><div style="font-size:10px;font-weight:800;color:var(--r);background:rgba(244,63,94,.12);padding:2px 7px;border-radius:4px;">RISK 74</div></div>
+          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">$22,000 · no close date · 0% probability</div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="font-size:12.5px;font-weight:700;color:var(--w);">Northstar Media</div><div style="font-size:10px;font-weight:800;color:var(--a);background:rgba(245,158,11,.12);padding:2px 7px;border-radius:4px;">RISK 41</div></div>
+          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">$9,500 · 18 days no activity · close date in 3 days</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feat-row flip r">
+      <div>
+        <span class="feat-tag">🔀 Workflow Conflict Detector</span>
+        <h3 class="feat-h">Two workflows. Same trigger. Nobody noticed.</h3>
+        <p class="feat-p">The most expensive HubSpot mistake nobody talks about: two active workflows enrolling the same contacts from the same form submission, sending duplicate emails for months until someone unsubscribes.</p>
+        <p class="feat-p">FixOps maps every active workflow trigger and flags any pair that will co-enroll contacts. Duplicate form triggers, parallel lifecycle workflows, multiple versions running simultaneously — all caught automatically.</p>
+        <div class="caveat"><strong>What we detect:</strong> Duplicate form submission triggers, overlapping lifecycle stage triggers, parallel active workflow versions with similar names, and conflicting enrollment conditions.</div>
+        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px;">See Plans ↗</a>
+      </div>
+      <div class="mock-ui">
+        <div class="mock-head"><span>🔀 Workflow Conflicts</span><span style="color:var(--r)">2 found</span></div>
+        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--r);font-family:var(--mono);margin-bottom:4px;">DUPLICATE FORM TRIGGER</div>
+          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px)">3 workflows enrolled from Demo Form</div>
+          <div style="font-size:11px;color:var(--t3)">Lead Nurture v1 · Lead Nurture v2 · Demo Follow-Up</div>
+          <div style="font-size:11px;color:var(--r);margin-top:4px;font-family:var(--mono)">⚠ 4,200 contacts double-enrolled</div>
+        </div>
+        <div style="padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px">
+          <div style="font-size:10px;font-weight:700;color:var(--a);font-family:var(--mono);margin-bottom:4px;">PARALLEL ACTIVE VERSIONS</div>
+          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px)">Onboarding Series + Onboarding Series v2</div>
+          <div style="font-size:11px;color:var(--t3)">Both active · both enrolling new customers · conflicting delays</div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </section>
@@ -575,7 +626,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <p class="lead">The only platform that audits, monitors, documents, and fixes your HubSpot — all in one place. Not a static report. A live intelligence layer working 24/7 so you don't have to.</p>
         <div class="pulse-feats">
           <div class="pf"><div class="pf-c">✓</div>210-point audit with dollar impact estimate and root-cause analysis per issue</div>
-          <div class="pf"><div class="pf-c">✓</div>Sentinel — hourly monitoring, instant alerts to email and Slack</div>
+          <div class="pf"><div class="pf-c">✓</div>Sentinel — daily monitoring, same-day alerts to email and Slack</div>
           <div class="pf"><div class="pf-c">✓</div>Step-by-step fix guides for every issue found</div>
           <div class="pf"><div class="pf-c">✓</div>AutoDoc — living plain-English workflow documentation</div>
           <div class="pf"><div class="pf-c">✓</div>Full audit results with prioritized fix guides per issue</div>
@@ -688,14 +739,14 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>210-point scan — Sales, Marketing, Service, Automation, Data</div>
             <div class="pc-feat"><span>✓</span>Weekly automated re-scans every Monday at 9am</div>
+            <div class="pc-feat"><span>✓</span>Sentinel daily monitoring — workflow errors, billing tier, ghost seat changes</div>
+            <div class="pc-feat"><span>✓</span>Same-day email + Slack alerts on critical issues</div>
             <div class="pc-feat"><span>✓</span>Monday email — score, new issues, delta vs last week</div>
             <div class="pc-feat"><span>✓</span>Week-over-week delta — what improved, what got worse</div>
+            <div class="pc-feat"><span>✓</span>Deal risk scoring — every open deal scored 0–100</div>
             <div class="pc-feat"><span>✓</span>Ghost seat detector — unused paid seats by name + cost</div>
             <div class="pc-feat"><span>✓</span>Rep activity scorecard — calls, meetings, stale deals</div>
-            <div class="pc-feat"><span>✓</span>Sequence health — empty sequences, low reply rates</div>
-            <div class="pc-feat"><span>✓</span>List health — empty lists, static vs active breakdown</div>
-            <div class="pc-feat"><span>✓</span>Ticket SLA alerts + NPS/CSAT monitoring</div>
-            <div class="pc-feat"><span>✓</span>Lead health — unowned leads, stalled in New status</div>
+            <div class="pc-feat"><span>✓</span>Billing tier warning — alerts before HubSpot charges you more</div>
             <div class="pc-feat"><span>✓</span>Dollar impact estimate on every issue found</div>
             <div class="pc-feat"><span>✓</span>PDF report on every scan</div>
             <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
@@ -712,17 +763,16 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           <div class="pc-feats">
             <div class="pc-feat"><span>✓</span>Everything in Pulse</div>
             <div class="pc-feat"><span>✓</span>Full Portal Snapshot — 22-view intelligence dashboard</div>
+            <div class="pc-feat"><span>✓</span>Workflow conflict detector — duplicate triggers, parallel versions</div>
+            <div class="pc-feat"><span>✓</span>Contact enrichment gap report — missing fields by priority</div>
+            <div class="pc-feat"><span>✓</span>White-label client share URL — branded results for your clients</div>
             <div class="pc-feat"><span>✓</span>Marketing hub — forms, lists, campaigns, email sub health</div>
             <div class="pc-feat"><span>✓</span>Automation hub — workflow errors, sequences, dead automations</div>
             <div class="pc-feat"><span>✓</span>Service hub — NPS/CSAT tracking, ticket SLA, conversations</div>
             <div class="pc-feat"><span>✓</span>Audit history — filter by week, compare any two scans</div>
             <div class="pc-feat"><span>✓</span>AI report builder — ask your data anything in plain English</div>
-            <div class="pc-feat"><span>✓</span>Score trends + ROI tracking — unlimited history</div>
             <div class="pc-feat"><span>✓</span>Revenue health — MRR, pipeline, churn, invoices, quotes</div>
-            <div class="pc-feat"><span>✓</span>Pipeline health + deal velocity + forecast analysis</div>
-            <div class="pc-feat"><span>✓</span>Sales goals + leads management monitoring</div>
-            <div class="pc-feat"><span>✓</span>Contact intelligence + lifecycle funnel + engagement</div>
-            <div class="pc-feat"><span>✓</span>User permissions + security audit + ghost seats</div>
+            <div class="pc-feat"><span>✓</span>Score trends + ROI tracking — unlimited history</div>
             <div class="pc-feat"><span>✓</span>Fix It For Me on any issue — scope &amp; quote in 24hrs</div>
           </div>
           <button class="pc-btn pcb-o" onclick="goStripe('pro')">Get Pro →</button>
@@ -789,7 +839,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Step-by-step fix guide per issue</div>
             <div class="pc-feat"><span>✓</span>Branded PDF report download</div>
             <div class="pc-feat"><span>✓</span>Written prioritized action plan</div>
-            <div class="pc-feat"><span>✓</span>Integration + API health check</div>
+            <div class="pc-feat"><span>✓</span>Workflow + sequence health deep scan</div>
             <div class="pc-feat"><span>✓</span>Same-day Fix It For Me response</div>
             <div class="pc-feat"><span>✓</span>30-min strategy call with our team</div>
             <div class="pc-feat"><span>✓</span>Results stored 90 days</div>
@@ -1034,6 +1084,13 @@ function showOnetime() {
 
   <div class="road-card live" data-cat="core">
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Sentinel — Daily Monitoring</div>
+    <div class="road-p">Lightweight daily check for workflow errors, billing tier proximity, and ghost seat changes. Critical issues trigger same-day email + Slack alert. Full 210-point scan runs every Monday.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
+
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Pulse Weekly Monitoring</div>
     <div class="road-p">Full portal re-scan every Monday. Score delta, new issues found, resolved issues, dollar waste total — all delivered to your inbox before your team starts the week.</div>
     <div class="road-plan">Pulse · Pro · Agency</div>
@@ -1050,6 +1107,27 @@ function showOnetime() {
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Ghost Seat Detector</div>
     <div class="road-p">Identifies paid HubSpot users with zero logins in 90+ days. Shows names, last login dates, and estimated monthly cost per unused seat. Instant savings with one deactivation.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
+
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Deal Risk Scoring</div>
+    <div class="road-p">Every open deal scored 0–100 for risk based on inactivity, missing fields, overdue close dates, and phantom pipeline. Sort your entire pipeline by what's actually at risk — not by last modified.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
+
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Workflow Conflict Detector</div>
+    <div class="road-p">Maps every active workflow trigger to find duplicate form triggers, overlapping lifecycle conditions, and parallel workflow versions enrolling the same contacts simultaneously.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
+
+  <div class="road-card live" data-cat="core">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Billing Tier Warning</div>
+    <div class="road-p">Tracks your contact count against HubSpot billing thresholds. Alerts you before you hit the next tier, shows cleanable contacts that could prevent the upgrade, and estimates days until overage.</div>
     <div class="road-plan">Pulse · Pro · Agency</div>
   </div>
 
@@ -1095,12 +1173,19 @@ function showOnetime() {
     <div class="road-plan">All Paid Plans</div>
   </div>
 
+  <div class="road-card live" data-cat="reporting">
+    <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
+    <div class="road-h">Slack Alerts</div>
+    <div class="road-p">Paste your Slack incoming webhook URL and get weekly scan summaries + critical issue alerts delivered to any channel. Setup takes 2 minutes. No Slack app install required.</div>
+    <div class="road-plan">Pulse · Pro · Agency</div>
+  </div>
+
   <!-- BUILDING -->
   <div class="road-card building" data-cat="agency">
     <div class="road-status building"><span class="road-status-dot" style="background:#7c3aed;display:inline-block;"></span><span>Building</span></div>
     <div class="road-h">AutoDoc — Workflow Documentation</div>
     <div class="road-p">Claude reads every HubSpot workflow and generates plain-English documentation — what it does, who it affects, what triggers it, and what would break if it stopped. Exports as a PDF Portal Bible.</div>
-    <div class="road-plan">Agency · Pro</div>
+    <div class="road-plan">Pro · Agency</div>
   </div>
 
   <div class="road-card building" data-cat="agency">
@@ -1110,18 +1195,32 @@ function showOnetime() {
     <div class="road-plan">Agency</div>
   </div>
 
+  <div class="road-card building" data-cat="reporting">
+    <div class="road-status building"><span class="road-status-dot" style="background:#7c3aed;display:inline-block;"></span><span>Building</span></div>
+    <div class="road-h">Contact Enrichment Gap Report</div>
+    <div class="road-p">Shows exactly which fields are missing across your database, how many contacts are blocked from sequences because of it, and the estimated cost to enrich via Apollo or Clearbit. Field-by-field priority order.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
+
+  <div class="road-card building" data-cat="reporting">
+    <div class="road-status building"><span class="road-status-dot" style="background:#7c3aed;display:inline-block;"></span><span>Building</span></div>
+    <div class="road-h">White-Label Client Share URL</div>
+    <div class="road-p">Generate a shareable results URL branded with your agency name. Your clients see their health score, issues, and fix plan — with your branding, not FixOps. One click to share via email or portal.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
+
   <!-- PLANNED -->
   <div class="road-card planned" data-cat="monitoring">
     <div class="road-status planned"><span class="road-status-dot" style="background:#3b82f6;display:inline-block;"></span><span>Planned</span></div>
-    <div class="road-h">Workflow Error Alerts</div>
-    <div class="road-p">Real-time alerts when a workflow breaks, how many contacts were affected, how many days it was broken, and estimated revenue impact. The most shareable email in HubSpot monitoring.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-h">Workflow Error Alerts — Real-Time</div>
+    <div class="road-p">Instant Slack + email alert the moment a workflow enters error state. How many contacts were affected, how many days it was broken, and estimated revenue impact. Requires HubSpot Professional webhooks.</div>
+    <div class="road-plan">Pro · Agency</div>
   </div>
 
   <div class="road-card planned" data-cat="monitoring">
     <div class="road-status planned"><span class="road-status-dot" style="background:#3b82f6;display:inline-block;"></span><span>Planned</span></div>
     <div class="road-h">Change Intelligence Log</div>
-    <div class="road-p">Weekly digest of what changed in your portal — new properties, modified workflows, user permission changes, pipeline edits — cross-referenced with score drops.</div>
+    <div class="road-p">Weekly digest of what changed in your portal — new properties, modified workflows, user permission changes, pipeline edits — cross-referenced with score drops so you always know why your score moved.</div>
     <div class="road-plan">Pro · Agency</div>
   </div>
 
@@ -1129,6 +1228,13 @@ function showOnetime() {
     <div class="road-status planned"><span class="road-status-dot" style="background:#3b82f6;display:inline-block;"></span><span>Planned</span></div>
     <div class="road-h">Guided Fix Mode</div>
     <div class="road-p">Step-by-step in-app walkthroughs for fixing every issue FixOps surfaces. Click an issue, get a guided fix with screenshots and exact steps — no leaving the dashboard.</div>
+    <div class="road-plan">Pro · Agency</div>
+  </div>
+
+  <div class="road-card planned" data-cat="agency">
+    <div class="road-status planned"><span class="road-status-dot" style="background:#3b82f6;display:inline-block;"></span><span>Planned</span></div>
+    <div class="road-h">Sequence Reply Rate Grader</div>
+    <div class="road-p">Grades every active sequence on reply rate, open rate, and unsubscribe rate vs industry benchmarks. Flags underperforming sequences with subject line and step-count recommendations.</div>
     <div class="road-plan">Pro · Agency</div>
   </div>
 
