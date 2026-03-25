@@ -651,7 +651,7 @@ function showResults(data) {
       '</div>'+
       '<div class="issue-expand">'+
         detailHtml + guideHtml +
-        '<button class="fix-me-btn" onclick="event.stopPropagation();fixItForMe('+idx+')">🛠 Fix It For Me — Request Discovery Call</button>'+
+        '<button class="fix-me-btn" onclick="event.stopPropagation();fixItForMe('+idx+')">🛠 Fix It For Me</button>'+
       '</div>';
 
     list.appendChild(card);
@@ -823,7 +823,7 @@ function fixItForMe(idx) {
   document.getElementById('fixme-form').style.display = '';
   document.getElementById('fixme-success').style.display = 'none';
   var btn = document.getElementById('fixme-submit-btn');
-  if (btn) { btn.textContent = '🛠 Submit Request — We\'ll Reach Out Within 1 Business Day'; btn.disabled = false; }
+  if (btn) { btn.textContent = 'Send my details — we\'ll reach out'; btn.disabled = false; }
   // Show modal directly
   document.getElementById('fixme-modal').style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -868,7 +868,7 @@ async function submitFixMe() {
     document.getElementById('fixme-form').style.display = 'none';
     document.getElementById('fixme-success').style.display = 'block';
   } catch(e) {
-    btn.textContent = '🛠 Submit Request — We\'ll Reach Out Within 1 Business Day';
+    btn.textContent = 'Send my details — we\'ll reach out';
     btn.disabled = false;
     showToast('⚠️','Error',e.message);
   }
@@ -1363,42 +1363,40 @@ function copyShareUrl() {
     <button onclick="closeFixMeModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.4);font-size:24px;cursor:pointer;line-height:1;padding:4px 8px;">&#x2715;</button>
     <div id="fixme-form">
       <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:10px;">Fix It For Me</div>
-      <h3 style="font-size:19px;font-weight:900;color:#fff;letter-spacing:-.5px;margin-bottom:6px;line-height:1.3;padding-right:32px;" id="fixme-issue-title">Issue</h3>
-      <div id="fixme-issue-impact" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;line-height:1.6;"></div>
+      <h3 style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-.5px;margin-bottom:6px;line-height:1.3;padding-right:32px;" id="fixme-issue-title">Issue</h3>
+      <div id="fixme-issue-impact" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:22px;line-height:1.6;font-family:monospace;"></div>
 
-      <!-- Primary CTA — Book a call -->
-      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" onclick="submitFixMeBackground()" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:800;cursor:pointer;text-decoration:none;box-sizing:border-box;margin-bottom:12px;">
-        📅 Book a Free Discovery Call
+      <!-- Option 1: Book a call -->
+      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" onclick="submitFixMeBackground()" style="display:flex;align-items:center;gap:12px;width:100%;padding:14px 18px;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;box-sizing:border-box;margin-bottom:10px;">
+        <span style="font-size:20px;">📅</span>
+        <div>
+          <div>Book a 30-minute call</div>
+          <div style="font-size:11px;font-weight:400;opacity:.7;margin-top:2px;">We review this issue together and agree on next steps</div>
+        </div>
       </a>
-      <div style="font-size:11px;color:rgba(255,255,255,.28);text-align:center;margin-bottom:18px;">30 minutes · free · we review this issue together and scope next steps</div>
 
-      <!-- Divider -->
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-        <div style="font-size:11px;color:rgba(255,255,255,.25);font-family:monospace;">OR</div>
-        <div style="flex:1;height:1px;background:rgba(255,255,255,.08);"></div>
-      </div>
-
-      <!-- Secondary CTA — Submit request -->
-      <button id="fixme-submit-btn" onclick="submitFixMe()" style="width:100%;padding:12px;background:transparent;border:1px solid rgba(124,58,237,.4);border-radius:10px;color:#a78bfa;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px;">
-        🛠 Submit Request — We'll Reach Out Within 1 Business Day
+      <!-- Option 2: Send details -->
+      <button id="fixme-submit-btn" onclick="submitFixMe()" style="display:flex;align-items:center;gap:12px;width:100%;padding:14px 18px;background:transparent;border:1px solid rgba(124,58,237,.35);border-radius:10px;color:rgba(255,255,255,.75);font-size:14px;font-weight:700;cursor:pointer;text-align:left;box-sizing:border-box;margin-bottom:20px;font-family:'Outfit',sans-serif;">
+        <span style="font-size:20px;">✉️</span>
+        <div>
+          <div>Send my details — we'll reach out</div>
+          <div style="font-size:11px;font-weight:400;opacity:.6;margin-top:2px;">We'll contact you within 1 business day</div>
+        </div>
       </button>
 
-      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;padding:12px 14px;">
-        <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.35);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;font-family:monospace;">Either way, here's what happens:</div>
-        <div style="display:flex;flex-direction:column;gap:6px;">
-          <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;align-items:flex-start;gap:8px;"><span style="color:#a78bfa;">→</span> We review the specific issue FixOps flagged in your portal</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;align-items:flex-start;gap:8px;"><span style="color:#a78bfa;">→</span> We scope the work — guided DIY or we handle it directly</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;align-items:flex-start;gap:8px;"><span style="color:#a78bfa;">→</span> Clear price agreed before anything starts. No surprises.</div>
+      <!-- What to expect -->
+      <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:16px;">
+        <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.8;">
+          Either way — we review the specific issue flagged in your portal, agree on scope and approach, and give you a clear price before any work starts. No obligation.
         </div>
       </div>
     </div>
     <div id="fixme-success" style="display:none;text-align:center;padding:20px 0;">
-      <div style="font-size:48px;margin-bottom:16px;">&#x2705;</div>
-      <div style="font-size:21px;font-weight:900;color:#fff;margin-bottom:10px;">Request received!</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.75;margin-bottom:20px;">We'll review this issue and reach out within <strong style="color:#a78bfa;">1 business day</strong> to discuss scope and next steps.</div>
-      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="display:inline-block;padding:11px 24px;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;margin-bottom:10px;">📅 Skip the wait — book a call now</a>
-      <div><button onclick="closeFixMeModal()" style="margin-top:8px;padding:10px 24px;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:8px;color:rgba(255,255,255,.35);font-size:12px;cursor:pointer;">Close</button></div>
+      <div style="font-size:48px;margin-bottom:14px;">✅</div>
+      <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px;">Got it — we'll be in touch</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:22px;">We'll reach out within <strong style="color:#a78bfa;">1 business day</strong> to discuss this issue and what fixing it looks like for your portal.</div>
+      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="display:inline-block;padding:11px 22px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:8px;color:#a78bfa;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:10px;">📅 Or book a call now — skip the wait</a>
+      <div><button onclick="closeFixMeModal()" style="margin-top:8px;background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;">Close</button></div>
     </div>
   </div>
 </div>
