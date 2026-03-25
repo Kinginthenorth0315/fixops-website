@@ -820,6 +820,11 @@ function fixItForMe(idx) {
   var modal = document.getElementById('fixme-modal');
   document.getElementById('fixme-issue-title').textContent = issue.title || 'This issue';
   document.getElementById('fixme-issue-impact').textContent = issue.impact || '';
+  // Reset state in case previously submitted
+  document.getElementById('fixme-form').style.display = '';
+  document.getElementById('fixme-success').style.display = 'none';
+  var btn = document.getElementById('fixme-submit-btn');
+  if (btn) { btn.textContent = '🛠 Request Fix — Get a Quote'; btn.disabled = false; }
   if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
 }
 function closeFixMeModal() {
@@ -1326,7 +1331,7 @@ function copyShareUrl() {
 </script>
 
 <!-- Share Modal -->
-<div id="share-modal" class="audit-modal-wrap" style="display:none;" onclick="if(event.target===this)closeShareModal()">
+<div id="share-modal" class="audit-modal-wrap" onclick="if(event.target===this)closeShareModal()">
   <div style="background:#0c0c14;border:1px solid #22223a;border-radius:18px;padding:32px;max-width:480px;width:100%;position:relative;">
     <button onclick="closeShareModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.3);font-size:20px;cursor:pointer;">✕</button>
     <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;font-family:monospace;margin-bottom:8px;">SHARE RESULTS</div>
@@ -1345,7 +1350,7 @@ function copyShareUrl() {
 </div>
 
 <!-- ── Fix It For Me Modal ─────────────────────────────────────────────── -->
-<div id="fixme-modal" class="audit-modal-wrap" style="display:none;" onclick="if(event.target===this)closeFixMeModal()">
+<div id="fixme-modal" class="audit-modal-wrap" onclick="if(event.target===this)closeFixMeModal()">
   <div style="background:#0c0c14;border:1px solid #22223a;border-radius:20px;padding:36px;max-width:500px;width:100%;position:relative;animation:fu .3s ease;">
     <button onclick="closeFixMeModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.3);font-size:22px;cursor:pointer;line-height:1;">✕</button>
 
@@ -1383,8 +1388,8 @@ function copyShareUrl() {
 <style>
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes fu{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
-#share-modal.open { display:flex !important; }
-#fixme-modal.open { display:flex !important; }
+.audit-modal-wrap{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;align-items:center;justify-content:center;padding:20px;}
+.audit-modal-wrap.open{display:flex !important;}
 </style>
 </body>
 </html>
