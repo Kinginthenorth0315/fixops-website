@@ -787,6 +787,20 @@ nav {
           <h1 id="overview-title">Portal Health Overview</h1>
           <p id="overview-sub">Complete intelligence across your HubSpot portal</p>
         </div>
+
+        <!-- ✦ AI Weekly Briefing Card -->
+        <div id="ai-briefing-card" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.22);border-radius:14px;padding:20px 24px;margin-bottom:20px;">
+          <div style="display:flex;align-items:flex-start;gap:14px;">
+            <div style="flex-shrink:0;width:32px;height:32px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;">✦</div>
+            <div style="flex:1;">
+              <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">FixOps AI · Score Briefing</div>
+              <div id="ai-briefing-text" style="font-size:14px;color:rgba(255,255,255,.82);line-height:1.75;">Generating your weekly briefing…</div>
+              <div id="ai-briefing-meta" style="margin-top:8px;font-size:11px;color:rgba(255,255,255,.28);font-family:monospace;"></div>
+            </div>
+            <button id="ai-briefing-refresh" onclick="refreshAIBriefing()" style="flex-shrink:0;padding:6px 12px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:7px;color:#a78bfa;font-size:11px;font-weight:700;cursor:pointer;font-family:monospace;" title="Regenerate briefing">↻</button>
+          </div>
+        </div>
+
         <div class="kpi-row" id="overview-kpis"></div>
         <div class="chart-grid cols-2-1">
           <div class="chart-card">
@@ -1751,8 +1765,11 @@ function buildSettings() {
       '<div style="background:var(--s2);border:1px solid var(--s3);border-radius:14px;padding:24px;margin-bottom:20px;">' +
         '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:6px;">💬 Slack Alerts</div>' +
         '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:18px;">Paste your Slack incoming webhook URL to receive weekly scan summaries and same-day critical issue alerts in any channel. No Slack app install required — just a webhook URL.</div>' +
-        '<div style="font-size:12px;color:var(--t3);margin-bottom:16px;padding:10px 14px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:8px;">'+
-          '📋 <strong style="color:var(--t2);">How to get your webhook URL:</strong> Open Slack → Apps → Search "Incoming Webhooks" → Add to Slack → Choose channel → Copy Webhook URL' +
+        '<div style="font-size:12px;color:var(--t3);margin-bottom:16px;padding:12px 14px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:8px;">'+
+          '<strong style="color:var(--t2);">📋 2-minute setup:</strong><br>' +
+          '<span style="line-height:2;">1. Go to <a href="https://api.slack.com/apps" target="_blank" style="color:#a78bfa;">api.slack.com/apps</a> → Create New App → From scratch<br>' +
+          '2. Enable "Incoming Webhooks" → Add to Slack → Choose channel<br>' +
+          '3. Copy the Webhook URL and paste it below</span>' +
         '</div>' +
         '<label style="display:block;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:monospace;">Slack Webhook URL</label>' +
         '<input id="slack-webhook-input" type="url" placeholder="https://hooks.slack.com/services/..." '+
@@ -1828,6 +1845,60 @@ async function removeSlackWebhook() {
   }
 }
 
+// ── AI Score Briefing ─────────────────────────────────────────────────────────
+async function loadAIBriefing(forceRefresh) {
+  var card = document.getElementById('ai-briefing-card');
+  var textEl = document.getElementById('ai-briefing-text');
+  var metaEl = document.getElementById('ai-briefing-meta');
+  var refreshBtn = document.getElementById('ai-briefing-refresh');
+  if (!card || !textEl) return;
+
+  var id = auditId;
+  var email = DATA && DATA.portalInfo && DATA.portalInfo.email;
+  if (!id || !email) return;
+
+  card.style.display = 'block';
+  textEl.textContent = 'Generating your briefing…';
+  textEl.style.color = 'rgba(255,255,255,.35)';
+  if (refreshBtn) { refreshBtn.disabled = true; refreshBtn.style.opacity = '.4'; }
+
+  try {
+    var r = await fetch(API + '/ai/score-explanation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ auditId: id, email: email })
+    });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error || 'Generation failed');
+
+    textEl.textContent = d.explanation;
+    textEl.style.color = 'rgba(255,255,255,.82)';
+
+    // Meta line showing score delta
+    if (d.scoreDelta !== null && d.prevScore !== null) {
+      var arrow = d.scoreDelta >= 0 ? '↑' : '↓';
+      var deltaColor = d.scoreDelta >= 0 ? '#10b981' : '#f43f5e';
+      metaEl.innerHTML =
+        'Score: <strong style="color:var(--t1);">' + d.currentScore + '/100</strong>' +
+        ' · <span style="color:'+deltaColor+';font-weight:700;">'+arrow+Math.abs(d.scoreDelta)+' vs last week</span>' +
+        ' · <span style="color:rgba(255,255,255,.25);">Previous: ' + d.prevScore + '</span>';
+    } else {
+      metaEl.textContent = 'Score: ' + d.currentScore + '/100 · First scan';
+      metaEl.style.color = 'rgba(255,255,255,.28)';
+    }
+  } catch(e) {
+    textEl.textContent = 'Briefing unavailable — check back after your next weekly scan.';
+    textEl.style.color = 'rgba(255,255,255,.28)';
+    console.warn('[AI Briefing]', e.message);
+  } finally {
+    if (refreshBtn) { refreshBtn.disabled = false; refreshBtn.style.opacity = '1'; }
+  }
+}
+
+function refreshAIBriefing() {
+  loadAIBriefing(true);
+}
+
 function upgradePrompt(feature, description, minPlan) {
   var planLabel = minPlan === 'pro' ? 'Pro Plan ($549/mo)' : 'Pulse Plan ($299/mo)';
   return '<div style="text-align:center;padding:48px 32px;background:rgba(124,58,237,.04);border:1px dashed rgba(124,58,237,.25);border-radius:16px;">' +
@@ -1866,6 +1937,13 @@ function buildOverview() {
   document.getElementById('overview-sub').textContent =
     'Audit completed '+new Date(pi.auditDate||Date.now()).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+
     ' · '+fmt(s.recordsScanned)+' records analyzed';
+
+  // ── AI Weekly Briefing ────────────────────────────────────────────────────
+  const plan = (pi.plan || DATA.plan || 'free');
+  const email = pi.email || '';
+  if (['pulse','pro','command'].includes(plan) && (auditId || TOKEN)) {
+    loadAIBriefing(false);
+  }
 
   // KPIs
   const waste = s.monthlyWaste || 0;
