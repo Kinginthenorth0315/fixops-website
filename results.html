@@ -271,7 +271,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <!-- Loading state -->
   <div id="loading-state" style="text-align:center;padding:100px 20px;">
     <div style="width:44px;height:44px;border-radius:50%;border:2px solid var(--b2);border-top-color:var(--v);animation:spin 1s linear infinite;margin:0 auto 16px;"></div>
-    <div style="font-size:15px;font-weight:600;color:var(--t2);margin-bottom:6px;">Running your 185-point audit…</div>
+    <div style="font-size:15px;font-weight:600;color:var(--t2);margin-bottom:6px;">Running your 210-point audit…</div>
     <div style="font-size:12px;color:var(--t3);">Analyzing contacts, pipeline, workflows, and more</div>
   </div>
 </div>
@@ -620,11 +620,14 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
   }
 
   // Service
-  if (ps.tickets > 0) {
+  if (ps.tickets > 0 || ps.kbArticleCount > 0) {
+    var svcStat = ps.tickets > 0 ? fmt(ps.tickets) : '0';
+    var svcDesc = ps.kbArticleCount > 0 ? ps.kbArticleCount+' KB articles ('+ps.kbUnpublishedCount+' unpublished)' : 'total tickets';
+    var svcTag = ps.kbUnpublishedCount > 5 ? ps.kbUnpublishedCount+' KB articles unpublished' : ps.npsResponses > 0 ? ps.npsResponses+' NPS responses' : 'No NPS data collected';
+    var svcColor = ps.kbUnpublishedCount > 10 ? '#f43f5e' : ps.npsResponses > 0 ? '#10b981' : '#f59e0b';
     cards.push({ hub:'Service Hub', icon:'🎧',
-      stat: fmt(ps.tickets), desc: 'total tickets',
-      tag: ps.npsResponses > 0 ? ps.npsResponses+' NPS responses' : 'No NPS data collected',
-      tagColor: '#10b981' });
+      stat: svcStat, desc: svcDesc,
+      tag: svcTag, tagColor: svcColor });
   }
 
   // Automation
@@ -650,9 +653,10 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
       ? ps.ghostSeats+' ghost seat'+(ps.ghostSeats!==1?'s':'')+' — $'+fmt(ps.ghostSeatWaste)+'/mo wasted'
       : 'All users active in last 90 days';
     var teamTagColor = ps.ghostSeats > 2 ? '#f43f5e' : ps.ghostSeats > 0 ? '#f59e0b' : '#10b981';
-    var repInfo = ps.repScorecard && ps.repScorecard.length > 0
-      ? ps.repScorecard.length+' reps tracked this week'
-      : 'No rep activity this week';
+    var teamInfo = ps.teamCount > 0
+      ? ps.teamCount+' team'+(ps.teamCount!==1?'s':'')+' · '+(ps.repScorecard&&ps.repScorecard.length>0?ps.repScorecard.length+' reps':'no activity')
+      : (ps.repScorecard && ps.repScorecard.length > 0 ? ps.repScorecard.length+' reps tracked' : 'No rep activity this week');
+    var repsNoLink = ps.repsWithoutMeetingLinks || 0;
     cards.push({ hub:'Team & Seats', icon:'👥',
       stat: fmt(ps.users)+' seats',
       desc: teamDesc,
