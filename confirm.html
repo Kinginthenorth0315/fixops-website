@@ -124,6 +124,7 @@ h1{font-size:36px;font-weight:900;letter-spacing:-1px;line-height:1.15;margin-bo
 const API     = 'https://fixops-api-production.up.railway.app';
 const params  = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
+const auditToken = params.get('auditToken'); // set by Stripe payment confirmation email
 
 // Try URL param first — but Cloudflare sometimes strips email from URLs
 // So we also read it from the API response when available
@@ -132,6 +133,41 @@ try {
   const raw = params.get('email');
   if (raw && raw.includes('@')) email = decodeURIComponent(raw.replace(/\+/g, ' '));
 } catch(e) {}
+
+// ── If auditToken in URL, this is a post-payment landing ─────────────────────
+// Redeem the token, get the plan, then kick off OAuth immediately
+if (auditToken && !auditId) {
+  (async function redeemToken() {
+    const API = 'https://fixops-api-production.up.railway.app';
+    try {
+      const r = await fetch(API + '/audit/redeem-token?token=' + encodeURIComponent(auditToken));
+      const d = await r.json();
+      if (!d.valid) {
+        document.body.innerHTML = '<div style="font-family:system-ui;text-align:center;padding:80px 20px;color:#fff;background:#0a0a12;min-height:100vh;">' +
+          '<div style="font-size:48px;margin-bottom:16px;">⚠️</div>' +
+          '<h2 style="font-size:22px;margin-bottom:12px;">Link invalid or already used</h2>' +
+          '<p style="color:rgba(255,255,255,.5);margin-bottom:24px;">' + (d.error || 'This audit link has expired or been used.') + '</p>' +
+          '<a href="mailto:hello@fixops.io" style="color:#a78bfa;">Contact support →</a></div>';
+        return;
+      }
+      // Token valid — start OAuth with the verified plan
+      email = d.email || email;
+      const authRes = await fetch(API + '/auth/url?email=' + encodeURIComponent(d.email) + '&plan=' + encodeURIComponent(d.plan) + '&company=' + encodeURIComponent(d.company || '') + '&auditToken=' + encodeURIComponent(auditToken));
+      const authData = await authRes.json();
+      if (authData.url) {
+        window.location.href = authData.url;
+      } else {
+        throw new Error(authData.error || 'Could not generate auth URL');
+      }
+    } catch(e) {
+      document.body.innerHTML = '<div style="font-family:system-ui;text-align:center;padding:80px 20px;color:#fff;background:#0a0a12;min-height:100vh;">' +
+        '<div style="font-size:48px;margin-bottom:16px;">⚠️</div>' +
+        '<h2 style="font-size:22px;margin-bottom:12px;">Something went wrong</h2>' +
+        '<p style="color:rgba(255,255,255,.5);margin-bottom:24px;">' + e.message + '</p>' +
+        '<a href="mailto:hello@fixops.io" style="color:#a78bfa;">Contact support →</a></div>';
+    }
+  })();
+}
 
 function setEmailDisplay() {
   if (!email) return;

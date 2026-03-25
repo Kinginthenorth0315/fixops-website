@@ -183,6 +183,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <button class="nav-btn ghost" onclick="downloadPDF()">📄 Download PDF Report</button>
     <a href="#" class="nav-btn ghost" id="leaks-link" onclick="goToLeaks()" style="color:#ff6b6b;border-color:rgba(255,59,59,.35);">💸 Revenue Leaks</a>
     <a href="#" class="nav-btn ghost" id="snapshot-link" onclick="goToSnapshot()">📊 View Snapshot</a>
+    <button class="nav-btn ghost" id="share-btn" onclick="openShareModal()" style="display:none;color:#a78bfa;border-color:rgba(124,58,237,.35);">🔗 Share Results</button>
     <a href="https://fixops.io/#pricing" class="nav-btn primary">Book a Call ↗</a>
   </div>
 </nav>
@@ -223,6 +224,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <!-- Portal snap bar -->
   <div class="snap-bar" id="portal-snap-bar" style="display:none;"></div>
 
+  <!-- Billing Tier Warning Banner — shown when >85% of tier -->
+  <div id="billing-tier-banner" style="display:none;margin:0 0 16px;padding:12px 18px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.3);border-radius:12px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:18px;">⚡</span>
+      <div>
+        <div id="billing-banner-title" style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:2px;"></div>
+        <div id="billing-banner-sub" style="font-size:11px;color:rgba(255,255,255,.5);"></div>
+      </div>
+    </div>
+    <a href="https://fixops.io/#pricing" style="flex-shrink:0;font-size:11px;font-weight:700;color:#fbbf24;text-decoration:none;border:1px solid rgba(245,158,11,.4);padding:5px 12px;border-radius:6px;white-space:nowrap;">Clean Contacts →</a>
+  </div>
+
   <!-- Dimension scores -->
   <div class="dims-section" id="dims-section" style="display:none;">
     <div class="section-title">Health Dimensions</div>
@@ -233,6 +246,33 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <div class="hub-intel" id="hub-intel-section" style="display:none;">
     <div class="section-title">Hub Intelligence</div>
     <div class="hub-intel-grid" id="hub-intel-grid"></div>
+  </div>
+
+  <!-- Deal Risk Scoring -->
+  <div id="deal-risk-section" style="display:none;background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:24px;margin-bottom:24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;">
+      <div class="section-title" style="margin:0;">⚠️ Deal Risk Scoring</div>
+      <div id="deal-risk-summary" style="font-size:12px;color:var(--t2);"></div>
+    </div>
+    <div id="deal-risk-list"></div>
+  </div>
+
+  <!-- Workflow Conflict Detector -->
+  <div id="wf-conflict-section" style="display:none;background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:24px;margin-bottom:24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;">
+      <div class="section-title" style="margin:0;">🔀 Workflow Conflicts</div>
+      <div id="wf-conflict-summary" style="font-size:12px;color:var(--t2);"></div>
+    </div>
+    <div id="wf-conflict-list"></div>
+  </div>
+
+  <!-- Contact Enrichment Gaps -->
+  <div id="enrichment-section" style="display:none;background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:24px;margin-bottom:24px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:8px;">
+      <div class="section-title" style="margin:0;">📋 Contact Enrichment Gaps</div>
+      <div id="enrichment-summary" style="font-size:12px;color:var(--t2);"></div>
+    </div>
+    <div id="enrichment-list"></div>
   </div>
 
   <!-- Issues -->
@@ -515,6 +555,23 @@ function showResults(data) {
 
   // ── Hub Intelligence ──────────────────────────────────────────────────────
   try { renderHubIntelligence(ps, scores, plan, waste, criticals); } catch(e) { console.warn('hub intel:', e); }
+
+  // ── New feature panels (async — load after main render) ───────────────────
+  var auditIdParam = (new URLSearchParams(window.location.search)).get('id');
+  if (auditIdParam) {
+    loadBillingRisk(auditIdParam);
+    loadDealRisk(auditIdParam, plan);
+    if (['pro','command','pro-audit'].includes(plan)) {
+      loadWorkflowConflicts(auditIdParam, plan);
+    }
+    loadEnrichmentGaps(auditIdParam, plan);
+  }
+
+  // ── Show Share button for Pro/Agency ─────────────────────────────────────
+  if (['pro','command','pro-audit'].includes(plan)) {
+    var shareBtn = document.getElementById('share-btn');
+    if (shareBtn) shareBtn.style.display = '';
+  }
 
   // ── Issues ────────────────────────────────────────────────────────────────
   var sorted = issues.slice().sort(function(a,b){
@@ -1026,10 +1083,189 @@ function copyCertLink(el) {
   });
 }
 
+// ── Billing Tier Warning ─────────────────────────────────────────────────────
+async function loadBillingRisk(auditId) {
+  try {
+    var r = await fetch(API + '/audit/billing-risk?id=' + auditId);
+    var d = await r.json();
+    if (!d || d.error || !d.atRisk) return;
+    var banner = document.getElementById('billing-tier-banner');
+    if (!banner) return;
+    var color = d.severity === 'critical' ? '#f43f5e' : '#fbbf24';
+    banner.style.borderColor = 'rgba(' + (d.severity==='critical'?'244,63,94':'245,158,11') + ',.35)';
+    banner.style.background  = 'rgba(' + (d.severity==='critical'?'244,63,94':'245,158,11') + ',.08)';
+    document.getElementById('billing-banner-title').style.color = color;
+    document.getElementById('billing-banner-title').textContent =
+      '⚡ Portal at ' + d.pctOfTier + '% of HubSpot contact tier' +
+      (d.contactsUntilNext ? ' — ' + d.contactsUntilNext.toLocaleString() + ' contacts until next billing tier' : '');
+    document.getElementById('billing-banner-sub').textContent =
+      (d.cleanable > 0 ? d.cleanable.toLocaleString() + ' cleanable contacts (duplicates + no email) could delay the next tier upgrade' : '') +
+      (d.daysToNextTier ? ' · ~' + d.daysToNextTier + ' days at current growth rate' : '');
+    banner.style.display = 'flex';
+  } catch(e) { /* silent */ }
+}
+
+// ── Deal Risk Scoring ────────────────────────────────────────────────────────
+async function loadDealRisk(auditId, plan) {
+  var section = document.getElementById('deal-risk-section');
+  if (!section) return;
+  var freePlans = ['free'];
+  if (freePlans.includes(plan)) return; // Pulse+ only
+  try {
+    var r = await fetch(API + '/audit/deal-risk?id=' + auditId);
+    var d = await r.json();
+    if (d.error || !d.deals || d.deals.length === 0) return;
+    var s = d.summary;
+    document.getElementById('deal-risk-summary').textContent =
+      s.total + ' deals scored · ' + s.critical + ' critical · ' + s.atRisk + ' at risk · $' + Math.round(s.totalAtRiskValue).toLocaleString() + ' at-risk pipeline';
+
+    var riskDeals = d.deals.filter(function(x){ return x.riskLevel !== 'healthy'; }).slice(0, 10);
+    if (riskDeals.length === 0) {
+      document.getElementById('deal-risk-list').innerHTML =
+        '<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px;">✅ No high-risk deals detected — your pipeline looks healthy</div>';
+    } else {
+      document.getElementById('deal-risk-list').innerHTML = riskDeals.map(function(deal) {
+        var rc = deal.riskLevel === 'critical' ? '#f43f5e' : '#f59e0b';
+        var flags = deal.flags.slice(0,3).join(' · ');
+        return '<div style="display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:10px;margin-bottom:8px;">' +
+          '<div style="min-width:52px;text-align:center;background:rgba(' + (deal.riskLevel==='critical'?'244,63,94':'245,158,11') + ',.12);border-radius:8px;padding:6px 4px;">' +
+            '<div style="font-size:17px;font-weight:900;color:' + rc + ';">' + deal.riskScore + '</div>' +
+            '<div style="font-size:8px;font-weight:700;color:' + rc + ';letter-spacing:1px;text-transform:uppercase;">RISK</div>' +
+          '</div>' +
+          '<div style="flex:1;min-width:0;">' +
+            '<div style="font-size:13px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(deal.name) + '</div>' +
+            '<div style="font-size:11px;color:var(--t3);margin-top:2px;">' + (deal.amount > 0 ? '$' + deal.amount.toLocaleString() + ' · ' : '') + esc(flags) + '</div>' +
+          '</div>' +
+          '<div style="font-size:10px;font-weight:700;color:' + rc + ';white-space:nowrap;background:rgba(' + (deal.riskLevel==='critical'?'244,63,94':'245,158,11') + ',.1);padding:4px 9px;border-radius:6px;">' +
+            deal.riskLevel.toUpperCase() +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+    section.style.display = '';
+  } catch(e) { /* silent */ }
+}
+
+// ── Workflow Conflict Detector ───────────────────────────────────────────────
+async function loadWorkflowConflicts(auditId, plan) {
+  var section = document.getElementById('wf-conflict-section');
+  if (!section) return;
+  if (!['pro','command','pro-audit'].includes(plan)) return;
+  try {
+    var r = await fetch(API + '/audit/workflow-conflicts?id=' + auditId);
+    var d = await r.json();
+    if (d.error || !d.conflicts || d.conflicts.length === 0) return;
+    var s = d.summary;
+    document.getElementById('wf-conflict-summary').textContent =
+      s.workflowsAnalyzed + ' workflows analyzed · ' + s.total + ' conflict' + (s.total!==1?'s':'') + ' found';
+    document.getElementById('wf-conflict-list').innerHTML = d.conflicts.map(function(c) {
+      var cc = c.severity === 'critical' ? '#f43f5e' : '#f59e0b';
+      return '<div style="padding:14px 16px;background:var(--s2);border:1px solid var(--b1);border-left:3px solid ' + cc + ';border-radius:10px;margin-bottom:10px;">' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
+          '<span style="font-size:10px;font-weight:800;color:' + cc + ';letter-spacing:1.5px;text-transform:uppercase;font-family:var(--mono);">' + esc(c.type) + '</span>' +
+          '<span style="font-size:10px;color:var(--t3);font-family:var(--mono);">' + c.severity.toUpperCase() + '</span>' +
+        '</div>' +
+        '<div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px;">' + esc(c.description) + '</div>' +
+        '<div style="font-size:11px;color:var(--t3);">Workflows: ' + c.workflows.map(function(w){ return esc(w.name); }).join(', ') + '</div>' +
+        (c.impact ? '<div style="font-size:11px;color:' + cc + ';margin-top:4px;font-family:var(--mono);">⚠ ' + esc(c.impact) + '</div>' : '') +
+      '</div>';
+    }).join('');
+    section.style.display = '';
+  } catch(e) { /* silent */ }
+}
+
+// ── Contact Enrichment Gaps ──────────────────────────────────────────────────
+async function loadEnrichmentGaps(auditId, plan) {
+  var section = document.getElementById('enrichment-section');
+  if (!section) return;
+  if (!['pro','command','pro-audit','pulse','deep','deep-audit'].includes(plan)) return;
+  try {
+    var r = await fetch(API + '/audit/enrichment-gaps?id=' + auditId);
+    var d = await r.json();
+    if (d.error || !d.gaps || d.gaps.length === 0) return;
+    var s = d.summary;
+    document.getElementById('enrichment-summary').textContent =
+      d.total.toLocaleString() + ' contacts · ' + s.fieldsWithGaps + ' fields with gaps' +
+      (s.estimatedEnrichmentCost > 0 ? ' · ~$' + s.estimatedEnrichmentCost.toLocaleString() + ' to enrich top 3 fields' : '');
+    document.getElementById('enrichment-list').innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;">' +
+      d.gaps.map(function(g) {
+        var gc = g.severity === 'critical' ? '#f43f5e' : g.severity === 'warning' ? '#f59e0b' : '#6b7280';
+        var barPct = Math.min(100, g.pct);
+        return '<div style="padding:14px;background:var(--s2);border:1px solid var(--b1);border-radius:10px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">' +
+            '<div style="font-size:12px;font-weight:700;color:var(--t1);">' + esc(g.label) + '</div>' +
+            '<div style="font-size:13px;font-weight:800;color:' + gc + ';">' + g.pct + '%<span style="font-size:10px;font-weight:400;color:var(--t3);"> missing</span></div>' +
+          '</div>' +
+          '<div style="height:4px;background:var(--b1);border-radius:2px;margin-bottom:8px;overflow:hidden;">' +
+            '<div style="height:100%;width:' + barPct + '%;background:' + gc + ';border-radius:2px;transition:width .6s;"></div>' +
+          '</div>' +
+          '<div style="font-size:10px;color:var(--t3);line-height:1.5;">' + esc(g.impact) + '</div>' +
+          '<div style="margin-top:6px;font-size:10px;color:var(--t3);">' + g.missing.toLocaleString() + ' contacts missing this field</div>' +
+        '</div>';
+      }).join('') + '</div>';
+    section.style.display = '';
+  } catch(e) { /* silent */ }
+}
+
+// ── Share Results Modal (Pro/Agency) ─────────────────────────────────────────
+function openShareModal() {
+  var modal = document.getElementById('share-modal');
+  if (modal) { modal.classList.add('open'); document.body.style.overflow = 'hidden'; }
+}
+function closeShareModal() {
+  var modal = document.getElementById('share-modal');
+  if (modal) { modal.classList.remove('open'); document.body.style.overflow = ''; }
+}
+async function generateShareLink() {
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('id');
+  var email = AUDIT_DATA && AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.email;
+  if (!id || !email) { showToast('⚠️','Missing data','Could not generate link'); return; }
+  var btn = document.getElementById('share-gen-btn');
+  btn.textContent = 'Generating…'; btn.disabled = true;
+  try {
+    var r = await fetch(API + '/share/generate', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, auditId: id, agencyName: document.getElementById('share-agency-name').value || '' })
+    });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error);
+    document.getElementById('share-url-out').style.display = '';
+    document.getElementById('share-url-val').value = d.shareUrl;
+    showToast('🔗','Link created!','Copy and share with your client');
+  } catch(e) {
+    showToast('⚠️','Error',e.message);
+  } finally { btn.textContent = 'Generate Link'; btn.disabled = false; }
+}
+function copyShareUrl() {
+  var val = document.getElementById('share-url-val');
+  if (val) { val.select(); navigator.clipboard.writeText(val.value).catch(()=>{}); showToast('✅','Copied!','Share link copied to clipboard'); }
+}
+
 </script>
+
+<!-- Share Modal -->
+<div id="share-modal" class="audit-modal-wrap" style="display:none;" onclick="if(event.target===this)closeShareModal()">
+  <div style="background:#0c0c14;border:1px solid #22223a;border-radius:18px;padding:32px;max-width:480px;width:100%;position:relative;">
+    <button onclick="closeShareModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.3);font-size:20px;cursor:pointer;">✕</button>
+    <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;font-family:monospace;margin-bottom:8px;">SHARE RESULTS</div>
+    <h3 style="font-size:20px;font-weight:800;color:#fff;margin-bottom:6px;letter-spacing:-.5px;">Send to your client</h3>
+    <p style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:22px;line-height:1.6;">Generate a shareable link branded with your agency name. Your client sees results, score, and fix plan — no FixOps branding required.</p>
+    <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:monospace;">Agency / Brand Name <span style="color:rgba(255,255,255,.25);font-weight:400;">(optional)</span></label>
+    <input id="share-agency-name" type="text" placeholder="e.g. Acme RevOps" style="width:100%;background:#10101a;border:1px solid #22223a;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;margin-bottom:16px;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+    <button id="share-gen-btn" onclick="generateShareLink()" style="width:100%;padding:12px;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;border-radius:9px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:14px;">Generate Share Link →</button>
+    <div id="share-url-out" style="display:none;">
+      <div style="display:flex;gap:8px;">
+        <input id="share-url-val" readonly style="flex:1;background:#10101a;border:1px solid #22223a;border-radius:8px;padding:9px 12px;color:#a78bfa;font-size:12px;font-family:monospace;outline:none;">
+        <button onclick="copyShareUrl()" style="padding:9px 14px;background:#22223a;border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <style>
 @keyframes spin{to{transform:rotate(360deg)}}
+#share-modal.open { display:flex !important; }
 </style>
 </body>
 </html>

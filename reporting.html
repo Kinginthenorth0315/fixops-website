@@ -740,6 +740,30 @@ nav {
         <span class="si-badge">PRO</span>
       </div>
     </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Risk & Health</div>
+      <div class="sidebar-item" onclick="showView('dealrisk')" data-view="dealrisk">
+        <span class="si-icon">⚠️</span> Deal Risk Scoring
+      </div>
+      <div class="sidebar-item" onclick="showView('conflicts')" data-view="conflicts">
+        <span class="si-icon">🔀</span> Workflow Conflicts
+        <span class="si-badge">PRO</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('enrichment')" data-view="enrichment">
+        <span class="si-icon">📋</span> Enrichment Gaps
+      </div>
+      <div class="sidebar-item" onclick="showView('billing')" data-view="billing">
+        <span class="si-icon">⚡</span> Billing Tier Risk
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Settings</div>
+      <div class="sidebar-item" onclick="showView('settings')" data-view="settings">
+        <span class="si-icon">🔔</span> Alerts &amp; Slack
+      </div>
+    </div>
   </aside>
 
   <!-- Main -->
@@ -1156,6 +1180,56 @@ nav {
       <div id="delta-content"></div>
     </div>
 
+    <!-- Deal Risk View -->
+    <div class="view" id="view-dealrisk">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">⚠️ Deal Risk Scoring</h1>
+        <p>Every open deal scored 0–100 for risk. Sort by what's actually at risk — not by last modified.</p>
+      </div>
+      <div id="dealrisk-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading deal risk scores…</div></div>
+    </div>
+
+    <!-- Workflow Conflicts View -->
+    <div class="view" id="view-conflicts">
+      <div class="view-header">
+        <div class="vh-badge">Pro · Agency</div>
+        <h1 class="vh-title">🔀 Workflow Conflict Detector</h1>
+        <p>Active workflows enrolling the same contacts from duplicate triggers — catching the conflicts HubSpot never surfaces.</p>
+      </div>
+      <div id="conflicts-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading workflow analysis…</div></div>
+    </div>
+
+    <!-- Enrichment Gaps View -->
+    <div class="view" id="view-enrichment">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">📋 Contact Enrichment Gaps</h1>
+        <p>Missing fields by priority — and what each gap costs you in sequence coverage and segmentation reach.</p>
+      </div>
+      <div id="enrichment-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading enrichment analysis…</div></div>
+    </div>
+
+    <!-- Billing Tier Risk View -->
+    <div class="view" id="view-billing">
+      <div class="view-header">
+        <div class="vh-badge">All Plans</div>
+        <h1 class="vh-title">⚡ Billing Tier Risk</h1>
+        <p>Where you stand vs your HubSpot contact tier — and how many cleanable contacts could delay your next billing upgrade.</p>
+      </div>
+      <div id="billing-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading billing analysis…</div></div>
+    </div>
+
+    <!-- Settings / Alerts View -->
+    <div class="view" id="view-settings">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">🔔 Alerts &amp; Slack</h1>
+        <p>Configure where FixOps sends your weekly scan summaries and critical issue alerts.</p>
+      </div>
+      <div id="settings-content"></div>
+    </div>
+
     </div><!-- /views -->
   </main>
 </div>
@@ -1196,6 +1270,15 @@ const PALETTE = [
 function fmt(n) { return Number(n||0).toLocaleString(); }
 function fmtMoney(n) { return '$'+Number(n||0).toLocaleString(); }
 function fmtDays(n) { return Math.round(n||0)+'d'; }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function stat(label, value, sub, color) {
+  var c = color || 'var(--t1)';
+  return '<div style="background:var(--s2);border:1px solid var(--s3);border-radius:10px;padding:14px 16px;">' +
+    '<div style="font-size:11px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;font-family:monospace;margin-bottom:4px;">'+esc(label)+'</div>' +
+    '<div style="font-size:20px;font-weight:900;color:'+c+';">'+esc(String(value))+'</div>' +
+    (sub ? '<div style="font-size:11px;color:var(--t3);margin-top:2px;">'+esc(sub)+'</div>' : '') +
+  '</div>';
+}
 
 // ── Load data ────────────────────────────────────────────────────────────────
 if (TOKEN) {
@@ -1472,6 +1555,287 @@ function initAllViews() {
   buildService();
   buildAuditHistory();
   buildDelta();
+  buildSettings();
+  // Async views — fetched from API
+  var id = auditId || (DATA && DATA.id);
+  if (id) {
+    buildDealRisk(id);
+    buildWorkflowConflicts(id);
+    buildEnrichmentGaps(id);
+    buildBillingRisk(id);
+  }
+}
+
+// ── DEAL RISK VIEW ────────────────────────────────────────────────────────────
+async function buildDealRisk(id) {
+  var el = document.getElementById('dealrisk-content');
+  if (!el) return;
+  var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
+  if (plan === 'free') {
+    el.innerHTML = upgradePrompt('Deal Risk Scoring', 'See every open deal scored for risk based on inactivity, missing fields, and overdue close dates.', 'pulse');
+    return;
+  }
+  try {
+    var r = await fetch(API + '/audit/deal-risk?id=' + id);
+    var d = await r.json();
+    if (d.error) { el.innerHTML = '<div class="empty-state">'+d.error+'</div>'; return; }
+    if (!d.deals || d.deals.length === 0) { el.innerHTML = '<div class="empty-state">No open deals found in this portal.</div>'; return; }
+    var s = d.summary;
+    var atRiskVal = d.deals.filter(function(x){return x.riskLevel!=='healthy';}).reduce(function(t,x){return t+x.amount;},0);
+    el.innerHTML =
+      // Summary bar
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">' +
+        stat('Total Deals', s.total, '', '') +
+        stat('Critical Risk', s.critical, '', '#f43f5e') +
+        stat('At Risk', s.atRisk, '', '#f59e0b') +
+        stat('At-Risk Value', '$'+Math.round(atRiskVal/1000)+'K', '', '#f43f5e') +
+      '</div>' +
+      // Deal list
+      '<div style="display:flex;flex-direction:column;gap:8px;">' +
+      d.deals.slice(0,25).map(function(deal) {
+        var rc = deal.riskLevel==='critical' ? '#f43f5e' : deal.riskLevel==='warning' ? '#f59e0b' : '#10b981';
+        var bg = deal.riskLevel==='critical' ? 'rgba(244,63,94,.06)' : deal.riskLevel==='warning' ? 'rgba(245,158,11,.06)' : 'transparent';
+        var flags = deal.flags.join(' · ') || 'No risk factors';
+        return '<div style="display:grid;grid-template-columns:60px 1fr auto;gap:12px;align-items:center;padding:12px 16px;background:'+bg+';border:1px solid var(--s3);border-radius:10px;">' +
+          '<div style="text-align:center;">' +
+            '<div style="font-size:20px;font-weight:900;color:'+rc+';">'+deal.riskScore+'</div>' +
+            '<div style="font-size:8px;font-weight:700;letter-spacing:1px;color:'+rc+';text-transform:uppercase;">RISK</div>' +
+          '</div>' +
+          '<div>' +
+            '<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px;">'+esc(deal.name)+'</div>' +
+            '<div style="font-size:11px;color:var(--t3);">'+(deal.amount>0?'$'+deal.amount.toLocaleString()+' · ':'')+esc(flags)+'</div>' +
+          '</div>' +
+          '<div style="padding:4px 10px;border-radius:6px;font-size:10px;font-weight:800;letter-spacing:.5px;background:rgba(0,0,0,.2);color:'+rc+';">'+deal.riskLevel.toUpperCase()+'</div>' +
+        '</div>';
+      }).join('') +
+      '</div>' +
+      (d.deals.length > 25 ? '<div style="text-align:center;margin-top:14px;font-size:12px;color:var(--t3);">Showing top 25 of '+d.deals.length+' deals</div>' : '');
+  } catch(e) { el.innerHTML = '<div class="empty-state">Could not load deal risk data.</div>'; }
+}
+
+// ── WORKFLOW CONFLICTS VIEW ───────────────────────────────────────────────────
+async function buildWorkflowConflicts(id) {
+  var el = document.getElementById('conflicts-content');
+  if (!el) return;
+  var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
+  if (!['pro','command','pro-audit'].includes(plan)) {
+    el.innerHTML = upgradePrompt('Workflow Conflict Detector', 'Find duplicate form triggers, overlapping lifecycle workflows, and parallel active versions running simultaneously.', 'pro');
+    return;
+  }
+  try {
+    var r = await fetch(API + '/audit/workflow-conflicts?id=' + id);
+    var d = await r.json();
+    if (d.error) { el.innerHTML = '<div class="empty-state">'+d.error+'</div>'; return; }
+    var s = d.summary;
+    el.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">' +
+        stat('Workflows Analyzed', s.workflowsAnalyzed, '', '') +
+        stat('Conflicts Found', s.total, '', s.total > 0 ? '#f43f5e' : '#10b981') +
+        stat('Critical', s.critical, '', s.critical > 0 ? '#f43f5e' : '#10b981') +
+      '</div>' +
+      (d.conflicts.length === 0
+        ? '<div style="text-align:center;padding:40px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:12px;color:#10b981;font-size:14px;font-weight:600;">✅ No workflow conflicts detected across '+s.workflowsAnalyzed+' workflows</div>'
+        : '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          d.conflicts.map(function(c) {
+            var cc = c.severity==='critical' ? '#f43f5e' : '#f59e0b';
+            return '<div style="padding:16px 18px;background:var(--s2);border:1px solid var(--s3);border-left:3px solid '+cc+';border-radius:10px;">' +
+              '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">' +
+                '<span style="font-size:10px;font-weight:800;color:'+cc+';letter-spacing:1.5px;text-transform:uppercase;font-family:monospace;">'+esc(c.type)+'</span>' +
+                '<span style="font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(0,0,0,.2);color:'+cc+';">'+c.severity.toUpperCase()+'</span>' +
+              '</div>' +
+              '<div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:6px;">'+esc(c.description)+'</div>' +
+              '<div style="font-size:12px;color:var(--t2);margin-bottom:6px;"><strong style="color:var(--t1);">Affected workflows:</strong> '+c.workflows.map(function(w){return esc(w.name);}).join(', ')+'</div>' +
+              (c.impact ? '<div style="font-size:11px;color:'+cc+';font-family:monospace;">⚠ '+esc(c.impact)+'</div>' : '') +
+            '</div>';
+          }).join('') + '</div>'
+      );
+  } catch(e) { el.innerHTML = '<div class="empty-state">Could not load workflow conflict data.</div>'; }
+}
+
+// ── ENRICHMENT GAPS VIEW ─────────────────────────────────────────────────────
+async function buildEnrichmentGaps(id) {
+  var el = document.getElementById('enrichment-content');
+  if (!el) return;
+  var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
+  if (plan === 'free') {
+    el.innerHTML = upgradePrompt('Contact Enrichment Gaps', 'See which fields are missing across your database and how many contacts are blocked from sequences because of it.', 'pulse');
+    return;
+  }
+  try {
+    var r = await fetch(API + '/audit/enrichment-gaps?id=' + id);
+    var d = await r.json();
+    if (d.error || !d.gaps) { el.innerHTML = '<div class="empty-state">No enrichment data found.</div>'; return; }
+    var s = d.summary;
+    el.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">' +
+        stat('Total Contacts', d.total.toLocaleString(), '', '') +
+        stat('Fields w/ Gaps', s.fieldsWithGaps, '', s.fieldsWithGaps > 3 ? '#f43f5e' : '#f59e0b') +
+        stat('Est. Enrich Cost', '$'+s.estimatedEnrichmentCost.toLocaleString(), 'top 3 fields via Apollo', '#a78bfa') +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;">' +
+      d.gaps.map(function(g) {
+        var gc = g.severity==='critical' ? '#f43f5e' : g.severity==='warning' ? '#f59e0b' : '#6b7280';
+        var barPct = Math.min(100, g.pct);
+        return '<div style="padding:16px;background:var(--s2);border:1px solid var(--s3);border-radius:10px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">' +
+            '<div>' +
+              '<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px;">'+esc(g.label)+'</div>' +
+              '<div style="font-size:11px;color:var(--t3);">'+g.missing.toLocaleString()+' of '+d.total.toLocaleString()+' contacts missing</div>' +
+            '</div>' +
+            '<div style="font-size:18px;font-weight:900;color:'+gc+';">'+g.pct+'%</div>' +
+          '</div>' +
+          '<div style="height:6px;background:var(--s3);border-radius:3px;margin-bottom:10px;overflow:hidden;">' +
+            '<div style="height:100%;width:'+barPct+'%;background:'+gc+';border-radius:3px;"></div>' +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--t3);line-height:1.5;">'+esc(g.impact)+'</div>' +
+          (g.estimatedFixCost > 0 ? '<div style="margin-top:8px;font-size:11px;color:#a78bfa;">~$'+g.estimatedFixCost.toLocaleString()+' to enrich via Apollo/Clearbit</div>' : '') +
+        '</div>';
+      }).join('') + '</div>';
+  } catch(e) { el.innerHTML = '<div class="empty-state">Could not load enrichment data.</div>'; }
+}
+
+// ── BILLING TIER RISK VIEW ────────────────────────────────────────────────────
+async function buildBillingRisk(id) {
+  var el = document.getElementById('billing-content');
+  if (!el) return;
+  try {
+    var r = await fetch(API + '/audit/billing-risk?id=' + id);
+    var d = await r.json();
+    if (d.error) { el.innerHTML = '<div class="empty-state">'+d.error+'</div>'; return; }
+    var sc = d.severity==='critical' ? '#f43f5e' : d.severity==='warning' ? '#f59e0b' : '#10b981';
+    var barPct = Math.min(100, d.pctOfTier);
+    el.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">' +
+        stat('Current Contacts', d.contacts.toLocaleString(), '', '') +
+        stat('Tier Usage', d.pctOfTier+'%', d.currentTier ? d.currentTier.label : '', sc) +
+        stat('Contacts Until Next Tier', d.contactsUntilNext ? d.contactsUntilNext.toLocaleString() : '—', '', d.atRisk ? sc : '') +
+        stat('Est. Days to Overage', d.daysToNextTier ? d.daysToNextTier+'d' : '—', d.daysToNextTier ? 'at current growth' : 'growth rate unknown', d.atRisk ? sc : '') +
+      '</div>' +
+      // Progress bar
+      '<div style="background:var(--s2);border:1px solid var(--s3);border-radius:12px;padding:20px;margin-bottom:20px;">' +
+        '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:10px;">' +
+          '<span>Contact Tier Usage</span>' +
+          '<span style="color:'+sc+';font-weight:700;">'+d.pctOfTier+'% of '+( d.currentTier ? d.currentTier.label : 'current tier')+'</span>' +
+        '</div>' +
+        '<div style="height:12px;background:var(--s3);border-radius:6px;overflow:hidden;margin-bottom:8px;">' +
+          '<div style="height:100%;width:'+barPct+'%;background:'+sc+';border-radius:6px;transition:width .8s;"></div>' +
+        '</div>' +
+        (d.atRisk ? '<div style="font-size:12px;color:'+sc+';margin-top:8px;">⚠ You are approaching your next HubSpot billing tier'+( d.contactsUntilNext ? ' — '+d.contactsUntilNext.toLocaleString()+' contacts until upgrade' : '')+'</div>' : '<div style="font-size:12px;color:#10b981;margin-top:8px;">✅ Well within current tier limits</div>') +
+      '</div>' +
+      // Cleanable contacts
+      (d.cleanable > 0
+        ? '<div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:18px 20px;">' +
+            '<div style="font-size:13px;font-weight:700;color:#10b981;margin-bottom:6px;">💡 '+d.cleanable.toLocaleString()+' contacts are cleanable right now</div>' +
+            '<div style="font-size:12px;color:var(--t2);line-height:1.7;">'+
+              'These are duplicates and contacts with no email — they generate zero pipeline value but count against your HubSpot contact tier every month. '+
+              (d.cleanableSavings > 0 ? 'Cleaning them now could save $'+d.cleanableSavings.toLocaleString()+'/mo in billing.' : 'Cleaning them now could delay your next tier upgrade.') +
+            '</div>' +
+          '</div>'
+        : ''
+      );
+  } catch(e) { el.innerHTML = '<div class="empty-state">Could not load billing data.</div>'; }
+}
+
+// ── SETTINGS / SLACK VIEW ─────────────────────────────────────────────────────
+function buildSettings() {
+  var el = document.getElementById('settings-content');
+  if (!el) return;
+  var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
+  var email = DATA && DATA.portalInfo && DATA.portalInfo.email;
+  if (!['pulse','pro','command'].includes(plan)) {
+    el.innerHTML = upgradePrompt('Slack Alerts', 'Get weekly scan summaries and critical issue alerts delivered to any Slack channel. Setup takes 2 minutes.', 'pulse');
+    return;
+  }
+  el.innerHTML =
+    '<div style="max-width:560px;">' +
+      '<div style="background:var(--s2);border:1px solid var(--s3);border-radius:14px;padding:24px;margin-bottom:20px;">' +
+        '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:6px;">💬 Slack Alerts</div>' +
+        '<div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:18px;">Paste your Slack incoming webhook URL to receive weekly scan summaries and same-day critical issue alerts in any channel. No Slack app install required — just a webhook URL.</div>' +
+        '<div style="font-size:12px;color:var(--t3);margin-bottom:16px;padding:10px 14px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:8px;">'+
+          '📋 <strong style="color:var(--t2);">How to get your webhook URL:</strong> Open Slack → Apps → Search "Incoming Webhooks" → Add to Slack → Choose channel → Copy Webhook URL' +
+        '</div>' +
+        '<label style="display:block;font-size:11px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:monospace;">Slack Webhook URL</label>' +
+        '<input id="slack-webhook-input" type="url" placeholder="https://hooks.slack.com/services/..." '+
+          'style="width:100%;background:var(--s1);border:1px solid var(--s3);border-radius:8px;padding:10px 12px;color:var(--t1);font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;margin-bottom:12px;" '+
+          'onfocus="this.style.borderColor=\'#7c3aed\'" onblur="this.style.borderColor=\'\'"> ' +
+        '<div id="slack-current" style="font-size:11px;color:var(--t3);margin-bottom:14px;min-height:16px;"></div>' +
+        '<div style="display:flex;gap:10px;">' +
+          '<button onclick="saveSlackWebhook()" style="flex:1;padding:11px;background:var(--brand);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;">Save &amp; Send Test Message</button>' +
+          '<button onclick="removeSlackWebhook()" style="padding:11px 16px;background:var(--s1);border:1px solid var(--s3);border-radius:8px;color:var(--t2);font-size:13px;cursor:pointer;">Remove</button>' +
+        '</div>' +
+        '<div id="slack-status" style="margin-top:12px;font-size:12px;min-height:18px;"></div>' +
+      '</div>' +
+
+      '<div style="background:var(--s2);border:1px solid var(--s3);border-radius:14px;padding:24px;">' +
+        '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:6px;">📧 Email Alerts</div>' +
+        '<div style="font-size:13px;color:var(--t2);line-height:1.7;">Weekly scan summaries are sent every Monday to <strong style="color:var(--t1);">'+(email||'your registered email')+'</strong>.<br>Critical issue alerts (workflow errors, billing tier proximity) are sent same-day when detected by Sentinel.</div>' +
+      '</div>' +
+    '</div>';
+
+  // Load existing webhook status
+  if (email) {
+    fetch(API + '/settings/slack?email=' + encodeURIComponent(email))
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (d.hasWebhook) {
+          document.getElementById('slack-current').textContent = '✅ Active webhook: ' + (d.maskedUrl || '••••••••••');
+        } else {
+          document.getElementById('slack-current').textContent = 'No webhook configured yet.';
+        }
+      }).catch(function(){});
+  }
+}
+
+async function saveSlackWebhook() {
+  var input = document.getElementById('slack-webhook-input');
+  var status = document.getElementById('slack-status');
+  var webhookUrl = input ? input.value.trim() : '';
+  var email = DATA && DATA.portalInfo && DATA.portalInfo.email;
+  if (!email) { status.textContent = '⚠ Could not find your account email.'; status.style.color='#f43f5e'; return; }
+  if (!webhookUrl) { status.textContent = '⚠ Please enter a Slack webhook URL.'; status.style.color='#f43f5e'; return; }
+  status.textContent = 'Saving and sending test message…'; status.style.color='var(--t3)';
+  try {
+    var r = await fetch(API + '/settings/slack', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, webhookUrl })
+    });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error);
+    status.textContent = '✅ Saved! Check your Slack channel for a test message.'; status.style.color='#10b981';
+    document.getElementById('slack-current').textContent = '✅ Active webhook: ' + webhookUrl.substring(0,45)+'...';
+    input.value = '';
+  } catch(e) {
+    status.textContent = '⚠ Error: ' + e.message; status.style.color='#f43f5e';
+  }
+}
+
+async function removeSlackWebhook() {
+  var status = document.getElementById('slack-status');
+  var email = DATA && DATA.portalInfo && DATA.portalInfo.email;
+  if (!email) return;
+  status.textContent = 'Removing…'; status.style.color='var(--t3)';
+  try {
+    var r = await fetch(API + '/settings/slack', {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ email, webhookUrl: '' })
+    });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error);
+    status.textContent = '✅ Slack webhook removed.'; status.style.color='#10b981';
+    document.getElementById('slack-current').textContent = 'No webhook configured.';
+  } catch(e) {
+    status.textContent = '⚠ Error: ' + e.message; status.style.color='#f43f5e';
+  }
+}
+
+function upgradePrompt(feature, description, minPlan) {
+  var planLabel = minPlan === 'pro' ? 'Pro Plan ($549/mo)' : 'Pulse Plan ($299/mo)';
+  return '<div style="text-align:center;padding:48px 32px;background:rgba(124,58,237,.04);border:1px dashed rgba(124,58,237,.25);border-radius:16px;">' +
+    '<div style="font-size:32px;margin-bottom:12px;">🔒</div>' +
+    '<div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:8px;">'+esc(feature)+' requires '+planLabel+'</div>' +
+    '<div style="font-size:13px;color:var(--t2);max-width:440px;margin:0 auto 20px;line-height:1.7;">'+esc(description)+'</div>' +
+    '<a href="https://fixops.io/#pricing" target="_blank" style="display:inline-block;padding:11px 28px;background:var(--brand);color:#fff;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade Now →</a>' +
+  '</div>';
 }
 
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
