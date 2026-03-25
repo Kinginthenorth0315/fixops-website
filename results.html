@@ -504,7 +504,7 @@ function showResults(data) {
   });
 
   // ── Hub Intelligence ──────────────────────────────────────────────────────
-  renderHubIntelligence(ps, scores, plan, waste, criticals);
+  try { renderHubIntelligence(ps, scores, plan, waste, criticals); } catch(e) { console.warn('hub intel:', e); }
 
   // ── Issues ────────────────────────────────────────────────────────────────
   var sorted = issues.slice().sort(function(a,b){
@@ -579,7 +579,7 @@ function showResults(data) {
   try { buildCertSection(auditId, ovr); } catch(e) { console.warn('cert section:', e); }
 
   // ── Fix Plan ─────────────────────────────────────────────────────────────
-  buildFixPlan(data);
+  try { buildFixPlan(data); } catch(e) { console.warn('fix plan:', e); }
 
   // CTA
   document.getElementById('cta-section').style.display = '';
