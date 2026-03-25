@@ -448,8 +448,18 @@ function showResults(data) {
     { val: fmt(ps.users||0),      lbl: 'Users' },
     { val: fmt(ps.lists||0),      lbl: 'Lists' },
   ];
-  // Add custom objects if present (Enterprise portals)
-  if (ps.customObjectCount > 0) {
+  // Add conditional items based on what the portal has
+  if (ps.sequences > 0)      snapItems.push({ val: fmt(ps.sequences), lbl: 'Sequences' });
+  if (ps.kbArticleCount > 0) snapItems.push({ val: fmt(ps.kbArticleCount), lbl: 'KB Articles' });
+  if (ps.mrrTotal > 0)       snapItems.push({ val: '$'+Math.round((ps.mrrTotal||0)/100).toLocaleString(), lbl: 'MRR' });
+  if (ps.openQuotes > 0)     snapItems.push({ val: fmt(ps.openQuotes), lbl: 'Open Quotes' });
+
+  // Add custom objects with record counts (Enterprise portals)
+  if (ps.customObjectCount > 0 && ps.customObjectData && ps.customObjectData.length > 0) {
+    ps.customObjectData.forEach(function(obj) {
+      snapItems.push({ val: fmt(obj.total||0), lbl: obj.labelPlural || obj.label });
+    });
+  } else if (ps.customObjectCount > 0) {
     var coLabel = ps.customObjectNames && ps.customObjectNames.length > 0
       ? ps.customObjectNames.slice(0,2).join(', ')
       : 'Custom Objects';
@@ -657,10 +667,13 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
       ? ps.teamCount+' team'+(ps.teamCount!==1?'s':'')+' · '+(ps.repScorecard&&ps.repScorecard.length>0?ps.repScorecard.length+' reps':'no activity')
       : (ps.repScorecard && ps.repScorecard.length > 0 ? ps.repScorecard.length+' reps tracked' : 'No rep activity this week');
     var repsNoLink = ps.repsWithoutMeetingLinks || 0;
+    var teamTagStr = repsNoLink > 0
+      ? repsNoLink+' rep'+(repsNoLink!==1?'s':'')+' missing booking link'
+      : teamInfo;
     cards.push({ hub:'Team & Seats', icon:'👥',
       stat: fmt(ps.users)+' seats',
       desc: teamDesc,
-      tag: repInfo,
+      tag: teamTagStr,
       tagColor: teamTagColor });
   }
 
