@@ -1453,12 +1453,13 @@ function showOnetime() {
       </div>
 
       <div style="margin-bottom:20px;">
-        <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:8px;">Your email address (we send the report here)</label>
-        <input id="audit-email" type="email" placeholder="you@yourcompany.com" style="width:100%;padding:12px 16px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:8px;">Your email address <span style="color:#f43f5e;">*</span> <span style="color:rgba(255,255,255,.3);font-weight:400;">(we send the report here)</span></label>
+        <input id="audit-email" type="email" placeholder="you@yourcompany.com" required style="width:100%;padding:12px 16px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
       </div>
       <div style="margin-bottom:24px;">
-        <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:8px;">Company / Portal name</label>
-        <input id="audit-company" type="text" placeholder="Acme Corp" style="width:100%;padding:12px 16px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:8px;">Company / Portal name <span style="color:#f43f5e;">*</span></label>
+        <input id="audit-company" type="text" placeholder="Acme Corp" required style="width:100%;padding:12px 16px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        <div id="audit-form-error" style="display:none;margin-top:8px;font-size:12px;color:#f43f5e;font-family:'JetBrains Mono',monospace;"></div>
       </div>
 
       <button onclick="startFreeAudit()" style="width:100%;padding:15px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;" id="connect-btn">
@@ -1473,9 +1474,20 @@ function showOnetime() {
       <button onclick="backToPlans()" style="background:none;border:none;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer;margin-bottom:20px;font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:6px;">← Back</button>
       <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;font-family:'JetBrains Mono',monospace;margin-bottom:12px;" id="paid-tier-tag">Pulse Plan</div>
       <h2 style="font-size:26px;font-weight:900;letter-spacing:-.8px;color:#fff;margin-bottom:8px;">Let's Get You Set Up</h2>
-      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:28px;font-weight:300;line-height:1.65;">Book a quick 30-minute onboarding call with our team. We'll connect your portal, walk you through what FixOps found, and get your monitoring configured on the first call.</p>
+      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:24px;font-weight:300;line-height:1.65;">Book a quick 30-minute onboarding call with our team. We'll connect your portal, walk you through what FixOps found, and get your monitoring configured on the first call.</p>
 
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px;">
+      <!-- Collect email + company before Calendly -->
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:6px;">Your email address <span style="color:#f43f5e;">*</span></label>
+        <input id="paid-email" type="email" placeholder="you@yourcompany.com" style="width:100%;padding:11px 14px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:12px;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:6px;">Company / Portal name <span style="color:#f43f5e;">*</span></label>
+        <input id="paid-company" type="text" placeholder="Acme Corp" style="width:100%;padding:11px 14px;background:#10101a;border:1px solid #22223a;border-radius:9px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;outline:none;transition:border-color .2s;box-sizing:border-box;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        <div id="paid-form-error" style="display:none;margin-top:8px;font-size:12px;color:#f43f5e;font-family:'JetBrains Mono',monospace;"></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px;">
         <div style="padding:16px 18px;background:#10101a;border:1px solid #18182a;border-radius:12px;display:flex;align-items:center;gap:12px;">
           <span style="font-size:22px;">📅</span>
           <div><div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:2px;">30-minute setup call</div><div style="font-size:12px;color:rgba(255,255,255,.4);font-weight:300;">Connect your portal, configure alerts, review initial findings together</div></div>
@@ -1490,10 +1502,10 @@ function showOnetime() {
         </div>
       </div>
 
-      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="width:100%;padding:15px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">
+      <button onclick="bookPaidCall()" style="width:100%;padding:15px;background:#7c3aed;color:#fff;border:none;border-radius:10px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">
         Book Your Setup Call ↗
-      </a>
-      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;"><a href="/cdn-cgi/l/email-protection#117c706565797466517778697e61623f787e" style="color:rgba(255,255,255,.22);"><span class="__cf_email__" data-cfemail="cea3afbabaa6abb98ea8a7b6a1bebde0a7a1">[email&#160;protected]</span></a> · response within 4 hours</p>
+      </button>
+      <p style="font-size:11px;color:rgba(255,255,255,.22);font-family:'JetBrains Mono',monospace;text-align:center;margin-top:12px;">matthew@fixops.io · response within 4 hours</p>
     </div>
 
     <!-- STEP 3: Connecting / Demo result -->
@@ -1703,11 +1715,26 @@ function selectPlan(plan, el){
 async function startFreeAudit(){
   const email=document.getElementById('audit-email').value.trim();
   const company=document.getElementById('audit-company').value.trim();
-  if(!email){
+  const errEl=document.getElementById('audit-form-error');
+
+  // Reset errors
+  document.getElementById('audit-email').style.borderColor='#22223a';
+  document.getElementById('audit-company').style.borderColor='#22223a';
+  if(errEl) errEl.style.display='none';
+
+  if(!email || !/\S+@\S+\.\S+/.test(email)){
     document.getElementById('audit-email').style.borderColor='#f43f5e';
     document.getElementById('audit-email').focus();
+    if(errEl){ errEl.textContent='Please enter a valid email address.'; errEl.style.display='block'; }
     return;
   }
+  if(!company){
+    document.getElementById('audit-company').style.borderColor='#f43f5e';
+    document.getElementById('audit-company').focus();
+    if(errEl){ errEl.textContent='Company name is required so we can personalise your report.'; errEl.style.display='block'; }
+    return;
+  }
+
   const btn=document.getElementById('connect-btn');
   const orig=btn.innerHTML;
   btn.innerHTML='<span style="display:inline-block;animation:spin .8s linear infinite">⟳</span> Connecting…';
@@ -1729,8 +1756,39 @@ async function startFreeAudit(){
 }
 
 
-// Toast
-let tt2;
+async function bookPaidCall(){
+  const email = document.getElementById('paid-email').value.trim();
+  const company = document.getElementById('paid-company').value.trim();
+  const errEl = document.getElementById('paid-form-error');
+  const planTag = document.getElementById('paid-tier-tag').textContent;
+
+  document.getElementById('paid-email').style.borderColor='#22223a';
+  document.getElementById('paid-company').style.borderColor='#22223a';
+  if(errEl) errEl.style.display='none';
+
+  if(!email || !/\S+@\S+\.\S+/.test(email)){
+    document.getElementById('paid-email').style.borderColor='#f43f5e';
+    document.getElementById('paid-email').focus();
+    if(errEl){ errEl.textContent='Please enter your email so we can prepare for your call.'; errEl.style.display='block'; }
+    return;
+  }
+  if(!company){
+    document.getElementById('paid-company').style.borderColor='#f43f5e';
+    document.getElementById('paid-company').focus();
+    if(errEl){ errEl.textContent='Company name helps us look up your HubSpot before the call.'; errEl.style.display='block'; }
+    return;
+  }
+
+  // Save lead to server silently — fire and forget
+  fetch('https://fixops-api-production.up.railway.app/lead/capture', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ email, company, plan: planTag, source: 'paid-modal' })
+  }).catch(()=>{});
+
+  // Open Calendly with prefilled email
+  const url = 'https://calendly.com/matthew-fixops/30min?email='+encodeURIComponent(email)+'&name='+encodeURIComponent(company);
+  window.open(url, '_blank');
+}
 function toast(title,sub){
   document.getElementById('tt').textContent=title;
   document.getElementById('ts').textContent=sub;
