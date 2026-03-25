@@ -318,11 +318,11 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <a href="#services" class="btn-o">View Services</a>
     </div>
     <div class="trust">
-      <span class="trust-item">🔒 Read-only OAuth</span>
+      <span class="trust-item">🔒 Read-only — we never write to your portal</span>
       <span class="trust-item">·</span>
       <span class="trust-item">⚡ Results in under 15 minutes</span>
       <span class="trust-item">·</span>
-      <span class="trust-item">🚫 No data stored</span>
+      <span class="trust-item">🗑️ Data auto-deleted per retention policy</span>
       <span class="trust-item">·</span>
       <a href="#roadmap" class="trust-item" style="color:var(--v3);text-decoration:none;font-weight:600;">📍 What's coming →</a>
 
@@ -388,9 +388,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <div>
         <span class="feat-tag">⚡ Portal Audit</span>
         <h3 class="feat-h">210 checks. Every corner of your portal. Plain English results.</h3>
-        <p class="feat-p">FixOps connects via read-only OAuth and audits 8 health dimensions — data integrity, automation health, pipeline integrity, configuration, marketing health, reporting quality, AI readiness, and team adoption. Every issue gets an AI explanation, a dollar impact estimate, and a numbered best practice guide you can actually follow.</p>
+        <p class="feat-p">FixOps connects via read-only OAuth and runs a 210-point audit across 8 health dimensions — Data Integrity, Automation Health, Pipeline Integrity, Configuration, Marketing Health, Reporting Quality, Service Health, and Team Adoption. Every issue includes a dollar impact estimate, a root-cause description, and a numbered fix guide you can act on immediately.</p>
         <p class="feat-p">Not a 139-page PDF. Expandable issue cards. Step-by-step fix guides and a Fix It For Me button on every finding.</p>
-        <div class="caveat"><strong>What we actually read via API:</strong> contacts, companies, deals, workflows (structure, errors, enrollment counts), properties, reports, dashboards, integrations, email campaigns, forms, lists, users, and teams. All read-only. You can revoke access instantly from HubSpot.</div>
+        <div class="caveat"><strong>What we actually read via API:</strong> contacts, companies, deals, tickets, quotes, invoices, subscriptions, workflows, sequences, forms, lists, email campaigns, meeting links, knowledge base articles, custom objects, users, teams, and portal settings. All read-only. We never write, create, or modify anything in your portal. Revoke access instantly from HubSpot Settings → Connected Apps.</div>
         <a href="#" onclick="openAuditModal(event)" class="btn-v" style="font-size:14px;padding:12px 22px">Run Free Audit ↗</a>
       </div>
       <div class="mock-ui">
@@ -400,7 +400,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <div class="mock-row"><span>📊 Pipeline Integrity</span><span class="mk mk-a">71 — Warning</span></div>
         <div class="mock-row"><span>🔧 Configuration</span><span class="mk mk-g">88 — Good</span></div>
         <div class="mock-row"><span>📈 Reporting Quality</span><span class="mk mk-r">44 — Critical</span></div>
-        <div class="mock-row"><span>🤖 AI Readiness</span><span class="mk mk-a">59 — Warning</span></div>
+        <div class="mock-row"><span>🤖 Service Health</span><span class="mk mk-a">59 — Warning</span></div>
       </div>
     </div>
 
@@ -574,7 +574,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <h2 class="h2">Your HubSpot<br>Control Center</h2>
         <p class="lead">The only platform that audits, monitors, documents, and fixes your HubSpot — all in one place. Not a static report. A live intelligence layer working 24/7 so you don't have to.</p>
         <div class="pulse-feats">
-          <div class="pf"><div class="pf-c">✓</div>210-point audit with AI analysis and dollar impact per issue</div>
+          <div class="pf"><div class="pf-c">✓</div>210-point audit with dollar impact estimate and root-cause analysis per issue</div>
           <div class="pf"><div class="pf-c">✓</div>Sentinel — hourly monitoring, instant alerts to email and Slack</div>
           <div class="pf"><div class="pf-c">✓</div>Step-by-step fix guides for every issue found</div>
           <div class="pf"><div class="pf-c">✓</div>AutoDoc — living plain-English workflow documentation</div>
@@ -746,7 +746,8 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
             <div class="pc-feat"><span>✓</span>Priority support + dedicated onboarding</div>
           </div>
-          <button class="pc-btn pcb-o" onclick="goStripe('command')">Get Agency Plan →</button>
+          <button class="pc-btn pcb-o" onclick="openAgencyModal()">Apply for Agency Access →</button>
+          <div style="text-align:center;margin-top:8px;font-size:11px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;letter-spacing:1px;">CURRENTLY INVITE-ONLY · WE'LL REACH OUT WITHIN 1 BUSINESS DAY</div>
         </div>
 
       </div>
@@ -1273,7 +1274,7 @@ function showOnetime() {
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>20-checkpoint audit</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>FixOps Health Score</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Top 3 findings + PDF</div>
-            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.3)"><span>–</span>AI explanations</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.3)"><span>–</span>Fix guides included</div>
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.3)"><span>–</span>Fix guides & actions</div>
           </div>
         </div>
@@ -1283,7 +1284,7 @@ function showOnetime() {
           <div style="position:absolute;top:12px;right:12px;background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace;">POPULAR</div>
           <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Most Popular</div>
           <div style="font-size:19px;font-weight:900;color:#fff;margin-bottom:4px;">Pulse</div>
-          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Full 210-point audit with AI explanations, dollar impact, and best practice guides.</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:14px;font-weight:300;">Full 210-point audit with dollar impact estimates and step-by-step fix guides.</div>
           <div style="font-size:28px;font-weight:900;color:#fff;margin-bottom:12px;">$299<span style="font-size:14px;font-weight:400;color:rgba(255,255,255,.4)">/mo</span></div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <div style="display:flex;align-items:center;gap:7px;font-size:12.5px;color:rgba(255,255,255,.5)"><span style="color:#10b981">✓</span>Full portal scan · all objects</div>
@@ -1434,7 +1435,7 @@ function showOnetime() {
           <div style="display:flex;align-items:center;gap:10px;font-size:12px;"><span style="width:130px;color:rgba(255,255,255,.5);flex-shrink:0;">Configuration</span><div style="flex:1;height:5px;background:#18182a;border-radius:3px;overflow:hidden;"><div style="height:100%;width:85%;background:#10b981;border-radius:3px;"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#10b981;width:26px;text-align:right;">85</span></div>
           <div style="display:flex;align-items:center;gap:10px;font-size:12px;"><span style="width:130px;color:rgba(255,255,255,.5);flex-shrink:0;">Marketing Health</span><div style="flex:1;height:5px;background:#18182a;border-radius:3px;overflow:hidden;"><div style="height:100%;width:66%;background:#f59e0b;border-radius:3px;"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;width:26px;text-align:right;">66</span></div>
           <div style="display:flex;align-items:center;gap:10px;font-size:12px;"><span style="width:130px;color:rgba(255,255,255,.5);flex-shrink:0;">Reporting Quality</span><div style="flex:1;height:5px;background:#18182a;border-radius:3px;overflow:hidden;"><div style="height:100%;width:41%;background:#f43f5e;border-radius:3px;"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f43f5e;width:26px;text-align:right;">41</span></div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:12px;"><span style="width:130px;color:rgba(255,255,255,.5);flex-shrink:0;">AI Readiness</span><div style="flex:1;height:5px;background:#18182a;border-radius:3px;overflow:hidden;"><div style="height:100%;width:55%;background:#f59e0b;border-radius:3px;"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;width:26px;text-align:right;">55</span></div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;"><span style="width:130px;color:rgba(255,255,255,.5);flex-shrink:0;">Service Health</span><div style="flex:1;height:5px;background:#18182a;border-radius:3px;overflow:hidden;"><div style="height:100%;width:55%;background:#f59e0b;border-radius:3px;"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;width:26px;text-align:right;">55</span></div>
           <div style="display:flex;align-items:center;gap:10px;font-size:12px;"><span style="width:130px;color:rgba(255,255,255,.5);flex-shrink:0;">Team Adoption</span><div style="flex:1;height:5px;background:#18182a;border-radius:3px;overflow:hidden;"><div style="height:100%;width:78%;background:#f59e0b;border-radius:3px;"></div></div><span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#f59e0b;width:26px;text-align:right;">78</span></div>
         </div>
       </div>
@@ -1486,7 +1487,7 @@ function showOnetime() {
       <!-- Upgrade CTA -->
       <div style="padding:20px;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);border-radius:14px;text-align:center;">
         <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">Your full audit has 210 checkpoints — 8 critical and 14 warnings not shown here</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px;font-weight:300;">Upgrade to Pulse for AI explanations, dollar impact estimates, best practice guides, and one-click Fix It For Me on every issue.</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px;font-weight:300;">Upgrade to Pulse for dollar impact estimates, step-by-step fix guides, and one-click Fix It For Me on every issue.</div>
         <button onclick="selectPlan('pulse',null);showStep('paid')" style="padding:12px 28px;background:#7c3aed;color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">Upgrade to Pulse — $299/mo →</button>
         <div style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;margin-top:10px;">Results load instantly · email copy also sent to you</div>
       </div>
@@ -1789,5 +1790,179 @@ function recReset() {
 }
 
 </script>
+<!-- ── Agency Inquiry Modal ─────────────────────────────────────────────── -->
+<div id="agency-modal" class="audit-modal-wrap">
+  <div style="background:#0c0c14;border:1px solid #22223a;border-radius:22px;padding:40px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;position:relative;animation:fu .3s ease;">
+    <button onclick="closeAgencyModal()" style="position:absolute;top:16px;right:18px;background:none;border:none;color:rgba(255,255,255,.3);font-size:22px;cursor:pointer;line-height:1;">✕</button>
+
+    <!-- Form state -->
+    <div id="agency-form-wrap">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;font-family:'JetBrains Mono',monospace;margin-bottom:12px;">Agency Plan</div>
+      <h2 style="font-size:26px;font-weight:900;letter-spacing:-1px;color:#fff;margin-bottom:8px;line-height:1.2;">Let's get you set up</h2>
+      <p style="font-size:14px;color:rgba(255,255,255,.5);margin-bottom:28px;font-weight:300;line-height:1.6;">We onboard agency partners personally to make sure the setup is right for your team. Tell us a bit about your practice and we'll reach out within 1 business day.</p>
+
+      <!-- Contact info -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Name <span style="color:#f43f5e;">*</span></label>
+          <input id="ag-name" type="text" placeholder="Your name" style="width:100%;background:#10101a;border:1px solid #22223a;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Company <span style="color:#f43f5e;">*</span></label>
+          <input id="ag-company" type="text" placeholder="Agency name" style="width:100%;background:#10101a;border:1px solid #22223a;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Email <span style="color:#f43f5e;">*</span></label>
+          <input id="ag-email" type="email" placeholder="you@agency.com" style="width:100%;background:#10101a;border:1px solid #22223a;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        </div>
+        <div>
+          <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Phone</label>
+          <input id="ag-phone" type="tel" placeholder="Your phone number" style="width:100%;background:#10101a;border:1px solid #22223a;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'">
+        </div>
+      </div>
+
+      <!-- Qualifier 1: portals -->
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-family:'JetBrains Mono',monospace;">How many HubSpot portals do you manage?</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="ag-portals">
+          <button type="button" class="ag-opt" data-group="portals" data-val="1-5" onclick="agSelect(this)">1–5</button>
+          <button type="button" class="ag-opt" data-group="portals" data-val="6-15" onclick="agSelect(this)">6–15</button>
+          <button type="button" class="ag-opt" data-group="portals" data-val="16-30" onclick="agSelect(this)">16–30</button>
+          <button type="button" class="ag-opt" data-group="portals" data-val="30+" onclick="agSelect(this)">30+</button>
+        </div>
+      </div>
+
+      <!-- Qualifier 2: audits per month -->
+      <div style="margin-bottom:16px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-family:'JetBrains Mono',monospace;">How many audits do you run per month?</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="ag-audits">
+          <button type="button" class="ag-opt" data-group="audits" data-val="1-5" onclick="agSelect(this)">1–5</button>
+          <button type="button" class="ag-opt" data-group="audits" data-val="6-20" onclick="agSelect(this)">6–20</button>
+          <button type="button" class="ag-opt" data-group="audits" data-val="20+" onclick="agSelect(this)">20+</button>
+          <button type="button" class="ag-opt" data-group="audits" data-val="We don't currently" onclick="agSelect(this)">We don't currently</button>
+        </div>
+      </div>
+
+      <!-- Qualifier 3: priorities (multi-select) -->
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;font-family:'JetBrains Mono',monospace;">What are you most looking for? <span style="color:rgba(255,255,255,.25);font-weight:400;">(select all that apply)</span></label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="ag-priorities">
+          <button type="button" class="ag-opt ag-multi" data-val="White-label reports" onclick="agToggle(this)">White-label reports</button>
+          <button type="button" class="ag-opt ag-multi" data-val="Bulk auditing across clients" onclick="agToggle(this)">Bulk auditing</button>
+          <button type="button" class="ag-opt ag-multi" data-val="Client-facing health scores" onclick="agToggle(this)">Client-facing health scores</button>
+          <button type="button" class="ag-opt ag-multi" data-val="Reselling audits to clients" onclick="agToggle(this)">Reselling audits</button>
+          <button type="button" class="ag-opt ag-multi" data-val="Automated weekly monitoring" onclick="agToggle(this)">Automated monitoring</button>
+          <button type="button" class="ag-opt ag-multi" data-val="Team access / multiple users" onclick="agToggle(this)">Team access</button>
+        </div>
+      </div>
+
+      <!-- Optional notes -->
+      <div style="margin-bottom:24px;">
+        <label style="display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;font-family:'JetBrains Mono',monospace;">Anything else we should know? <span style="color:rgba(255,255,255,.25);font-weight:400;">(optional)</span></label>
+        <textarea id="ag-notes" rows="3" placeholder="Tell us about your agency, your clients, or what you're trying to solve..." style="width:100%;background:#10101a;border:1px solid #22223a;border-radius:8px;padding:10px 12px;color:#fff;font-size:14px;outline:none;resize:vertical;box-sizing:border-box;font-family:inherit;" onfocus="this.style.borderColor='#7c3aed'" onblur="this.style.borderColor='#22223a'"></textarea>
+      </div>
+
+      <div id="ag-error" style="display:none;color:#f43f5e;font-size:13px;margin-bottom:12px;"></div>
+
+      <button onclick="submitAgencyInquiry()" id="ag-submit-btn" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#2563eb);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;letter-spacing:-.3px;">
+        Send My Application →
+      </button>
+      <p style="text-align:center;font-size:11px;color:rgba(255,255,255,.25);margin-top:12px;line-height:1.5;">We'll reach out within 1 business day to schedule your onboarding call. No payment needed now.</p>
+    </div>
+
+    <!-- Success state -->
+    <div id="agency-success" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:48px;margin-bottom:16px;">🎉</div>
+      <h2 style="font-size:24px;font-weight:900;color:#fff;margin-bottom:10px;">Application received!</h2>
+      <p style="font-size:15px;color:rgba(255,255,255,.5);line-height:1.7;max-width:400px;margin:0 auto 24px;">We'll review your details and reach out within <strong style="color:#a78bfa;">1 business day</strong> to schedule your onboarding call.</p>
+      <button onclick="closeAgencyModal()" style="padding:12px 32px;background:#7c3aed;border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;">Done</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.ag-opt {
+  padding: 8px 16px;
+  background: #10101a;
+  border: 1px solid #22223a;
+  border-radius: 8px;
+  color: rgba(255,255,255,.6);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+}
+.ag-opt:hover { border-color: #7c3aed; color: #fff; }
+.ag-opt.selected { background: rgba(124,58,237,.2); border-color: #7c3aed; color: #a78bfa; }
+</style>
+
+<script>
+function openAgencyModal() {
+  document.getElementById('agency-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeAgencyModal() {
+  document.getElementById('agency-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+// Single-select groups
+function agSelect(btn) {
+  var group = btn.dataset.group;
+  document.querySelectorAll('.ag-opt[data-group="'+group+'"]').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+}
+// Multi-select toggle
+function agToggle(btn) {
+  btn.classList.toggle('selected');
+}
+async function submitAgencyInquiry() {
+  var name    = document.getElementById('ag-name').value.trim();
+  var company = document.getElementById('ag-company').value.trim();
+  var email   = document.getElementById('ag-email').value.trim();
+  var phone   = document.getElementById('ag-phone').value.trim();
+  var notes   = document.getElementById('ag-notes').value.trim();
+  var errEl   = document.getElementById('ag-error');
+  var btn     = document.getElementById('ag-submit-btn');
+
+  // Validation
+  errEl.style.display = 'none';
+  if (!name)  { errEl.textContent = 'Please enter your name.'; errEl.style.display='block'; return; }
+  if (!company) { errEl.textContent = 'Please enter your company name.'; errEl.style.display='block'; return; }
+  if (!email || !/\S+@\S+\.\S+/.test(email)) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display='block'; return; }
+
+  var portalCount    = (document.querySelector('.ag-opt[data-group="portals"].selected') || {}).dataset?.val || '';
+  var auditsPerMonth = (document.querySelector('.ag-opt[data-group="audits"].selected') || {}).dataset?.val || '';
+  var priorities     = Array.from(document.querySelectorAll('.ag-multi.selected')).map(function(b){ return b.dataset.val; });
+
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+
+  try {
+    var API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:3000'
+      : 'https://fixops-api-production.up.railway.app';
+
+    var r = await fetch(API+'/agency-inquiry', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, company, email, phone, portalCount, auditsPerMonth, priorities, notes })
+    });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error || 'Submit failed');
+    document.getElementById('agency-form-wrap').style.display = 'none';
+    document.getElementById('agency-success').style.display = 'block';
+  } catch(e) {
+    errEl.textContent = 'Something went wrong. Please email us at hello@fixops.io';
+    errEl.style.display = 'block';
+    btn.textContent = 'Send My Application →';
+    btn.disabled = false;
+  }
+}
+// Close on backdrop click
+document.getElementById('agency-modal').addEventListener('click', function(e){
+  if (e.target === this) closeAgencyModal();
+});
+</script>
+
 </body>
 </html>
