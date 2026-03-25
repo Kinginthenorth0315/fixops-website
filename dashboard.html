@@ -509,4 +509,13 @@ let toastT;
 function showToast(ico, title, sub) {
   document.getElementById('t-ico').textContent = ico;
   document.getElementById('t-title').textContent = title;
-  
+    document.getElementById('t-sub').textContent = sub;
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => toast.classList.remove('show'), 4000);
+}
+
+</script>
+</body>
+</html>
