@@ -419,6 +419,8 @@ function renderLeaks(data, auditId) {
   var summary = data.summary || {};
   var issues  = data.issues  || [];
   var company = (data.portalInfo || {}).company || 'Your Portal';
+  var wb      = summary.wasteBreakdown || {};  // server-computed breakdown
+  var isCapped = summary.isCappedScan || false;
 
   // Update results link
   if (auditId) {
@@ -426,16 +428,29 @@ function renderLeaks(data, auditId) {
   }
   document.getElementById('company-name').textContent = company;
 
+  // ── Capped scan disclaimer ─────────────────────────────────────────────────
+  if (isCapped) {
+    var banner = document.getElementById('capped-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'capped-banner';
+      banner.style.cssText = 'background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:12px;color:rgba(255,255,255,.65);line-height:1.7;';
+      banner.innerHTML = '⚠️ <strong style="color:#f59e0b;">Free scan estimates only.</strong> This scan checked up to 1,000 contacts. Some waste figures (like contacts missing email) are excluded from free scans to avoid inflated estimates. <a href="https://fixops.io/#pricing" style="color:#a78bfa;font-weight:600;">Run a Deep Audit</a> to get precise dollar figures across your full portal.';
+      var grid = document.getElementById('leaks-grid');
+      if (grid && grid.parentNode) grid.parentNode.insertBefore(banner, grid);
+    }
+  }
+
   // ── Calculate all leak sources ──────────────────────────────────────────
   var leaks = [];
 
-  // 1. Stalled Pipeline
+  // 1. Stalled Pipeline — use server-computed value if available
   var stalledDeals = ps.stalledDeals || 0;
   var avgDeal = ps.avgDealSize || 0;
   var stalledVal = ps.openPipelineValue
     ? Math.round((stalledDeals / Math.max(ps.openDealsCount || stalledDeals, 1)) * ps.openPipelineValue)
     : stalledDeals * avgDeal;
-  var stalledLeak = Math.round(stalledVal * 0.03); // 3% opportunity cost/mo
+  var stalledLeak = wb.wasteStalledDeals !== undefined ? wb.wasteStalledDeals : Math.round(stalledVal * 0.03);
   leaks.push({
     id: 'pipeline',
     icon: '📊',

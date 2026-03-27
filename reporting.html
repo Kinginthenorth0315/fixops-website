@@ -1344,7 +1344,7 @@ async function loadData() {
     document.title = 'FixOps Intelligence — ' + company;
     var auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
     var isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
-    var isPulseOrAbove = ['pulse','pro','command','pro-audit','deep'].includes(auditPlan);
+    var isPulseOrAbove = ['pulse','pro','command'].includes(auditPlan); // deep = one-time, not monitoring
     var isFree = !isPulseOrAbove;
     window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
     var navBadge = document.getElementById('nav-plan-badge');
@@ -1383,7 +1383,7 @@ async function loadFromToken(token) {
     // Tiered access — everyone sees snapshot, Pro/Agency unlock premium sections
     const auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
     const isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
-    const isPulseOrAbove = ['pulse','pro','command','pro-audit','deep'].includes(auditPlan);
+    const isPulseOrAbove = ['pulse','pro','command'].includes(auditPlan); // deep = one-time, not monitoring
     const isFree = !isPulseOrAbove;
 
     // Store globally so views can check
@@ -1436,6 +1436,19 @@ async function loadFromToken(token) {
             '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">See Plans →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
+      } else if (auditPlan === 'deep' || auditPlan === 'pro-audit') {
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">'+
+            '<div style="display:flex;align-items:center;gap:10px;">'+
+              '<span style="font-size:18px;">📸</span>'+
+              '<div>'+
+                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">One-Time Audit Snapshot — full portal scan included</div>'+
+                '<div style="font-size:11px;color:var(--t3);">Score trends, history, and week-over-week comparisons require Pulse Weekly Monitoring. Upgrade to track improvements over time.</div>'+
+              '</div>'+
+            '</div>'+
+            '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Get Weekly Monitoring →</a>'+
+          '</div>';
+        bannerEl.style.display = 'block';
       } else if (isPulseOrAbove && !isProOrAbove) {
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;gap:10px;">' +
@@ -1457,7 +1470,7 @@ async function loadFromToken(token) {
 
   // Trends / ROI / History require historical data — only Pulse+ builds that
   // Show them but with a meaningful empty state explaining the value
-  const historyViews = ['trends', 'roi', 'history'];
+  const historyViews = ['trends', 'roi', 'history', 'delta'];
   if (isFree || !isPulseOrAbove) {
     historyViews.forEach(function(viewName) {
       var el = document.getElementById('view-' + viewName);

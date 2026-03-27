@@ -48,8 +48,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 .stat-lbl{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
 
 /* ── Snap bar ── */
-.snap-bar{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;gap:0;overflow:hidden;}
-.snap-item{flex:1;text-align:center;padding:0 12px;border-right:1px solid var(--b1);}
+.snap-bar{background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:12px 20px;margin-bottom:24px;display:flex;flex-wrap:wrap;gap:0;overflow:visible;}
+.snap-item{flex:0 1 auto;min-width:90px;text-align:center;padding:8px 14px;border-right:1px solid var(--b1);}
 .snap-item:last-child{border-right:none;}
 .snap-val{font-size:18px;font-weight:800;letter-spacing:-.5px;line-height:1;margin-bottom:3px;}
 .snap-lbl{font-size:10px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:.8px;}
@@ -694,20 +694,47 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
 
   // Marketing
   if (ps.forms > 0 || ps.marketingEmailCount > 0 || ps.listCount > 0) {
-    var mktStat = ps.marketingEmailCount > 0 ? ps.marketingEmailCount+' emails' : ps.forms+' forms';
-    var mktDesc = ps.avgOpenRate > 0 ? 'avg '+ps.avgOpenRate+'% open rate' : (ps.emptyLists||ps.listCount||0)+' lists tracked';
+    var mktStat = ps.marketingEmailCount > 0 ? fmt(ps.marketingEmailCount)+' emails' : ps.forms+' forms';
+    var hasEmailStats = ps.avgOpenRate > 0 || ps.avgClickRate > 0 || ps.avgBounceRate > 0;
+    var mktDesc = hasEmailStats
+      ? (ps.avgOpenRate > 0 ? ps.avgOpenRate+'% open' : '') +
+        (ps.avgClickRate > 0 ? (ps.avgOpenRate > 0 ? ' · ' : '') + ps.avgClickRate+'% click' : '') +
+        (ps.avgBounceRate > 0 ? ' · ' + ps.avgBounceRate+'% bounce' : '')
+      : (ps.emptyLists||ps.listCount||0) > 0 ? (ps.listCount||0)+' lists tracked' : (ps.forms||0)+' forms active';
+    var mktTag = ps.highBounceEmails > 0
+      ? ps.highBounceEmails+' high-bounce emails'
+      : ps.lowOpenEmails > 0
+        ? ps.lowOpenEmails+' low open-rate emails'
+        : ps.avgUnsubRate > 1
+          ? ps.avgUnsubRate+'% unsub rate — above 1% threshold'
+          : ps.emptyLists > 0
+            ? ps.emptyLists+' empty lists'
+            : ps.staleDraftEmails > 0
+              ? ps.staleDraftEmails+' stale draft emails'
+              : ps.forms+' forms active';
+    var mktTagColor = ps.highBounceEmails > 0 || ps.avgUnsubRate > 1 ? '#f43f5e' : ps.lowOpenEmails > 3 ? '#f59e0b' : '#10b981';
     cards.push({ hub:'Marketing Hub', icon:'📣',
-      stat: mktStat, desc: mktDesc,
-      tag: ps.highBounceEmails > 0 ? ps.highBounceEmails+' high-bounce emails' : (ps.emptyLists > 0 ? ps.emptyLists+' empty lists' : ps.forms+' forms active'),
-      tagColor: ps.highBounceEmails > 0 ? '#f43f5e' : '#f59e0b' });
+      stat: mktStat, desc: mktDesc || 'no email stats yet',
+      tag: mktTag, tagColor: mktTagColor });
   }
 
   // Service
   if (ps.tickets > 0 || ps.kbArticleCount > 0) {
     var svcStat = ps.tickets > 0 ? fmt(ps.tickets) : '0';
-    var svcDesc = ps.kbArticleCount > 0 ? ps.kbArticleCount+' KB articles ('+ps.kbUnpublishedCount+' unpublished)' : 'total tickets';
-    var svcTag = ps.kbUnpublishedCount > 5 ? ps.kbUnpublishedCount+' KB articles unpublished' : ps.npsResponses > 0 ? ps.npsResponses+' NPS responses' : 'No NPS data collected';
-    var svcColor = ps.kbUnpublishedCount > 10 ? '#f43f5e' : ps.npsResponses > 0 ? '#10b981' : '#f59e0b';
+    var openTix = ps.openTickets || 0;
+    var over3 = ps.ticketsOver3Days || 0;
+    var svcDesc = openTix > 0
+      ? fmt(openTix)+' open · '+fmt(over3)+' over 3 days'
+      : ps.kbArticleCount > 0 ? ps.kbArticleCount+' KB articles' : 'total tickets';
+    var svcTag = ps.ticketHighPriorityOpen > 0
+      ? ps.ticketHighPriorityOpen+' high-priority open'
+      : ps.ticketsUnassigned > 0
+        ? ps.ticketsUnassigned+' unassigned open tickets'
+        : ps.ticketsOver7Days > 0
+          ? ps.ticketsOver7Days+' open 7+ days'
+          : ps.npsResponses > 0 ? ps.npsResponses+' NPS responses' : 'No NPS data collected';
+    var svcColor = ps.ticketHighPriorityOpen > 0 || ps.ticketsOver7Days > (ps.tickets||1)*0.3 ? '#f43f5e'
+      : ps.ticketsUnassigned > 0 || over3 > openTix * 0.3 ? '#f59e0b' : '#10b981';
     cards.push({ hub:'Service Hub', icon:'🎧',
       stat: svcStat, desc: svcDesc,
       tag: svcTag, tagColor: svcColor });
@@ -715,18 +742,29 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
 
   // Automation
   if (ps.workflows > 0 || ps.sequences > 0) {
+    var autoTag = ps.erroredWorkflows > 0
+      ? ps.erroredWorkflows+' workflow'+(ps.erroredWorkflows!==1?'s':'')+' in error state'
+      : ps.deadWorkflowCount > 0
+        ? ps.deadWorkflowCount+' dead workflows (0 enrollments)'
+        : ps.activeSequences > 0 ? ps.activeSequences+' active sequences' : 'No active sequences';
+    var autoTagColor = ps.erroredWorkflows > 0 ? '#f43f5e' : ps.deadWorkflowCount > 3 ? '#f59e0b' : '#10b981';
     cards.push({ hub:'Automation', icon:'⚙️',
       stat: fmt(ps.workflows||0)+' workflows',
       desc: fmt(ps.sequences||0)+' sequences',
-      tag: ps.activeSequences > 0 ? ps.activeSequences+' active sequences' : 'No active sequences',
-      tagColor: ps.activeSequences > 0 ? '#10b981' : '#f59e0b' });
+      tag: autoTag,
+      tagColor: autoTagColor });
   }
 
   // Data
   if (ps.contacts > 0) {
+    var dataTag = ps.undocumentedProps > 10
+      ? ps.undocumentedProps+' undocumented properties'
+      : ps.contactsNoFirstName > contacts * 0.15
+        ? ps.contactsNoFirstName+' contacts missing first name'
+        : (ps.customContactProps||0)+' custom contact properties';
     cards.push({ hub:'Data Integrity', icon:'🗄️',
       stat: fmt(ps.contacts), desc: 'total contacts',
-      tag: (ps.undocumentedProps||0) > 0 ? (ps.undocumentedProps||0)+' undocumented properties' : (ps.customContactProps||0)+' custom properties',
+      tag: dataTag,
       tagColor: ps.undocumentedProps > 10 ? '#f59e0b' : '#10b981' });
   }
 
