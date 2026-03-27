@@ -1063,46 +1063,239 @@ function buildInsightCards(ps, ovr, auditId) {
   container.style.display = '';
   var cards = '';
 
-  // ── 1. Contact Decay Score ──
-  var decay = ps.contactDecay;
-  if (decay && decay.total > 0) {
-    var freshPct  = Math.round(decay.fresh  / decay.total * 100);
-    var agingPct  = Math.round(decay.aging  / decay.total * 100);
-    var stalePct  = Math.round(decay.stale  / decay.total * 100);
-    var deadPct   = Math.round(decay.dead   / decay.total * 100);
-    var decayGrade = deadPct > 40 ? 'Critical' : deadPct > 20 ? 'Needs Work' : 'Healthy';
-    var decayColor = deadPct > 40 ? '#f43f5e' : deadPct > 20 ? '#f59e0b' : '#10b981';
+  var ri  = ps.revenueIntel         || {};
+  var dec = ps.contactDecayEngine   || {};
+  var rep = ps.repIntelEngine       || {};
+  var cus = ps.customerHealthEngine || {};
+  var frm = ps.formConversionEngine || {};
+  var prp = ps.propertyUsageEngine  || {};
+  var src = ps.dealSourceAttribution|| {};
+  var lvc = ps.lifecycleVelocityEngine || {};
+  var bil = ps.billingTierEngine    || {};
+  var roi = ps.automationROI        || null;
+  var bkt = dec.buckets             || {};
 
+  // ── 1. Pipeline Velocity & Revenue Forecast ──────────────────────────────
+  if (ri.pipelineVelocity > 0 || ri.winRate > 0) {
+    var velColor = ri.pipelineVelocity > 1000 ? '#10b981' : ri.pipelineVelocity > 200 ? '#f59e0b' : '#f43f5e';
+    var fcast = ri.forecastByMonth || [];
+    var fcastRows = fcast.slice(0,3).map(function(m) {
+      return '<div style="flex:1;text-align:center;padding:8px 4px;background:rgba(255,255,255,.03);border-radius:8px;">' +
+        '<div style="font-size:11px;color:var(--t3);margin-bottom:2px;">' + (m.month||'') + '</div>' +
+        '<div style="font-size:13px;font-weight:800;color:#a78bfa;">' + fmtMoney(m.weighted||0) + '</div>' +
+        '<div style="font-size:9px;color:var(--t3);">weighted</div>' +
+      '</div>';
+    }).join('');
     cards += '<div class="insight-card">' +
-      '<div class="insight-card-accent" style="background:'+decayColor+';"></div>' +
-      '<div class="insight-label">🗄️ Contact Decay Score</div>' +
-      '<div class="insight-headline" style="color:'+decayColor+';">' + decayGrade + '</div>' +
-      '<div class="insight-sub">' + fmt(decay.dead) + ' contacts have had zero activity in 12+ months — costing ~' + fmtMoney(decay.billingWaste) + '/mo in billing tier bloat</div>' +
-      '<div class="decay-bar">' +
-        '<div class="decay-seg" style="width:'+freshPct+'%;background:#10b981;" title="Fresh: '+freshPct+'%"></div>' +
-        '<div class="decay-seg" style="width:'+agingPct+'%;background:#f59e0b;" title="Aging: '+agingPct+'%"></div>' +
-        '<div class="decay-seg" style="width:'+stalePct+'%;background:#f97316;" title="Stale: '+stalePct+'%"></div>' +
-        '<div class="decay-seg" style="width:'+deadPct+'%;background:#f43f5e;" title="Dead: '+deadPct+'%"></div>' +
-      '</div>' +
-      '<div class="insight-stat-row">' +
-        '<div class="insight-stat"><div class="insight-stat-val" style="color:#10b981;">'+freshPct+'%</div><div class="insight-stat-lbl">Active</div></div>' +
-        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f59e0b;">'+agingPct+'%</div><div class="insight-stat-lbl">Aging</div></div>' +
-        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f97316;">'+stalePct+'%</div><div class="insight-stat-lbl">Stale</div></div>' +
-        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">'+deadPct+'%</div><div class="insight-stat-lbl">Dead</div></div>' +
+      '<div class="insight-card-accent" style="background:#a78bfa;"></div>' +
+      '<div class="insight-label">🚀 Pipeline Velocity & Forecast</div>' +
+      '<div class="insight-headline" style="color:#a78bfa;">' + fmtMoney(ri.pipelineVelocity||0) + '<span style="font-size:12px;font-weight:400;color:var(--t3);">/day</span></div>' +
+      '<div class="insight-sub">Your pipeline generates ~' + fmtMoney(ri.pipelineVelocity||0) + ' of qualified pipeline value every day. Win rate: ' + (ri.winRate||0) + '% · Avg cycle: ' + (ri.avgSalesCycleDays||0) + ' days · Coverage ratio: ' + (ri.coverageRatio||'—') + 'x</div>' +
+      (fcastRows ? '<div style="display:flex;gap:6px;margin-top:10px;">' + fcastRows + '</div>' : '') +
+      '<div class="insight-stat-row" style="margin-top:10px;">' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#a78bfa;">' + (ri.winRate||0) + '%</div><div class="insight-stat-lbl">Win Rate</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val">' + (ri.avgSalesCycleDays||0) + 'd</div><div class="insight-stat-lbl">Avg Cycle</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val">' + fmtMoney(ri.avgDealSize||0) + '</div><div class="insight-stat-lbl">Avg Deal</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#10b981;">' + fmtMoney(ri.closedWonRevenue||0) + '</div><div class="insight-stat-lbl">Won (All Time)</div></div>' +
       '</div>' +
     '</div>';
   }
 
-  // ── 2. Automation ROI ──
-  var roi = ps.automationROI;
+  // ── 2. Contact Decay Score ────────────────────────────────────────────────
+  if (dec.totalContacts > 0) {
+    var hotC  = bkt.hot   || 0, warmC  = bkt.warm    || 0;
+    var coolC = bkt.cooling|| 0, coldC = bkt.cold    || 0, deadC = bkt.dead || 0;
+    var tot   = hotC+warmC+coolC+coldC+deadC || 1;
+    var hotPct=Math.round(hotC/tot*100), warmPct=Math.round(warmC/tot*100);
+    var coolPct=Math.round(coolC/tot*100), coldPct=Math.round(coldC/tot*100), deadPct=Math.round(deadC/tot*100);
+    var decGrade = dec.databaseHealthGrade || (dec.avgDecayScore>=65?'Healthy':dec.avgDecayScore>=45?'Needs Work':'At Risk');
+    var decColor = dec.avgDecayScore>=65 ? '#10b981' : dec.avgDecayScore>=45 ? '#f59e0b' : '#f43f5e';
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:'+decColor+';"></div>' +
+      '<div class="insight-label">🗄️ Contact Database Health</div>' +
+      '<div class="insight-headline" style="color:'+decColor+';">' + decGrade + ' · ' + (dec.avgDecayScore||0) + '/100</div>' +
+      '<div class="insight-sub">' + fmt(deadC+coldC) + ' contacts dead or cold — costing ~' + fmtMoney(dec.estBillingWaste||0) + '/mo in billing tier bloat. ' + fmt(dec.archiveCandidateCount||0) + ' are archive candidates.</div>' +
+      '<div class="decay-bar" style="margin:10px 0 6px;">' +
+        '<div class="decay-seg" style="width:'+hotPct+'%;background:#10b981;" title="Hot '+hotPct+'%"></div>' +
+        '<div class="decay-seg" style="width:'+warmPct+'%;background:#3b82f6;" title="Warm '+warmPct+'%"></div>' +
+        '<div class="decay-seg" style="width:'+coolPct+'%;background:#f59e0b;" title="Cooling '+coolPct+'%"></div>' +
+        '<div class="decay-seg" style="width:'+coldPct+'%;background:#6366f1;" title="Cold '+coldPct+'%"></div>' +
+        '<div class="decay-seg" style="width:'+deadPct+'%;background:#f43f5e;" title="Dead '+deadPct+'%"></div>' +
+      '</div>' +
+      '<div class="insight-stat-row">' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#10b981;">'+fmt(hotC)+'</div><div class="insight-stat-lbl">🔥 Hot</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#3b82f6;">'+fmt(warmC)+'</div><div class="insight-stat-lbl">Warm</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f59e0b;">'+fmt(coolC)+'</div><div class="insight-stat-lbl">Cooling</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">'+fmt(deadC)+'</div><div class="insight-stat-lbl">💀 Dead</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── 3. Rep Performance Intelligence ──────────────────────────────────────
+  if (rep.repCount > 0) {
+    var reps = rep.reps || [];
+    var topRep = reps[0] || {};
+    var botRep = reps[reps.length-1] || {};
+    var teamColor = rep.teamAvgScore>=65?'#10b981':rep.teamAvgScore>=45?'#f59e0b':'#f43f5e';
+    var repRows = reps.slice(0,5).map(function(r,i) {
+      var sc = r.performanceScore;
+      var col = sc>=70?'#10b981':sc>=50?'#f59e0b':'#f43f5e';
+      var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+      return '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--b1);">' +
+        '<div style="width:20px;font-size:12px;text-align:center;">' + (medal||String(i+1)) + '</div>' +
+        '<div style="flex:1;font-size:12px;font-weight:600;color:var(--t1);">' + esc(r.name||'Rep') + '</div>' +
+        '<div style="font-size:11px;color:var(--t3);">' + fmt(r.calls||0) + ' calls · ' + fmt(r.meetings||0) + ' mtgs</div>' +
+        '<div style="font-size:12px;font-weight:800;color:'+col+';">' + sc + '</div>' +
+      '</div>';
+    }).join('');
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:#06b6d4;"></div>' +
+      '<div class="insight-label">👥 Rep Performance Intelligence</div>' +
+      '<div class="insight-headline" style="color:#06b6d4;">Team Score: ' + (rep.teamAvgScore||0) + '/100</div>' +
+      '<div class="insight-sub">' + fmt(rep.repCount||0) + ' active reps tracked · Top: ' + esc(topRep.name||'—') + ' (' + (topRep.performanceScore||0) + ') · Needs coaching: ' + esc(botRep.name||'—') + ' (' + (botRep.performanceScore||0) + ')</div>' +
+      '<div style="margin-top:10px;">' + repRows + '</div>' +
+    '</div>';
+  }
+
+  // ── 4. Customer Health Score ──────────────────────────────────────────────
+  if (cus && cus.total > 0) {
+    var chColor = cus.avgHealth>=70?'#10b981':cus.avgHealth>=50?'#f59e0b':'#f43f5e';
+    var atRiskAccts = (cus.bottomAccounts||[]).slice(0,4);
+    var atRiskRows = atRiskAccts.map(function(a) {
+      var col = a.score<30?'#f43f5e':a.score<50?'#f59e0b':'#f97316';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--b1);font-size:12px;">' +
+        '<div style="color:var(--t1);font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(a.name||'Account') + '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;">' +
+          '<div style="font-size:10px;color:var(--t3);">' + a.daysSinceUpdate + 'd ago</div>' +
+          '<div style="font-weight:800;color:'+col+';">' + a.score + '/100</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:'+chColor+';"></div>' +
+      '<div class="insight-label">❤️ Customer Health Score</div>' +
+      '<div class="insight-headline" style="color:'+chColor+';">Avg ' + (cus.avgHealth||0) + '/100</div>' +
+      '<div class="insight-sub">' + fmt(cus.atRisk||0) + ' accounts at risk (score <40) · ' + fmt(cus.healthy||0) + ' healthy. At-risk accounts are churn candidates — address before renewal.</div>' +
+      '<div style="margin-top:10px;">' + (atRiskRows || '<div style="font-size:12px;color:var(--t3);">No at-risk accounts detected</div>') + '</div>' +
+      '<div class="insight-stat-row" style="margin-top:8px;">' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">' + fmt(cus.atRisk||0) + '</div><div class="insight-stat-lbl">At Risk</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#10b981;">' + fmt(cus.healthy||0) + '</div><div class="insight-stat-lbl">Healthy</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val">' + fmt(cus.total||0) + '</div><div class="insight-stat-lbl">Total</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── 5. Deal Source Attribution ────────────────────────────────────────────
+  if (src && src.rows && src.rows.length > 0) {
+    var srcRows = src.rows.slice(0,5).map(function(r) {
+      return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--b1);font-size:11px;">' +
+        '<div style="flex:1;color:var(--t1);font-weight:600;">' + esc(r.source) + '</div>' +
+        '<div style="color:var(--t3);">' + fmt(r.contacts) + ' contacts</div>' +
+        '<div style="color:#10b981;font-weight:700;">' + r.winRate + '% win</div>' +
+        '<div style="color:#a78bfa;font-weight:700;">' + fmtMoney(r.avgDeal||0) + ' avg</div>' +
+      '</div>';
+    }).join('');
+    var bestSrc = src.bestSource || {};
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:#f59e0b;"></div>' +
+      '<div class="insight-label">📡 Deal Source Attribution</div>' +
+      '<div class="insight-headline" style="color:#fbbf24;">' + esc(bestSrc.source||'—') + '</div>' +
+      '<div class="insight-sub">Top revenue source: ' + esc(bestSrc.source||'—') + ' with ' + fmtMoney(bestSrc.wonValue||0) + ' total closed won.' +
+        (src.highestWinRate ? ' Highest win rate: ' + esc(src.highestWinRate.source) + ' at ' + src.highestWinRate.winRate + '%.' : '') + '</div>' +
+      '<div style="margin-top:10px;">' + srcRows + '</div>' +
+    '</div>';
+  }
+
+  // ── 6. Lifecycle Stage Velocity ───────────────────────────────────────────
+  if (lvc && lvc.totalContacts > 20) {
+    var steps = (lvc.funnelSteps||[]).slice(0,5);
+    var stepRows = steps.map(function(s) {
+      var barW = Math.min(100, s.convRate*2);
+      var col = s.convRate>=30?'#10b981':s.convRate>=10?'#f59e0b':'#f43f5e';
+      return '<div style="margin:5px 0;">' +
+        '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-bottom:2px;">' +
+          '<span>' + esc(s.from) + ' → ' + esc(s.to) + '</span>' +
+          '<span style="font-weight:700;color:'+col+';">' + s.convRate + '%</span>' +
+        '</div>' +
+        '<div style="height:4px;background:var(--b2);border-radius:2px;">' +
+          '<div style="height:100%;width:'+barW+'%;background:'+col+';border-radius:2px;"></div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:#ec4899;"></div>' +
+      '<div class="insight-label">🔄 Lifecycle Stage Velocity</div>' +
+      '<div class="insight-headline" style="color:#f472b6;">' + (lvc.avgLeadToCustomerDays ? lvc.avgLeadToCustomerDays + ' days' : fmt(lvc.customerCount||0) + ' customers') + '</div>' +
+      '<div class="insight-sub">' + (lvc.avgLeadToCustomerDays ? 'Average ' + lvc.avgLeadToCustomerDays + ' days from deal created to closed won. ' : '') +
+        (lvc.noStagePct > 20 ? lvc.noStagePct + '% of contacts have no lifecycle stage — funnel reporting broken.' : fmt(lvc.leadCount||0) + ' leads → ' + fmt(lvc.sqlCount||0) + ' SQLs → ' + fmt(lvc.customerCount||0) + ' customers.') + '</div>' +
+      '<div style="margin-top:10px;">' + stepRows + '</div>' +
+    '</div>';
+  }
+
+  // ── 7. Property Usage Audit ───────────────────────────────────────────────
+  if (prp && prp.total > 0) {
+    var bloatProps = (prp.bloatProps||[]).slice(0,4);
+    var bloatRows = bloatProps.map(function(p) {
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--b1);font-size:11px;">' +
+        '<div style="flex:1;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(p.label) + '</div>' +
+        '<div style="color:#f43f5e;font-weight:700;font-size:10px;">' + p.fillRate + '% filled</div>' +
+      '</div>';
+    }).join('');
+    var propColor = prp.bloat===0?'#10b981':prp.bloat<5?'#f59e0b':'#f43f5e';
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:'+propColor+';"></div>' +
+      '<div class="insight-label">🔧 Property Usage Audit</div>' +
+      '<div class="insight-headline" style="color:'+propColor+';">' + fmt(prp.total||0) + ' Custom Properties</div>' +
+      '<div class="insight-sub">' + fmt(prp.wellUsed||0) + ' well-used (≥50% fill) · ' + fmt(prp.underUsed||0) + ' under-used · ' + fmt(prp.bloat||0) + ' bloat (<5% fill). ' +
+        (prp.noDesc > 0 ? fmt(prp.noDesc) + ' have no description.' : '') + '</div>' +
+      (bloatRows ? '<div style="margin-top:8px;"><div style="font-size:10px;color:var(--t3);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Delete Candidates</div>' + bloatRows + '</div>' : '') +
+      '<div class="insight-stat-row" style="margin-top:8px;">' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#10b981;">' + fmt(prp.wellUsed||0) + '</div><div class="insight-stat-lbl">Well Used</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f59e0b;">' + fmt(prp.underUsed||0) + '</div><div class="insight-stat-lbl">Under Used</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">' + fmt(prp.bloat||0) + '</div><div class="insight-stat-lbl">Bloat</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val">' + fmt(prp.noDesc||0) + '</div><div class="insight-stat-lbl">No Desc</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── 8. Billing Tier Proximity ─────────────────────────────────────────────
+  if (bil && bil.pctOfTier > 0) {
+    var bilColor = bil.critical?'#f43f5e':bil.atRisk?'#f59e0b':'#10b981';
+    var bilMsg = bil.critical ? 'Critical — at ' + bil.pctOfTier + '% of billing tier' :
+                 bil.atRisk   ? 'Warning — approaching next tier' : 'Healthy headroom';
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:'+bilColor+';"></div>' +
+      '<div class="insight-label">💳 HubSpot Billing Tier</div>' +
+      '<div class="insight-headline" style="color:'+bilColor+';">' + bilMsg + '</div>' +
+      '<div class="insight-sub">' + fmt(bil.totalContacts||0) + ' contacts · Tier limit: ' + fmt(bil.currentTier||0) + ' · ' + fmt(bil.headroom||0) + ' contacts of headroom.' +
+        (bil.monthsToNextTier ? ' At current growth rate, you hit the next tier in ~' + bil.monthsToNextTier + ' months' + (bil.tierJumpCost ? ' (+$' + fmt(bil.tierJumpCost) + '/mo).' : '.') : '') +
+        (bil.totalRemovable > 0 ? ' Removing ' + fmt(bil.totalRemovable) + ' duplicates + dead contacts would recover ' + fmt(bil.totalRemovable) + ' tier slots.' : '') + '</div>' +
+      '<div style="margin:10px 0 6px;height:8px;background:var(--b2);border-radius:4px;overflow:hidden;">' +
+        '<div style="height:100%;width:'+Math.min(100,bil.pctOfTier)+'%;background:'+bilColor+';border-radius:4px;transition:width .6s;"></div>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);">' +
+        '<span>' + fmt(bil.totalContacts||0) + ' used</span>' +
+        '<span>' + bil.pctOfTier + '%</span>' +
+        '<span>Limit: ' + fmt(bil.currentTier||0) + '</span>' +
+      '</div>' +
+      '<div class="insight-stat-row" style="margin-top:10px;">' +
+        '<div class="insight-stat"><div class="insight-stat-val">' + fmt(bil.headroom||0) + '</div><div class="insight-stat-lbl">Headroom</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f59e0b;">' + fmt(bil.dupesRemovable||0) + '</div><div class="insight-stat-lbl">Dupes to Remove</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">' + fmt(bil.deadRemovable||0) + '</div><div class="insight-stat-lbl">Dead to Archive</div></div>' +
+        (bil.tierJumpCost ? '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">$' + fmt(bil.tierJumpCost) + '</div><div class="insight-stat-lbl">Next Tier Cost</div></div>' : '') +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── 9. Automation ROI ─────────────────────────────────────────────────────
   if (roi) {
-    var effColor = roi.efficiency >= 80 ? '#10b981' : roi.efficiency >= 60 ? '#f59e0b' : '#f43f5e';
+    var effColor = roi.efficiency>=80?'#10b981':roi.efficiency>=60?'#f59e0b':'#f43f5e';
     cards += '<div class="insight-card">' +
       '<div class="insight-card-accent" style="background:#8b5cf6;"></div>' +
       '<div class="insight-label">⚙️ Automation ROI</div>' +
-      '<div class="insight-headline" style="color:#a78bfa;">' + fmtMoney(roi.dollarSaved) + '<span style="font-size:13px;font-weight:400;color:var(--t3);">/mo saved</span></div>' +
-      '<div class="insight-sub">Your ' + fmt(roi.activeCount) + ' active workflows save ~' + fmt(roi.hrsSaved) + ' hours/month at current enrollment rates' +
-        (roi.deadWfCount > 0 ? '. But ' + roi.deadWfCount + ' dead workflows are costing ~' + fmtMoney(roi.lostValue) + '/mo in missed automations.' : '.') + '</div>' +
+      '<div class="insight-headline" style="color:#a78bfa;">' + fmtMoney(roi.dollarSaved) + '<span style="font-size:12px;font-weight:400;color:var(--t3);">/mo saved</span></div>' +
+      '<div class="insight-sub">' + fmt(roi.activeCount) + ' active workflows save ~' + fmt(roi.hrsSaved) + ' hrs/mo. ' +
+        (roi.deadWfCount > 0 ? roi.deadWfCount + ' dead workflows costing ~' + fmtMoney(roi.lostValue) + '/mo in missed automation.' : 'All workflows actively enrolling.') + '</div>' +
       '<div class="insight-stat-row">' +
         '<div class="insight-stat"><div class="insight-stat-val" style="color:'+effColor+';">'+roi.efficiency+'%</div><div class="insight-stat-lbl">Efficiency</div></div>' +
         '<div class="insight-stat"><div class="insight-stat-val">'+fmt(roi.totalEnrollments)+'</div><div class="insight-stat-lbl">Enrollments</div></div>' +
@@ -1112,35 +1305,38 @@ function buildInsightCards(ps, ovr, auditId) {
     '</div>';
   }
 
-  // ── 3. Pipeline Funnel / Revenue Leak ──
-  var funnel = ps.pipelineFunnel;
-  if (funnel && funnel.length > 0) {
-    var maxCount = Math.max(...funnel.map(function(f){ return f.count; }), 1);
-    var totalValue = funnel.reduce(function(sum,f){ return sum+f.value; }, 0);
-    var staleStages = funnel.filter(function(f){ return f.stale > 0; });
-    var staleValue = staleStages.reduce(function(sum,f){ return sum + Math.round(f.stale/Math.max(f.count,1)*f.value); }, 0);
-
-    var stageRows = funnel.slice(0,6).map(function(st) {
-      var barPct = Math.round(st.count / maxCount * 100);
-      var staleFlag = st.stale > 0 ? ' <span style="color:#f43f5e;font-size:9px;">'+st.stale+' stale</span>' : '';
-      return '<div class="funnel-stage">' +
-        '<div style="font-size:11px;color:var(--t2);width:90px;flex-shrink:0;">'+esc(st.name)+'</div>' +
-        '<div class="funnel-bar-wrap"><div class="funnel-bar-fill" style="width:'+barPct+'%;"></div></div>' +
-        '<div style="font-size:11px;font-weight:700;color:var(--t1);width:28px;text-align:right;">'+st.count+'</div>' +
-        staleFlag +
+  // ── 10. Form Conversion Funnel ────────────────────────────────────────────
+  if (frm && frm.totalForms > 0) {
+    var topForms = (frm.topForms||[]).slice(0,4);
+    var formRows = topForms.map(function(f) {
+      var cr = f.conversionRate || 0;
+      var col = cr>=20?'#10b981':cr>=5?'#f59e0b':'#f43f5e';
+      return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--b1);font-size:11px;">' +
+        '<div style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--t1);">' + esc(f.name||'Form') + '</div>' +
+        '<div style="color:var(--t3);">' + fmt(f.submissions||0) + ' subs</div>' +
+        '<div style="font-weight:700;color:'+col+';">' + cr + '%</div>' +
       '</div>';
     }).join('');
-
-    cards += '<div class="insight-card" style="grid-column:span 1;">' +
-      '<div class="insight-card-accent" style="background:#f59e0b;"></div>' +
-      '<div class="insight-label">📊 Pipeline Funnel</div>' +
-      '<div class="insight-headline" style="color:#f59e0b;">' + fmtMoney(totalValue) + '<span style="font-size:13px;font-weight:400;color:var(--t3);"> pipeline</span></div>' +
-      (staleValue > 0 ? '<div class="insight-sub">' + fmtMoney(staleValue) + ' in stale deals across pipeline stages — at risk of dying without intervention</div>' : '<div class="insight-sub">Deal distribution across your active pipeline stages</div>') +
-      '<div>' + stageRows + '</div>' +
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:#f97316;"></div>' +
+      '<div class="insight-label">📋 Form Conversion Funnel</div>' +
+      '<div class="insight-headline" style="color:#fb923c;">' + fmt(frm.totalForms||0) + ' Forms · ' + fmt(frm.totalSubmissions||0) + ' Submissions</div>' +
+      '<div class="insight-sub">' + (frm.zeroSubmission > 0 ? fmt(frm.zeroSubmission) + ' forms have zero submissions — potential broken lead capture. ' : '') +
+        'Top performing forms ranked by conversion rate.</div>' +
+      '<div style="margin-top:8px;">' + formRows + '</div>' +
     '</div>';
   }
 
-  container.innerHTML = '<div class="insight-row">' + cards + '</div>';
+  if (cards) {
+    container.innerHTML =
+      '<div style="margin-bottom:14px;">' +
+        '<div style="font-size:10px;font-weight:700;font-family:var(--mono);color:#a78bfa;text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;">✦ Revenue Intelligence</div>' +
+        '<div style="font-size:12px;color:var(--t3);">Powered by ' + fmt(ps.contacts||0) + ' contacts · ' + fmt(ps.deals||0) + ' deals · ' + fmt(ps.workflows||0) + ' workflows — updated every scan</div>' +
+      '</div>' +
+      '<div class="insight-row">' + cards + '</div>';
+  } else {
+    container.innerHTML = '';
+  }
 }
 
 // ── Build Certificate Section ─────────────────────────────────────────────────

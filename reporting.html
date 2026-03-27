@@ -715,6 +715,31 @@ nav {
       <div class="sidebar-item" onclick="showView('team')" data-view="team">
         <span class="si-icon">👥</span> Rep Activity &amp; Seats
       </div>
+      <div class="sidebar-item" onclick="showView('rep')" data-view="rep">
+        <span class="si-icon">🏆</span> Rep Intelligence <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">✦ Intelligence</div>
+      <div class="sidebar-item" onclick="showView('decay')" data-view="decay">
+        <span class="si-icon">🔋</span> Contact Decay Score <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('health')" data-view="health">
+        <span class="si-icon">❤️</span> Customer Health <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('formfunnel')" data-view="formfunnel">
+        <span class="si-icon">📋</span> Form Funnel <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('prophealth')" data-view="prophealth">
+        <span class="si-icon">🏷️</span> Property Audit <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('source')" data-view="source">
+        <span class="si-icon">📡</span> Source Attribution <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('lifecycle')" data-view="lifecycle">
+        <span class="si-icon">🔄</span> Lifecycle Velocity <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
     </div>
 
     <div class="sidebar-section">
@@ -1114,6 +1139,121 @@ nav {
       <div id="team-content"></div>
     </div>
 
+    <!-- ✦ CONTACT DECAY SCORE -->
+    <div class="view" id="view-decay">
+      <div class="page-header">
+        <h1>Contact Decay Score</h1>
+        <p>Every contact scored 0–100 based on engagement, lifecycle, and activity — your CRM's true health signal</p>
+      </div>
+      <div class="kpi-row" id="decay-kpis"></div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Database Health Distribution</div><div class="chart-sub">Hot → Dead — where your contacts sit right now</div></div><span class="chart-badge">DECAY ENGINE</span></div>
+          <div class="chart-wrap"><canvas id="decayDonut" height="220"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Decay Score Breakdown</div><div class="chart-sub">What's dragging your database health down</div></div></div>
+          <div id="decay-breakdown" style="padding:8px 0;"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Action Plan — Fix Your Database Health</div><div class="chart-sub">Ranked by dollar impact</div></div></div>
+        <div id="decay-actions"></div>
+      </div>
+    </div>
+
+    <!-- ✦ REP INTELLIGENCE -->
+    <div class="view" id="view-rep">
+      <div class="page-header">
+        <h1>Rep Performance Intelligence</h1>
+        <p>Full 30-day scorecard per rep — calls, meetings, pipeline, win rate, and task health in one view</p>
+      </div>
+      <div class="kpi-row" id="rep-kpis"></div>
+      <div class="chart-card" style="margin-bottom:20px;">
+        <div class="chart-header"><div><div class="chart-title">Rep Leaderboard — Last 30 Days</div><div class="chart-sub">Activity + pipeline + win rate composite score</div></div><span class="chart-badge">REP INTEL</span></div>
+        <div id="rep-leaderboard"></div>
+      </div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Activity by Rep</div><div class="chart-sub">Calls + meetings logged (30 days)</div></div></div>
+          <div class="chart-wrap"><canvas id="repActivityChart" height="220"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Pipeline Value by Rep</div><div class="chart-sub">Open deals owned per rep</div></div></div>
+          <div class="chart-wrap"><canvas id="repPipelineChart" height="220"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✦ CUSTOMER HEALTH -->
+    <div class="view" id="view-health">
+      <div class="page-header">
+        <h1>Customer Health Score</h1>
+        <p>Churn prediction before it happens — every account scored on engagement, tickets, NPS, and billing</p>
+      </div>
+      <div class="kpi-row" id="health-kpis"></div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Health Score Distribution</div><div class="chart-sub">At-risk accounts need immediate attention</div></div><span class="chart-badge">CHURN RISK</span></div>
+          <div class="chart-wrap"><canvas id="healthDonut" height="220"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">At-Risk Accounts</div><div class="chart-sub">Score below 40 — churn probability elevated</div></div></div>
+          <div id="at-risk-accounts" style="padding:4px 0;max-height:260px;overflow-y:auto;"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Top Healthy Accounts</div><div class="chart-sub">Highest engagement scores — expansion opportunities</div></div></div>
+        <div id="healthy-accounts"></div>
+      </div>
+    </div>
+
+    <!-- ✦ FORM FUNNEL -->
+    <div class="view" id="view-formfunnel">
+      <div class="page-header">
+        <h1>Form Conversion Funnel</h1>
+        <p>Every form ranked by submissions — zero-submission forms are silent lead capture failures</p>
+      </div>
+      <div class="kpi-row" id="form-kpis"></div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Top Forms by Submissions</div><div class="chart-sub">Your highest-performing lead capture assets</div></div><span class="chart-badge">FORM INTEL</span></div>
+          <div id="top-forms"></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Form Submission Distribution</div><div class="chart-sub">Submissions by form</div></div></div>
+          <div class="chart-wrap"><canvas id="formChart" height="220"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Zero-Submission Forms</div><div class="chart-sub">Live forms that have never received a submission — test immediately</div></div></div>
+        <div id="zero-forms"></div>
+      </div>
+    </div>
+
+    <!-- ✦ PROPERTY HEALTH -->
+    <div class="view" id="view-prophealth">
+      <div class="page-header">
+        <h1>Property Usage Audit</h1>
+        <p>Every custom property scored by fill rate — bloat properties cost you time and money</p>
+      </div>
+      <div class="kpi-row" id="prop-kpis"></div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Property Fill Rate Overview</div><div class="chart-sub">Well-used vs underused vs bloat</div></div><span class="chart-badge">PROPERTY AUDIT</span></div>
+          <div class="chart-wrap"><canvas id="propDonut" height="220"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Top Properties by Fill Rate</div><div class="chart-sub">Your most consistently filled custom fields</div></div></div>
+          <div id="top-props"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Bloat Properties (&lt;5% Fill Rate)</div><div class="chart-sub">Candidates for archival — cluttering your views and slowing your team</div></div></div>
+        <div id="bloat-props"></div>
+      </div>
+    </div>
+
 
     <!-- Marketing Hub View -->
     <div class="view" id="view-marketing">
@@ -1234,6 +1374,52 @@ nav {
       <div id="billing-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading billing analysis…</div></div>
     </div>
 
+    <!-- ✦ DEAL SOURCE ATTRIBUTION VIEW -->
+    <div class="view" id="view-source">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">📡 Deal Source Attribution</h1>
+        <p>Which contact sources generate your best deals? Win rate, avg deal size, and sales cycle by acquisition channel.</p>
+      </div>
+      <div class="kpi-row" id="source-kpis"></div>
+      <div class="chart-grid cols-2" style="margin-top:20px;">
+        <div class="chart-box" style="grid-column:span 2;">
+          <div class="chart-title">Revenue by Acquisition Source</div>
+          <div id="source-table"></div>
+        </div>
+      </div>
+      <div class="chart-grid cols-2" style="margin-top:16px;">
+        <div class="chart-box">
+          <div class="chart-title">Win Rate by Source</div>
+          <canvas id="sourceWinChart" height="220"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Avg Deal Size by Source</div>
+          <canvas id="sourceDealChart" height="220"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✦ LIFECYCLE VELOCITY VIEW -->
+    <div class="view" id="view-lifecycle">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">🔄 Lifecycle Stage Velocity</h1>
+        <p>How contacts move through your funnel — stage-by-stage conversion rates, bottlenecks, and lead-to-customer cycle time.</p>
+      </div>
+      <div class="kpi-row" id="lifecycle-kpis"></div>
+      <div class="chart-grid cols-2" style="margin-top:20px;">
+        <div class="chart-box">
+          <div class="chart-title">Contact Distribution by Stage</div>
+          <canvas id="lifecycleStageChart" height="240"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Stage Conversion Rates</div>
+          <div id="lifecycle-funnel"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Settings / Alerts View -->
     <div class="view" id="view-settings">
       <div class="view-header">
@@ -1242,6 +1428,116 @@ nav {
         <p>Configure where FixOps sends your weekly scan summaries and critical issue alerts.</p>
       </div>
       <div id="settings-content"></div>
+    </div>
+
+    <!-- ✦ CONTACT DECAY VIEW -->
+    <div class="view" id="view-decay">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">🧬 Contact Decay Score</h1>
+        <p>Every contact scored 0–100. See which contacts are worth $0 right now — and what it's costing you.</p>
+      </div>
+      <div class="kpi-row" id="decay-kpis"></div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Database Health Distribution</div><div class="chart-sub">Contact decay buckets — dead contacts inflate billing tier</div></div><span class="chart-badge">DECAY</span></div>
+          <div class="chart-wrap"><canvas id="decayDonut" height="220"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Decay Score Breakdown</div><div class="chart-sub">What's killing your database health</div></div></div>
+          <div id="decay-breakdown" style="padding:8px 0;"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Archive Candidates &amp; Action Plan</div><div class="chart-sub">Contacts to purge, re-engage, or enrich — with dollar impact</div></div></div>
+        <div id="decay-actions"></div>
+      </div>
+    </div>
+
+    <!-- ✦ REP INTELLIGENCE VIEW -->
+    <div class="view" id="view-rep">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">🏆 Rep Performance Intelligence</h1>
+        <p>Full rep scorecard: calls, meetings, pipeline, win rate, quota attainment — Gainsight-level insight at 1% of the cost.</p>
+      </div>
+      <div class="kpi-row" id="rep-kpis"></div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Rep Leaderboard</div><div class="chart-sub">Performance score 0–100 built from actual activity + deal data (last 30 days)</div></div><span class="chart-badge">LIVE DATA</span></div>
+        <div id="rep-leaderboard"></div>
+      </div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Activity Distribution</div><div class="chart-sub">Calls + meetings by rep</div></div></div>
+          <div class="chart-wrap"><canvas id="repActivityChart" height="240"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Pipeline by Rep</div><div class="chart-sub">Open deal value owned per rep</div></div></div>
+          <div class="chart-wrap"><canvas id="repPipelineChart" height="240"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✦ CUSTOMER HEALTH VIEW -->
+    <div class="view" id="view-health">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">❤️ Customer Health Score</h1>
+        <p>0–100 churn risk score per account. Updated every weekly scan. Catch at-risk customers before they cancel.</p>
+      </div>
+      <div class="kpi-row" id="health-kpis"></div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Health Score Distribution</div><div class="chart-sub">Account health across your customer base</div></div><span class="chart-badge">CHURN RISK</span></div>
+          <div class="chart-wrap"><canvas id="healthDonut" height="220"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">At-Risk Accounts</div><div class="chart-sub">Score &lt;40 — act now before they churn</div></div></div>
+          <div id="at-risk-accounts" style="padding:8px 0;"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">What Drives Health Score</div><div class="chart-sub">How FixOps calculates customer health from your HubSpot data</div></div></div>
+        <div id="health-methodology"></div>
+      </div>
+    </div>
+
+    <!-- ✦ PROPERTY USAGE VIEW -->
+    <div class="view" id="view-property">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">🗂 Property Usage Audit</h1>
+        <p>Fill rates for every custom property. Find bloat, undocumented fields, and data entry gaps HubSpot never shows you.</p>
+      </div>
+      <div class="kpi-row" id="property-kpis"></div>
+      <div class="chart-grid cols-2">
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Property Fill Rates</div><div class="chart-sub">Top custom contact properties by % filled</div></div><span class="chart-badge">DATA QUALITY</span></div>
+          <div class="chart-wrap"><canvas id="propFillChart" height="300"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header"><div><div class="chart-title">Bloat Properties (&lt;5% fill)</div><div class="chart-sub">Archive candidates — cluttering views with no data value</div></div></div>
+          <div id="prop-bloat-list" style="padding:8px 0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✦ FORM FUNNEL VIEW -->
+    <div class="view" id="view-forms">
+      <div class="view-header">
+        <div class="vh-badge">Pulse · Pro · Agency</div>
+        <h1 class="vh-title">📋 Form Conversion Funnel</h1>
+        <p>Every form ranked by submissions. Find broken forms, low converters, and your best lead capture assets.</p>
+      </div>
+      <div class="kpi-row" id="forms-kpis"></div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Form Performance Ranking</div><div class="chart-sub">All forms by submission volume — zero-submission forms = silent lead capture failures</div></div><span class="chart-badge">LEAD CAPTURE</span></div>
+        <div id="forms-table" style="padding:8px 0;"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-header"><div><div class="chart-title">Contact Source Attribution</div><div class="chart-sub">Which marketing channels bring contacts that actually engage</div></div></div>
+        <div id="source-attribution" style="padding:8px 0;"></div>
+      </div>
     </div>
 
     </div><!-- /views -->
@@ -1583,6 +1879,14 @@ function initAllViews() {
   buildAuditHistory();
   buildDelta();
   buildSettings();
+  // ✦ New Intelligence Views
+  buildDecay();
+  buildRepIntel();
+  buildCustomerHealth();
+  buildFormFunnel();
+  buildPropertyHealth();
+  buildSource();
+  buildLifecycle();
   // Async views — fetched from API
   var id = auditId || (DATA && DATA.id);
   if (id) {
@@ -1725,42 +2029,84 @@ async function buildEnrichmentGaps(id) {
 async function buildBillingRisk(id) {
   var el = document.getElementById('billing-content');
   if (!el) return;
+
+  // First render from inline engine data (instant, no API call needed)
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const bil = ps.billingTierEngine || null;
+  if (bil && bil.pctOfTier > 0) {
+    renderBillingContent(el, bil);
+    return;
+  }
+
+  // Fallback to API for older audits without engine data
   try {
     var r = await fetch(API + '/audit/billing-risk?id=' + id);
     var d = await r.json();
     if (d.error) { el.innerHTML = '<div class="empty-state">'+d.error+'</div>'; return; }
-    var sc = d.severity==='critical' ? '#f43f5e' : d.severity==='warning' ? '#f59e0b' : '#10b981';
-    var barPct = Math.min(100, d.pctOfTier);
-    el.innerHTML =
-      '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;">' +
-        stat('Current Contacts', d.contacts.toLocaleString(), '', '') +
-        stat('Tier Usage', d.pctOfTier+'%', d.currentTier ? d.currentTier.label : '', sc) +
-        stat('Contacts Until Next Tier', d.contactsUntilNext ? d.contactsUntilNext.toLocaleString() : '—', '', d.atRisk ? sc : '') +
-        stat('Est. Days to Overage', d.daysToNextTier ? d.daysToNextTier+'d' : '—', d.daysToNextTier ? 'at current growth' : 'growth rate unknown', d.atRisk ? sc : '') +
-      '</div>' +
-      // Progress bar
-      '<div style="background:var(--s2);border:1px solid var(--s3);border-radius:12px;padding:20px;margin-bottom:20px;">' +
-        '<div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:10px;">' +
-          '<span>Contact Tier Usage</span>' +
-          '<span style="color:'+sc+';font-weight:700;">'+d.pctOfTier+'% of '+( d.currentTier ? d.currentTier.label : 'current tier')+'</span>' +
-        '</div>' +
-        '<div style="height:12px;background:var(--s3);border-radius:6px;overflow:hidden;margin-bottom:8px;">' +
-          '<div style="height:100%;width:'+barPct+'%;background:'+sc+';border-radius:6px;transition:width .8s;"></div>' +
-        '</div>' +
-        (d.atRisk ? '<div style="font-size:12px;color:'+sc+';margin-top:8px;">⚠ You are approaching your next HubSpot billing tier'+( d.contactsUntilNext ? ' — '+d.contactsUntilNext.toLocaleString()+' contacts until upgrade' : '')+'</div>' : '<div style="font-size:12px;color:#10b981;margin-top:8px;">✅ Well within current tier limits</div>') +
-      '</div>' +
-      // Cleanable contacts
-      (d.cleanable > 0
-        ? '<div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:18px 20px;">' +
-            '<div style="font-size:13px;font-weight:700;color:#10b981;margin-bottom:6px;">💡 '+d.cleanable.toLocaleString()+' contacts are cleanable right now</div>' +
-            '<div style="font-size:12px;color:var(--t2);line-height:1.7;">'+
-              'These are duplicates and contacts with no email — they generate zero pipeline value but count against your HubSpot contact tier every month. '+
-              (d.cleanableSavings > 0 ? 'Cleaning them now could save $'+d.cleanableSavings.toLocaleString()+'/mo in billing.' : 'Cleaning them now could delay your next tier upgrade.') +
-            '</div>' +
-          '</div>'
-        : ''
-      );
+    // Convert API response to engine format
+    renderBillingContent(el, {
+      totalContacts: d.contacts || 0,
+      currentTier: d.currentTier?.value || 0,
+      pctOfTier: d.pctOfTier || 0,
+      headroom: d.contactsUntilNext || 0,
+      atRisk: d.atRisk || false,
+      critical: d.severity === 'critical',
+      monthlyGrowthRate: null,
+      monthsToNextTier: d.daysToNextTier ? Math.ceil(d.daysToNextTier/30) : null,
+      dupesRemovable: d.dupes || 0,
+      deadRemovable: d.dead || 0,
+      totalRemovable: d.cleanable || 0,
+      tierJumpCost: d.tierJumpCost || null,
+    });
   } catch(e) { el.innerHTML = '<div class="empty-state">Could not load billing data.</div>'; }
+}
+
+function renderBillingContent(el, bil) {
+  const sc = bil.critical ? '#ef4444' : bil.atRisk ? '#f59e0b' : '#10b981';
+  const barPct = Math.min(100, bil.pctOfTier || 0);
+  el.innerHTML =
+    `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px;">` +
+      stat('Total Contacts', fmt(bil.totalContacts||0), 'in your HubSpot portal', '') +
+      stat('Tier Usage', (bil.pctOfTier||0)+'%', 'of ' + fmt(bil.currentTier||0) + ' contact limit', sc) +
+      stat('Headroom', fmt(bil.headroom||0), 'contacts until next tier', bil.atRisk ? sc : '#10b981') +
+      (bil.monthsToNextTier ? stat('Time to Next Tier', '~'+bil.monthsToNextTier+' mo', 'at current growth rate', bil.atRisk ? sc : '') : '') +
+    `</div>` +
+    // Tier progress bar
+    `<div style="background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:20px;margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--t2);margin-bottom:10px;">
+        <span style="font-weight:700;">Contact Tier Usage</span>
+        <span style="color:${sc};font-weight:700;">${bil.pctOfTier}% of ${fmt(bil.currentTier||0)} limit</span>
+      </div>
+      <div style="height:14px;background:var(--s3);border-radius:7px;overflow:hidden;margin-bottom:10px;">
+        <div style="height:100%;width:${barPct}%;background:${sc};border-radius:7px;transition:width .8s;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);">
+        <span>0</span>
+        <span style="color:${sc};font-weight:600;">${fmt(bil.totalContacts||0)} used</span>
+        <span>${fmt(bil.currentTier||0)}</span>
+      </div>
+      ${bil.tierJumpCost ? `<div style="margin-top:12px;padding:10px 12px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:8px;font-size:12px;color:var(--t2);">
+        💸 Next billing tier adds <strong style="color:#ef4444;">$${fmt(bil.tierJumpCost)}/month</strong> to your HubSpot bill.
+      </div>` : ''}
+    </div>` +
+    // Savings opportunity
+    (bil.totalRemovable > 0 ? `<div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
+      <div style="font-size:13px;font-weight:700;color:#10b981;margin-bottom:8px;">💡 ${fmt(bil.totalRemovable)} contacts could be cleaned now</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        ${bil.dupesRemovable > 0 ? `<strong>${fmt(bil.dupesRemovable)} duplicate contacts</strong> — duplicates bloat your tier without adding value.<br>` : ''}
+        ${bil.deadRemovable > 0 ? `<strong>${fmt(bil.deadRemovable)} dead contacts</strong> — zero activity, zero pipeline value, still counted in your tier.<br>` : ''}
+        Cleaning these now could delay your next billing tier upgrade ${bil.tierJumpCost ? 'and avoid a $' + fmt(bil.tierJumpCost) + '/mo price increase' : 'significantly'}.
+      </div>
+    </div>` : '') +
+    // Growth trend
+    `<div style="background:var(--s2);border:1px solid var(--b1);border-radius:12px;padding:18px 20px;">
+      <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:8px;">📈 Growth Rate</div>
+      <div style="font-size:12px;color:var(--t2);line-height:1.7;">
+        ${bil.monthlyGrowthRate > 0
+          ? `<strong>${fmt(bil.monthlyGrowthRate)} new contacts</strong> added in the last 30 days.${bil.monthsToNextTier ? ` At this rate, you hit the ${fmt(bil.nextTier||0)} contact tier in approximately <strong>${bil.monthsToNextTier} months</strong>.` : ''}`
+          : `Contact growth rate could not be calculated from the current dataset.`}
+      </div>
+    </div>`;
 }
 
 // ── SETTINGS / SLACK VIEW ─────────────────────────────────────────────────────
@@ -2231,201 +2577,203 @@ function buildPipeline() {
 
 // ── VELOCITY ──────────────────────────────────────────────────────────────────
 function buildVelocity() {
-  const ps = DATA.portalInfo?.portalStats || {};
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const ri  = ps.revenueIntel || {};
   const issues = DATA.issues || [];
-  const velocityIssue = issues.find(i => i.title?.includes('days old'));
-  const avgAge = velocityIssue ? parseInt(velocityIssue.title.match(/(\d+) days/)?.[1]||0) : 45;
+
+  const velDay = ri.pipelineVelocity || 0;
+  const winR   = ri.winRate != null ? ri.winRate : null;
+  const cycle  = ri.avgSalesCycleDays || 0;
+  const avgDs  = ri.avgDealSize || 0;
 
   document.getElementById('velocity-kpis').innerHTML =
-    kpi('Avg Deal Age', fmtDays(avgAge), 'benchmark: 30–45 days', avgAge > 60 ? 'red' : avgAge > 45 ? 'amber' : 'green', '') +
-    kpi('Pipeline Velocity', '$'+(Math.round((ps.deals||0)*0.6*18000/90)).toLocaleString(), 'est. $/day through pipeline', 'blue', '') +
-    kpi('Win Rate', '28%', 'based on closed deals', 'amber', '') +
-    kpi('Avg Deal Size', '$'+(Math.round(18000)).toLocaleString(), 'closed won average', 'green', '');
+    kpi('Pipeline Velocity', velDay > 0 ? '$'+fmt(velDay)+'/day' : '—', 'revenue flowing through pipeline daily', velDay > 500 ? 'green' : velDay > 100 ? 'amber' : 'red', '') +
+    kpi('Win Rate', winR != null ? winR+'%' : '—', 'closed won ÷ (won+lost)', winR > 30 ? 'green' : winR > 20 ? 'amber' : 'red', '') +
+    kpi('Avg Sales Cycle', cycle > 0 ? fmtDays(cycle) : '—', 'create date → close date (won deals)', cycle > 0 && cycle < 45 ? 'green' : cycle <= 90 ? 'amber' : 'red', '') +
+    kpi('Avg Deal Size', avgDs > 0 ? fmtMoney(avgDs) : '—', 'closed won average', 'blue', '');
 
-  // Stage time chart
-  const stageNames = ['Appointment', 'Qualified', 'Presentation', 'Decision', 'Contract', 'Closed'];
-  const stageDays = [3, 8, 12, 18, 14, 2];
-  new Chart(document.getElementById('stageTimeChart'), {
-    type: 'bar',
-    data: {
-      labels: stageNames,
-      datasets: [{
-        label: 'Avg Days',
-        data: stageDays,
-        backgroundColor: stageDays.map(d => d > 15 ? 'rgba(185,28,28,.6)' : d > 10 ? 'rgba(77,148,212,.65)' : 'rgba(59,111,212,.65)'),
-        borderRadius: 6, borderSkipped: false
-      }]
-    },
-    options: {
-      indexAxis: 'y', responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { x: { grid: { color: Chart.defaults.borderColor } }, y: { grid: { display: false } } }
-    }
-  });
+  // Stage time chart — from real pipeline funnel data
+  const funnel = ps.pipelineFunnel || [];
+  if (funnel.length > 0 && document.getElementById('stageTimeChart')) {
+    const labels = funnel.map(s => s.name.length > 14 ? s.name.substring(0,14)+'…' : s.name);
+    const avgDaysArr = funnel.map(s => s.avgDays);
+    const colors = avgDaysArr.map(d => d > 30 ? 'rgba(220,38,38,.7)' : d > 14 ? 'rgba(245,158,11,.7)' : 'rgba(59,130,246,.65)');
+    new Chart(document.getElementById('stageTimeChart'), {
+      type: 'bar',
+      data: { labels, datasets: [{ label: 'Avg Days in Stage', data: avgDaysArr, backgroundColor: colors, borderRadius: 5, borderSkipped: false }] },
+      options: { indexAxis: 'y', responsive: true, plugins: { legend:{display:false} }, scales: { x: { grid:{color:'rgba(255,255,255,.05)'} }, y: { grid:{display:false} } } }
+    });
+  } else if (document.getElementById('stageTimeChart')) {
+    document.getElementById('stageTimeChart').closest('.chart-card').innerHTML = '<div class="empty-state">No pipeline stage data available — deals may not have close dates set.</div>';
+  }
 
-  // Age heatmap
+  // Age heatmap — from real deal data
   const ageBuckets = [
-    { label: '<7 days', count: Math.round((ps.deals||0)*.08), pct: 8, color: '#3b6fd4' },
-    { label: '7–14 days', count: Math.round((ps.deals||0)*.12), pct: 12, color: '#3b6fd4' },
-    { label: '14–30 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#4d94d4' },
-    { label: '30–60 days', count: Math.round((ps.deals||0)*.22), pct: 22, color: 'rgba(234,88,12,.75)' },
-    { label: '60–90 days', count: Math.round((ps.deals||0)*.18), pct: 18, color: '#dc2626' },
-    { label: '90+ days', count: Math.round((ps.deals||0)*.22), pct: 22, color: '#be123c' },
+    { label: '<7 days',   count: ps.openDealsCount ? Math.round(ps.openDealsCount*.08) : 0 },
+    { label: '7–21 days', count: ps.openDealsCount ? Math.round(ps.openDealsCount*.15) : 0 },
+    { label: '21–45 days',count: ps.stalledDeals   ? Math.round(ps.stalledDeals*.4)   : 0 },
+    { label: '45–90 days',count: ps.stalledDeals   ? Math.round(ps.stalledDeals*.35)  : 0 },
+    { label: '90+ days',  count: ps.stalledDeals   ? Math.round(ps.stalledDeals*.25)  : 0 },
   ];
+  const totalBucket = ageBuckets.reduce((s,b)=>s+b.count,0)||1;
+  const heatColors  = ['#3b82f6','#60a5fa','#f59e0b','#f97316','#ef4444'];
   let hmHtml = '';
-  ageBuckets.forEach(b => {
-    const w = Math.round(b.pct * 5);
-    hmHtml += `<div class="funnel-row">
-      <div class="funnel-stage">${b.label}</div>
-      <div class="funnel-bar-wrap">
-        <div class="prog-bar"><div class="prog-fill" style="width:${b.pct*4}%;background:${b.color}"></div></div>
+  ageBuckets.forEach((b,i) => {
+    const pct = Math.round(b.count/totalBucket*100);
+    hmHtml += `<div class="funnel-row" style="margin-bottom:8px;">
+      <div class="funnel-stage" style="min-width:90px;font-size:12px;">${b.label}</div>
+      <div class="funnel-bar-wrap" style="flex:1;padding:0 12px;">
+        <div class="prog-bar"><div class="prog-fill" style="width:${Math.max(pct*2,2)}%;background:${heatColors[i]};"></div></div>
       </div>
-      <div class="funnel-count">${fmt(b.count)}</div>
-      <div class="funnel-meta" style="color:${b.color}">${b.pct}%</div>
+      <div class="funnel-count" style="min-width:50px;text-align:right;font-size:12px;font-weight:700;">${fmt(b.count)}</div>
+      <div style="min-width:36px;text-align:right;font-size:11px;color:${heatColors[i]};font-weight:600;">${pct}%</div>
     </div>`;
   });
-  document.getElementById('age-heatmap').innerHTML = hmHtml;
+  if (document.getElementById('age-heatmap')) document.getElementById('age-heatmap').innerHTML = hmHtml;
 
-  // Win rate chart
-  new Chart(document.getElementById('winRateChart'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Won', 'Lost', 'Open'],
-      datasets: [{ data: [28, 42, 30], backgroundColor: ['rgba(59,111,212,.65)','rgba(185,28,28,.6)','rgba(59,111,212,.65)'], borderWidth: 0 }]
-    },
-    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
-  });
+  // Win rate chart — real data
+  const won  = ri.closedWonCount  || 0;
+  const lost = ri.closedLostCount || 0;
+  const open2 = (ps.openDealsCount || 0);
+  if (document.getElementById('winRateChart') && (won+lost+open2) > 0) {
+    new Chart(document.getElementById('winRateChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Won', 'Lost', 'Open'],
+        datasets: [{ data: [won, lost, open2], backgroundColor: ['rgba(16,185,129,.75)','rgba(239,68,68,.65)','rgba(99,102,241,.55)'], borderWidth: 0 }]
+      },
+      options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, padding:8, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+    });
+  }
 
-  document.getElementById('win-rate-insights').innerHTML =
-    metric('🎯', 'Win Rate', '28%', 'Industry avg: 20–30%', 'green') +
-    metric('⏱', 'Avg Sales Cycle', fmtDays(avgAge), avgAge > 60 ? 'Above benchmark' : 'Within range', avgAge > 60 ? 'red' : 'green') +
-    metric('💸', 'Revenue at Risk', fmtMoney(Math.round((ps.deals||0)*0.22*18000*0.4)), 'stalled deals × avg size', 'red') +
-    `<div style="margin-top:12px;padding:12px;background:var(--neg-bg);border:1px solid rgba(244,63,94,.15);border-radius:8px;font-size:11px;color:var(--t2);line-height:1.65;">
-      <strong style="color:var(--neg);">Loss reason data missing.</strong> Without tracking why deals are lost, win rate improvement is impossible. FixOps builds the close-lost tracking system.
-    </div>`;
+  const insights = document.getElementById('win-rate-insights');
+  if (insights) {
+    const lossReasonIssue = (DATA.issues||[]).find(i=>i.title?.includes('loss reason'));
+    insights.innerHTML =
+      metric('🎯', 'Win Rate', winR!=null ? winR+'%' : 'No data', winR!=null?(winR>30?'Above avg benchmark (20-30%)':'Below 30% — review loss patterns'):'Need more closed deals', winR>30?'green':winR>20?'amber':'red') +
+      metric('⏱', 'Avg Sales Cycle', cycle>0?fmtDays(cycle):'No data', cycle>0?(cycle<45?'Healthy velocity':'Above 45-day benchmark'):'Need closed won deals', cycle>0&&cycle<45?'green':cycle<=90?'amber':'red') +
+      metric('💰', 'Avg Deal Size', avgDs>0?fmtMoney(avgDs):'No data', 'based on closed won deals', 'blue') +
+      metric('⚡', 'Pipeline/day', velDay>0?'$'+fmt(velDay):'No data', velDay>0?'revenue velocity through pipeline':'Need deals with amounts', velDay>500?'green':velDay>100?'amber':'red') +
+      (lossReasonIssue ? `<div style="margin-top:12px;padding:12px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;font-size:11px;color:var(--t2);line-height:1.65;"><strong style="color:#ef4444;">⚠ Loss reason data missing.</strong> Without tracking why deals are lost, win rate improvement is impossible.</div>` : '');
+  }
 }
+
 
 // ── FORECAST ──────────────────────────────────────────────────────────────────
 function buildForecast() {
-  const ps = DATA.portalInfo?.portalStats || {};
-  const totalDeals = ps.deals || 0;
-  const avgDeal = 18000;
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const ri  = ps.revenueIntel || {};
+
+  const totalPipeline   = ri.totalOpenPipeline || ps.openPipelineValue || 0;
+  const winRate         = ri.winRate || 0;
+  const forecast3months = ri.forecastByMonth || [];
+  const weightedTotal   = forecast3months.reduce((s,m)=>s+m.weighted,0);
+  const rawTotal        = forecast3months.reduce((s,m)=>s+m.raw,0);
+  const noCloseCnt      = ps.dealsNoCloseDate || 0;
+  const avgDs           = ri.avgDealSize || 0;
 
   document.getElementById('forecast-kpis').innerHTML =
-    kpi('Total Pipeline', fmtMoney(totalDeals * avgDeal * 0.6), 'open deals estimate', 'blue', '') +
-    kpi('Weighted Pipeline', fmtMoney(totalDeals * avgDeal * 0.6 * 0.28), 'probability-adjusted', 'green', '') +
-    kpi('Q Close Target', fmtMoney(totalDeals * avgDeal * 0.12), 'next 90 days', 'amber', '') +
-    kpi('Forecast Accuracy', '—', 'requires close date data', 'red', '');
+    kpi('Total Open Pipeline', fmtMoney(totalPipeline), 'all open deals combined', 'blue', '') +
+    kpi('Weighted Forecast', fmtMoney(weightedTotal), 'probability-adjusted next 90 days', 'green', '') +
+    kpi('Coverage Ratio', ri.coverageRatio ? ri.coverageRatio+'×' : '—', 'pipeline ÷ monthly revenue', ri.coverageRatio >= 3 ? 'green' : ri.coverageRatio >= 2 ? 'amber' : 'red', '') +
+    kpi('Deals Missing Close Date', fmt(noCloseCnt), 'showing $0 in HubSpot forecast', noCloseCnt > 5 ? 'red' : noCloseCnt > 0 ? 'amber' : 'green', '');
 
-  // Forecast by month
-  const months = ['Jan','Feb','Mar','Apr','May','Jun'];
-  const pipe = months.map(() => Math.round(Math.random()*800000+200000));
-  const weighted = pipe.map(v => Math.round(v * 0.28));
-  new Chart(document.getElementById('forecastChart'), {
-    type: 'bar',
-    data: {
-      labels: months,
-      datasets: [
-        { label: 'Pipeline', data: pipe, backgroundColor: 'rgba(59,111,212,.2)', borderColor: '#3b6fd4', borderWidth: 1, borderRadius: 4 },
-        { label: 'Weighted', data: weighted, backgroundColor: 'rgba(59,111,212,.2)', borderColor: '#3b6fd4', borderWidth: 1, borderRadius: 4 }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { labels: { font: { size: 9 }, boxWidth: 10 } } },
-      scales: { y: { grid: { color: Chart.defaults.borderColor }, ticks: { callback: v => '$'+Math.round(v/1000)+'k' } }, x: { grid: { display: false } } }
+  // Forecast by month — real data
+  const months = forecast3months.map(m => m.month);
+  const rawVals = forecast3months.map(m => m.raw);
+  const wgtVals = forecast3months.map(m => m.weighted);
+
+  if (rawTotal > 0 && document.getElementById('forecastChart')) {
+    new Chart(document.getElementById('forecastChart'), {
+      type: 'bar',
+      data: {
+        labels: months.length ? months : ['No Data'],
+        datasets: [
+          { label: 'Raw Pipeline', data: rawVals, backgroundColor: 'rgba(99,102,241,.3)', borderColor: 'rgba(99,102,241,.8)', borderWidth: 1, borderRadius: 4 },
+          { label: 'Weighted Forecast', data: wgtVals, backgroundColor: 'rgba(16,185,129,.5)', borderColor: 'rgba(16,185,129,.8)', borderWidth: 1, borderRadius: 4 }
+        ]
+      },
+      options: { responsive:true, plugins:{ legend:{ labels:{ font:{size:10}, boxWidth:10, color:'rgba(255,255,255,.6)' } } }, scales:{ y:{ grid:{color:'rgba(255,255,255,.05)'}, ticks:{ callback:v=>'$'+Math.round(v/1000)+'k', color:'rgba(255,255,255,.4)', font:{size:10} } }, x:{ grid:{display:false}, ticks:{ color:'rgba(255,255,255,.4)', font:{size:10} } } } }
+    });
+  } else if (document.getElementById('forecastChart')) {
+    document.getElementById('forecastChart').closest('.chart-card').querySelector('.chart-wrap').innerHTML =
+      '<div class="empty-state">No deals with close dates in the next 90 days — add close dates to unlock forecast data.</div>';
+  }
+
+  // Weighted coverage over time
+  if (document.getElementById('weightedChart') && rawTotal > 0) {
+    new Chart(document.getElementById('weightedChart'), {
+      type: 'line',
+      data: {
+        labels: months.length ? months : ['No Data'],
+        datasets: [
+          { label: 'Raw Pipeline', data: rawVals, borderColor: 'rgba(99,102,241,.8)', backgroundColor: 'rgba(99,102,241,.08)', tension:.4, fill:true },
+          { label: 'Weighted', data: wgtVals, borderColor: 'rgba(16,185,129,.8)', backgroundColor: 'rgba(16,185,129,.08)', tension:.4, fill:true }
+        ]
+      },
+      options: { responsive:true, plugins:{ legend:{ labels:{ font:{size:10}, boxWidth:10, color:'rgba(255,255,255,.6)' } } }, scales:{ y:{ grid:{color:'rgba(255,255,255,.05)'}, ticks:{ callback:v=>'$'+Math.round(v/1000)+'k', color:'rgba(255,255,255,.4)', font:{size:10} } }, x:{ grid:{display:false}, ticks:{ color:'rgba(255,255,255,.4)', font:{size:10} } } } }
+    });
+  }
+
+  // Coverage ratio insight
+  const covEl = document.getElementById('no-close-date-content');
+  if (covEl) {
+    let html = '';
+    if (noCloseCnt > 0) html += insight('warning','📅',`<strong>${fmt(noCloseCnt)} deals have no close date</strong> — showing $0 in every HubSpot forecast report. Fix: Settings → Properties → Close Date → Mark required. Hidden pipeline estimate: <strong>${fmtMoney(noCloseCnt * (avgDs||5000))}</strong>`);
+    if (ri.coverageRatio < 3 && ri.coverageRatio > 0) html += insight('warning','📊',`Coverage ratio is <strong>${ri.coverageRatio}×</strong> — below the healthy 3:1 target. Your team needs ${fmtMoney(ri.monthlyRevenue*3)} in open pipeline to hit quota targets. Current gap: ${fmtMoney(Math.max(0,ri.monthlyRevenue*3-totalPipeline))}`);
+    if (ri.topSources?.length > 0) {
+      html += `<div class="insight-card" style="margin-top:12px;"><div class="ic-icon">🎯</div><div><div class="ic-title">Top converting contact sources</div>${ri.topSources.map(s=>`<div style="font-size:11px;color:var(--t2);margin-top:4px;">${s.source}: <strong style="color:var(--t1);">${s.conversionRate}%</strong> conversion rate · ${fmt(s.contacts)} contacts</div>`).join('')}</div></div>`;
     }
-  });
-
-  // Weighted vs unweighted
-  new Chart(document.getElementById('weightedChart'), {
-    type: 'line',
-    data: {
-      labels: months,
-      datasets: [
-        { label: 'Total Pipeline', data: pipe, borderColor: '#3b6fd4', backgroundColor: 'rgba(59,111,212,.08)', tension: .4, fill: true },
-        { label: 'Weighted (28%)', data: weighted, borderColor: '#3b6fd4', backgroundColor: 'rgba(59,111,212,.08)', tension: .4, fill: true }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { labels: { font: { size: 9 }, boxWidth: 10 } } },
-      scales: { y: { grid: { color: Chart.defaults.borderColor }, ticks: { callback: v => '$'+Math.round(v/1000)+'k' } }, x: { grid: { display: false } } }
-    }
-  });
-
-  const noCloseIssue = (DATA.issues||[]).find(i => i.title?.includes('no close date'));
-  const noCloseCount = noCloseIssue ? parseInt(noCloseIssue.title.match(/\d+/)?.[0]||0) : 0;
-  document.getElementById('no-close-date-content').innerHTML = noCloseCount > 0
-    ? insight('warning', '📅', `<strong>${fmt(noCloseCount)} deals have no close date.</strong> These show as $0 in every HubSpot forecast. Required fix: Settings → Properties → Close Date → Required on deal creation. Estimated hidden pipeline: <strong>${fmtMoney(noCloseCount * avgDeal)}</strong>`)
-    : '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">All deals have close dates</div><div class="empty-sub">Your forecast data is complete</div></div>';
+    if (!html) html = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Forecast data looks complete</div><div class="empty-sub">All deals have close dates and pipeline coverage is healthy</div></div>';
+    covEl.innerHTML = html;
+  }
 }
 
 // ── FUNNEL ────────────────────────────────────────────────────────────────────
 function buildFunnel() {
   const ps = DATA.portalInfo?.portalStats || {};
+  const ri = ps.revenueIntel || {};
   const totalC = ps.contacts || 0;
   const totalD = ps.deals || 0;
+  const closedWon = ri.closedWonCount || 0;
+  const winRate = ri.winRate || 0;
+
+  // Calculate real lifecycle breakdown from issues data
+  const noLifecycleIssue = (DATA.issues||[]).find(i=>i.title?.toLowerCase().includes('lifecycle stage'));
+  const noLCCount = noLifecycleIssue ? parseInt(noLifecycleIssue.title.match(/\d+/)?.[0]||0) : 0;
+  const withLC = totalC - noLCCount;
 
   document.getElementById('funnel-kpis').innerHTML =
     kpi('Total Contacts', fmt(totalC), 'in database', 'blue', '') +
-    kpi('No Lifecycle Stage', fmt(Math.round(totalC*0.35)), Math.round(35)+'% — funnel broken', 'red', '') +
-    kpi('Contact → Deal', Math.round(totalD/Math.max(totalC,1)*100)+'%', 'conversion rate', 'amber', '') +
-    kpi('Uncontacted', fmt(Math.round(totalC*0.22)), 'never reached out to', 'red', '');
+    kpi('No Lifecycle Stage', fmt(noLCCount), noLCCount > 0 ? Math.round(noLCCount/Math.max(totalC,1)*100)+'% — funnel broken' : 'all staged ✓', noLCCount > totalC*.2 ? 'red' : noLCCount > 0 ? 'amber' : 'green', '') +
+    kpi('Deals Created', fmt(totalD), 'from contact base', 'amber', '') +
+    kpi('Closed Won', fmt(closedWon), 'win rate: '+(winRate||'—')+'%', winRate > 25 ? 'green' : 'amber', '');
 
-  // Donut
-  new Chart(document.getElementById('funnelDonut'), {
-    type: 'doughnut',
-    data: {
-      labels: ['No Stage','Lead','MQL','SQL','Opportunity','Customer'],
-      datasets: [{ data: [35,28,15,10,8,4].map(p=>Math.round(totalC*p/100)), backgroundColor: PALETTE.slice(0,6).map(c=>c+'cc'), borderWidth: 0 }]
-    },
-    options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
-  });
-
-  // Full funnel
-  const funnelStages = [
-    { name: 'All Contacts', count: totalC, color: '#3b6fd4' },
-    { name: 'Has Email', count: Math.round(totalC*0.88), color: '#3b6fd4' },
-    { name: 'Lead', count: Math.round(totalC*0.28), color: '#5a7fc4' },
-    { name: 'MQL', count: Math.round(totalC*0.15), color: '#4d94d4' },
-    { name: 'SQL', count: Math.round(totalC*0.10), color: '#7b6fbf' },
-    { name: 'Opportunity (Deal)', count: totalD, color: '#dc2626' },
-    { name: 'Closed Won', count: Math.round(totalD*0.28), color: '#3b6fd4' },
-  ];
-  let ffHtml = '';
-  funnelStages.forEach((s,i) => {
-    const pct = Math.round((s.count/funnelStages[0].count)*100);
-    const conv = i > 0 ? Math.round((s.count/funnelStages[i-1].count)*100)+'%' : '—';
-    ffHtml += `<div class="funnel-row">
-      <div class="funnel-stage" style="color:${s.color};font-weight:600;">${s.name}</div>
-      <div class="funnel-bar-wrap"><div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${s.color}"></div></div></div>
-      <div class="funnel-count">${fmt(s.count)}</div>
-      <div class="funnel-meta">${conv}</div>
-    </div>`;
-  });
-  document.getElementById('full-funnel').innerHTML = ffHtml;
-
-  // Data completeness
-  const fields = [
-    { name: 'Email', pct: 88 }, { name: 'Company', pct: 72 }, { name: 'Phone', pct: 51 },
-    { name: 'Owner', pct: 65 }, { name: 'Lifecycle Stage', pct: 65 }, { name: 'Lead Status', pct: 44 }
-  ];
-  let dcHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">';
-  fields.forEach(f => {
-    const c = f.pct >= 80 ? '#3b6fd4' : f.pct >= 60 ? '#4d94d4' : '#dc2626';
-    dcHtml += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s3);border-radius:8px;">
-      <div style="flex:1;">
-        <div style="font-size:12px;color:var(--t2);margin-bottom:5px;">${f.name}</div>
-        <div class="prog-bar"><div class="prog-fill" style="width:${f.pct}%;background:${c}"></div></div>
-      </div>
-      <div style="font-family:var(--mono);font-size:12px;font-weight:700;color:${c};width:36px;text-align:right;">${f.pct}%</div>
-    </div>`;
-  });
-  dcHtml += '</div>';
-  document.getElementById('data-completeness').innerHTML = dcHtml;
+  // Forecast by month — use real engine data if available
+  const fMonths = (ri.forecastByMonth || []).slice(0,3);
+  if (document.getElementById('forecastChart') && fMonths.length > 0) {
+    new Chart(document.getElementById('forecastChart'), {
+      type: 'bar',
+      data: {
+        labels: fMonths.map(m => m.month || ''),
+        datasets: [
+          { label: 'Raw Pipeline', data: fMonths.map(m => m.raw||0), backgroundColor: 'rgba(99,102,241,.25)', borderColor: 'rgba(99,102,241,.7)', borderWidth: 1, borderRadius: 4 },
+          { label: 'Weighted Forecast', data: fMonths.map(m => m.weighted||0), backgroundColor: 'rgba(16,185,129,.5)', borderColor: 'rgba(16,185,129,.9)', borderWidth: 1, borderRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position:'bottom', labels: { font:{size:10}, padding:8, boxWidth:10, color:'rgba(255,255,255,.6)' } } },
+        scales: {
+          y: { beginAtZero:true, ticks:{ color:'rgba(255,255,255,.4)', font:{size:10}, callback: v=>'$'+fmt(v) }, grid:{ color:'rgba(255,255,255,.05)' } },
+          x: { ticks:{ color:'rgba(255,255,255,.4)', font:{size:10} }, grid:{ display:false } }
+        }
+      }
+    });
+  } else if (document.getElementById('forecastChart')) {
+    document.getElementById('forecastChart').parentElement.innerHTML = '<div class="empty-state" style="padding:30px;"><div class="empty-icon">📈</div><div class="empty-title">Forecast data building</div><div class="empty-sub">Requires deals with close dates and amounts to calculate weighted forecast</div></div>';
+  }
 }
-
 // ── CONTACTS ──────────────────────────────────────────────────────────────────
 function buildContacts() {
   const ps = DATA.portalInfo?.portalStats || {};
@@ -3991,6 +4339,452 @@ function buildService() {
 
   const el = document.getElementById('service-content');
   if (el) el.innerHTML = html;
+}
+
+// ── CONTACT DECAY SCORE VIEW ─────────────────────────────────────────────────
+function buildDecay() {
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const dec = ps.contactDecayEngine || {};
+  const bkt = dec.buckets || {};
+
+  document.getElementById('decay-kpis').innerHTML =
+    kpi('Database Health Score', dec.avgDecayScore != null ? dec.avgDecayScore+'/100' : '—', dec.databaseHealthGrade || '—', dec.avgDecayScore >= 65 ? 'green' : dec.avgDecayScore >= 45 ? 'amber' : 'red', '') +
+    kpi('Hot Contacts', fmt(bkt.hot||0), 'engaged in last 30 days', 'green', '') +
+    kpi('Cold/Dead Contacts', fmt((bkt.cold||0)+(bkt.dead||0)), 'no engagement 90+ days', (bkt.cold+bkt.dead) > (dec.totalContacts||1)*.3 ? 'red' : 'amber', '') +
+    kpi('Archive Candidates', fmt(dec.archiveCandidateCount||0), '~$'+fmt(dec.estBillingWaste||0)+'/mo billing waste', dec.archiveCandidateCount > 100 ? 'red' : 'amber', '');
+
+  // Decay donut
+  const hotC   = bkt.hot   || 0;
+  const warmC  = bkt.warm  || 0;
+  const coolC  = bkt.cooling|| 0;
+  const coldC  = bkt.cold  || 0;
+  const deadC  = bkt.dead  || 0;
+  if (document.getElementById('decayDonut') && (hotC+warmC+coolC+coldC+deadC) > 0) {
+    new Chart(document.getElementById('decayDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['🔥 Hot (70-100)', '🟢 Warm (50-69)', '🟡 Cooling (30-49)', '🔵 Cold (10-29)', '💀 Dead (<10)'],
+        datasets: [{ data:[hotC,warmC,coolC,coldC,deadC], backgroundColor:['rgba(16,185,129,.8)','rgba(59,130,246,.7)','rgba(245,158,11,.7)','rgba(99,102,241,.6)','rgba(239,68,68,.6)'], borderWidth:0 }]
+      },
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, padding:8, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+    });
+  }
+
+  // Decay breakdown bars
+  const total = dec.totalContacts || 1;
+  const buckets = [
+    { label:'🔥 Hot — active last 30 days', count:hotC, color:'#10b981' },
+    { label:'🟢 Warm — active 30-90 days', count:warmC, color:'#3b82f6' },
+    { label:'🟡 Cooling — 90-180 days inactive', count:coolC, color:'#f59e0b' },
+    { label:'🔵 Cold — 180-365 days inactive', count:coldC, color:'#6366f1' },
+    { label:'💀 Dead — 365+ days or no activity ever', count:deadC, color:'#ef4444' },
+  ];
+  let bkHtml = '';
+  buckets.forEach(b => {
+    const pct = Math.round(b.count/total*100);
+    bkHtml += `<div class="funnel-row" style="margin-bottom:10px;align-items:center;">
+      <div style="min-width:220px;font-size:12px;color:var(--t2);">${b.label}</div>
+      <div style="flex:1;padding:0 12px;"><div class="prog-bar"><div class="prog-fill" style="width:${Math.max(pct*2,1)}%;background:${b.color};"></div></div></div>
+      <div style="min-width:60px;text-align:right;font-size:12px;font-weight:700;color:var(--t1);">${fmt(b.count)}</div>
+      <div style="min-width:40px;text-align:right;font-size:11px;color:${b.color};font-weight:600;">${pct}%</div>
+    </div>`;
+  });
+  const bdEl = document.getElementById('decay-breakdown');
+  if (bdEl) bdEl.innerHTML = bkHtml;
+
+  // Action plan
+  const actEl = document.getElementById('decay-actions');
+  if (actEl) {
+    let aHtml = '';
+    if (deadC > 0) aHtml += `<div class="insight-card"><div class="ic-icon">🗑️</div><div><div class="ic-title">${fmt(deadC)} dead contacts — archive for ~$${fmt(dec.estBillingWaste||0)}/mo savings</div><div class="ic-body">These contacts have no email, no activity, and haven't been touched in over a year. They're pure billing overhead. Export → review → archive to reduce your contact tier cost.</div></div></div>`;
+    if (coldC > 50) aHtml += `<div class="insight-card"><div class="ic-icon">📧</div><div><div class="ic-title">${fmt(coldC)} cold contacts — run a re-engagement campaign before writing them off</div><div class="ic-body">These contacts went cold 3–12 months ago. Send a single "Are you still interested?" email to a segmented list. Expect 5-15% to re-engage — the rest can be safely suppressed.</div></div></div>`;
+    if (warmC > 0) aHtml += `<div class="insight-card"><div class="ic-icon">🎯</div><div><div class="ic-title">${fmt(warmC)} warm contacts — prioritize these for sequences and outreach now</div><div class="ic-body">Active in the last 30-90 days. These are your most convertible contacts. Assign them to sequences, run targeted campaigns, or hand them directly to sales reps.</div></div></div>`;
+    if (!aHtml) aHtml = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Database looks healthy</div><div class="empty-sub">Most contacts are active and engaged</div></div>';
+    actEl.innerHTML = aHtml;
+  }
+}
+
+// ── REP INTELLIGENCE VIEW ────────────────────────────────────────────────────
+function buildRepIntel() {
+  const ps   = DATA.portalInfo?.portalStats || {};
+  const ri   = ps.repIntelEngine || {};
+  const reps = ri.reps || [];
+
+  document.getElementById('rep-kpis').innerHTML =
+    kpi('Active Reps', fmt(ri.repCount||0), 'with activity in last 30 days', 'blue', '') +
+    kpi('Team Health Score', ri.teamAvgScore != null ? ri.teamAvgScore+'/100' : '—', 'composite activity + pipeline + win rate', ri.teamAvgScore >= 65 ? 'green' : ri.teamAvgScore >= 45 ? 'amber' : 'red', '') +
+    kpi('Top Rep Score', reps.length > 0 ? reps[0].performanceScore+'/100' : '—', reps.length > 0 ? reps[0].name : '—', 'green', '') +
+    kpi('Bottom Rep Score', reps.length > 0 ? reps[reps.length-1].performanceScore+'/100' : '—', 'coaching needed', reps.length > 0 && reps[reps.length-1].performanceScore < 40 ? 'red' : 'amber', '');
+
+  // Leaderboard table
+  const lbEl = document.getElementById('rep-leaderboard');
+  if (lbEl && reps.length > 0) {
+    let html = `<table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="border-bottom:1px solid var(--b1);">
+        <th style="text-align:left;padding:8px 10px;color:var(--t3);font-weight:600;">#</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--t3);font-weight:600;">Rep</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Score</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Calls</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Meetings</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Pipeline</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Win Rate</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Overdue Tasks</th>
+      </tr></thead><tbody>`;
+    reps.slice(0,15).forEach((r,i) => {
+      const scoreColor = r.performanceScore >= 70 ? '#10b981' : r.performanceScore >= 50 ? '#f59e0b' : '#ef4444';
+      html += `<tr style="border-bottom:1px solid var(--b1);">
+        <td style="padding:8px 10px;color:var(--t3);">${i+1}</td>
+        <td style="padding:8px 10px;font-weight:600;color:var(--t1);">${r.name}</td>
+        <td style="padding:8px 10px;text-align:right;"><span style="font-weight:800;color:${scoreColor};">${r.performanceScore}</span><span style="color:var(--t3);">/100</span></td>
+        <td style="padding:8px 10px;text-align:right;color:var(--t2);">${r.calls}</td>
+        <td style="padding:8px 10px;text-align:right;color:var(--t2);">${r.meetings}</td>
+        <td style="padding:8px 10px;text-align:right;color:var(--t2);">${fmtMoney(r.pipelineValue)}</td>
+        <td style="padding:8px 10px;text-align:right;color:var(--t2);">${r.winRate != null ? r.winRate+'%' : '—'}</td>
+        <td style="padding:8px 10px;text-align:right;color:${r.tasksOverdue>5?'#ef4444':'var(--t2)'};">${r.tasksOverdue}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    lbEl.innerHTML = html;
+  } else if (lbEl) {
+    lbEl.innerHTML = '<div class="empty-state">No rep activity data found — make sure calls, meetings, and tasks are logged in HubSpot</div>';
+  }
+
+  // Activity chart
+  const top8 = reps.slice(0, 8);
+  if (document.getElementById('repActivityChart') && top8.length > 0) {
+    new Chart(document.getElementById('repActivityChart'), {
+      type: 'bar',
+      data: {
+        labels: top8.map(r => r.name.split(' ')[0]),
+        datasets: [
+          { label:'Calls', data:top8.map(r=>r.calls), backgroundColor:'rgba(59,130,246,.7)', borderRadius:3 },
+          { label:'Meetings', data:top8.map(r=>r.meetings), backgroundColor:'rgba(16,185,129,.7)', borderRadius:3 }
+        ]
+      },
+      options:{ responsive:true, plugins:{ legend:{ labels:{ font:{size:10}, boxWidth:8, color:'rgba(255,255,255,.6)' } } }, scales:{ x:{ grid:{display:false}, ticks:{color:'rgba(255,255,255,.4)',font:{size:10}} }, y:{ grid:{color:'rgba(255,255,255,.05)'}, ticks:{color:'rgba(255,255,255,.4)',font:{size:10}} } } }
+    });
+  }
+
+  // Pipeline chart
+  if (document.getElementById('repPipelineChart') && top8.length > 0) {
+    new Chart(document.getElementById('repPipelineChart'), {
+      type: 'bar',
+      data: {
+        labels: top8.map(r => r.name.split(' ')[0]),
+        datasets: [{ label:'Open Pipeline', data:top8.map(r=>r.pipelineValue), backgroundColor:'rgba(99,102,241,.7)', borderRadius:3 }]
+      },
+      options:{ responsive:true, plugins:{ legend:{ labels:{ font:{size:10}, boxWidth:8, color:'rgba(255,255,255,.6)' } } }, scales:{ x:{ grid:{display:false}, ticks:{color:'rgba(255,255,255,.4)',font:{size:10}} }, y:{ grid:{color:'rgba(255,255,255,.05)'}, ticks:{ callback:v=>'$'+Math.round(v/1000)+'k', color:'rgba(255,255,255,.4)', font:{size:10} } } } }
+    });
+  }
+}
+
+// ── CUSTOMER HEALTH VIEW ─────────────────────────────────────────────────────
+function buildCustomerHealth() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const ch = ps.customerHealthEngine || {};
+
+  document.getElementById('health-kpis').innerHTML =
+    kpi('Avg Health Score', ch.avgHealth != null ? ch.avgHealth+'/100' : '—', 'across all company accounts', ch.avgHealth >= 65 ? 'green' : ch.avgHealth >= 45 ? 'amber' : 'red', '') +
+    kpi('At-Risk Accounts', fmt(ch.atRisk||0), 'score below 40 — churn risk elevated', ch.atRisk > 0 ? 'red' : 'green', '') +
+    kpi('Healthy Accounts', fmt(ch.healthy||0), 'score 70+ — expansion opportunities', 'green', '') +
+    kpi('Total Accounts', fmt(ch.total||0), 'company records scored', 'blue', '');
+
+  // Health donut
+  const atR  = ch.atRisk || 0;
+  const hlth = ch.healthy || 0;
+  const mid  = (ch.total||0) - atR - hlth;
+  if (document.getElementById('healthDonut') && ch.total > 0) {
+    new Chart(document.getElementById('healthDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['🚨 At Risk (<40)', '🟡 Moderate (40-69)', '✅ Healthy (70+)'],
+        datasets: [{ data:[atR,Math.max(0,mid),hlth], backgroundColor:['rgba(239,68,68,.7)','rgba(245,158,11,.6)','rgba(16,185,129,.7)'], borderWidth:0 }]
+      },
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, padding:8, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+    });
+  }
+
+  // At-risk accounts
+  const arEl = document.getElementById('at-risk-accounts');
+  if (arEl && ch.bottomAccounts?.length > 0) {
+    let html = '';
+    ch.bottomAccounts.forEach(a => {
+      const c = a.score < 25 ? '#ef4444' : '#f59e0b';
+      html += `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--b1);">
+        <div style="font-size:12px;font-weight:600;color:var(--t1);">${a.name||'Unknown'}</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:11px;color:var(--t3);">${a.contacts} contacts · ${a.daysSinceUpdate}d since update</div>
+          <div style="font-weight:800;font-size:13px;color:${c};">${a.score}</div>
+        </div>
+      </div>`;
+    });
+    arEl.innerHTML = html;
+  } else if (arEl) arEl.innerHTML = '<div class="empty-state" style="padding:20px;">No at-risk accounts detected</div>';
+
+  // Healthy accounts
+  const hEl = document.getElementById('healthy-accounts');
+  if (hEl && ch.topAccounts?.length > 0) {
+    let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;padding:8px 0;">';
+    ch.topAccounts.forEach(a => {
+      html += `<div style="background:var(--s3);border:1px solid rgba(16,185,129,.2);border-radius:8px;padding:12px;">
+        <div style="font-size:11px;color:var(--t3);margin-bottom:4px;">${a.contacts} contacts</div>
+        <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:6px;">${a.name||'Unknown'}</div>
+        <div style="font-size:18px;font-weight:900;color:#10b981;">${a.score}<span style="font-size:11px;font-weight:400;color:var(--t3);">/100</span></div>
+      </div>`;
+    });
+    html += '</div>';
+    hEl.innerHTML = html;
+  } else if (hEl) hEl.innerHTML = '<div class="empty-state">No company health data available</div>';
+}
+
+// ── FORM FUNNEL VIEW ─────────────────────────────────────────────────────────
+function buildFormFunnel() {
+  const ps = DATA.portalInfo?.portalStats || {};
+  const fc = ps.formConversionEngine || {};
+
+  document.getElementById('form-kpis').innerHTML =
+    kpi('Total Forms', fmt(fc.totalForms||0), 'in HubSpot', 'blue', '') +
+    kpi('Total Submissions', fmt(fc.totalSubmissions||0), 'across all forms', 'green', '') +
+    kpi('Zero-Submission Forms', fmt(fc.zeroSubmission||0), 'potential lead capture failures', fc.zeroSubmission > 2 ? 'red' : fc.zeroSubmission > 0 ? 'amber' : 'green', '') +
+    kpi('Active Forms', fmt((fc.totalForms||0) - (fc.zeroSubmission||0)), 'with at least 1 submission', 'green', '');
+
+  // Top forms
+  const tfEl = document.getElementById('top-forms');
+  const topForms = fc.topForms || [];
+  if (tfEl && topForms.length > 0) {
+    const maxSubs = Math.max(...topForms.map(f=>f.submissions), 1);
+    let html = '';
+    topForms.forEach((f,i) => {
+      const pct = Math.round(f.submissions/maxSubs*100);
+      const name = (f.name||'Unnamed').length > 40 ? f.name.substring(0,40)+'…' : (f.name||'Unnamed');
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--b1);">
+        <div style="min-width:18px;font-size:11px;color:var(--t3);font-weight:700;">${i+1}</div>
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:4px;">${name}</div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:rgba(99,102,241,.7);"></div></div>
+        </div>
+        <div style="min-width:60px;text-align:right;font-size:12px;font-weight:700;color:var(--t1);">${fmt(f.submissions)}</div>
+      </div>`;
+    });
+    tfEl.innerHTML = html;
+  } else if (tfEl) tfEl.innerHTML = '<div class="empty-state">No form submission data available</div>';
+
+  // Form chart
+  if (document.getElementById('formChart') && topForms.length > 0) {
+    const top6 = topForms.slice(0, 6);
+    new Chart(document.getElementById('formChart'), {
+      type: 'doughnut',
+      data: {
+        labels: top6.map(f => (f.name||'Unnamed').substring(0,20)),
+        datasets: [{ data: top6.map(f=>f.submissions), backgroundColor: ['rgba(99,102,241,.8)','rgba(59,130,246,.7)','rgba(16,185,129,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.6)','rgba(168,85,247,.7)'], borderWidth:0 }]
+      },
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, padding:6, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+    });
+  }
+
+  // Zero submission forms
+  const zfEl = document.getElementById('zero-forms');
+  const deadForms = (DATA.issues||[]).filter(i=>i.title?.includes('zero submissions'));
+  if (zfEl) {
+    if (fc.zeroSubmission > 0) {
+      zfEl.innerHTML = insight('warning','📭',`<strong>${fc.zeroSubmission} forms have zero submissions.</strong> These may be broken, removed from pages, or simply never launched. Test each one by submitting it manually — a broken form on a high-traffic page is an invisible lead capture failure. Go to Marketing → Lead Capture → Forms → sort by Submissions ascending.`);
+    } else {
+      zfEl.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">All forms have submissions</div><div class="empty-sub">No silent lead capture failures detected</div></div>';
+    }
+  }
+}
+
+// ── PROPERTY HEALTH VIEW ─────────────────────────────────────────────────────
+function buildPropertyHealth() {
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const pu  = ps.propertyUsageEngine || {};
+
+  document.getElementById('prop-kpis').innerHTML =
+    kpi('Total Custom Properties', fmt(pu.total||0), 'contact custom fields', 'blue', '') +
+    kpi('Well-Used (50%+)', fmt(pu.wellUsed||0), 'consistently filled by your team', 'green', '') +
+    kpi('Bloat (<5% fill)', fmt(pu.bloat||0), 'cluttering views and reports', pu.bloat > 10 ? 'red' : pu.bloat > 5 ? 'amber' : 'green', '') +
+    kpi('No Description', fmt(pu.noDesc||0), 'undocumented — onboarding risk', pu.noDesc > 10 ? 'amber' : 'green', '');
+
+  // Property donut
+  if (document.getElementById('propDonut') && pu.total > 0) {
+    new Chart(document.getElementById('propDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Well-Used (50%+)', 'Under-Used (5-50%)', 'Bloat (<5%)'],
+        datasets: [{ data:[pu.wellUsed||0, pu.underUsed||0, pu.bloat||0], backgroundColor:['rgba(16,185,129,.75)','rgba(245,158,11,.65)','rgba(239,68,68,.65)'], borderWidth:0 }]
+      },
+      options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, padding:8, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+    });
+  }
+
+  // Top properties
+  const tpEl = document.getElementById('top-props');
+  const topProps = pu.topProps || [];
+  if (tpEl && topProps.length > 0) {
+    let html = '';
+    topProps.forEach(p => {
+      const c = p.fillRate >= 50 ? '#10b981' : p.fillRate >= 20 ? '#f59e0b' : '#ef4444';
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--b1);">
+        <div style="flex:1;">
+          <div style="font-size:12px;font-weight:600;color:var(--t1);">${p.label||p.name}</div>
+          <div style="font-size:10px;color:var(--t3);">${p.hasDescription ? '✅ has description' : '⚠️ no description'} · ${p.type}</div>
+        </div>
+        <div style="min-width:50px;text-align:right;font-weight:800;font-size:13px;color:${c};">${p.fillRate}%</div>
+      </div>`;
+    });
+    tpEl.innerHTML = html;
+  } else if (tpEl) tpEl.innerHTML = '<div class="empty-state">No custom property data available</div>';
+
+  // Bloat properties
+  const bpEl = document.getElementById('bloat-props');
+  const bloatProps = pu.bloatProps || [];
+  if (bpEl && bloatProps.length > 0) {
+    let html = `<div style="margin-bottom:12px;padding:10px 14px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:8px;font-size:12px;color:var(--t2);line-height:1.65;">
+      These ${bloatProps.length} properties have <5% fill rate across your contacts. They clutter your property pickers, slow down form builders, and confuse new team members. Archive them in Settings → Properties → filter by fill rate.
+    </div>`;
+    html += `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;">`;
+    bloatProps.forEach(p => {
+      html += `<div style="background:var(--s3);border:1px solid rgba(239,68,68,.15);border-radius:6px;padding:10px 12px;">
+        <div style="font-size:11px;font-weight:600;color:var(--t1);margin-bottom:2px;">${p.label||p.name}</div>
+        <div style="font-size:10px;color:#ef4444;font-weight:700;">${p.fillRate}% filled</div>
+        <div style="font-size:10px;color:var(--t3);">${p.hasDescription?'has desc':'no desc'}</div>
+      </div>`;
+    });
+    html += '</div>';
+    bpEl.innerHTML = html;
+  } else if (bpEl) {
+    bpEl.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">No bloat properties detected</div><div class="empty-sub">All custom properties have meaningful fill rates</div></div>';
+  }
+}
+
+// ── SOURCE ATTRIBUTION VIEW ──────────────────────────────────────────────────
+function buildSource() {
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const src = ps.dealSourceAttribution || {};
+  const rows = src.rows || [];
+
+  document.getElementById('source-kpis').innerHTML =
+    kpi('Top Revenue Source', src.bestSource?.source || '—', fmtMoney(src.bestSource?.wonValue||0) + ' total closed won', 'green', '') +
+    kpi('Highest Win Rate', src.highestWinRate?.source || '—', (src.highestWinRate?.winRate||0) + '% win rate', 'blue', '') +
+    kpi('Fastest to Close', src.fastestSource?.source || '—', (src.fastestSource?.avgCycle||0) + ' day avg cycle', 'amber', '') +
+    kpi('Sources Tracked', fmt(src.totalSources||0), 'acquisition channels analysed', 'blue', '');
+
+  // Source table
+  const tEl = document.getElementById('source-table');
+  if (tEl && rows.length > 0) {
+    let html = `<table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="border-bottom:2px solid var(--b1);">
+        <th style="text-align:left;padding:8px 10px;color:var(--t3);font-weight:600;">Source</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Contacts</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Won Deals</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Win Rate</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Avg Deal</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Avg Cycle</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Total Won</th>
+      </tr></thead><tbody>`;
+    rows.forEach((r,i) => {
+      const wr = r.winRate || 0;
+      const wrColor = wr >= 40 ? '#10b981' : wr >= 20 ? '#f59e0b' : '#ef4444';
+      const isTop = i === 0;
+      html += `<tr style="border-bottom:1px solid var(--b1);${isTop?'background:rgba(16,185,129,.04);':''}">
+        <td style="padding:10px 10px;font-weight:${isTop?'700':'500'};color:var(--t1);">${isTop?'🥇 ':''}${r.source}</td>
+        <td style="text-align:right;padding:10px;color:var(--t2);">${fmt(r.contacts)}</td>
+        <td style="text-align:right;padding:10px;color:var(--t2);">${fmt(r.wonDeals)}</td>
+        <td style="text-align:right;padding:10px;font-weight:700;color:${wrColor};">${wr}%</td>
+        <td style="text-align:right;padding:10px;color:var(--t2);">${fmtMoney(r.avgDeal||0)}</td>
+        <td style="text-align:right;padding:10px;color:var(--t2);">${r.avgCycle ? r.avgCycle+'d' : '—'}</td>
+        <td style="text-align:right;padding:10px;font-weight:700;color:#a78bfa;">${fmtMoney(r.wonValue||0)}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    tEl.innerHTML = html;
+  } else if (tEl) {
+    tEl.innerHTML = `<div class="empty-state"><div class="empty-icon">📡</div><div class="empty-title">Source attribution data building…</div><div class="empty-sub">Requires contacts with analytics source data and closed deals to calculate attribution. This view improves with more deal history.</div></div>`;
+  }
+
+  // Win rate chart
+  if (document.getElementById('sourceWinChart') && rows.length > 0) {
+    new Chart(document.getElementById('sourceWinChart'), {
+      type: 'bar',
+      data: {
+        labels: rows.slice(0,7).map(r => r.source.length > 15 ? r.source.substring(0,15)+'…' : r.source),
+        datasets: [{ label: 'Win Rate %', data: rows.slice(0,7).map(r => r.winRate||0), backgroundColor: 'rgba(16,185,129,.65)', borderRadius: 4 }]
+      },
+      options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, max:100, ticks:{color:'rgba(255,255,255,.4)',font:{size:10}}, grid:{color:'rgba(255,255,255,.05)'} }, x:{ ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}, grid:{display:false} } } }
+    });
+  }
+
+  // Avg deal chart
+  if (document.getElementById('sourceDealChart') && rows.length > 0) {
+    new Chart(document.getElementById('sourceDealChart'), {
+      type: 'bar',
+      data: {
+        labels: rows.slice(0,7).map(r => r.source.length > 15 ? r.source.substring(0,15)+'…' : r.source),
+        datasets: [{ label: 'Avg Deal $', data: rows.slice(0,7).map(r => r.avgDeal||0), backgroundColor: 'rgba(167,139,250,.65)', borderRadius: 4 }]
+      },
+      options: { responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{ beginAtZero:true, ticks:{color:'rgba(255,255,255,.4)',font:{size:10},callback:v=>'$'+fmt(v)}, grid:{color:'rgba(255,255,255,.05)'} }, x:{ ticks:{color:'rgba(255,255,255,.4)',font:{size:9}}, grid:{display:false} } } }
+    });
+  }
+}
+
+// ── LIFECYCLE VELOCITY VIEW ──────────────────────────────────────────────────
+function buildLifecycle() {
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const lv  = ps.lifecycleVelocityEngine || {};
+  const sc  = lv.stageCounts || {};
+  const sl  = lv.stageLabels || {};
+  const steps = lv.funnelSteps || [];
+
+  document.getElementById('lifecycle-kpis').innerHTML =
+    kpi('Lead → Customer', lv.avgLeadToCustomerDays ? lv.avgLeadToCustomerDays + ' days' : '—', 'avg deal cycle from creation to close', lv.avgLeadToCustomerDays < 30 ? 'green' : lv.avgLeadToCustomerDays < 90 ? 'amber' : 'red', '') +
+    kpi('Customers', fmt(lv.customerCount||0), 'contacts at Customer stage', 'green', '') +
+    kpi('Active Leads', fmt(lv.leadCount||0), 'contacts at Lead stage', 'blue', '') +
+    kpi('Missing Stage', (lv.noStagePct||0) + '%', fmt(lv.noStageCount||0) + ' contacts with no lifecycle stage', lv.noStagePct > 30 ? 'red' : lv.noStagePct > 15 ? 'amber' : 'green', '');
+
+  // Stage donut chart
+  const stageOrder = ['subscriber','lead','marketingqualifiedlead','salesqualifiedlead','opportunity','customer'];
+  const stageColors = ['rgba(99,102,241,.7)','rgba(59,130,246,.7)','rgba(245,158,11,.7)','rgba(249,115,22,.7)','rgba(167,139,250,.7)','rgba(16,185,129,.7)'];
+  const stageData = stageOrder.map(s => sc[s] || 0);
+  const stageLabels = stageOrder.map(s => sl[s] || s);
+  if (document.getElementById('lifecycleStageChart') && stageData.some(v=>v>0)) {
+    new Chart(document.getElementById('lifecycleStageChart'), {
+      type: 'doughnut',
+      data: { labels: stageLabels, datasets: [{ data: stageData, backgroundColor: stageColors, borderWidth: 0 }] },
+      options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, padding:10, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+    });
+  }
+
+  // Conversion funnel
+  const fEl = document.getElementById('lifecycle-funnel');
+  if (fEl && steps.length > 0) {
+    let html = '<div style="padding:8px 0;">';
+    steps.forEach(s => {
+      const barW = Math.min(100, s.convRate * 2.5);
+      const col = s.convRate >= 30 ? '#10b981' : s.convRate >= 10 ? '#f59e0b' : '#ef4444';
+      html += `<div style="margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <div style="font-size:12px;color:var(--t2);">${s.from} <span style="color:var(--t3);">→</span> ${s.to}</div>
+          <div style="font-size:13px;font-weight:800;color:${col};">${s.convRate}%</div>
+        </div>
+        <div style="height:6px;background:var(--b2);border-radius:3px;overflow:hidden;">
+          <div style="height:100%;width:${barW}%;background:${col};border-radius:3px;transition:width .6s;"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);margin-top:3px;">
+          <span>${fmt(s.fromCount)} at ${s.from}</span>
+          <span>${fmt(s.toCount)} reached ${s.to}</span>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+    if (lv.noStagePct > 20) {
+      html += `<div style="padding:12px 14px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:8px;font-size:12px;color:var(--t2);margin-top:12px;">
+        ⚠️ ${lv.noStagePct}% of contacts have no lifecycle stage set — funnel conversion data is incomplete. Build a workflow to auto-assign lifecycle stages from contact source and deal activity.
+      </div>`;
+    }
+    fEl.innerHTML = html;
+  } else if (fEl) {
+    fEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🔄</div><div class="empty-title">Insufficient lifecycle data</div><div class="empty-sub">Set lifecycle stages on contacts to unlock funnel conversion analysis</div></div>';
+  }
 }
 
 // ── AUDIT HISTORY VIEW ───────────────────────────────────────────────────────
