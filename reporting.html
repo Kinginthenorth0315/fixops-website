@@ -781,6 +781,19 @@ nav {
       <div class="sidebar-item" onclick="showView('billing')" data-view="billing">
         <span class="si-icon">⚡</span> Billing Tier Risk
       </div>
+      <div class="sidebar-item" onclick="showView('wfdeps')" data-view="wfdeps">
+        <span class="si-icon">🕸️</span> Workflow Dependencies <span class="si-badge" style="background:rgba(239,68,68,.2);color:#f87171;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Portal Setup</div>
+      <div class="sidebar-item" onclick="showView('setup')" data-view="setup">
+        <span class="si-icon">🏗️</span> Setup Health Score <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('utilization')" data-view="utilization">
+        <span class="si-icon">💡</span> HubSpot Utilization <span class="si-badge" style="background:rgba(16,185,129,.2);color:#10b981;font-size:8px;padding:1px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
     </div>
 
     <div class="sidebar-section">
@@ -1420,6 +1433,74 @@ nav {
       </div>
     </div>
 
+    <!-- ✦ WORKFLOW DEPENDENCY MAP VIEW -->
+    <div class="view" id="view-wfdeps">
+      <div class="view-header">
+        <div class="vh-badge">All Plans</div>
+        <h1 class="vh-title">🕸️ Workflow Dependency Map</h1>
+        <p>What breaks if someone deletes a list, changes a property, or removes an owner. The hidden fragility in your automation stack — invisible in HubSpot's native UI.</p>
+      </div>
+      <div class="kpi-row" id="wfdeps-kpis"></div>
+      <div class="chart-grid cols-2" style="margin-top:20px;">
+        <div class="chart-box" style="grid-column:span 2;">
+          <div class="chart-title">🚨 High-Risk Entities — Multiple Workflows Depend on This</div>
+          <div id="wfdeps-risks"></div>
+        </div>
+      </div>
+      <div class="chart-grid cols-2" style="margin-top:16px;">
+        <div class="chart-box">
+          <div class="chart-title">⚠️ At-Risk Workflows</div>
+          <div id="wfdeps-atrisk"></div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">👻 Inactive Owner Dependencies</div>
+          <div id="wfdeps-owners"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✦ SETUP HEALTH SCORE VIEW -->
+    <div class="view" id="view-setup">
+      <div class="view-header">
+        <div class="vh-badge">All Plans</div>
+        <h1 class="vh-title">🏗️ HubSpot Setup Health Score</h1>
+        <p>Is your portal configured correctly? The foundation checks Portal IQ charges $2,000 to review manually — automated and updated every scan.</p>
+      </div>
+      <div class="kpi-row" id="setup-kpis"></div>
+      <div class="chart-grid cols-2" style="margin-top:20px;">
+        <div class="chart-box" style="grid-column:span 2;">
+          <div class="chart-title">Setup Checklist</div>
+          <div id="setup-checklist"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✦ HUBSPOT UTILIZATION VIEW -->
+    <div class="view" id="view-utilization">
+      <div class="view-header">
+        <div class="vh-badge">All Plans</div>
+        <h1 class="vh-title">💡 HubSpot Utilization Score</h1>
+        <p>What % of your HubSpot subscription are you actually using? Features you're paying for but haven't activated — with the dollar value of each.</p>
+      </div>
+      <div class="kpi-row" id="util-kpis"></div>
+      <div class="chart-grid cols-2" style="margin-top:20px;">
+        <div class="chart-box">
+          <div class="chart-title">Feature Usage by Hub</div>
+          <canvas id="utilChart" height="280"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Unused Features — Activate for Immediate Value</div>
+          <div id="util-opportunities"></div>
+        </div>
+      </div>
+      <div class="chart-grid cols-1" style="margin-top:16px;">
+        <div class="chart-box">
+          <div class="chart-title">Full Feature Inventory</div>
+          <div id="util-features"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- Settings / Alerts View -->
     <div class="view" id="view-settings">
       <div class="view-header">
@@ -1887,6 +1968,9 @@ function initAllViews() {
   buildPropertyHealth();
   buildSource();
   buildLifecycle();
+  buildWfDeps();
+  buildSetupHealth();
+  buildUtilization();
   // Async views — fetched from API
   var id = auditId || (DATA && DATA.id);
   if (id) {
@@ -4784,6 +4868,243 @@ function buildLifecycle() {
     fEl.innerHTML = html;
   } else if (fEl) {
     fEl.innerHTML = '<div class="empty-state"><div class="empty-icon">🔄</div><div class="empty-title">Insufficient lifecycle data</div><div class="empty-sub">Set lifecycle stages on contacts to unlock funnel conversion analysis</div></div>';
+  }
+}
+
+// ── WORKFLOW DEPENDENCY MAP VIEW ─────────────────────────────────────────────
+function buildWfDeps() {
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const wd  = ps.workflowDependencyEngine || null;
+
+  if (!wd) {
+    document.getElementById('wfdeps-kpis').innerHTML = kpi('Status', 'No Data', 'Workflow dependency data not available', 'amber', '');
+    document.getElementById('wfdeps-risks').innerHTML = '<div class="empty-state"><div class="empty-icon">🕸️</div><div class="empty-title">No workflow data available</div><div class="empty-sub">This view requires workflow data. Make sure workflows are accessible in your HubSpot portal.</div></div>';
+    return;
+  }
+
+  document.getElementById('wfdeps-kpis').innerHTML =
+    kpi('Active Workflows', fmt(wd.totalActive||0), 'currently enabled', 'blue', '') +
+    kpi('At-Risk Workflows', fmt(wd.atRiskCount||0), 'with dependency issues detected', wd.atRiskCount > 5 ? 'red' : wd.atRiskCount > 0 ? 'amber' : 'green', '') +
+    kpi('Total Risks Found', fmt(wd.totalRisks||0), 'dependency issues across all workflows', wd.totalRisks > 10 ? 'red' : wd.totalRisks > 0 ? 'amber' : 'green', '') +
+    kpi('Fragile Entities', fmt((wd.fragmentileEntities||[]).length), 'entities depended on by 2+ workflows', (wd.fragmentileEntities||[]).length > 3 ? 'red' : (wd.fragmentileEntities||[]).length > 0 ? 'amber' : 'green', '');
+
+  // High-risk entities
+  const risksEl = document.getElementById('wfdeps-risks');
+  if (wd.fragmentileEntities?.length > 0) {
+    let html = `<div style="margin-bottom:10px;padding:10px 14px;background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.15);border-radius:8px;font-size:12px;color:var(--t2);line-height:1.65;">
+      ⚠️ These ${wd.fragmentileEntities.length} entities are each depended on by multiple workflows. If any one is deleted or changed, all dependent workflows will break <strong>silently</strong> — HubSpot won't alert you.
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="border-bottom:2px solid var(--b1);">
+        <th style="text-align:left;padding:8px 10px;color:var(--t3);font-weight:600;">Entity</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--t3);font-weight:600;">Type</th>
+        <th style="text-align:right;padding:8px 10px;color:var(--t3);font-weight:600;">Workflows at Risk</th>
+        <th style="text-align:left;padding:8px 10px;color:var(--t3);font-weight:600;">Dependent Workflows</th>
+      </tr></thead><tbody>`;
+    wd.fragmentileEntities.forEach(r => {
+      const typeIcon = r.type === 'list' ? '📋' : r.type === 'form' ? '📝' : '👤';
+      html += `<tr style="border-bottom:1px solid var(--b1);">
+        <td style="padding:10px;font-weight:600;color:var(--t1);">${typeIcon} ${r.entity}</td>
+        <td style="padding:10px;color:var(--t3);text-transform:capitalize;">${r.type}</td>
+        <td style="padding:10px;text-align:right;font-weight:800;color:#ef4444;">${r.workflowCount}</td>
+        <td style="padding:10px;color:var(--t2);font-size:11px;">${(r.workflows||[]).slice(0,3).join(', ')}${r.workflows?.length > 3 ? ` +${r.workflows.length-3} more` : ''}</td>
+      </tr>`;
+    });
+    html += '</tbody></table>';
+    risksEl.innerHTML = html;
+  } else {
+    risksEl.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">No high-fragility entities detected</div><div class="empty-sub">No single entity is depended on by multiple workflows — your automation stack has good redundancy.</div></div>';
+  }
+
+  // At-risk workflows
+  const atRiskEl = document.getElementById('wfdeps-atrisk');
+  if (wd.atRiskWorkflows?.length > 0) {
+    let html = '';
+    wd.atRiskWorkflows.forEach(wf => {
+      html += `<div style="padding:10px 12px;border-bottom:1px solid var(--b1);">
+        <div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:4px;">⚙️ ${wf.name}</div>
+        ${(wf.issues||[]).map(i => `<div style="font-size:11px;color:#f59e0b;margin-top:3px;">• ${i.detail}</div>`).join('')}
+      </div>`;
+    });
+    atRiskEl.innerHTML = html;
+  } else {
+    atRiskEl.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="empty-icon">✅</div><div class="empty-title">No at-risk workflows</div></div>';
+  }
+
+  // Inactive owner dependencies
+  const ownersEl = document.getElementById('wfdeps-owners');
+  if (wd.inactiveOwnerDeps?.length > 0) {
+    let html = `<div style="margin-bottom:10px;font-size:12px;color:var(--t2);">These workflows are assigned to users who haven't logged in for 90+ days — if they leave, the workflow trigger will fail.</div>`;
+    wd.inactiveOwnerDeps.forEach(d => {
+      html += `<div style="padding:8px 12px;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;font-size:12px;">
+        <span style="color:var(--t1);font-weight:600;">${d.workflow}</span>
+        <span style="color:#f59e0b;">→ ${d.ownerName}</span>
+      </div>`;
+    });
+    ownersEl.innerHTML = html;
+  } else {
+    ownersEl.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="empty-icon">✅</div><div class="empty-title">No inactive owner dependencies</div></div>';
+  }
+}
+
+// ── SETUP HEALTH SCORE VIEW ────────────────────────────────────────────────────
+function buildSetupHealth() {
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const sh  = ps.setupHealthEngine || null;
+
+  if (!sh) {
+    document.getElementById('setup-kpis').innerHTML = kpi('Status', 'No Data', 'Setup health data not available', 'amber', '');
+    document.getElementById('setup-checklist').innerHTML = '<div class="empty-state">Setup data not available in this audit</div>';
+    return;
+  }
+
+  const scoreColor = sh.score >= 85 ? 'green' : sh.score >= 70 ? 'amber' : 'red';
+  const grade = sh.score >= 85 ? 'Excellent' : sh.score >= 70 ? 'Good' : sh.score >= 55 ? 'Needs Work' : 'Critical';
+
+  document.getElementById('setup-kpis').innerHTML =
+    kpi('Setup Score', (sh.score||0) + '/100', grade, scoreColor, '') +
+    kpi('Checks Passing', fmt((sh.checks||[]).filter(c=>c.pass).length) + ' / ' + fmt((sh.checks||[]).length), 'configuration benchmarks', 'blue', '') +
+    kpi('Failing Checks', fmt(sh.failing||0), 'require action', sh.failing > 3 ? 'red' : sh.failing > 0 ? 'amber' : 'green', '') +
+    kpi('Portal Grade', grade, 'based on ' + (sh.checks||[]).length + ' benchmarks', scoreColor, '');
+
+  // Checklist
+  const clEl = document.getElementById('setup-checklist');
+  const checks = sh.checks || [];
+  if (checks.length > 0) {
+    // Failing first
+    const sorted = [...checks.filter(c=>!c.pass), ...checks.filter(c=>c.pass)];
+    let html = '';
+    sorted.forEach(c => {
+      const icon = c.pass ? '✅' : '❌';
+      const bg = c.pass ? 'rgba(16,185,129,.04)' : 'rgba(239,68,68,.06)';
+      const border = c.pass ? 'rgba(16,185,129,.15)' : 'rgba(239,68,68,.2)';
+      html += `<div style="padding:12px 16px;border-bottom:1px solid var(--b1);background:${bg};border-left:3px solid ${border};margin-bottom:2px;border-radius:0 6px 6px 0;">
+        <div style="display:flex;align-items:flex-start;gap:10px;">
+          <div style="font-size:14px;flex-shrink:0;margin-top:1px;">${icon}</div>
+          <div style="flex:1;">
+            <div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:2px;">${c.name}</div>
+            <div style="font-size:11px;color:var(--t2);margin-bottom:${c.pass?'0':'4px'};">${c.detail}</div>
+            ${!c.pass ? `<div style="font-size:11px;color:var(--t3);">💡 Fix: ${c.fix}</div>` : ''}
+            ${c.impact && !c.pass ? `<div style="font-size:10px;color:#f59e0b;margin-top:3px;">Impact: ${c.impact}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+    });
+    clEl.innerHTML = html;
+  } else {
+    clEl.innerHTML = '<div class="empty-state">No setup data available</div>';
+  }
+}
+
+// ── HUBSPOT UTILIZATION VIEW ──────────────────────────────────────────────────
+function buildUtilization() {
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const hu  = ps.hubUtilizationEngine || null;
+
+  if (!hu) {
+    document.getElementById('util-kpis').innerHTML = kpi('Status', 'No Data', 'Utilization data not available', 'amber', '');
+    document.getElementById('util-opportunities').innerHTML = '<div class="empty-state">Utilization data not available</div>';
+    return;
+  }
+
+  const utilColor = hu.utilizationPct >= 70 ? 'green' : hu.utilizationPct >= 45 ? 'amber' : 'red';
+
+  document.getElementById('util-kpis').innerHTML =
+    kpi('Utilization Score', (hu.utilizationPct||0) + '%', hu.grade || 'of paid HubSpot features in use', utilColor, '') +
+    kpi('Features Active', fmt(hu.activeFeatures||0), 'of ' + fmt(hu.totalFeatures||0) + ' total checked', 'blue', '') +
+    kpi('Unused Features', fmt((hu.opportunities||[]).length), 'paid features not activated', (hu.opportunities||[]).length > 5 ? 'red' : 'amber', '') +
+    kpi('Est. Wasted Value', '$' + fmt((hu.opportunities||[]).reduce((s,o)=>s+(o.monthlyValue||0),0)) + '/mo', 'in unused subscription value', (hu.opportunities||[]).length > 3 ? 'red' : 'amber', '');
+
+  // Utilization donut chart by hub
+  const hubGroups = {};
+  (hu.features||[]).forEach(f => {
+    if (!hubGroups[f.hub]) hubGroups[f.hub] = { active:0, total:0 };
+    hubGroups[f.hub].total++;
+    if (f.using) hubGroups[f.hub].active++;
+  });
+  const hubLabels = Object.keys(hubGroups);
+  const hubPcts = hubLabels.map(h => Math.round(hubGroups[h].active / hubGroups[h].total * 100));
+  const hubColors = ['rgba(99,102,241,.7)','rgba(16,185,129,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.65)','rgba(6,182,212,.7)','rgba(167,139,250,.7)'];
+
+  if (document.getElementById('utilChart') && hubLabels.length > 0) {
+    new Chart(document.getElementById('utilChart'), {
+      type: 'bar',
+      data: {
+        labels: hubLabels,
+        datasets: [{
+          label: 'Utilization %',
+          data: hubPcts,
+          backgroundColor: hubLabels.map((_, i) => hubColors[i % hubColors.length]),
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { color: 'rgba(255,255,255,.4)', font: { size: 10 }, callback: v => v + '%' }, grid: { color: 'rgba(255,255,255,.05)' } },
+          x: { ticks: { color: 'rgba(255,255,255,.5)', font: { size: 11 } }, grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // Opportunities — unused features with value
+  const oppEl = document.getElementById('util-opportunities');
+  const opps = hu.opportunities || [];
+  if (opps.length > 0) {
+    let html = '';
+    opps.slice(0, 8).forEach(o => {
+      html += `<div style="padding:10px 12px;border-bottom:1px solid var(--b1);display:flex;align-items:flex-start;gap:10px;">
+        <div style="font-size:18px;flex-shrink:0;">${o.icon||'💡'}</div>
+        <div style="flex:1;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div style="font-size:12px;font-weight:700;color:var(--t1);">${o.feature}</div>
+            ${o.monthlyValue ? `<div style="font-size:11px;font-weight:700;color:#10b981;flex-shrink:0;margin-left:8px;">~$${fmt(o.monthlyValue)}/mo value</div>` : ''}
+          </div>
+          <div style="font-size:11px;color:var(--t2);margin-top:2px;">${o.description||''}</div>
+          <div style="font-size:11px;color:#a78bfa;margin-top:3px;">Enable: ${o.how||''}</div>
+        </div>
+      </div>`;
+    });
+    oppEl.innerHTML = html;
+  } else {
+    oppEl.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">Excellent utilization</div><div class="empty-sub">All major HubSpot features are actively in use.</div></div>';
+  }
+
+  // Full feature table
+  const featEl = document.getElementById('util-features');
+  const features = hu.features || [];
+  if (features.length > 0) {
+    const hubOrder = ['CRM','Marketing','Sales','Service','Automation','Reporting'];
+    const grouped = {};
+    features.forEach(f => {
+      if (!grouped[f.hub]) grouped[f.hub] = [];
+      grouped[f.hub].push(f);
+    });
+    let html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;">';
+    hubOrder.filter(h => grouped[h]).concat(Object.keys(grouped).filter(h => !hubOrder.includes(h))).forEach(hub => {
+      const hFeatures = grouped[hub] || [];
+      const hActive = hFeatures.filter(f => f.using).length;
+      const hPct = Math.round(hActive / hFeatures.length * 100);
+      const hColor = hPct >= 70 ? '#10b981' : hPct >= 40 ? '#f59e0b' : '#ef4444';
+      html += `<div style="background:var(--s2);border:1px solid var(--b1);border-radius:10px;padding:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div style="font-size:12px;font-weight:800;color:var(--t1);">${hub}</div>
+          <div style="font-size:13px;font-weight:800;color:${hColor};">${hPct}%</div>
+        </div>
+        <div style="height:4px;background:var(--b2);border-radius:2px;margin-bottom:10px;overflow:hidden;">
+          <div style="height:100%;width:${hPct}%;background:${hColor};border-radius:2px;"></div>
+        </div>
+        ${hFeatures.map(f => `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--b1);font-size:11px;">
+          <span style="flex-shrink:0;">${f.using ? '✅' : '⭕'}</span>
+          <span style="flex:1;color:${f.using?'var(--t1)':'var(--t3)'};">${f.name}</span>
+          ${f.value ? `<span style="color:var(--t3);font-size:10px;">${f.value}</span>` : ''}
+        </div>`).join('')}
+      </div>`;
+    });
+    html += '</div>';
+    featEl.innerHTML = html;
   }
 }
 

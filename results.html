@@ -1072,6 +1072,9 @@ function buildInsightCards(ps, ovr, auditId) {
   var src = ps.dealSourceAttribution|| {};
   var lvc = ps.lifecycleVelocityEngine || {};
   var bil = ps.billingTierEngine    || {};
+  var sh  = ps.setupHealthEngine    || {};
+  var hu  = ps.hubUtilizationEngine || {};
+  var wd  = ps.workflowDependencyEngine || {};
   var roi = ps.automationROI        || null;
   var bkt = dec.buckets             || {};
 
@@ -1324,6 +1327,97 @@ function buildInsightCards(ps, ovr, auditId) {
       '<div class="insight-sub">' + (frm.zeroSubmission > 0 ? fmt(frm.zeroSubmission) + ' forms have zero submissions — potential broken lead capture. ' : '') +
         'Top performing forms ranked by conversion rate.</div>' +
       '<div style="margin-top:8px;">' + formRows + '</div>' +
+    '</div>';
+  }
+
+  // ── 11. HubSpot Setup Health Score ───────────────────────────────────────
+  if (sh && sh.score != null) {
+    var shColor = sh.score >= 85 ? '#10b981' : sh.score >= 70 ? '#f59e0b' : '#f43f5e';
+    var shGrade = sh.score >= 85 ? 'Excellent' : sh.score >= 70 ? 'Good' : sh.score >= 55 ? 'Needs Work' : 'Critical';
+    var shChecks = sh.checks || [];
+    var shFailing = shChecks.filter(function(c){ return !c.pass; });
+    var shPassing = shChecks.filter(function(c){ return c.pass; });
+    var failRows = shFailing.slice(0,4).map(function(c) {
+      return '<div style="display:flex;align-items:flex-start;gap:7px;padding:5px 0;border-bottom:1px solid var(--b1);font-size:11px;">' +
+        '<span style="color:#f43f5e;flex-shrink:0;">❌</span>' +
+        '<div>' +
+          '<div style="font-weight:600;color:var(--t1);">' + esc(c.name) + '</div>' +
+          '<div style="color:var(--t3);font-size:10px;line-height:1.4;">' + esc(c.detail||'') + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:'+shColor+';"></div>' +
+      '<div class="insight-label">🏗️ HubSpot Setup Health</div>' +
+      '<div class="insight-headline" style="color:'+shColor+';">' + shGrade + ' · ' + (sh.score||0) + '/100</div>' +
+      '<div class="insight-sub">' + shPassing.length + ' of ' + shChecks.length + ' setup benchmarks passing.' +
+        (shFailing.length > 0 ? ' ' + shFailing.length + ' configuration issue' + (shFailing.length!==1?'s':'') + ' need attention.' : ' Portal foundation is solid.') + '</div>' +
+      (failRows ? '<div style="margin-top:8px;">' + failRows + '</div>' : '') +
+      '<div class="insight-stat-row" style="margin-top:8px;">' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#10b981;">' + shPassing.length + '</div><div class="insight-stat-lbl">Passing</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">' + shFailing.length + '</div><div class="insight-stat-lbl">Failing</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val">' + shChecks.length + '</div><div class="insight-stat-lbl">Total Checks</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── 12. HubSpot Utilization Score ────────────────────────────────────────
+  if (hu && hu.utilizationPct != null) {
+    var huColor = hu.utilizationPct >= 70 ? '#10b981' : hu.utilizationPct >= 45 ? '#f59e0b' : '#f43f5e';
+    var opps = (hu.opportunities || []).slice(0, 4);
+    var oppRows = opps.map(function(o) {
+      return '<div style="display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--b1);font-size:11px;">' +
+        '<span style="font-size:14px;">' + (o.icon||'💡') + '</span>' +
+        '<div style="flex:1;overflow:hidden;">' +
+          '<div style="font-weight:600;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(o.name||'Feature') + '</div>' +
+          (o.monthlyValue ? '<div style="color:#f59e0b;font-size:10px;">~$' + fmt(o.monthlyValue) + '/mo value</div>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
+    var totalWasted = (hu.opportunities||[]).reduce(function(s,o){ return s+(o.monthlyValue||0); }, 0);
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:'+huColor+';"></div>' +
+      '<div class="insight-label">💡 HubSpot Utilization</div>' +
+      '<div class="insight-headline" style="color:'+huColor+';">' + (hu.utilizationPct||0) + '% Used</div>' +
+      '<div class="insight-sub">' + fmt(hu.activeFeatures||0) + ' of ' + fmt(hu.totalFeatures||0) + ' paid features active.' +
+        (opps.length > 0 ? ' ' + opps.length + '+ features you\'re paying for but haven\'t activated' + (totalWasted > 0 ? ' (~$' + fmt(totalWasted) + '/mo in unused value)' : '') + '.' : '') + '</div>' +
+      (oppRows ? '<div style="margin-top:8px;">' + oppRows + '</div>' : '<div style="font-size:12px;color:#10b981;margin-top:8px;">✅ Great utilization — most features actively used</div>') +
+      '<div class="insight-stat-row" style="margin-top:8px;">' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:'+huColor+';">' + (hu.utilizationPct||0) + '%</div><div class="insight-stat-lbl">Utilization</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#10b981;">' + fmt(hu.activeFeatures||0) + '</div><div class="insight-stat-lbl">Active</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">' + fmt((hu.opportunities||[]).length) + '</div><div class="insight-stat-lbl">Unused</div></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── 13. Workflow Dependency Risk ──────────────────────────────────────────
+  if (wd && wd.totalActive > 0) {
+    var wdColor = wd.atRiskCount > 5 ? '#f43f5e' : wd.atRiskCount > 0 ? '#f59e0b' : '#10b981';
+    var fragile = (wd.fragmentileEntities||[]).slice(0,4);
+    var fragRows = fragile.map(function(e) {
+      return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--b1);font-size:11px;">' +
+        '<span style="color:#f43f5e;font-size:12px;">⚠️</span>' +
+        '<div style="flex:1;overflow:hidden;">' +
+          '<div style="font-weight:600;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(e.entity||'Entity') + '</div>' +
+          '<div style="color:var(--t3);font-size:10px;">' + fmt(e.workflowCount||0) + ' workflows depend on this</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+    cards += '<div class="insight-card">' +
+      '<div class="insight-card-accent" style="background:'+wdColor+';"></div>' +
+      '<div class="insight-label">🕸️ Workflow Dependency Risk</div>' +
+      '<div class="insight-headline" style="color:'+wdColor+';">' +
+        (wd.atRiskCount > 0 ? wd.atRiskCount + ' workflow' + (wd.atRiskCount!==1?'s':'') + ' at risk' : 'Dependencies healthy') +
+      '</div>' +
+      '<div class="insight-sub">' + fmt(wd.totalActive||0) + ' active workflows analysed.' +
+        (wd.totalRisks > 0 ? ' ' + fmt(wd.totalRisks) + ' dependency issue' + (wd.totalRisks!==1?'s':'') + ' found. ' : ' ') +
+        ((wd.fragmentileEntities||[]).length > 0 ? fmt((wd.fragmentileEntities||[]).length) + ' entities that would break multiple workflows if changed.' : '') + '</div>' +
+      (fragRows ? '<div style="margin-top:8px;"><div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Fragile Dependencies</div>' + fragRows + '</div>' : '') +
+      '<div class="insight-stat-row" style="margin-top:8px;">' +
+        '<div class="insight-stat"><div class="insight-stat-val">' + fmt(wd.totalActive||0) + '</div><div class="insight-stat-lbl">Active WFs</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">' + fmt(wd.atRiskCount||0) + '</div><div class="insight-stat-lbl">At Risk</div></div>' +
+        '<div class="insight-stat"><div class="insight-stat-val" style="color:#f59e0b;">' + fmt((wd.fragmentileEntities||[]).length) + '</div><div class="insight-stat-lbl">Fragile</div></div>' +
+      '</div>' +
     '</div>';
   }
 
