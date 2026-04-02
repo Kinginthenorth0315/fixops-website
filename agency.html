@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FixOps Agency — White-Label Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #050508;
+  --s1:     #0a0a10;
+  --s2:     #10101a;
+  --s3:     #18182a;
+  --b1:     rgba(255,255,255,.06);
+  --b2:     rgba(255,255,255,.10);
+  --t1:     rgba(255,255,255,.95);
+  --t2:     rgba(255,255,255,.55);
+  --t3:     rgba(255,255,255,.25);
+  --brand:  #7c3aed;
+  --brand2: #a78bfa;
+  --green:  #10b981;
+  --amber:  #f59e0b;
+  --red:    #f43f5e;
+  --font:   'Syne', sans-serif;
+  --body:   'DM Sans', sans-serif;
+  --mono:   'DM Mono', monospace;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--body); background: var(--bg); color: var(--t1); min-height:100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+/* ── Background mesh ── */
+.bg-mesh {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 20%, rgba(124,58,237,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 80%, rgba(16,185,129,.05) 0%, transparent 60%),
+    linear-gradient(rgba(124,58,237,.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,58,237,.02) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index: 200;
+  height: 58px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+  background: rgba(5,5,8,.92); backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--b1);
+}
+.nav-logo {
+  font-family: var(--font); font-size: 16px; font-weight: 800;
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: var(--t1);
+}
+.nav-logo-mark {
+  width: 28px; height: 28px; background: linear-gradient(135deg, var(--brand), #5b21b6);
+  border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px;
+}
+.nav-badge {
+  padding: 3px 10px; background: rgba(124,58,237,.15); border: 1px solid rgba(124,58,237,.3);
+  border-radius: 20px; font-size: 10px; font-weight: 700; font-family: var(--mono);
+  color: var(--brand2); letter-spacing: 1px; text-transform: uppercase;
+}
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-key {
+  font-family: var(--mono); font-size: 11px; color: var(--t3);
+  background: var(--s2); border: 1px solid var(--b1); padding: 5px 12px; border-radius: 6px;
+  cursor: pointer; transition: all .2s;
+}
+.nav-key:hover { color: var(--t2); border-color: var(--b2); }
+
+/* ── Page layout ── */
+.page { position: relative; z-index: 1; padding: 80px 32px 80px; max-width: 1100px; margin: 0 auto; }
+
+/* ── Login screen ── */
+#login-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 24px;
+}
+.login-box {
+  background: var(--s1); border: 1px solid var(--b1); border-radius: 20px;
+  padding: 40px 36px; width: 100%; max-width: 420px;
+}
+.login-title { font-family: var(--font); font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+.login-sub { font-size: 14px; color: var(--t2); margin-bottom: 28px; line-height: 1.6; }
+.field-label { font-size: 11px; font-weight: 700; color: var(--t3); font-family: var(--mono); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 7px; display: block; }
+.field-input {
+  width: 100%; background: var(--s2); border: 1px solid var(--b1); border-radius: 10px;
+  padding: 12px 16px; color: var(--t1); font-family: var(--body); font-size: 14px;
+  outline: none; transition: border-color .2s; margin-bottom: 20px;
+}
+.field-input:focus { border-color: var(--brand); }
+.field-input::placeholder { color: var(--t3); }
+.btn-primary {
+  width: 100%; padding: 13px; background: var(--brand); color: #fff; border: none;
+  border-radius: 10px; font-family: var(--font); font-size: 14px; font-weight: 700;
+  cursor: pointer; transition: all .2s; letter-spacing: .3px;
+}
+.btn-primary:hover { background: #6d28d9; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.login-error { color: var(--red); font-size: 12px; margin-top: 10px; text-align: center; }
+
+/* ── Dashboard ── */
+#dashboard-screen { display: none; }
+
+/* ── Top stats bar ── */
+.stats-bar {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 32px;
+}
+@media(max-width:700px){ .stats-bar { grid-template-columns: repeat(2,1fr); } }
+.stat-card {
+  background: var(--s1); border: 1px solid var(--b1); border-radius: 14px; padding: 18px 20px;
+  position: relative; overflow: hidden;
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent, var(--brand));
+}
+.stat-val { font-family: var(--font); font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+.stat-lbl { font-size: 11px; color: var(--t3); font-weight: 500; text-transform: uppercase; letter-spacing: .8px; }
+.stat-sub { font-size: 11px; color: var(--t2); margin-top: 4px; }
+
+/* ── Credit meter ── */
+.credit-meter {
+  background: var(--s1); border: 1px solid var(--b1); border-radius: 14px;
+  padding: 20px 24px; margin-bottom: 28px;
+}
+.credit-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.credit-title { font-family: var(--font); font-size: 14px; font-weight: 700; }
+.credit-count { font-family: var(--font); font-size: 22px; font-weight: 800; }
+.credit-bar-bg { height: 8px; background: var(--s3); border-radius: 4px; overflow: hidden; }
+.credit-bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+.credit-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--t3); margin-top: 6px; }
+.credit-renews { font-size: 11px; color: var(--t3); margin-top: 8px; }
+
+/* ── Section headers ── */
+.section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-title { font-family: var(--font); font-size: 16px; font-weight: 700; }
+
+/* ── New audit form ── */
+.new-audit-box {
+  background: var(--s1); border: 1px solid var(--b1); border-radius: 16px; padding: 24px;
+  margin-bottom: 32px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 12px; align-items: end; }
+@media(max-width:700px){ .form-row { grid-template-columns: 1fr; } }
+.form-field { display: flex; flex-direction: column; }
+.btn-create {
+  padding: 12px 20px; background: var(--brand); color: #fff; border: none;
+  border-radius: 10px; font-family: var(--font); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+}
+.btn-create:hover { background: #6d28d9; }
+.btn-create:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Token card (after creation) ── */
+.token-result {
+  display: none; background: rgba(16,185,129,.06); border: 1px solid rgba(16,185,129,.2);
+  border-radius: 12px; padding: 16px 18px; margin-top: 14px;
+}
+.token-result.show { display: block; }
+.token-url { font-family: var(--mono); font-size: 11px; color: var(--brand2); word-break: break-all; margin: 8px 0; }
+.btn-copy-url {
+  padding: 7px 14px; background: rgba(124,58,237,.15); border: 1px solid rgba(124,58,237,.3);
+  border-radius: 7px; font-size: 11px; font-weight: 700; color: var(--brand2); cursor: pointer;
+  transition: all .2s; font-family: var(--body);
+}
+.btn-copy-url:hover { background: rgba(124,58,237,.25); }
+
+/* ── Audits table ── */
+.audits-table { width: 100%; border-collapse: collapse; }
+.audits-table th {
+  text-align: left; padding: 10px 14px; font-size: 10px; font-weight: 700;
+  color: var(--t3); text-transform: uppercase; letter-spacing: 1px; font-family: var(--mono);
+  border-bottom: 1px solid var(--b1);
+}
+.audits-table td { padding: 13px 14px; border-bottom: 1px solid var(--b1); font-size: 13px; }
+.audits-table tr:last-child td { border-bottom: none; }
+.audits-table tr:hover td { background: rgba(255,255,255,.02); }
+.status-badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 10px;
+  font-weight: 700; font-family: var(--mono); letter-spacing: .5px;
+}
+.status-complete { background: rgba(16,185,129,.12); color: #10b981; }
+.status-pending  { background: rgba(245,158,11,.12); color: #f59e0b; }
+.status-expired  { background: rgba(255,255,255,.06); color: var(--t3); }
+.score-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--font); font-weight: 800; font-size: 14px;
+}
+.audit-actions { display: flex; gap: 8px; align-items: center; }
+.btn-view {
+  padding: 5px 12px; border-radius: 7px; font-size: 11px; font-weight: 700;
+  cursor: pointer; transition: all .2s; text-decoration: none; border: none;
+  font-family: var(--body); white-space: nowrap;
+}
+.btn-view-results { background: rgba(124,58,237,.15); color: var(--brand2); border: 1px solid rgba(124,58,237,.25); }
+.btn-view-results:hover { background: rgba(124,58,237,.28); }
+.btn-view-report { background: rgba(16,185,129,.12); color: #10b981; border: 1px solid rgba(16,185,129,.2); }
+.btn-view-report:hover { background: rgba(16,185,129,.22); }
+.btn-copy { background: rgba(255,255,255,.05); color: var(--t2); border: 1px solid var(--b1); }
+.btn-copy:hover { background: rgba(255,255,255,.09); }
+
+/* ── Branding panel ── */
+.branding-panel {
+  background: var(--s1); border: 1px solid var(--b1); border-radius: 16px; padding: 24px;
+  margin-bottom: 32px;
+}
+.branding-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media(max-width:600px){ .branding-grid { grid-template-columns: 1fr; } }
+.color-row { display: flex; gap: 12px; align-items: center; }
+.color-preview {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--b2); flex-shrink: 0;
+  cursor: pointer; transition: transform .15s;
+}
+.color-preview:hover { transform: scale(1.1); }
+.brand-preview {
+  background: var(--s2); border: 1px solid var(--b1); border-radius: 12px; padding: 20px;
+  margin-top: 16px;
+}
+.brand-preview-label { font-size: 10px; color: var(--t3); font-family: var(--mono); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
+.preview-bar {
+  padding: 12px 16px; border-radius: 10px; display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+}
+.preview-logo-area { display: flex; align-items: center; gap: 10px; }
+.preview-logo-img { width: 28px; height: 28px; border-radius: 7px; object-fit: cover; display: none; }
+.preview-logo-fallback { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+.preview-name { font-family: var(--font); font-size: 15px; font-weight: 800; }
+.preview-badge { font-size: 10px; font-weight: 700; font-family: var(--mono); padding: 3px 8px; border-radius: 5px; }
+.btn-save-branding {
+  margin-top: 16px; padding: 11px 22px; background: var(--brand); color: #fff;
+  border: none; border-radius: 9px; font-family: var(--font); font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+}
+.btn-save-branding:hover { background: #6d28d9; }
+
+/* ── Empty state ── */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--t3); }
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+.empty-title { font-size: 16px; font-weight: 700; color: var(--t2); margin-bottom: 6px; }
+.empty-sub { font-size: 13px; line-height: 1.6; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 24px; background: var(--s1); border-radius: 12px; padding: 4px; border: 1px solid var(--b1); width: fit-content; }
+.tab-btn {
+  padding: 8px 18px; border-radius: 9px; border: none; background: transparent;
+  color: var(--t3); font-family: var(--body); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all .2s;
+}
+.tab-btn.active { background: var(--s3); color: var(--t1); font-weight: 600; }
+.tab-btn:hover:not(.active) { color: var(--t2); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── Toast ── */
+#toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  background: var(--s2); border: 1px solid var(--b2); border-radius: 10px;
+  padding: 12px 18px; font-size: 13px; color: var(--t1); font-weight: 600;
+  box-shadow: 0 8px 30px rgba(0,0,0,.4); transform: translateY(80px); opacity: 0;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1); pointer-events: none;
+}
+#toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── Loading spinner ── */
+.spin { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.2); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; margin-right: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Upgrade banner ── */
+.upgrade-banner {
+  background: linear-gradient(135deg, rgba(124,58,237,.12), rgba(16,185,129,.06));
+  border: 1px solid rgba(124,58,237,.25); border-radius: 14px; padding: 18px 22px;
+  margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+}
+.upgrade-text { font-size: 13px; color: var(--t2); line-height: 1.5; }
+.upgrade-text strong { color: var(--t1); }
+.btn-upgrade {
+  flex-shrink: 0; padding: 9px 18px; background: var(--brand); color: #fff;
+  border: none; border-radius: 8px; font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); text-decoration: none; white-space: nowrap;
+}
+
+/* Responsive */
+@media(max-width:640px){
+  .page { padding: 72px 16px 40px; }
+  nav { padding: 0 16px; }
+  .audits-table { font-size: 12px; }
+  .audits-table th, .audits-table td { padding: 10px 10px; }
+}
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+
+<nav>
+  <a class="nav-logo" href="https://fixops.io">
+    <div class="nav-logo-mark">⚡</div>
+    FixOps<span style="color:var(--brand2);">.io</span>
+    <span class="nav-badge">Agency</span>
+  </a>
+  <div class="nav-right">
+    <span class="nav-key" id="nav-agency-name" style="display:none;"></span>
+    <span id="nav-key-display" class="nav-key" style="cursor:default;display:none;" title="Your API Key — keep this private"></span>
+    <button id="logout-btn" onclick="logout()" style="display:none;padding:7px 14px;background:rgba(255,255,255,.05);border:1px solid var(--b1);border-radius:8px;color:var(--t2);font-size:12px;cursor:pointer;font-family:var(--body);">Sign out</button>
+  </div>
+</nav>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div style="font-size:32px;margin-bottom:16px;">⚡</div>
+    <div class="login-title">Agency Dashboard</div>
+    <div class="login-sub">Enter your agency API key to access your white-label audit platform.</div>
+    <label class="field-label" for="api-key-input">Agency API Key</label>
+    <input id="api-key-input" class="field-input" type="password" placeholder="fxa_••••••••••••••••" autocomplete="current-password">
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-error" id="login-error"></div>
+    <div style="margin-top:20px;text-align:center;font-size:12px;color:var(--t3);">
+      Don't have an agency account? <a href="/cdn-cgi/l/email-protection#d4bcb1b8b8bb94b2bdacbba4a7fabdbb" style="color:var(--brand2);">Contact us →</a>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-screen">
+<div class="page">
+
+  <!-- Stats bar -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card" style="--accent:#7c3aed;">
+      <div class="stat-val" id="stat-credits" style="color:var(--brand2);">—</div>
+      <div class="stat-lbl">Credits Left</div>
+      <div class="stat-sub" id="stat-credits-sub"></div>
+    </div>
+    <div class="stat-card" style="--accent:#10b981;">
+      <div class="stat-val" id="stat-total" style="color:#10b981;">—</div>
+      <div class="stat-lbl">Total Audits</div>
+      <div class="stat-sub">all time</div>
+    </div>
+    <div class="stat-card" style="--accent:#f59e0b;">
+      <div class="stat-val" id="stat-complete" style="color:#f59e0b;">—</div>
+      <div class="stat-lbl">Completed</div>
+      <div class="stat-sub" id="stat-pending-sub"></div>
+    </div>
+    <div class="stat-card" style="--accent:#a78bfa;">
+      <div class="stat-val" id="stat-plan" style="color:#a78bfa;font-size:16px;">—</div>
+      <div class="stat-lbl">Plan</div>
+      <div class="stat-sub"><a href="/cdn-cgi/l/email-protection#3f575a5353507f595647504f4c115650" style="color:var(--brand2);font-size:11px;">Upgrade →</a></div>
+    </div>
+  </div>
+
+  <!-- Credit meter -->
+  <div class="credit-meter" id="credit-meter">
+    <div class="credit-top">
+      <div>
+        <div class="credit-title">Monthly Audit Credits</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;">Each audit link you create uses 1 credit</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="credit-count"><span id="cm-used">0</span> / <span id="cm-total">0</span></div>
+        <div style="font-size:11px;color:var(--t3);">used this month</div>
+      </div>
+    </div>
+    <div class="credit-bar-bg">
+      <div class="credit-bar-fill" id="credit-bar-fill" style="width:0%;background:var(--brand);"></div>
+    </div>
+    <div class="credit-labels">
+      <span>0 used</span>
+      <span id="cm-remaining">— remaining</span>
+      <span id="cm-total-lbl">— total</span>
+    </div>
+    <div class="credit-renews" id="credit-renews"></div>
+  </div>
+
+  <!-- Low credit warning -->
+  <div id="low-credit-banner" style="display:none;" class="upgrade-banner">
+    <div class="upgrade-text">
+      <strong>Running low on credits.</strong> You have <span id="low-credit-count">0</span> audits remaining this month.
+      Upgrade your plan to get more monthly credits and never interrupt client work.
+    </div>
+    <a href="/cdn-cgi/l/email-protection#90f8f5fcfcffd0f6f9e8ffe0e3bef9ffafe3e5f2faf5f3e4add1f7f5fef3e9b0c0fcf1feb0c5e0f7e2f1f4f5" class="btn-upgrade">Upgrade Plan →</a>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('audits',this)">📋 Client Audits</button>
+    <button class="tab-btn" onclick="switchTab('branding',this)">🎨 Branding</button>
+    <button class="tab-btn" onclick="switchTab('howto',this)">📖 How It Works</button>
+  </div>
+
+  <!-- ── TAB: AUDITS ── -->
+  <div class="tab-pane active" id="tab-audits">
+
+    <!-- New audit form -->
+    <div class="new-audit-box">
+      <div class="section-hdr" style="margin-bottom:16px;">
+        <div>
+          <div class="section-title">Create Client Audit Link</div>
+          <div style="font-size:12px;color:var(--t2);margin-top:3px;">Generates a branded link your client connects their HubSpot to. Uses 1 credit.</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-field">
+          <label class="field-label" for="client-name">Client Name</label>
+          <input id="client-name" class="field-input" type="text" placeholder="Acme Corp" style="margin-bottom:0;">
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="client-email">Client Email</label>
+          <input id="client-email" class="field-input" type="email" placeholder="client@acme.com" style="margin-bottom:0;">
+        </div>
+        <div class="form-field">
+          <label class="field-label" for="client-company">Company Name</label>
+          <input id="client-company" class="field-input" type="text" placeholder="Acme Corp" style="margin-bottom:0;">
+        </div>
+        <button class="btn-create" id="create-btn" onclick="createAudit()">
+          Generate Link →
+        </button>
+      </div>
+
+      <!-- Token result -->
+      <div class="token-result" id="token-result">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="color:#10b981;font-size:16px;">✅</span>
+          <span style="font-size:13px;font-weight:700;">Audit link ready — send this to your client</span>
+        </div>
+        <div style="font-size:11px;color:var(--t3);margin-bottom:4px;">Client visits this link, connects their HubSpot, and sees the audit in your branding:</div>
+        <div class="token-url" id="token-url-display"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+          <button class="btn-copy-url" onclick="copyTokenUrl()">📋 Copy Link</button>
+          <button class="btn-copy-url" onclick="copyEmail()" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.25);color:#10b981;">📧 Copy Email Draft</button>
+        </div>
+        <div style="font-size:11px;color:var(--t3);margin-top:8px;" id="token-credits-remaining"></div>
+      </div>
+    </div>
+
+    <!-- Audits list -->
+    <div class="section-hdr">
+      <div class="section-title">Client Audits</div>
+      <button onclick="loadAudits()" style="padding:6px 14px;background:var(--s2);border:1px solid var(--b1);border-radius:7px;color:var(--t2);font-size:12px;cursor:pointer;font-family:var(--body);">↻ Refresh</button>
+    </div>
+
+    <div id="audits-container">
+      <div class="empty-state"><div class="spin"></div></div>
+    </div>
+
+  </div>
+
+  <!-- ── TAB: BRANDING ── -->
+  <div class="tab-pane" id="tab-branding">
+    <div class="branding-panel">
+      <div class="section-title" style="margin-bottom:4px;">White-Label Branding</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:20px;">Your clients see your brand — not FixOps — on all audit results, reports, and emails.</div>
+
+      <div class="branding-grid">
+        <div>
+          <label class="field-label">Agency Name (shown in reports)</label>
+          <input id="brand-name" class="field-input" type="text" placeholder="Your Agency Name" style="margin-bottom:16px;">
+
+          <label class="field-label">Logo URL (https://... PNG or SVG, recommended 120×40px)</label>
+          <input id="brand-logo" class="field-input" type="url" placeholder="https://youragency.com/logo.png" oninput="updatePreview()" style="margin-bottom:16px;">
+
+          <label class="field-label">Report Footer (optional — shown at bottom of audit)</label>
+          <input id="brand-footer" class="field-input" type="text" placeholder="Prepared by Your Agency · youragency.com" style="margin-bottom:0;">
+        </div>
+
+        <div>
+          <label class="field-label">Primary Color</label>
+          <div class="color-row" style="margin-bottom:16px;">
+            <div class="color-preview" id="preview-primary" onclick="document.getElementById('color-primary').click()" style="background:#7c3aed;"></div>
+            <input id="color-primary" class="field-input" type="text" value="#7c3aed" placeholder="#7c3aed" oninput="updatePreview()" style="margin-bottom:0;flex:1;">
+            <input type="color" id="color-primary-picker" style="display:none;" oninput="document.getElementById('color-primary').value=this.value;updatePreview()">
+          </div>
+
+          <label class="field-label">Secondary Color (accents)</label>
+          <div class="color-row" style="margin-bottom:16px;">
+            <div class="color-preview" id="preview-secondary" onclick="document.getElementById('color-secondary').click()" style="background:#a78bfa;"></div>
+            <input id="color-secondary" class="field-input" type="text" value="#a78bfa" placeholder="#a78bfa" oninput="updatePreview()" style="margin-bottom:0;flex:1;">
+            <input type="color" id="color-secondary-picker" style="display:none;" oninput="document.getElementById('color-secondary').value=this.value;updatePreview()">
+          </div>
+
+          <label class="field-label">Accent Color (highlights)</label>
+          <div class="color-row">
+            <div class="color-preview" id="preview-accent" onclick="document.getElementById('color-accent').click()" style="background:#10b981;"></div>
+            <input id="color-accent" class="field-input" type="text" value="#10b981" placeholder="#10b981" oninput="updatePreview()" style="margin-bottom:0;flex:1;">
+            <input type="color" id="color-accent-picker" style="display:none;" oninput="document.getElementById('color-accent').value=this.value;updatePreview()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Live preview -->
+      <div class="brand-preview">
+        <div class="brand-preview-label">Live Preview — this is what clients see</div>
+        <div class="preview-bar" id="preview-bar" style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);">
+          <div class="preview-logo-area">
+            <img class="preview-logo-img" id="preview-logo-img" src="" alt="logo" onerror="this.style.display='none'">
+            <div class="preview-logo-fallback" id="preview-logo-fallback" style="background:#7c3aed;">⚡</div>
+            <span class="preview-name" id="preview-name">Your Agency</span>
+          </div>
+          <span class="preview-badge" id="preview-badge" style="background:rgba(124,58,237,.2);color:#a78bfa;">HubSpot Audit</span>
+        </div>
+        <div style="margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.3);border-radius:8px;font-size:11px;color:var(--t2);line-height:1.6;" id="preview-footer-display"></div>
+      </div>
+
+      <button class="btn-save-branding" onclick="saveBranding()">Save Branding →</button>
+      <div id="branding-saved" style="display:none;margin-top:10px;font-size:12px;color:#10b981;">✅ Branding saved — all new audit links will use your updated branding</div>
+    </div>
+  </div>
+
+  <!-- ── TAB: HOW IT WORKS ── -->
+  <div class="tab-pane" id="tab-howto">
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:28px;max-width:680px;">
+      <div style="font-family:var(--font);font-size:18px;font-weight:800;margin-bottom:20px;">How White-Label Audits Work</div>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:800;font-size:14px;color:var(--brand2);flex-shrink:0;">1</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">Set your branding</div>
+            <div style="font-size:13px;color:var(--t2);line-height:1.6;">Upload your logo, set your brand colors, and add a footer message. This branding appears on all client audit results pages and reports.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:800;font-size:14px;color:var(--brand2);flex-shrink:0;">2</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">Create a client audit link</div>
+            <div style="font-size:13px;color:var(--t2);line-height:1.6;">Enter your client's name, email, and company. We generate a unique audit link — it uses 1 credit from your monthly allowance.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:800;font-size:14px;color:var(--brand2);flex-shrink:0;">3</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">Send the link to your client</div>
+            <div style="font-size:13px;color:var(--t2);line-height:1.6;">Your client clicks the link, connects their HubSpot via OAuth, and the 210-point audit runs automatically. Takes about 15 minutes. No setup required on their end.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:800;font-size:14px;color:#10b981;flex-shrink:0;">4</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">Client sees YOUR brand</div>
+            <div style="font-size:13px;color:var(--t2);line-height:1.6;">The results page, full reporting dashboard, and PDF export all show your agency name, logo, and colors. FixOps is invisible — your client thinks this is your proprietary tool.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;align-items:flex-start;">
+          <div style="width:32px;height:32px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.25);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-weight:800;font-size:14px;color:var(--brand2);flex-shrink:0;">5</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;margin-bottom:4px;">You get notified & can view all results</div>
+            <div style="font-size:13px;color:var(--t2);line-height:1.6;">You get an email when the audit completes with score and key findings. All client audits appear in this dashboard with branded view links you can share directly.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px;padding:16px 18px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;font-size:12px;color:var(--t2);line-height:1.65;">
+        💡 <strong style="color:var(--t1);">Typical agency use:</strong> Charge $500–2,500 per audit as a "HubSpot Health Check" service. Your cost is 1 credit from your monthly plan. On the Starter plan at $299/month (5 credits), each audit costs you $60 and you sell it for $1,000+. On Pro at $549/month (15 credits), each audit costs you $37.
+      </div>
+    </div>
+  </div>
+
+</div>
+</div><!-- /page -->
+</div><!-- /dashboard -->
+
+<div id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+'use strict';
+var API = 'https://fixops-api-production.up.railway.app';
+var AGENCY = null;
+var API_KEY = null;
+var CURRENT_TOKEN_URL = '';
+var CURRENT_CLIENT_NAME = '';
+var CURRENT_CLIENT_COMPANY = '';
+
+// ── Persistence ───────────────────────────────────────────────────────────────
+function saveKey(k) { try { localStorage.setItem('fixops_agency_key', k); } catch(e){} }
+function loadKey()  { try { return localStorage.getItem('fixops_agency_key') || ''; } catch(e){ return ''; } }
+function clearKey() { try { localStorage.removeItem('fixops_agency_key'); } catch(e){} }
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+(function init() {
+  var saved = loadKey();
+  if (saved) {
+    document.getElementById('api-key-input').value = saved;
+    doLogin(true);
+  }
+})();
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+async function doLogin(silent) {
+  var key = document.getElementById('api-key-input').value.trim();
+  if (!key) return;
+  var btn = document.getElementById('login-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Verifying…'; }
+  document.getElementById('login-error').textContent = '';
+  try {
+    var r = await fetch(API + '/agency/account', { headers: { 'x-agency-key': key } });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error || 'Invalid API key');
+    API_KEY = key;
+    AGENCY = d.agency;
+    saveKey(key);
+    showDashboard();
+  } catch(e) {
+    document.getElementById('login-error').textContent = e.message || 'Login failed. Check your API key.';
+    if (btn) { btn.disabled = false; btn.innerHTML = 'Sign In →'; }
+    if (!silent) clearKey();
+  }
+}
+
+document.getElementById('api-key-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ── Show dashboard ────────────────────────────────────────────────────────────
+function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard-screen').style.display = 'block';
+  // Nav
+  var nameEl = document.getElementById('nav-agency-name');
+  nameEl.textContent = AGENCY.agencyName;
+  nameEl.style.display = 'inline-block';
+  var keyEl = document.getElementById('nav-key-display');
+  keyEl.textContent = API_KEY.substring(0, 12) + '••••';
+  keyEl.style.display = 'inline-block';
+  document.getElementById('logout-btn').style.display = 'inline-block';
+  // Stats
+  updateStats();
+  // Branding fields
+  populateBrandingFields();
+  // Load audits
+  loadAudits();
+}
+
+function updateStats() {
+  if (!AGENCY) return;
+  var rem = AGENCY.creditsRemaining;
+  var total = AGENCY.monthlyCredits || 0;
+  var used  = AGENCY.monthlyUsed || 0;
+  document.getElementById('stat-credits').textContent = rem;
+  document.getElementById('stat-credits-sub').textContent = total > 0 ? 'of ' + total + ' this month' : 'one-time credits';
+  document.getElementById('stat-plan').textContent = AGENCY.planName || AGENCY.plan;
+  // Credit meter
+  document.getElementById('cm-used').textContent = used;
+  document.getElementById('cm-total').textContent = total;
+  document.getElementById('cm-remaining').textContent = rem + ' remaining';
+  document.getElementById('cm-total-lbl').textContent = total + ' total';
+  var pct = total > 0 ? Math.min(100, Math.round(used / total * 100)) : 0;
+  var bar = document.getElementById('credit-bar-fill');
+  bar.style.width = pct + '%';
+  bar.style.background = pct >= 90 ? '#f43f5e' : pct >= 70 ? '#f59e0b' : '#7c3aed';
+  if (AGENCY.resetAt) {
+    var resetDate = new Date(AGENCY.resetAt).toLocaleDateString('en-US', {month:'long',day:'numeric'});
+    document.getElementById('credit-renews').textContent = 'Credits reset on ' + resetDate;
+  }
+  if (rem <= 2 && total > 0) {
+    document.getElementById('low-credit-banner').style.display = 'flex';
+    document.getElementById('low-credit-count').textContent = rem;
+  }
+}
+
+function logout() {
+  clearKey();
+  API_KEY = null; AGENCY = null;
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('dashboard-screen').style.display = 'none';
+  document.getElementById('nav-agency-name').style.display = 'none';
+  document.getElementById('nav-key-display').style.display = 'none';
+  document.getElementById('logout-btn').style.display = 'none';
+  document.getElementById('api-key-input').value = '';
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.querySelectorAll('.tab-pane').forEach(function(p){ p.classList.remove('active'); });
+  btn.classList.add('active');
+  var pane = document.getElementById('tab-' + name);
+  if (pane) pane.classList.add('active');
+}
+
+// ── Create audit ──────────────────────────────────────────────────────────────
+async function createAudit() {
+  var clientName    = document.getElementById('client-name').value.trim();
+  var clientEmail   = document.getElementById('client-email').value.trim();
+  var clientCompany = document.getElementById('client-company').value.trim() || clientName;
+  if (!clientEmail || !clientName) { showToast('⚠️ Enter client name and email'); return; }
+  if (!clientEmail.includes('@')) { showToast('⚠️ Enter a valid email address'); return; }
+  var btn = document.getElementById('create-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Creating…';
+  document.getElementById('token-result').classList.remove('show');
+  try {
+    var r = await fetch(API + '/agency/create-audit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-agency-key': API_KEY },
+      body: JSON.stringify({ clientName, clientEmail, clientCompany, plan: 'deep' })
+    });
+    var d = await r.json();
+    if (r.status === 402) {
+      showToast('❌ No credits remaining — upgrade your plan to continue');
+      document.getElementById('low-credit-banner').style.display = 'flex';
+      document.getElementById('low-credit-count').textContent = '0';
+      btn.disabled = false; btn.innerHTML = 'Generate Link →';
+      return;
+    }
+    if (!d.success) throw new Error(d.error || 'Failed to create audit');
+    CURRENT_TOKEN_URL = d.clientUrl;
+    CURRENT_CLIENT_NAME = clientName;
+    CURRENT_CLIENT_COMPANY = clientCompany;
+    document.getElementById('token-url-display').textContent = d.clientUrl;
+    document.getElementById('token-credits-remaining').textContent =
+      d.creditsRemaining + ' credits remaining this month';
+    document.getElementById('token-result').classList.add('show');
+    // Update credit display
+    if (AGENCY) { AGENCY.creditsRemaining = d.creditsRemaining; AGENCY.monthlyUsed = (AGENCY.monthlyUsed||0)+1; updateStats(); }
+    showToast('✅ Audit link created for ' + clientName);
+    // Refresh list
+    setTimeout(loadAudits, 800);
+  } catch(e) {
+    showToast('❌ ' + (e.message || 'Could not create audit'));
+  }
+  btn.disabled = false;
+  btn.innerHTML = 'Generate Link →';
+}
+
+function copyTokenUrl() {
+  navigator.clipboard.writeText(CURRENT_TOKEN_URL).then(function(){ showToast('🔗 Link copied!'); });
+}
+
+function copyEmail() {
+  var text = 'Hi ' + CURRENT_CLIENT_NAME + ',\n\n' +
+    'I\'ve prepared a complimentary HubSpot portal audit for ' + CURRENT_CLIENT_COMPANY + '. It takes about 15 minutes and will show you exactly where your portal is losing revenue and what to fix.\n\n' +
+    'Click the link below to connect your HubSpot and start the audit:\n\n' +
+    CURRENT_TOKEN_URL + '\n\n' +
+    'The link is valid for 30 days. Let me know if you have any questions.\n\n' +
+    'Best,\n' + (AGENCY ? AGENCY.agencyName : 'Your Agency');
+  navigator.clipboard.writeText(text).then(function(){ showToast('📧 Email draft copied!'); });
+}
+
+// ── Load audits ───────────────────────────────────────────────────────────────
+async function loadAudits() {
+  var container = document.getElementById('audits-container');
+  container.innerHTML = '<div class="empty-state"><div class="spin"></div></div>';
+  try {
+    var r = await fetch(API + '/agency/audits', { headers: { 'x-agency-key': API_KEY } });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error);
+    document.getElementById('stat-total').textContent = d.totalAudits;
+    var completed = (d.audits || []).filter(function(a){ return a.status === 'complete'; }).length;
+    var pending   = (d.audits || []).filter(function(a){ return a.status === 'pending'; }).length;
+    document.getElementById('stat-complete').textContent = completed;
+    document.getElementById('stat-pending-sub').textContent = pending > 0 ? pending + ' pending' : 'all done';
+    renderAudits(d.audits || []);
+  } catch(e) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load audits</div><div class="empty-sub">' + (e.message||'Error') + '</div></div>';
+  }
+}
+
+function renderAudits(audits) {
+  var container = document.getElementById('audits-container');
+  if (!audits.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No audits yet</div><div class="empty-sub">Create your first client audit link above to get started.</div></div>';
+    return;
+  }
+  var html = '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;overflow:hidden;">' +
+    '<table class="audits-table"><thead><tr>' +
+    '<th>Client</th><th>Status</th><th>Score</th><th>Critical</th><th>Waste/mo</th><th>Created</th><th>Actions</th>' +
+    '</tr></thead><tbody>';
+
+  audits.forEach(function(a) {
+    var scoreColor = a.score >= 80 ? '#10b981' : a.score >= 60 ? '#f59e0b' : '#f43f5e';
+    var statusBadge = a.status === 'complete'
+      ? '<span class="status-badge status-complete">Complete</span>'
+      : a.status === 'pending'
+        ? '<span class="status-badge status-pending">Waiting for client</span>'
+        : '<span class="status-badge status-expired">Expired</span>';
+    var scoreDisplay = a.score ? '<span class="score-pill" style="color:' + scoreColor + ';">' + a.score + '<span style="font-size:10px;color:var(--t3);">/100</span></span>' : '<span style="color:var(--t3);">—</span>';
+    var created = a.created_at ? new Date(a.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+    var actions = '';
+    if (a.status === 'complete') {
+      if (a.brandedResultsUrl) actions += '<a class="btn-view btn-view-results" href="' + a.brandedResultsUrl + '" target="_blank">Results</a>';
+      if (a.brandedReportUrl)  actions += '<a class="btn-view btn-view-report" href="' + a.brandedReportUrl + '" target="_blank">Report</a>';
+    } else if (a.token_used) {
+      var auditLink = 'https://fixops.io/confirm.html?auditToken=' + a.token_used;
+      actions += '<button class="btn-view btn-copy" onclick="copyVal(\'' + auditLink.replace(/'/g,"\\'") + '\')">Copy Link</button>';
+    }
+    html += '<tr>' +
+      '<td><div style="font-weight:600;color:var(--t1);">' + esc(a.client_name||'Unknown') + '</div><div style="font-size:11px;color:var(--t3);">' + esc(a.client_email||'') + '</div></td>' +
+      '<td>' + statusBadge + '</td>' +
+      '<td>' + scoreDisplay + '</td>' +
+      '<td>' + (a.critical_count||'—') + '</td>' +
+      '<td>' + (a.monthly_waste ? '$' + Number(a.monthly_waste).toLocaleString() : '—') + '</td>' +
+      '<td style="color:var(--t3);font-size:12px;">' + created + '</td>' +
+      '<td><div class="audit-actions">' + (actions||'—') + '</div></td>' +
+      '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  container.innerHTML = html;
+}
+
+function copyVal(val) {
+  navigator.clipboard.writeText(val).then(function(){ showToast('🔗 Link copied!'); });
+}
+
+// ── Branding ──────────────────────────────────────────────────────────────────
+function populateBrandingFields() {
+  if (!AGENCY) return;
+  document.getElementById('brand-name').value    = AGENCY.agencyName || '';
+  document.getElementById('brand-logo').value    = AGENCY.logoUrl || '';
+  document.getElementById('brand-footer').value  = AGENCY.reportFooter || '';
+  document.getElementById('color-primary').value   = AGENCY.primaryColor || '#7c3aed';
+  document.getElementById('color-secondary').value = AGENCY.secondaryColor || '#a78bfa';
+  document.getElementById('color-accent').value    = AGENCY.accentColor || '#10b981';
+  updatePreview();
+}
+
+function updatePreview() {
+  var name      = document.getElementById('brand-name').value || AGENCY?.agencyName || 'Your Agency';
+  var logo      = document.getElementById('brand-logo').value;
+  var footer    = document.getElementById('brand-footer').value;
+  var primary   = document.getElementById('color-primary').value || '#7c3aed';
+  var secondary = document.getElementById('color-secondary').value || '#a78bfa';
+  var accent    = document.getElementById('color-accent').value || '#10b981';
+  // Color preview swatches
+  document.getElementById('preview-primary').style.background   = primary;
+  document.getElementById('preview-secondary').style.background = secondary;
+  document.getElementById('preview-accent').style.background    = accent;
+  // Preview bar
+  document.getElementById('preview-bar').style.background = primary + '18';
+  document.getElementById('preview-bar').style.border = '1px solid ' + primary + '40';
+  document.getElementById('preview-name').textContent = name;
+  document.getElementById('preview-badge').style.background = primary + '25';
+  document.getElementById('preview-badge').style.color = secondary;
+  document.getElementById('preview-logo-fallback').style.background = primary;
+  if (logo) {
+    document.getElementById('preview-logo-img').src = logo;
+    document.getElementById('preview-logo-img').style.display = 'block';
+    document.getElementById('preview-logo-fallback').style.display = 'none';
+  } else {
+    document.getElementById('preview-logo-img').style.display = 'none';
+    document.getElementById('preview-logo-fallback').style.display = 'flex';
+  }
+  document.getElementById('preview-footer-display').textContent =
+    footer || 'Powered by ' + name + ' · Your clients see this footer on every audit report';
+}
+
+async function saveBranding() {
+  var logoUrl       = document.getElementById('brand-logo').value.trim();
+  var primaryColor  = document.getElementById('color-primary').value.trim();
+  var secondaryColor= document.getElementById('color-secondary').value.trim();
+  var accentColor   = document.getElementById('color-accent').value.trim();
+  var reportFooter  = document.getElementById('brand-footer').value.trim();
+  var agencyName    = document.getElementById('brand-name').value.trim();
+  var btn = document.querySelector('.btn-save-branding');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span>Saving…';
+  document.getElementById('branding-saved').style.display = 'none';
+  try {
+    var r = await fetch(API + '/agency/branding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-agency-key': API_KEY },
+      body: JSON.stringify({ logoUrl, primaryColor, secondaryColor, accentColor, reportFooter })
+    });
+    var d = await r.json();
+    if (!d.success) throw new Error(d.error);
+    // Update local agency
+    if (AGENCY) {
+      AGENCY.logoUrl = logoUrl; AGENCY.primaryColor = primaryColor;
+      AGENCY.secondaryColor = secondaryColor; AGENCY.accentColor = accentColor;
+      AGENCY.reportFooter = reportFooter; if (agencyName) AGENCY.agencyName = agencyName;
+    }
+    document.getElementById('branding-saved').style.display = 'block';
+    showToast('✅ Branding saved!');
+  } catch(e) {
+    showToast('❌ ' + (e.message || 'Could not save branding'));
+  }
+  btn.disabled = false;
+  btn.innerHTML = 'Save Branding →';
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+var _toastTimer;
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+// Enter key on create form fields
+['client-name','client-email','client-company'].forEach(function(id) {
+  var el = document.getElementById(id);
+  if (el) el.addEventListener('keydown', function(e){ if (e.key === 'Enter') createAudit(); });
+});
+</script>
+</body>
+</html>

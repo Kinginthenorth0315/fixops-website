@@ -126,6 +126,38 @@ const params  = new URLSearchParams(window.location.search);
 const auditId = params.get('id');
 const auditToken = params.get('auditToken'); // set by Stripe payment confirmation email
 
+// ── Agency white-label branding params — preserved through to results page ───
+const wlBrand  = params.get('brand')  || '';
+const wlLogo   = params.get('logo')   || '';
+const wlColor  = params.get('color')  || '';
+const wlAccent = params.get('accent') || '';
+
+// Apply branding immediately to confirm page nav if present
+if (wlBrand || wlColor) {
+  document.addEventListener('DOMContentLoaded', function() {
+    if (wlColor) document.documentElement.style.setProperty('--brand', wlColor);
+    const navLogo = document.querySelector('.nl, .nav-logo, .logo');
+    if (navLogo && wlBrand) {
+      if (wlLogo) {
+        navLogo.innerHTML = '<img src="' + wlLogo + '" alt="' + wlBrand + '" style="height:24px;max-width:120px;object-fit:contain;" onerror="this.outerHTML=\'<span style=\\\"font-weight:800;\\\">' + wlBrand + '</span>\'">';
+      } else {
+        navLogo.innerHTML = '<span style="font-weight:800;font-size:16px;">' + wlBrand + '</span>';
+      }
+    }
+    if (wlBrand) document.title = wlBrand + ' — HubSpot Audit';
+  });
+}
+
+// Build results URL with branding params preserved
+function buildResultsUrl(id) {
+  const rp = new URLSearchParams({ id });
+  if (wlBrand)  rp.set('brand',  wlBrand);
+  if (wlLogo)   rp.set('logo',   wlLogo);
+  if (wlColor)  rp.set('color',  wlColor);
+  if (wlAccent) rp.set('accent', wlAccent);
+  return 'results.html?' + rp.toString();
+}
+
 // Try URL param first — but Cloudflare sometimes strips email from URLs
 // So we also read it from the API response when available
 let email = '';
@@ -246,9 +278,10 @@ function showComplete() {
     const ce = document.getElementById('complete-email');
     if (ce) ce.textContent = email || 'your inbox';
     const rl = document.getElementById('results-link');
-    if (rl) rl.href = 'results.html?id=' + auditId;
+    const resultsUrl = buildResultsUrl(auditId);
+    if (rl) rl.href = resultsUrl;
     setTimeout(function() {
-      window.location.href = 'results.html?id=' + auditId;
+      window.location.href = resultsUrl;
     }, 3000);
   }, 800);
 }
