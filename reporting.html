@@ -2058,19 +2058,10 @@ async function loadFromToken(token) {
     }, 45000);
   }
 
-// Apply saved theme on load
-(function() {
-  const saved = localStorage.getItem('fixops-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', saved);
-  // Set active button after DOM ready
-  window.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('theme-' + saved);
-    if (btn) {
-      document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-    }
-  });
-})();
+  // ── BUILD ALL VIEWS — THIS WAS MISSING from loadFromToken ────────────────
+  initAllViews();
+  setupAiSuggestions();
+
   } catch(e) {
     console.error('Dashboard load error:', e);
     var ls = document.getElementById('loading-state');
@@ -2097,7 +2088,7 @@ async function loadFromToken(token) {
       btn.classList.add('active');
     }
   });
-})
+})();
 
 function initAllViews() {
   buildOverview();
@@ -2563,7 +2554,7 @@ function buildOverview() {
     var kpiRow = document.getElementById('overview-kpis');
     if (kpiRow && kpiRow.parentNode) kpiRow.parentNode.insertBefore(pctileNote, kpiRow.nextSibling);
   }
-  var pctNote = 'Score ' + (sc.overallScore||0) + '/100 · Better than ' + getPercentile(sc.overallScore||0) + '% of HubSpot portals we audit · ' +
+  var pctNote = 'Score ' + (s.overallScore||0) + '/100 · Better than ' + getPercentile(s.overallScore||0) + '% of HubSpot portals we audit · ' +
     (s.criticalCount > 0 ? s.criticalCount + ' critical issue' + (s.criticalCount!==1?'s':' ') + ' need immediate attention' : 'No critical issues — focus on warnings') +
     (s.monthlyWaste > 0 ? ' · Est. ' + fmtMoney(s.monthlyWaste) + '/mo recoverable' : '');
   if (pctileNote) pctileNote.textContent = pctNote;
