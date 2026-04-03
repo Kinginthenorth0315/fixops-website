@@ -576,7 +576,12 @@ function showResults(data) {
   document.getElementById('score-ring').style.borderColor = color;
   document.getElementById('score-company').textContent = company;
   var gradeEl = document.getElementById('score-grade');
-  gradeEl.textContent = grade;
+  // Grade label with business context
+  var gradeContext = ovr >= 85 ? 'Excellent — your HubSpot is working. Minor tuning only.' :
+    ovr >= 72 ? 'Good — solid foundation with fixable gaps.' :
+    ovr >= 55 ? 'Needs Attention — revenue leaks active, fix guides included.' :
+    'Critical — significant revenue risk. Prioritize immediately.';
+  gradeEl.textContent = gradeContext;
   gradeEl.style.background = gradeBg;
   gradeEl.style.color = color;
   document.getElementById('stat-critical').textContent = criticals;
@@ -1128,6 +1133,10 @@ function buildReportingUpsellCTA(plan, waste, criticals, company) {
     '</div>';
 }
 
+function openFixItModal() {
+  var modal = document.getElementById('fixme-modal');
+  if (modal) { modal.style.display='flex'; document.body.style.overflow='hidden'; }
+}
 function toggleIssue(idx) {
   var c = document.getElementById('ic-'+idx);
   var was = c.classList.contains('open');
@@ -1209,35 +1218,35 @@ function buildFixPlan(data) {
   var buckets = {
     sales: {
       name:'Sales & Pipeline', icon:'📊', cls:'sales',
-      tagline:'Turn your pipeline from a liability into an accurate revenue forecast',
+      tagline:'Stalled deals, missing amounts, and no close dates are hiding your real forecast',
       color:'#f59e0b',
       dims:['Pipeline','Sales','Team Adoption'],
       issues:[], impact:0
     },
     marketing: {
       name:'Marketing Hub', icon:'📣', cls:'marketing',
-      tagline:'Fix list hygiene, email health, and marketing automation gaps',
+      tagline:'Deliverability issues and dead lists are silently killing your email ROI',
       color:'#3b82f6',
       dims:['Marketing'],
       issues:[], impact:0
     },
     service: {
       name:'Service Hub', icon:'🎧', cls:'service',
-      tagline:'Reduce churn risk with SLA compliance and NPS monitoring',
+      tagline:'Unassigned tickets and no NPS tracking means churn you never saw coming',
       color:'#10b981',
       dims:['Service'],
       issues:[], impact:0
     },
     automation: {
       name:'Automation & Sequences', icon:'⚙️', cls:'automation',
-      tagline:'Stop silent revenue leaks from broken workflows and sequences',
+      tagline:'Dead and erroring workflows are burning automation budget with zero output',
       color:'#8b5cf6',
       dims:['Automation'],
       issues:[], impact:0
     },
     data: {
       name:'Data & Configuration', icon:'🧹', cls:'data',
-      tagline:'Fix the CRM foundation your entire revenue operation depends on',
+      tagline:'Duplicates, missing data, and junk records corrupt every report you run',
       color:'#06b6d4',
       dims:['Data Integrity','Configuration','Reporting'],
       issues:[], impact:0
@@ -1309,8 +1318,9 @@ function buildFixPlan(data) {
         '</div>'+
       '</div>'+
       '<div class="fp-issues">'+issueListHtml+'</div>'+
-      '<div class="fp-footer">'+
+      '<div class="fp-footer" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">'+
         '<span class="fp-count-tag" style="background:'+tagBg+';color:'+tagColor+';">'+esc(tagText)+'</span>'+
+        '<button onclick="event.stopPropagation();openFixItModal();" style="flex-shrink:0;padding:5px 12px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.35);border-radius:6px;color:#a78bfa;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);">Fix These →</button>'
       '</div>';
 
     grid.appendChild(card);
@@ -1379,7 +1389,7 @@ function buildInsightCards(ps, ovr, auditId) {
       '<div class="insight-card-accent" style="background:#a78bfa;"></div>' +
       '<div class="insight-label">🚀 Pipeline Velocity & Forecast</div>' +
       '<div class="insight-headline" style="color:#a78bfa;">' + fmtMoney(ri.pipelineVelocity||0) + '<span style="font-size:12px;font-weight:400;color:var(--t3);">/day</span></div>' +
-      '<div class="insight-sub">Your pipeline generates ~' + fmtMoney(ri.pipelineVelocity||0) + ' of qualified pipeline value every day. Win rate: ' + (ri.winRate||0) + '% · Avg cycle: ' + (ri.avgSalesCycleDays||0) + ' days · Coverage ratio: ' + (ri.coverageRatio||'—') + 'x</div>' +
+      '<div class="insight-sub">' + (ri.coverageRatio > 0 ? 'Pipeline coverage: ' + ri.coverageRatio + 'x (benchmark: 3x minimum). ' : '') + 'Win rate: ' + (ri.winRate||0) + '% · Avg sales cycle: ' + (ri.avgSalesCycleDays||0) + ' days. ' + (ri.winRate < 20 && ri.winRate > 0 ? 'Win rate below 20% — deal quality or qualification criteria may need review.' : ri.avgSalesCycleDays > 90 ? 'Sales cycle over 90 days — identify where deals stall longest.' : 'Velocity looks solid.') + '</div>' +
       (fcastRows ? '<div style="display:flex;gap:6px;margin-top:10px;">' + fcastRows + '</div>' : '') +
       '<div class="insight-stat-row" style="margin-top:10px;">' +
         '<div class="insight-stat"><div class="insight-stat-val" style="color:#a78bfa;">' + (ri.winRate||0) + '%</div><div class="insight-stat-lbl">Win Rate</div></div>' +
@@ -1403,7 +1413,7 @@ function buildInsightCards(ps, ovr, auditId) {
       '<div class="insight-card-accent" style="background:'+decColor+';"></div>' +
       '<div class="insight-label">🗄️ Contact Database Health</div>' +
       '<div class="insight-headline" style="color:'+decColor+';">' + decGrade + ' · ' + (dec.avgDecayScore||0) + '/100</div>' +
-      '<div class="insight-sub">' + fmt(deadC+coldC) + ' contacts dead or cold — costing ~' + fmtMoney(dec.estBillingWaste||0) + '/mo in billing tier bloat. ' + fmt(dec.archiveCandidateCount||0) + ' are archive candidates.</div>' +
+      '<div class="insight-sub">' + fmt(hotC) + ' contacts engaged in last 30 days (' + hotPct + '% of database). ' + (deadC > 0 ? fmt(deadC) + ' dead contacts cost ~' + fmtMoney(dec.estBillingWaste||0) + '/mo in billing bloat — archive them to free up tier space. ' : '') + (coldC > 0 ? fmt(coldC) + ' cold contacts are reactivation opportunities — run a win-back campaign before writing them off.' : 'No significant cold segment detected.') + '</div>' +
       '<div class="decay-bar" style="margin:10px 0 6px;">' +
         '<div class="decay-seg" style="width:'+hotPct+'%;background:#10b981;" title="Hot '+hotPct+'%"></div>' +
         '<div class="decay-seg" style="width:'+warmPct+'%;background:#3b82f6;" title="Warm '+warmPct+'%"></div>' +
@@ -1441,7 +1451,7 @@ function buildInsightCards(ps, ovr, auditId) {
       '<div class="insight-card-accent" style="background:#06b6d4;"></div>' +
       '<div class="insight-label">👥 Rep Performance Intelligence</div>' +
       '<div class="insight-headline" style="color:#06b6d4;">Team Score: ' + (rep.teamAvgScore||0) + '/100</div>' +
-      '<div class="insight-sub">' + fmt(rep.repCount||0) + ' active reps tracked · Top: ' + esc(topRep.name||'—') + ' (' + (topRep.performanceScore||0) + ') · Needs coaching: ' + esc(botRep.name||'—') + ' (' + (botRep.performanceScore||0) + ')</div>' +
+      '<div class="insight-sub">Team average: ' + (rep.teamAvgScore||0) + '/100 · ' + fmt(rep.repCount||0) + ' reps tracked. ' + (reps.filter(function(r){return r.calls===0&&r.meetings===0;}).length > 0 ? reps.filter(function(r){return r.calls===0&&r.meetings===0;}).length + ' rep' + (reps.filter(function(r){return r.calls===0&&r.meetings===0;}).length!==1?'s':' ') + ' with zero activity this month — paid seats producing nothing. ' : '') + (rep.teamAvgScore < 50 ? 'Team health needs attention — consider activity coaching or pipeline review.' : 'Top rep: ' + esc(topRep.name||'—') + ' at ' + (topRep.performanceScore||0) + '/100.') + '</div>' +
       '<div style="margin-top:10px;">' + repRows + '</div>' +
     '</div>';
   }
@@ -1464,7 +1474,7 @@ function buildInsightCards(ps, ovr, auditId) {
       '<div class="insight-card-accent" style="background:'+chColor+';"></div>' +
       '<div class="insight-label">❤️ Customer Health Score</div>' +
       '<div class="insight-headline" style="color:'+chColor+';">Avg ' + (cus.avgHealth||0) + '/100</div>' +
-      '<div class="insight-sub">' + fmt(cus.atRisk||0) + ' accounts at risk (score <40) · ' + fmt(cus.healthy||0) + ' healthy. At-risk accounts are churn candidates — address before renewal.</div>' +
+      '<div class="insight-sub">' + (cus.atRisk > 0 ? '⚠️ ' + fmt(cus.atRisk) + ' account' + (cus.atRisk!==1?'s':' ') + ' scoring below 40 — these are your most likely churners. Call them before they submit a cancellation. ' : 'No high-risk accounts detected. ') + fmt(cus.healthy||0) + ' healthy accounts are expansion and upsell candidates.</div>' +
       '<div style="margin-top:10px;">' + (atRiskRows || '<div style="font-size:12px;color:var(--t3);">No at-risk accounts detected</div>') + '</div>' +
       '<div class="insight-stat-row" style="margin-top:8px;">' +
         '<div class="insight-stat"><div class="insight-stat-val" style="color:#f43f5e;">' + fmt(cus.atRisk||0) + '</div><div class="insight-stat-lbl">At Risk</div></div>' +

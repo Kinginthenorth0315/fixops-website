@@ -535,8 +535,8 @@ function renderLeaks(data, auditId) {
   });
 
   // 4. DUPLICATE CONTACTS — billing tier inflation
-  // $0.45/dupe/mo = cost of one extra contact in your HubSpot billing tier
-  var dupeLeak = Math.round(dupes * 0.45);
+  // $0.18/dupe/mo = HubSpot mid-tier billing cost (5k-10k tier = $800-$1,600/mo ÷ contact count)
+  var dupeLeak = Math.round(dupes * 0.18);
   leaks.push({
     id: 'dupes',
     icon: '👥',
@@ -544,12 +544,12 @@ function renderLeaks(data, auditId) {
     amount: dupeLeak,
     period: '/mo in inflated billing',
     desc: dupes + ' potential duplicates inflating your contact tier and sending duplicate outreach.',
-    metric: dupes + ' potential duplicates · ~$0.45 each/mo billing inflation',
+    metric: dupes + ' potential duplicates · ~$0.18 each/mo billing inflation',
     color: '#f59e0b',
     colorBg: 'rgba(245,158,11,.1)',
     severity: dupes > 50 ? 'critical' : dupes > 15 ? 'warning' : 'info',
     zero_msg: 'No duplicate contacts detected',
-    why: '$0.45/contact/month reflects the per-contact billing cost at HubSpot\'s mid-tier pricing divided across contact count.',
+    why: '$0.18/contact/month = HubSpot\'s mid-tier billing cost (5k-10k tier = $800-$1,600/mo ÷ contact count). Duplicates inflate your tier without adding value.',
   });
 
   // 5. OVERDUE DEAL RISK — use ACTUAL overdue deal values, cap at reasonable % per month
@@ -574,8 +574,12 @@ function renderLeaks(data, auditId) {
   // Not cold contacts ($0.30 each is not a real "loss" — that's just data quality)
   // Real loss = high-bounce emails signal domain reputation risk → future emails going to spam
   // Quantify as: estimated cost to re-acquire contacts with deliverability damage
-  var bounceLeak = bounceEmails > 0 ? Math.round(bounceEmails * 85) : 0;  // $85/damaged email campaign
-  var archiveLeak = archiveCandidates > 0 ? Math.round(archiveCandidates * 0.25) : 0;  // $0.25/dead contact/mo billing bloat
+  // Email deliverability risk — billing cost of dead contacts + domain repair risk
+  // $0.16/dead contact/mo = HubSpot mid-tier billing cost for contacts that never open email
+  // High-bounce campaigns carry domain reputation damage cost — framed as risk not fixed $
+  var archiveLeak = archiveCandidates > 0 ? Math.round(archiveCandidates * 0.16) : 0;
+  // High-bounce: cost is reputational — show as count-based risk signal, not inflated $
+  var bounceLeak = bounceEmails > 0 ? Math.round(bounceEmails * 35) : 0;  // $35 = conservative re-engagement cost per damaged campaign
   var emailLeak = bounceLeak + archiveLeak;
   leaks.push({
     id: 'email',
@@ -613,11 +617,11 @@ function renderLeaks(data, auditId) {
   });
 
   // 8. EXPIRED QUOTES — recoverable revenue, not a "cost"
-  // 40% win-back rate × avg deal value / 12 months (annualised recovery opportunity)
+  // 20% win-back rate × avg deal value / 12 months (Forrester B2B benchmark: 15-25%)
   // ONLY use real avgDeal if it exists — do not invent $500 if all deals are $0
   var quoteLeak = 0;
   if (expiredQ > 0 && avgDeal > 0) {
-    quoteLeak = Math.round(expiredQ * avgDeal * 0.40 / 12);
+    quoteLeak = Math.round(expiredQ * avgDeal * 0.20 / 12);
   }
   leaks.push({
     id: 'quotes',

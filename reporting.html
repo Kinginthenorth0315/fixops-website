@@ -2554,15 +2554,31 @@ function buildOverview() {
   // KPIs
   const waste = s.monthlyWaste || 0;
   const percentile = getPercentile(s.overallScore||0);
+  // Add percentile context note below KPIs
+  var pctileNote = document.getElementById('overview-percentile-note');
+  if (!pctileNote) {
+    pctileNote = document.createElement('div');
+    pctileNote.id = 'overview-percentile-note';
+    pctileNote.style.cssText = 'margin-top:8px;font-size:11px;color:var(--t3);text-align:center;padding:8px 0;border-top:1px solid var(--b1);';
+    var kpiRow = document.getElementById('overview-kpis');
+    if (kpiRow && kpiRow.parentNode) kpiRow.parentNode.insertBefore(pctileNote, kpiRow.nextSibling);
+  }
+  var pctNote = 'Score ' + (sc.overallScore||0) + '/100 · Better than ' + getPercentile(sc.overallScore||0) + '% of HubSpot portals we audit · ' +
+    (s.criticalCount > 0 ? s.criticalCount + ' critical issue' + (s.criticalCount!==1?'s':' ') + ' need immediate attention' : 'No critical issues — focus on warnings') +
+    (s.monthlyWaste > 0 ? ' · Est. ' + fmtMoney(s.monthlyWaste) + '/mo recoverable' : '');
+  if (pctileNote) pctileNote.textContent = pctNote;
+
+  var ehs = ps.emailHealthSummary || {};
   document.getElementById('overview-kpis').innerHTML =
-    kpi('Overall Score', s.overallScore+'/100', 'Better than '+percentile+'% of portals',
+    kpi('Overall Score', s.overallScore+'/100', 'Better than '+percentile+'% of HubSpot portals',
         s.overallScore >= 80 ? 'green' : s.overallScore >= 60 ? 'amber' : 'red', '') +
-    kpi('Est. Monthly Waste', fmtMoney(waste), 'annual: '+fmtMoney(waste*12), waste>0?'red':'green', '') +
-    kpi('Critical Issues', s.criticalCount||0, (s.warningCount||0)+' warnings', 'red', '') +
-    kpi('Records Scanned', fmt(s.recordsScanned), fmt(ps.contacts)+' contacts · '+fmt(ps.deals)+' deals', 'blue', '') +
-    (ps.workflows ? kpi('Workflows', fmt(ps.workflows), (ps.deadWorkflowCount||0)+' dead / '+fmt(ps.workflows-(ps.deadWorkflowCount||0))+' active', (ps.deadWorkflowCount||0)>10?'amber':'blue', '') : '') +
-    (ps.marketingEmailCount > 0 ? kpi('Email Health', (ps.emailHealthSummary?.openRate||0)+'% open', (ps.emailHealthSummary?.bounceRate||0)+'% bounce · '+(ps.emailHealthSummary?.unsubRate||0)+'% unsub', (ps.emailHealthSummary?.bounceRate||0)>=5?'red':(ps.emailHealthSummary?.openRate||0)>=20?'green':'amber', '') : '') +
-    (ps.customObjectCount > 0 ? kpi('Custom Objects', fmt(ps.customObjectCount), (ps.customObjectNames||[]).slice(0,3).join(', '), 'blue', '') : '');
+    kpi('Est. Monthly Waste', fmtMoney(waste), waste>0 ? 'annual: '+fmtMoney(waste*12)+' · click Revenue Leaks' : 'No waste detected', waste>0?'red':'green', '') +
+    kpi('Critical Issues', s.criticalCount||0, s.criticalCount>0 ? (s.warningCount||0)+' warnings — expand to fix' : (s.warningCount||0)+' warnings only', s.criticalCount>0?'red':'amber', '') +
+    kpi('Records Scanned', fmt(s.recordsScanned), fmt(ps.contacts)+' contacts · '+fmt(ps.deals)+' deals · '+fmt(ps.tickets)+' tickets', 'blue', '') +
+    (ps.workflows > 0 ? kpi('Workflow Health', fmt(ps.workflows-(ps.deadWorkflowCount||0))+' active', (ps.deadWorkflowCount||0)+' dead · '+(ps.erroredWorkflows||0)+' erroring', (ps.deadWorkflowCount||0)>5||(ps.erroredWorkflows||0)>0?'amber':'green', '') : '') +
+    (ps.marketingEmailCount > 0 && ehs.totalSent > 0 ? kpi('Email Health', (ehs.openRate||0)+'% open rate', (ehs.bounceRate||0)+'% bounce · '+(ehs.unsubRate||0)+'% unsub', (ehs.bounceRate||0)>=5?'red':(ehs.openRate||0)>=20?'green':'amber', '') : '') +
+    (ps.ghostSeats > 0 ? kpi('Ghost Seats', ps.ghostSeats+' inactive', '$'+fmt(ps.ghostSeatWaste||0)+'/mo wasted on unused seats', 'red', '') : '') +
+    (ps.customObjectCount > 0 ? kpi('Custom Objects', fmt(ps.customObjectCount), (ps.customObjectNames||[]).slice(0,4).join(', '), 'blue', '') : '');
 
   // Build stage chart from REAL portalStats
   const totalDeals    = ps.deals || 0;
