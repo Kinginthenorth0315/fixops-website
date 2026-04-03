@@ -196,6 +196,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     Fix<span style="color:var(--v3)">Ops</span><span style="color:var(--t3);font-weight:400;font-size:13px;">.io</span>
   </div>
   <div class="nav-actions">
+    <span id="nav-plan-badge" style="display:none;font-size:10px;font-weight:800;padding:3px 8px;border-radius:4px;letter-spacing:.5px;"></span>
     <button class="nav-btn ghost" id="theme-toggle" onclick="toggleTheme()" title="Switch to light mode" style="padding:7px 10px;font-size:14px;">☀️</button>
     <button class="nav-btn ghost" onclick="downloadPDF()">📄 Save as PDF</button>
     <a href="#" class="nav-btn ghost" id="leaks-link" onclick="goToLeaks()" style="color:#ff6b6b;border-color:rgba(255,59,59,.35);">💸 Revenue Leaks</a>
@@ -667,23 +668,53 @@ function showResults(data) {
   // ── Hub Intelligence ──────────────────────────────────────────────────────
   try { renderHubIntelligence(ps, scores, plan, waste, criticals); } catch(e) { console.warn('hub intel:', e); }
 
-  // ── New feature panels (async — load after main render) ───────────────────
+  // ── PLAN TIER SYSTEM ─────────────────────────────────────────────────────
+  // Free        = score + top 5 critical issues only, no guides, hard CTA
+  // Deep        = full issues + guides + fix-it service + revenue leaks (no reporting, no AI)
+  // Pro-Audit   = deep + deal risk + workflow conflicts + enrichment gaps
+  // Pulse/mo    = reporting access (basic views), weekly monitoring, basic AI
+  // Pro/mo      = full reporting all views, unlimited AI, trends/history
+  // Agency/mo   = everything + white-label
+  var isOneTime   = ['deep','pro-audit'].includes(plan);
+  var isMonthly   = ['pulse','pro','command'].includes(plan);
+  var isProMonthly= ['pro','command'].includes(plan);
+  var isAgency    = plan === 'command';
+  var isFree      = plan === 'free' || !plan;
+
+  window.PLAN_FLAGS = { isFree, isOneTime, isMonthly, isProMonthly, isAgency, plan };
+
+  // ── Show plan badge on nav ─────────────────────────────────────────────
+  var navBadge = document.getElementById('nav-plan-badge');
+  if (navBadge) {
+    var planLabels = { free:'FREE', deep:'DEEP AUDIT', 'pro-audit':'PRO AUDIT',
+      pulse:'PULSE', pro:'PRO', command:'AGENCY' };
+    var planColors = { free:'#6b7280', deep:'#7c3aed', 'pro-audit':'#8b5cf6',
+      pulse:'#3b82f6', pro:'#10b981', command:'#f59e0b' };
+    navBadge.textContent = planLabels[plan] || plan.toUpperCase();
+    navBadge.style.background = (planColors[plan] || '#6b7280') + '25';
+    navBadge.style.color = planColors[plan] || '#6b7280';
+    navBadge.style.display = 'inline-block';
+  }
+
+  // ── Feature panels (async) ────────────────────────────────────────────────
   var auditIdParam = (new URLSearchParams(window.location.search)).get('id');
   if (auditIdParam) {
     loadBillingRisk(auditIdParam);
     loadDealRisk(auditIdParam, plan);
-    if (['pro','command','pro-audit'].includes(plan)) {
+    if (['pro-audit','pro','command'].includes(plan)) {
       loadWorkflowConflicts(auditIdParam, plan);
     }
-    loadEnrichmentGaps(auditIdParam, plan);
-    // AI briefing for Pulse+
-    if (['pulse','pro','command'].includes(plan)) {
-      loadResultsAIBriefing(auditIdParam, ps.email || portal.email);
-    }
+    if (!isFree) loadEnrichmentGaps(auditIdParam, plan);
+    if (isMonthly) loadResultsAIBriefing(auditIdParam, ps.email || portal.email);
   }
 
-  // ── Show Share button for Pro/Agency ─────────────────────────────────────
-  if (['pro','command','pro-audit'].includes(plan)) {
+  // ── Reporting access CTA (one-time audits) ───────────────────────────────
+  if (isOneTime) {
+    buildReportingUpsellCTA(plan, waste, criticals, company);
+  }
+
+  // ── Share button for Pro/Agency ─────────────────────────────────────────
+  if (isProMonthly || isAgency) {
     var shareBtn = document.getElementById('share-btn');
     if (shareBtn) shareBtn.style.display = '';
   }
@@ -698,12 +729,23 @@ function showResults(data) {
   list.innerHTML = '';
   var crits = sorted.filter(function(i){ return i.severity==='critical'; }).length;
   var warns = sorted.filter(function(i){ return i.severity==='warning'; }).length;
+
+  // Plan-gate the issues list
+  var flags = window.PLAN_FLAGS || {};
+  var visibleIssues = sorted;
+  var issuesHidden = 0;
+  if (flags.isFree) {
+    // Free: show only top 5 critical/warning issues, no guides, no fix-it
+    visibleIssues = sorted.filter(function(i){ return ['critical','warning'].includes(i.severity); }).slice(0, 5);
+    issuesHidden = sorted.length - visibleIssues.length;
+  }
+
   var hdr = sorted.length + ' Issue' + (sorted.length!==1?'s':'') + ' Found';
   if (crits > 0) hdr += ' · <span style="color:#f43f5e;">' + crits + ' Critical</span>';
   if (warns > 0) hdr += ' · <span style="color:#f59e0b;">' + warns + ' Warning</span>';
   document.getElementById('issues-header').innerHTML = hdr;
 
-  sorted.forEach(function(issue, idx) {
+  visibleIssues.forEach(function(issue, idx) {
     var sc = issue.severity==='critical' ? '#f43f5e' : issue.severity==='warning' ? '#f59e0b' : '#60a5fa';
     var scC = issue.severity || 'info';
 
@@ -753,8 +795,33 @@ function showResults(data) {
         '<button class="fix-me-btn" onclick="event.stopPropagation();fixItForMe('+idx+')">🛠 Fix It For Me</button>'+
       '</div>';
 
+    // For free plans: strip guide steps and fix-it button
+    if (flags.isFree) {
+      var expand = card.querySelector('.issue-expand');
+      if (expand) {
+        expand.innerHTML = '<div style="padding:20px 24px;border-top:1px solid var(--b1);text-align:center;">' +
+          '<div style="font-size:13px;color:var(--t2);margin-bottom:12px;">🔒 Fix guide and action steps require a paid audit</div>' +
+          '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:9px 20px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none;">Get Full Audit — from $399 →</a>' +
+          '</div>';
+      }
+    }
+
     list.appendChild(card);
   });
+
+  // Hidden issues banner for free plan
+  if (issuesHidden > 0) {
+    var hiddenBanner = document.createElement('div');
+    hiddenBanner.innerHTML =
+      '<div style="padding:28px 24px;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.25);border-radius:14px;text-align:center;">' +
+        '<div style="font-size:28px;margin-bottom:10px;">🔒</div>' +
+        '<div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px;">'+issuesHidden+' More Issues Hidden</div>' +
+        '<div style="font-size:13px;color:var(--t2);max-width:440px;margin:0 auto 18px;">Your free scan found ' + sorted.length + ' total issues. Upgrade to see all of them with step-by-step fix guides, revenue impact estimates, and Fix-It service options.</div>' +
+        '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:11px 28px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;margin-right:8px;">Get Deep Audit — $399 →</a>' +
+        '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:11px 20px;background:transparent;color:var(--v3);border:1px solid rgba(124,58,237,.4);border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;">See All Plans</a>' +
+      '</div>';
+    list.appendChild(hiddenBanner);
+  }
 
   // ── Insight Cards ───────────────────────────────────────────────────────────
   try { buildInsightCards(ps, ovr, auditId); } catch(e) { console.warn('insight cards:', e); }
@@ -942,6 +1009,125 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
 }
 
 // ── Toggle issue ─────────────────────────────────────────────────────────────
+// ── Reporting Upsell CTA (one-time audit users) ────────────────────────────────
+function buildReportingUpsellCTA(plan, waste, criticals, company) {
+  // Find or create the CTA section after intel cards
+  var existing = document.getElementById('reporting-upsell-section');
+  if (!existing) {
+    existing = document.createElement('div');
+    existing.id = 'reporting-upsell-section';
+    existing.style.cssText = 'margin:32px 0;';
+    var fixSection = document.getElementById('fixplan-section');
+    if (fixSection) fixSection.parentNode.insertBefore(existing, fixSection);
+  }
+
+  var wasteStr  = waste > 0 ? fmtMoney(waste) : 'revenue leaks';
+  var critStr   = criticals > 0 ? criticals + ' critical issue' + (criticals!==1?'s':'') : 'issues';
+  var isPro     = plan === 'pro-audit';
+
+  existing.innerHTML =
+    '<div style="background:linear-gradient(135deg,rgba(15,23,42,1) 0%,rgba(12,12,30,1) 100%);' +
+    'border:1px solid rgba(255,255,255,.08);border-radius:20px;overflow:hidden;margin-bottom:24px;">' +
+
+    // Header
+    '<div style="padding:32px 36px 24px;border-bottom:1px solid rgba(255,255,255,.06);">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;">' +
+        '<div>' +
+          '<div style="font-size:10px;font-weight:800;letter-spacing:2px;color:#a78bfa;font-family:var(--mono);text-transform:uppercase;margin-bottom:10px;">YOUR AUDIT IS DONE · NOW WHAT?</div>' +
+          '<div style="font-size:26px;font-weight:900;color:#fff;line-height:1.25;margin-bottom:10px;">' +
+            'You found ' + critStr + ' and ' + wasteStr + '/mo in waste.<br>' +
+            '<span style="color:#a78bfa;">Monthly monitoring catches this automatically.</span>' +
+          '</div>' +
+          '<div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;max-width:580px;">' +
+            'This was a one-time scan. HubSpot portals develop new issues every week — stale deals pile up, ' +
+            'workflows break silently, contacts go cold. Pulse and Pro monitor automatically so nothing slips past you.' +
+          '</div>' +
+        '</div>' +
+        '<div style="flex-shrink:0;text-align:center;padding:20px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:14px;min-width:160px;">' +
+          '<div style="font-size:11px;color:#a78bfa;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Est. Monthly Waste</div>' +
+          '<div style="font-size:36px;font-weight:900;color:#fff;line-height:1;">' + (waste > 0 ? fmtMoney(waste) : '—') + '</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:4px;">per month · this portal</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    // Plan comparison grid
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:0;">' +
+
+      // Pulse column
+      '<div style="padding:28px 32px;border-right:1px solid rgba(255,255,255,.06);">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">' +
+          '<div style="width:8px;height:8px;border-radius:50%;background:#3b82f6;"></div>' +
+          '<div style="font-size:11px;font-weight:800;color:#3b82f6;text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);">PULSE · $299/mo</div>' +
+        '</div>' +
+        '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Weekly Monitoring + Daily Alerts</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;line-height:1.6;">Full audit every Monday. Daily sentinel checks watch for workflow errors, billing tier changes, and ghost seats in between.</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">' +
+          ['Full 210-point scan — Sales, Marketing, Service, Automation, Data',
+           'Weekly automated re-scans every Monday at 9am',
+           'Sentinel daily monitoring — workflow errors, billing tier, ghost seats',
+           'Same-day email alerts on new critical issues',
+           'Monday digest — score, new issues, delta vs last week',
+           'Rep activity scorecard — calls, meetings, stale deals per rep',
+           'Ghost seat detector — inactive paid seats flagged by name + cost',
+           'Deal risk scoring — every open deal scored 0–100',
+           'Billing tier warning — alerts before HubSpot charges you more',
+           'Dollar impact estimate on every issue found',
+           'PDF report generated on every scan',
+           'Fix It For Me — any issue scoped + quoted in 24hrs'].map(function(f) {
+            return '<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(255,255,255,.55);">' +
+              '<span style="color:#3b82f6;margin-top:1px;flex-shrink:0;">✓</span>' + f + '</div>';
+          }).join('') +
+        '</div>' +
+        '<a href="https://fixops.io/#pricing" target="_blank" style="display:block;text-align:center;padding:12px;background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);border-radius:10px;color:#3b82f6;font-weight:800;font-size:13px;text-decoration:none;transition:all .2s;" onmouseover="this.style.background=\'rgba(59,130,246,.25)\'" onmouseout="this.style.background=\'rgba(59,130,246,.15)\'">' +
+          'Start Pulse — $299/mo →' +
+        '</a>' +
+      '</div>' +
+
+      // Pro column
+      '<div style="padding:28px 32px;background:rgba(16,185,129,.03);">' +
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">' +
+          '<div style="width:8px;height:8px;border-radius:50%;background:#10b981;"></div>' +
+          '<div style="font-size:11px;font-weight:800;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);">PRO · $549/mo</div>' +
+          '<span style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;background:rgba(16,185,129,.15);color:#10b981;font-family:var(--mono);">BEST VALUE</span>' +
+        '</div>' +
+        '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Daily Monitoring + Full Reporting + AI</div>' +
+        '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;line-height:1.6;">Everything in Pulse — plus daily scans, the full 22-view Portal Snapshot dashboard, AI report builder, and audit history.</div>' +
+        '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">' +
+          '<div style="font-size:11px;color:#10b981;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Everything in Pulse, plus:</div>' +
+          ['Full Portal Snapshot — 22-view intelligence dashboard',
+           'Daily monitoring (Pulse runs weekly — Pro runs daily)',
+           'AI Report Builder — ask your data anything in plain English',
+           'Workflow conflict detector — duplicate triggers, parallel versions',
+           'Contact enrichment gap report — missing fields by priority',
+           'Marketing hub — forms, lists, campaigns, email sub health',
+           'Audit history — compare any two scans, unlimited history',
+           'Score trends + ROI tracking — prove the value of every fix',
+           'White-label client share URL',
+           'Priority support + dedicated onboarding call'].map(function(f) {
+            return '<div style="display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(255,255,255,.55);">' +
+              '<span style="color:#10b981;margin-top:1px;flex-shrink:0;">✓</span>' + f + '</div>';
+          }).join('') +
+        '</div>' +
+        '<a href="https://fixops.io/#pricing" target="_blank" style="display:block;text-align:center;padding:12px;background:linear-gradient(135deg,rgba(16,185,129,.2),rgba(59,130,246,.15));border:1px solid rgba(16,185,129,.4);border-radius:10px;color:#10b981;font-weight:800;font-size:13px;text-decoration:none;transition:all .2s;" onmouseover="this.style.opacity=\'.8\'" onmouseout="this.style.opacity=\'1\'">' +
+          'Start Pro — $549/mo →' +
+        '</a>' +
+      '</div>' +
+
+    '</div>' +
+
+    // Footer strip
+    '<div style="padding:16px 32px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+      '<div style="font-size:11px;color:rgba(255,255,255,.3);">Cancel anytime · No setup fee · Starts scanning immediately · Personally reviewed by our team</div>' +
+      '<div style="display:flex;gap:16px;">' +
+        '<a href="https://fixops.io/#pricing" target="_blank" style="font-size:12px;color:#a78bfa;text-decoration:none;font-weight:600;">Compare all plans →</a>' +
+        '<a href="mailto:hello@fixops.io" style="font-size:12px;color:rgba(255,255,255,.3);text-decoration:none;">Questions? Email us</a>' +
+      '</div>' +
+    '</div>' +
+
+    '</div>';
+}
+
 function toggleIssue(idx) {
   var c = document.getElementById('ic-'+idx);
   var was = c.classList.contains('open');

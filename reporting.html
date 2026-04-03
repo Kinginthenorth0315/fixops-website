@@ -566,6 +566,60 @@ nav {
 
 /* ━━ Pro lock ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 .view { position:relative; }
+/* ── Plan tier lock overlays ── */
+.view-lock-overlay {
+  position:absolute; inset:0; z-index:50;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  background:rgba(4,4,10,.55);
+  display:flex; align-items:center; justify-content:center;
+  border-radius:12px; pointer-events:all;
+}
+.view-lock-inner {
+  text-align:center; padding:40px 32px; max-width:520px;
+}
+.view-lock-badge {
+  display:inline-block; font-size:9px; font-weight:800;
+  letter-spacing:2px; text-transform:uppercase;
+  padding:4px 12px; border-radius:4px; margin-bottom:16px;
+  font-family:'JetBrains Mono',monospace;
+}
+.view-lock-title {
+  font-size:22px; font-weight:800; color:var(--t1);
+  line-height:1.3; margin-bottom:10px;
+}
+.view-lock-desc {
+  font-size:13px; color:var(--t2); line-height:1.7; margin-bottom:24px;
+}
+.view-lock-features {
+  display:grid; grid-template-columns:1fr 1fr; gap:8px;
+  margin-bottom:24px; text-align:left;
+}
+.vlf-item {
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+  border-radius:8px; padding:10px 12px; font-size:11px; color:var(--t2);
+}
+.vlf-item strong { display:block; color:var(--t1); font-size:12px; margin-bottom:2px; }
+.view-lock-cta {
+  display:inline-block; padding:12px 28px; border-radius:8px;
+  font-weight:800; font-size:14px; text-decoration:none;
+  transition:all .2s; cursor:pointer; border:none;
+}
+.view-lock-cta:hover { transform:translateY(-1px); box-shadow:0 8px 30px rgba(0,0,0,.4); }
+.view-lock-cta.pulse-cta {
+  background:linear-gradient(135deg,#3b82f6,#7c3aed);
+  color:#fff;
+}
+.view-lock-cta.pro-cta {
+  background:linear-gradient(135deg,#10b981,#3b82f6);
+  color:#fff;
+}
+.view-lock-compare {
+  display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; justify-content:center;
+}
+.vlc-pill {
+  font-size:10px; padding:4px 10px; border-radius:20px; font-weight:700;
+}
+
 .pro-lock-overlay {
   position:absolute; inset:0;
   backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
@@ -1166,73 +1220,6 @@ nav {
     </div>
 
     <!-- ✦ CONTACT DECAY SCORE -->
-    <div class="view" id="view-decay">
-      <div class="page-header">
-        <h1>Contact Decay Score</h1>
-        <p>Every contact scored 0–100 based on engagement, lifecycle, and activity — your CRM's true health signal</p>
-      </div>
-      <div class="kpi-row" id="decay-kpis"></div>
-      <div class="chart-grid cols-2">
-        <div class="chart-card">
-          <div class="chart-header"><div><div class="chart-title">Database Health Distribution</div><div class="chart-sub">Hot → Dead — where your contacts sit right now</div></div><span class="chart-badge">DECAY ENGINE</span></div>
-          <div class="chart-wrap"><canvas id="decayDonut" height="220"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header"><div><div class="chart-title">Decay Score Breakdown</div><div class="chart-sub">What's dragging your database health down</div></div></div>
-          <div id="decay-breakdown" style="padding:8px 0;"></div>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Action Plan — Fix Your Database Health</div><div class="chart-sub">Ranked by dollar impact</div></div></div>
-        <div id="decay-actions"></div>
-      </div>
-    </div>
-
-    <!-- ✦ REP INTELLIGENCE -->
-    <div class="view" id="view-rep">
-      <div class="page-header">
-        <h1>Rep Performance Intelligence</h1>
-        <p>Full 30-day scorecard per rep — calls, meetings, pipeline, win rate, and task health in one view</p>
-      </div>
-      <div class="kpi-row" id="rep-kpis"></div>
-      <div class="chart-card" style="margin-bottom:20px;">
-        <div class="chart-header"><div><div class="chart-title">Rep Leaderboard — Last 30 Days</div><div class="chart-sub">Activity + pipeline + win rate composite score</div></div><span class="chart-badge">REP INTEL</span></div>
-        <div id="rep-leaderboard"></div>
-      </div>
-      <div class="chart-grid cols-2">
-        <div class="chart-card">
-          <div class="chart-header"><div><div class="chart-title">Activity by Rep</div><div class="chart-sub">Calls + meetings logged (30 days)</div></div></div>
-          <div class="chart-wrap"><canvas id="repActivityChart" height="220"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header"><div><div class="chart-title">Pipeline Value by Rep</div><div class="chart-sub">Open deals owned per rep</div></div></div>
-          <div class="chart-wrap"><canvas id="repPipelineChart" height="220"></canvas></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✦ CUSTOMER HEALTH -->
-    <div class="view" id="view-health">
-      <div class="page-header">
-        <h1>Customer Health Score</h1>
-        <p>Churn prediction before it happens — every account scored on engagement, tickets, NPS, and billing</p>
-      </div>
-      <div class="kpi-row" id="health-kpis"></div>
-      <div class="chart-grid cols-2">
-        <div class="chart-card">
-          <div class="chart-header"><div><div class="chart-title">Health Score Distribution</div><div class="chart-sub">At-risk accounts need immediate attention</div></div><span class="chart-badge">CHURN RISK</span></div>
-          <div class="chart-wrap"><canvas id="healthDonut" height="220"></canvas></div>
-        </div>
-        <div class="chart-card">
-          <div class="chart-header"><div><div class="chart-title">At-Risk Accounts</div><div class="chart-sub">Score below 40 — churn probability elevated</div></div></div>
-          <div id="at-risk-accounts" style="padding:4px 0;max-height:260px;overflow-y:auto;"></div>
-        </div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-header"><div><div class="chart-title">Top Healthy Accounts</div><div class="chart-sub">Highest engagement scores — expansion opportunities</div></div></div>
-        <div id="healthy-accounts"></div>
-      </div>
-    </div>
 
     <!-- ✦ FORM FUNNEL -->
     <div class="view" id="view-formfunnel">
@@ -1594,6 +1581,10 @@ nav {
         <div class="chart-header"><div><div class="chart-title">What Drives Health Score</div><div class="chart-sub">How FixOps calculates customer health from your HubSpot data</div></div></div>
         <div id="health-methodology"></div>
       </div>
+      <div class="chart-card" style="margin-top:16px;">
+        <div class="chart-header"><div><div class="chart-title">Healthy Accounts</div><div class="chart-sub">Score 70+ — expansion + upsell opportunities</div></div></div>
+        <div id="healthy-accounts" style="padding:8px 0;"></div>
+      </div>
     </div>
 
     <!-- ✦ PROPERTY USAGE VIEW -->
@@ -1764,10 +1755,10 @@ async function loadData() {
     document.getElementById('portal-badge').textContent = company + ' · Snapshot';
     document.title = 'FixOps Intelligence — ' + company;
     var auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
-    var isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
-    var isPulseOrAbove = ['pulse','pro','command'].includes(auditPlan); // deep = one-time, not monitoring
-    var isFree = !isPulseOrAbove;
-    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
+    var isProOrAbove  = ['pro','command','pro-audit','deep'].includes(auditPlan);
+    var isPulseOrAbove = ['pulse','pro','command','deep','pro-audit'].includes(auditPlan);
+    var isFree = auditPlan === 'free' || !auditPlan;
+    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, isOneTime, isDeep, isProAudit: isProAudit||false, isPulse: isPulse||false, isProMonthly, isMonthly, isAgency: isAgency||false, plan: auditPlan };
     var navBadge = document.getElementById('nav-plan-badge');
     if (navBadge) {
       navBadge.textContent = auditPlan.toUpperCase();
@@ -1803,121 +1794,248 @@ async function loadFromToken(token) {
     document.title = 'FixOps Intelligence — '+company;
     // Tiered access — everyone sees snapshot, Pro/Agency unlock premium sections
     const auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
-    const isProOrAbove  = ['pro','command','pro-audit'].includes(auditPlan);
-    const isPulseOrAbove = ['pulse','pro','command'].includes(auditPlan); // deep = one-time, not monitoring
-    const isFree = !isPulseOrAbove;
 
-    // Store globally so views can check
-    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, plan: auditPlan };
-    // Show plan badge in nav
+    // ── Plan tier flags ──────────────────────────────────────────────────────
+    // free       = capped scan, 5 issues shown, overview only
+    // deep       = one-time full scan, basic views, premium views locked → sell monthly
+    // pro-audit  = one-time full scan + advanced, basic+some views, AI locked → sell monthly
+    // pulse      = monthly $299, all basic + intelligence views, no AI/daily/advanced
+    // pro        = monthly $549, everything
+    // command    = agency $999, everything + multi-portal
+    const isFree       = auditPlan === 'free' || !auditPlan;
+    const isOneTime    = ['deep','pro-audit'].includes(auditPlan);
+    const isDeep       = auditPlan === 'deep';
+    const isProAudit   = auditPlan === 'pro-audit';
+    const isPulse      = auditPlan === 'pulse';
+    const isProMonthly = ['pro','command'].includes(auditPlan);
+    const isMonthly    = ['pulse','pro','command'].includes(auditPlan);
+    const isAgency     = auditPlan === 'command';
+
+    // Capability flags
+    const canSeeBasicViews   = !isFree;                              // deep+ sees basic
+    const canSeePulseViews   = isMonthly || isProAudit;             // pro-audit sees pulse views too
+    const canSeeProViews     = isProMonthly;                         // only pro/agency
+    const canUseAI           = isMonthly;                            // AI = monthly only
+    const hasMonitoring      = isMonthly;                            // weekly/daily scans
+    const hasDailyMonitor    = isProMonthly;                         // daily = pro only
+
+    window.PLAN_TIER = { isFree, isOneTime, isDeep, isProAudit, isPulse, isProMonthly,
+      isMonthly, isAgency, canSeeBasicViews, canSeePulseViews, canSeeProViews,
+      canUseAI, hasMonitoring, hasDailyMonitor, plan: auditPlan };
+
+    // ── Nav badge ────────────────────────────────────────────────────────────
     const navPlanBadge = document.getElementById('nav-plan-badge');
     if (navPlanBadge) {
-      const planLabel = {free:'FREE',pulse:'PULSE',pro:'PRO',command:'AGENCY','pro-audit':'PRO AUDIT',deep:'DEEP AUDIT'}[auditPlan]||auditPlan.toUpperCase();
-      navPlanBadge.textContent = planLabel;
-      navPlanBadge.style.display = 'inline';
-      if (isProOrAbove) navPlanBadge.style.background = 'rgba(16,185,129,.15)';
-      if (isProOrAbove) navPlanBadge.style.color = '#3b6fd4';
+      const planLabels = {free:'FREE SNAPSHOT',pulse:'PULSE · $299/mo',pro:'PRO · $549/mo',
+        command:'AGENCY · $999/mo','pro-audit':'PRO AUDIT','deep':'DEEP AUDIT'};
+      const planColors = {free:'#6b7280',pulse:'#3b82f6',pro:'#10b981',
+        command:'#f59e0b','pro-audit':'#8b5cf6','deep':'#7c3aed'};
+      navPlanBadge.textContent = planLabels[auditPlan] || auditPlan.toUpperCase();
+      navPlanBadge.style.background = (planColors[auditPlan]||'#6b7280') + '20';
+      navPlanBadge.style.color = planColors[auditPlan] || '#6b7280';
+      navPlanBadge.style.display = 'inline-block';
     }
 
-    // Show the dashboard for everyone
-    initAllViews();
-    setupAiSuggestions();
-
-    // Event delegation for data-nav buttons
-    document.addEventListener('click', function(e) {
-      const btn = e.target.closest('[data-nav]');
-      if (btn) { e.preventDefault(); showView(btn.dataset.nav); }
-    });
-
-    // Dim locked sidebar items for non-Pro
-    if (!isProOrAbove) {
-      
-      // Dim team sidebar for free users
-      if (isFree) {
-        const teamItem = document.querySelector(".sidebar-item[onclick*='team']");
-        if (teamItem) {
-          teamItem.style.opacity = '0.45';
-        }
-      }
-    }
-
-    // Inject plan banner at top of main content
+    // ── Plan banner ──────────────────────────────────────────────────────────
     const bannerEl = document.getElementById('plan-banner');
     if (bannerEl) {
       if (isFree) {
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
             '<div style="display:flex;align-items:center;gap:10px;">' +
-              '<span style="font-size:18px;">✦</span>' +
+              '<span style="font-size:18px;">⚡</span>' +
               '<div>' +
-                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">Free Snapshot — up to 1,000 contacts scanned</div>' +
-                '<div style="font-size:11px;color:var(--t3);">All views are visible. Upgrade for full portal scans, weekly monitoring, score trends, and unlimited AI analysis.</div>' +
+                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">Free Snapshot — up to 1,000 contacts · 5 issues shown</div>' +
+                '<div style="font-size:11px;color:var(--t3);">Upgrade to Deep Audit ($399 one-time) or Pulse monthly ($299/mo) for the full portal scan, all issues, fix guides, and intelligence views.</div>' +
               '</div>' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">See Plans →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
-      } else if (auditPlan === 'deep' || auditPlan === 'pro-audit') {
+      } else if (isDeep) {
+        // Deep Audit ($399): basic views only — reporting dashboard locked
         bannerEl.innerHTML =
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">'+
-            '<div style="display:flex;align-items:center;gap:10px;">'+
-              '<span style="font-size:18px;">📸</span>'+
-              '<div>'+
-                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">One-Time Audit Snapshot — full portal scan included</div>'+
-                '<div style="font-size:11px;color:var(--t3);">Score trends, history, and week-over-week comparisons require Pulse Weekly Monitoring. Upgrade to track improvements over time.</div>'+
-              '</div>'+
-            '</div>'+
-            '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Get Weekly Monitoring →</a>'+
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+            '<div style="display:flex;align-items:center;gap:12px;">' +
+              '<span style="font-size:20px;">📸</span>' +
+              '<div>' +
+                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">Deep Audit — Full one-time scan complete</div>' +
+                '<div style="font-size:11px;color:var(--t3);line-height:1.6;">Rep intelligence, contact decay, AI builder, audit history, and 14 other views are locked. ' +
+                  '<strong style="color:#3b82f6;">Pulse ($299/mo)</strong> unlocks all of them with weekly automated monitoring.</div>' +
+              '</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:8px;flex-shrink:0;">' +
+              '<a href="https://fixops.io/#pricing" target="_blank" style="padding:7px 14px;background:#3b82f6;color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;">Pulse $299/mo →</a>' +
+              '<a href="https://fixops.io/#pricing" target="_blank" style="padding:7px 14px;background:transparent;color:var(--t3);border:1px solid var(--b2);border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;">All Plans</a>' +
+            '</div>' +
           '</div>';
         bannerEl.style.display = 'block';
-      } else if (isPulseOrAbove && !isProOrAbove) {
+      } else if (isProAudit) {
+        // Pro Audit ($699): Portal Snapshot unlocked, monitoring/AI/history still need monthly
         bannerEl.innerHTML =
-          '<div style="display:flex;align-items:center;gap:10px;">' +
-            '<span style="font-size:16px;">📡</span>' +
-            '<div style="font-size:12px;color:var(--t2);">Pulse Plan — weekly monitoring active. <a href="https://fixops.io/#pricing" style="color:var(--brand-lt);font-weight:600;">Upgrade to Pro</a> for full portal scans and rep scorecard.</div>' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+            '<div style="display:flex;align-items:center;gap:12px;">' +
+              '<span style="font-size:20px;">🔬</span>' +
+              '<div>' +
+                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">Pro Audit — Portal Snapshot + Intelligence Dashboard unlocked</div>' +
+                '<div style="font-size:11px;color:var(--t3);line-height:1.6;">You have access to all 17 intelligence views. ' +
+                  'Score trends, audit history, AI report builder, and daily monitoring require a monthly plan.</div>' +
+              '</div>' +
+            '</div>' +
+            '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#3b82f6,#7c3aed);color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Add Weekly Monitoring →</a>' +
+          '</div>';
+        bannerEl.style.display = 'block';
+      } else if (isPulse) {
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+              '<span style="font-size:16px;">📡</span>' +
+              '<div style="font-size:12px;color:var(--t2);">Pulse Plan active — weekly scans running. <a href="https://fixops.io/#pricing" style="color:#3b82f6;font-weight:600;">Upgrade to Pro ($549/mo)</a> for daily monitoring, AI report builder, and advanced pipeline analytics.</div>' +
+            '</div>' +
           '</div>';
         bannerEl.style.display = 'block';
       }
     }
 
-// ── FREEMIUM ACCESS MODEL ──────────────────────────────────────────────────
-  // Strategy: Show everything with real data. Gate depth, not visibility.
-  // Free = all views open, 3 AI queries, trends/ROI show empty upsell state
-  // Pulse+ = unlimited AI, full trends/ROI/history
-  // Pro+ = everything
+    // ── Sidebar visibility + lock badges ─────────────────────────────────────
+    // Basic views: visible to all paid plans
+    // Pulse views: locked for deep/pro-audit, full for pulse+
+    // Pro views:   locked for pulse and below, full for pro+
+    const BASIC_VIEWS = ['overview','pipeline','revenue','engagement','marketing',
+      'service','tickets','automation','products','customobjects','setup','team',
+      'lists','sequences','company'];
+    const PULSE_VIEWS = ['rep','decay','health','formfunnel','prophealth','source',
+      'lifecycle','trends','roi','history','delta','billing','wfdeps','settings',
+      'utilization','enrichment','dealrisk'];
+    const PRO_VIEWS   = ['ai','velocity','forecast','funnel','contacts','conflicts'];
 
-  window.AI_QUERIES_USED = 0;
-  window.AI_QUERY_LIMIT = isFree ? 3 : isPulseOrAbove ? 999 : 5;
+    document.querySelectorAll('.sidebar-item').forEach(function(item) {
+      var view = item.getAttribute('data-view') || item.getAttribute('onclick');
+      if (!view) return;
+      var m = view.match ? view.match(/showView\('(\w+)'\)/) : null;
+      var viewName = item.getAttribute('data-view') || (m && m[1]);
+      if (!viewName) return;
 
-  // Trends / ROI / History require historical data — only Pulse+ builds that
-  // Show them but with a meaningful empty state explaining the value
-  const historyViews = ['trends', 'roi', 'history', 'delta'];
-  if (isFree || !isPulseOrAbove) {
-    historyViews.forEach(function(viewName) {
+      var badge = '';
+      if (isFree) {
+        // Free: only overview unlocked
+        if (viewName !== 'overview') item.classList.add('locked-sidebar');
+      } else if (isDeep) {
+        // Deep audit ($399): basic views only, no reporting dashboard
+        if (PULSE_VIEWS.includes(viewName) || PRO_VIEWS.includes(viewName)) {
+          item.classList.add('locked-sidebar');
+          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(59,130,246,.2);color:#3b82f6;">PULSE</span>';
+        }
+        if (PRO_VIEWS.includes(viewName)) {
+          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.2);color:#10b981;">PRO</span>';
+        }
+      } else if (isProAudit) {
+        // Pro Audit ($699): gets Portal Snapshot = all PULSE views, still no PRO-only AI/daily
+        if (PRO_VIEWS.includes(viewName)) {
+          item.classList.add('locked-sidebar');
+          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.2);color:#10b981;">PRO</span>';
+        }
+      } else if (isPulse) {
+        // Pulse ($299/mo): all PULSE views, pro-only AI/daily locked
+        if (PRO_VIEWS.includes(viewName)) {
+          item.classList.add('locked-sidebar');
+          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.2);color:#10b981;">PRO</span>';
+        }
+      }
+      // isProMonthly and isAgency: everything unlocked
+      if (badge) item.innerHTML += badge;
+    });
+
+    window.AI_QUERIES_USED = 0;
+    window.AI_QUERY_LIMIT  = isFree ? 0 : isDeep ? 0 : isProAudit ? 5 : isPulse ? 10 : 999;
+
+
+    // ── Apply view-level lock overlays ───────────────────────────────────────
+  (function applyViewLocks() {
+    var tier = window.PLAN_TIER || {};
+
+    function lockView(viewName, requiredPlan, planLabel, planColor, planPrice, features, ctaLink) {
       var el = document.getElementById('view-' + viewName);
       if (!el) return;
-      var badge = document.getElementById('sidebar-' + viewName);
-      if (badge) badge.classList.add('locked-sidebar');
-      // Replace with informative empty state — not a blur
-      el.innerHTML =
-        '<div class="view-header"><div class="vh-left">' +
-          '<div class="vh-badge">PULSE FEATURE</div>' +
-          '<div class="vh-title">' + (viewName==='trends'?'Score Trends':viewName==='roi'?'ROI Calculator':'Audit History') + '</div>' +
-          '<p>Tracks your portal health over time — requires weekly monitoring to build data</p>' +
-        '</div></div>' +
-        '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center;">' +
-          '<div style="font-size:52px;margin-bottom:20px;opacity:.25;">📈</div>' +
-          '<div style="font-size:18px;font-weight:800;color:var(--t1);margin-bottom:8px;">This view builds over time</div>' +
-          '<div style="font-size:13px;color:var(--t3);max-width:400px;line-height:1.7;margin-bottom:24px;">' +
-            'Pulse Weekly Monitoring runs your audit every week and tracks your score, issue count, and waste estimate over time. ' +
-            'After 4 weeks you\'ll have trend lines, before/after comparisons, and ROI calculations.' +
+      el.style.position = 'relative';
+      el.style.overflow = 'hidden';
+      var featHtml = features.map(function(f) {
+        return '<div class="vlf-item"><strong>' + f.title + '</strong>' + f.desc + '</div>';
+      }).join('');
+      var overlay = document.createElement('div');
+      overlay.className = 'view-lock-overlay';
+      overlay.innerHTML =
+        '<div class="view-lock-inner">' +
+          '<div class="view-lock-badge" style="background:' + planColor + '20;color:' + planColor + ';">' + planLabel + ' FEATURE</div>' +
+          '<div class="view-lock-title">Unlock ' + el.querySelector('h1')?.textContent?.trim() + '</div>' +
+          '<div class="view-lock-desc">' +
+            'This view is part of the <strong style="color:' + planColor + ';">' + planLabel + ' plan</strong>. ' +
+            'Upgrade to see your real data here — no setup required, starts scanning immediately.' +
           '</div>' +
-          '<a href="https://fixops.io/#pricing" target="_blank" style="padding:12px 28px;background:var(--brand);color:#fff;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;">Start Pulse Monitoring — $49/mo →</a>' +
+          '<div class="view-lock-features">' + featHtml + '</div>' +
+          '<div class="view-lock-compare">' +
+            '<span class="vlc-pill" style="background:rgba(59,130,246,.15);color:#3b82f6;">Pulse $299/mo</span>' +
+            '<span class="vlc-pill" style="background:rgba(16,185,129,.15);color:#10b981;">Pro $549/mo</span>' +
+            '<span class="vlc-pill" style="background:rgba(245,158,11,.15);color:#f59e0b;">Agency $999/mo</span>' +
+          '</div>' +
+          '<a href="' + ctaLink + '" target="_blank" class="view-lock-cta ' + (requiredPlan === 'pro' ? 'pro-cta' : 'pulse-cta') + '">' +
+            'Start ' + planLabel + ' — ' + planPrice + ' →' +
+          '</a>' +
+          '<div style="margin-top:12px;font-size:11px;color:var(--t3);">Cancel anytime · Instant activation · No setup fee</div>' +
         '</div>';
-    });
-  }
+      el.appendChild(overlay);
+    }
 
-  // AI Builder — show with free query counter
+    // Pulse-only views locked for one-time audit users
+    if (tier.isFree || tier.isDeep) {  // deep audit has no reporting; pro-audit has Portal Snapshot
+      var pulseFeatures = {
+        'rep':        [{title:'Rep Leaderboard',desc:'Performance score per rep — calls, meetings, pipeline, win rate'},{title:'Dark Rep Detection',desc:'Zero-activity reps flagged automatically every week'},{title:'Activity Charts',desc:'Calls + meetings + emails logged per rep'},{title:'Pipeline by Rep',desc:'Open deal value and won revenue per rep'}],
+        'decay':      [{title:'Contact Decay Score',desc:'Every contact scored 0–100 on engagement + recency'},{title:'Hot/Warm/Cold Buckets',desc:'Automatically segments your database by activity'},{title:'Archive Candidates',desc:'Dead contacts costing you billing tier money identified'},{title:'Re-engagement Plan',desc:'Which contacts to target first for best conversion'}],
+        'health':     [{title:'Customer Health Scores',desc:'Every company scored on ticket volume, NPS, engagement'},{title:'Churn Risk Prediction',desc:'At-risk accounts flagged before they leave'},{title:'NPS Trend Analysis',desc:'Promoter/passive/detractor tracking over time'},{title:'Expansion Opportunities',desc:'Healthy accounts scored for upsell readiness'}],
+        'trends':     [{title:'Score Trend Lines',desc:'Portal health score tracked week over week'},{title:'Issue Count History',desc:'See if you are fixing more than you are creating'},{title:'Waste Trend',desc:'Monthly waste estimate tracked over time'},{title:'Before/After Comparisons',desc:'Prove ROI of fixes with hard numbers'}],
+        'roi':        [{title:'ROI Calculator',desc:'Dollar value of every fix completed this month'},{title:'Time Saved',desc:'Hours reclaimed from automation working correctly'},{title:'Risk Eliminated',desc:'Pipeline value recovered from fixed issues'},{title:'Benchmark vs Portals',desc:'How your score improvement compares to similar portals'}],
+        'formfunnel': [{title:'Form Conversion Rates',desc:'Every form ranked by view-to-submit rate'},{title:'Zero-Submit Forms',desc:'Forms getting traffic but no conversions flagged'},{title:'Best Performer',desc:'Your highest converting form and why it works'},{title:'Fix Recommendations',desc:'Specific changes to improve the worst performers'}],
+        'prophealth': [{title:'Property Usage Rates',desc:'Which custom properties are actually filled in'},{title:'Bloat Detection',desc:'Unused properties cluttering your CRM identified'},{title:'Documentation Rate',desc:'% of properties with descriptions for your team'},{title:'Fill Rate by Property',desc:'Ranked list of completeness across all fields'}],
+        'source':     [{title:'Deal Source Attribution',desc:'Revenue attributed to each contact source'},{title:'Win Rate by Source',desc:'Which sources close most often'},{title:'Best Channel ROI',desc:'Fastest sales cycle by source channel'},{title:'Unknown Source Alert',desc:'Revenue with no attribution tracked'}],
+        'lifecycle':  [{title:'Stage Velocity',desc:'Days contacts spend in each lifecycle stage'},{title:'Funnel Drop-off',desc:'Where contacts go cold in the journey'},{title:'Lead to Customer',desc:'Average days from first contact to closed won'},{title:'Stage Conversion',desc:'% moving from each stage to the next'}],
+        'billing':    [{title:'Billing Tier Risk',desc:'How close you are to the next HubSpot contact tier'},{title:'Tier Jump Cost',desc:'Exact dollar cost of hitting the next tier'},{title:'Cleanable Contacts',desc:'Duplicates + dead contacts delaying the upgrade'},{title:'Growth Projection',desc:'Months until tier jump at current growth rate'}],
+        'wfdeps':     [{title:'Dependency Map',desc:'Which assets each workflow depends on'},{title:'Fragile Workflow Detection',desc:'Workflows that break if one list is deleted'},{title:'Owner Risk',desc:'Workflows tied to inactive user accounts'},{title:'Cascade Risk Score',desc:'Which changes would break the most automations'}],
+        'dealrisk':   [{title:'Deal Risk Score',desc:'Each deal scored on staleness, size, and age'},{title:'No-Contact Deals',desc:'Deals with no associated contact flagged'},{title:'Pipeline Rot',desc:'Dead pipeline value calculated per stage'},{title:'At-Risk Forecast',desc:'$ at risk of slipping this quarter'}],
+        'history':    [{title:'Audit History',desc:'Every past scan stored and comparable'},{title:'Score Timeline',desc:'See exactly when your score improved or dropped'},{title:'Issue Resolution',desc:'Track which issues were fixed between scans'},{title:'Team Progress',desc:'Show your boss the improvement over time'}],
+      };
+
+      Object.keys(pulseFeatures).forEach(function(vName) {
+        lockView(vName, 'pulse', 'PULSE', '#3b82f6', '$299/mo',
+          pulseFeatures[vName], 'https://fixops.io/#pricing');
+      });
+
+      // Also lock delta, enrichment, settings, utilization
+      ['delta','enrichment','settings','utilization'].forEach(function(vName) {
+        lockView(vName, 'pulse', 'PULSE', '#3b82f6', '$299/mo', [
+          {title:'Weekly Monitoring',desc:'Automated re-scans every Monday morning'},
+          {title:'Score History',desc:'Track improvements over time with trend lines'},
+          {title:'Issue Alerts',desc:'Email alerts when new critical issues appear'},
+          {title:'PDF Reports',desc:'Branded PDF on every scan for stakeholders'},
+        ], 'https://fixops.io/#pricing');
+      });
+    }
+
+    // Pro-only views locked for pulse users AND one-time users
+    if (!tier.isProMonthly) {
+      var proFeatures = [
+        {title:'Daily Monitoring',desc:'Scans run every day not just weekly'},
+        {title:'AI Report Builder',desc:'Ask anything about your portal, get instant analysis'},
+        {title:'Advanced Pipeline AI',desc:'AI-powered deal risk scoring and forecast'},
+        {title:'Workflow Conflict AI',desc:'AI finds conflicts and dependency risks automatically'},
+      ];
+      ['ai','velocity','forecast','funnel','contacts','conflicts'].forEach(function(vName) {
+        lockView(vName, 'pro', 'PRO', '#10b981', '$549/mo',
+          proFeatures, 'https://fixops.io/#pricing');
+      });
+    }
+  })();
+
+    // AI Builder — show with free query counter
   // Intercept runAiReport to enforce limit
   window._originalRunAiReport = null; // set after function defined
   
