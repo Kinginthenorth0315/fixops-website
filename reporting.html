@@ -1755,13 +1755,27 @@ async function loadData() {
     document.getElementById('portal-badge').textContent = company + ' · Snapshot';
     document.title = 'FixOps Intelligence — ' + company;
     var auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
+    var isFree2       = auditPlan === 'free' || !auditPlan;
+    var isOneTime2    = ['deep','pro-audit'].includes(auditPlan);
+    var isDeep2       = auditPlan === 'deep';
+    var isProAudit2   = auditPlan === 'pro-audit';
+    var isPulse2      = auditPlan === 'pulse';
+    var isProMonthly2 = ['pro','command'].includes(auditPlan);
+    var isMonthly2    = ['pulse','pro','command'].includes(auditPlan);
+    var isAgency2     = auditPlan === 'command';
     var isProOrAbove  = ['pro','command','pro-audit','deep'].includes(auditPlan);
     var isPulseOrAbove = ['pulse','pro','command','deep','pro-audit'].includes(auditPlan);
-    var isFree = auditPlan === 'free' || !auditPlan;
-    window.PLAN_TIER = { isProOrAbove, isPulseOrAbove, isFree, isOneTime, isDeep, isProAudit: isProAudit||false, isPulse: isPulse||false, isProMonthly, isMonthly, isAgency: isAgency||false, plan: auditPlan };
+    window.PLAN_TIER = {
+      isFree: isFree2, isOneTime: isOneTime2, isDeep: isDeep2,
+      isProAudit: isProAudit2, isPulse: isPulse2, isProMonthly: isProMonthly2,
+      isMonthly: isMonthly2, isAgency: isAgency2,
+      isProOrAbove, isPulseOrAbove, plan: auditPlan
+    };
     var navBadge = document.getElementById('nav-plan-badge');
     if (navBadge) {
-      navBadge.textContent = auditPlan.toUpperCase();
+      var planLabels2 = {free:'FREE SNAPSHOT',pulse:'PULSE · $299/mo',pro:'PRO · $549/mo',
+        command:'AGENCY · $999/mo','pro-audit':'PRO AUDIT','deep':'DEEP AUDIT'};
+      navBadge.textContent = planLabels2[auditPlan] || auditPlan.toUpperCase();
       navBadge.style.display = 'inline-block';
     }
     initAllViews();
@@ -2090,41 +2104,46 @@ async function loadFromToken(token) {
   });
 })();
 
+function safeRun(fn) {
+  try { fn(); } catch(e) { console.warn('View build error (' + fn.name + '):', e.message); }
+}
+
 function initAllViews() {
-  buildOverview();
-  buildPipeline();
-  buildVelocity();
-  buildForecast();
-  buildFunnel();
-  buildContacts();
-  buildProducts();
-  buildTickets();
-  buildTeam();
-  buildTrends();
-  buildROI();
-  buildRevenue();
-  buildCompany();
-  buildContactEngagement();
-  buildMarketing();
-  buildSequences();
-  buildLists();
-  buildAutomation();
-  buildService();
-  buildAuditHistory();
-  buildDelta();
-  buildSettings();
+  if (!DATA) { console.error('initAllViews called before DATA loaded'); return; }
+  safeRun(buildOverview);
+  safeRun(buildPipeline);
+  safeRun(buildVelocity);
+  safeRun(buildForecast);
+  safeRun(buildFunnel);
+  safeRun(buildContacts);
+  safeRun(buildProducts);
+  safeRun(buildTickets);
+  safeRun(buildTeam);
+  safeRun(buildTrends);
+  safeRun(buildROI);
+  safeRun(buildRevenue);
+  safeRun(buildCompany);
+  safeRun(buildContactEngagement);
+  safeRun(buildMarketing);
+  safeRun(buildSequences);
+  safeRun(buildLists);
+  safeRun(buildAutomation);
+  safeRun(buildService);
+  safeRun(buildAuditHistory);
+  safeRun(buildDelta);
+  safeRun(buildSettings);
   // ✦ New Intelligence Views
-  buildDecay();
-  buildRepIntel();
-  buildCustomerHealth();
-  buildFormFunnel();
-  buildPropertyHealth();
-  buildSource();
-  buildLifecycle();
-  buildWfDeps();
-  buildSetupHealth();
-  buildUtilization();
-  buildCustomObjects();
+  safeRun(buildDecay);
+  safeRun(buildRepIntel);
+  safeRun(buildCustomerHealth);
+  safeRun(buildFormFunnel);
+  safeRun(buildPropertyHealth);
+  safeRun(buildSource);
+  safeRun(buildLifecycle);
+  safeRun(buildWfDeps);
+  safeRun(buildSetupHealth);
+  safeRun(buildUtilization);
+  safeRun(buildCustomObjects);
   // Async views — fetched from API
   var id = auditId || (DATA && DATA.id);
   if (id) {
@@ -2349,6 +2368,7 @@ function renderBillingContent(el, bil) {
 
 // ── SETTINGS / SLACK VIEW ─────────────────────────────────────────────────────
 function buildSettings() {
+  if (!DATA) return;
   var el = document.getElementById('settings-content');
   if (!el) return;
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
@@ -3349,6 +3369,7 @@ function buildTickets() {
 }
 
 function buildTeam() {
+  if (!DATA) return;
   const issues = DATA.issues || [];
   const el = document.getElementById('team-content');
   if (!el) return;
@@ -5461,6 +5482,7 @@ function buildUtilization() {
 
 // ── AUDIT HISTORY VIEW ───────────────────────────────────────────────────────
 function buildAuditHistory() {
+  if (!DATA) return;
   const history = DATA.history || [];
   const el = document.getElementById('history-content');
   const countEl = document.getElementById('history-count');
@@ -5545,6 +5567,7 @@ function filterHistory() {
 
 // ── WEEK-OVER-WEEK DELTA VIEW ────────────────────────────────────────────────
 function buildDelta() {
+  if (!DATA) return;
   const history = DATA.history || [];
   const el = document.getElementById('delta-content');
   if (!el) return;
