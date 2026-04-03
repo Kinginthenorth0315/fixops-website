@@ -2587,7 +2587,7 @@ function buildOverview() {
     kpi('Critical Issues', s.criticalCount||0, s.criticalCount>0 ? (s.warningCount||0)+' warnings — expand to fix' : (s.warningCount||0)+' warnings only', s.criticalCount>0?'red':'amber', '') +
     kpi('Records Scanned', fmt(s.recordsScanned), fmt(ps.contacts)+' contacts · '+fmt(ps.deals)+' deals · '+fmt(ps.tickets)+' tickets', 'blue', '') +
     (ps.workflows > 0 ? kpi('Workflow Health', fmt(ps.workflows-(ps.deadWorkflowCount||0))+' active', (ps.deadWorkflowCount||0)+' dead · '+(ps.erroredWorkflows||0)+' erroring', (ps.deadWorkflowCount||0)>5||(ps.erroredWorkflows||0)>0?'amber':'green', '') : '') +
-    (ps.marketingEmailCount > 0 && ehs.totalSent > 0 ? kpi('Email Health', (ehs.openRate||0)+'% open rate', (ehs.bounceRate||0)+'% bounce · '+(ehs.unsubRate||0)+'% unsub', (ehs.bounceRate||0)>=5?'red':(ehs.openRate||0)>=20?'green':'amber', '') : '') +
+    (ps.marketingEmailCount > 0 ? kpi('Email Health', ehs && ehs.totalSent > 0 ? (ehs.openRate||0)+'% open rate' : ps.publishedEmails+' published', ehs && ehs.totalSent > 0 ? (ehs.bounceRate||0)+'% bounce · '+(ehs.unsubRate||0)+'% unsub' : fmt(ps.marketingEmailCount)+' total campaigns', ehs && ehs.bounceRate>=5?'red':ehs && ehs.openRate>=20?'green':'blue', '') : '') +
     (ps.ghostSeats > 0 ? kpi('Ghost Seats', ps.ghostSeats+' inactive', '$'+fmt(ps.ghostSeatWaste||0)+'/mo wasted on unused seats', 'red', '') : '') +
     (ps.customObjectCount > 0 ? kpi('Custom Objects', fmt(ps.customObjectCount), (ps.customObjectNames||[]).slice(0,4).join(', '), 'blue', '') : '');
 
@@ -4531,7 +4531,7 @@ function buildMarketing() {
     html += '<div class="chart-box" style="margin-bottom:16px;text-align:center;padding:30px;">' +
       '<div style="font-size:28px;margin-bottom:8px;">📊</div>' +
       '<div style="font-size:14px;font-weight:600;color:var(--t1);margin-bottom:6px;">No sent email stats yet</div>' +
-      '<div style="font-size:12px;color:var(--t2);">' + fmt(ps.marketingEmailCount) + ' emails exist — stats appear once an email has been sent to 100+ contacts.</div>' +
+      '<div style="font-size:12px;color:var(--t2);">' + fmt(ps.marketingEmailCount) + ' total emails in this portal. Stats load from published emails — check the Email Performance table above.</div>' +
       '</div>';
   }
 
