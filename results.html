@@ -201,6 +201,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     <button class="nav-btn ghost" onclick="downloadPDF()">📄 Save as PDF</button>
     <a href="#" class="nav-btn ghost" id="leaks-link" onclick="goToLeaks()" style="color:#ff6b6b;border-color:rgba(255,59,59,.35);">💸 Revenue Leaks</a>
     <a href="#" class="nav-btn ghost" id="snapshot-link" onclick="goToSnapshot()">📊 View Snapshot</a>
+    <button class="nav-btn ghost" id="linkedin-share-btn" onclick="shareLinkedIn()" style="display:none;color:#0077b5;border-color:rgba(0,119,181,.35);">in Share</button>
     <button class="nav-btn ghost" id="share-btn" onclick="openShareModal()" style="display:none;color:#a78bfa;border-color:rgba(124,58,237,.35);">🔗 Share Results</button>
     <a href="https://fixops.io/#pricing" class="nav-btn primary">Book a Call ↗</a>
   </div>
@@ -1206,7 +1207,7 @@ function buildReportingUpsellCTA(plan, waste, criticals, company) {
         '<div>' +
           '<div style="font-family:monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#10b981;margin-bottom:6px;">⚡ Limited Offer</div>' +
           '<div style="font-size:15px;font-weight:800;color:#fff;margin-bottom:4px;">First month of Sentinel for $199</div>' +
-          '<div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;">Normally $1299/mo. Use code <strong style=\'color:#10b981;font-family:monospace;\'>FIRST99</strong> at checkout. Cancel anytime.</div>' +
+          '<div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;">Normally $549/mo. Use code <strong style=\'color:#10b981;font-family:monospace;\'>FIRST99</strong> at checkout. Cancel anytime.</div>' +
         '</div>' +
         '<a href="https://buy.stripe.com/28E4gz2rw1MC7LKeFL8Ra08?prefilled_promo_code=FIRST99" target="_blank" style="flex-shrink:0;padding:10px 20px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">Try Sentinel for $199 →</a>' +
       '</div>' +
@@ -1219,7 +1220,7 @@ function buildReportingUpsellCTA(plan, waste, criticals, company) {
       '<div style="padding:28px 32px;border-right:1px solid rgba(255,255,255,.06);">' +
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">' +
           '<div style="width:8px;height:8px;border-radius:50%;background:#3b82f6;"></div>' +
-          '<div style="font-size:11px;font-weight:800;color:#3b82f6;text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);">MONITOR · $2299/mo</div>' +
+          '<div style="font-size:11px;font-weight:800;color:#3b82f6;text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);">MONITOR · $299/mo</div>' +
         '</div>' +
         '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Weekly Monitoring + Daily Alerts</div>' +
         '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;line-height:1.6;">Full audit every Monday. Daily sentinel checks watch for workflow errors, billing tier changes, and ghost seats in between.</div>' +
@@ -1252,7 +1253,7 @@ function buildReportingUpsellCTA(plan, waste, criticals, company) {
       '<div style="padding:28px 32px;background:rgba(16,185,129,.03);">' +
         '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">' +
           '<div style="width:8px;height:8px;border-radius:50%;background:#10b981;"></div>' +
-          '<div style="font-size:11px;font-weight:800;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);">PRO · $1299/mo</div>' +
+          '<div style="font-size:11px;font-weight:800;color:#10b981;text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);">PRO · $549/mo</div>' +
           '<span style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;background:rgba(16,185,129,.15);color:#10b981;font-family:var(--mono);">BEST VALUE</span>' +
         '</div>' +
         '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">FixOps Sentinel — Daily Intelligence + All 38 Views</div>' +
@@ -2118,6 +2119,16 @@ async function generateShareLink() {
     showToast('⚠️','Error',e.message);
   } finally { btn.textContent = 'Generate Link'; btn.disabled = false; }
 }
+function shareLinkedIn() {
+  var score = (AUDIT_DATA && AUDIT_DATA.summary && AUDIT_DATA.summary.overallScore) || 0;
+  var waste = (AUDIT_DATA && AUDIT_DATA.summary && AUDIT_DATA.summary.monthlyWaste) || 0;
+  var company = (AUDIT_DATA && AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.company) || 'our HubSpot portal';
+  var crits = (AUDIT_DATA && AUDIT_DATA.summary && AUDIT_DATA.summary.criticalCount) || 0;
+  var text = 'Just ran a free HubSpot audit on ' + company + ' with FixOps — scored ' + score + '/100, found ' + crits + ' critical issues and $' + Math.round(waste).toLocaleString() + '/mo in revenue leaks. fixops.io';
+  var url = 'https://www.linkedin.com/shareArticle?mini=true&url=' + encodeURIComponent('https://fixops.io') + '&summary=' + encodeURIComponent(text);
+  window.open(url, '_blank', 'width=600,height=500');
+}
+
 function copyShareUrl() {
   var val = document.getElementById('share-url-val');
   if (val) { val.select(); navigator.clipboard.writeText(val.value).catch(()=>{}); showToast('✅','Copied!','Share link copied to clipboard'); }
@@ -2405,6 +2416,33 @@ function buildRevenueOpportunity(ps, summary) {
 
   section.style.display = 'block';
 }
+// ── Exit intent ──────────────────────────────────────────────────────────────
+(function() {
+  var exitShown = false;
+  document.addEventListener('mouseleave', function(e) {
+    if (e.clientY > 20 || exitShown) return;
+    // Only show for non-monthly users
+    var plan = (window.__auditPlan || '');
+    if (['pulse','pro','command'].includes(plan)) return;
+    exitShown = true;
+
+    var modal = document.createElement('div');
+    modal.id = 'exit-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = '<div style="background:#0d0d12;border:1px solid rgba(124,58,237,.3);border-radius:16px;max-width:440px;width:100%;padding:32px;position:relative;">' +
+      '<button onclick="document.getElementById(\'exit-modal\').remove()" style="position:absolute;top:12px;right:14px;background:none;border:none;color:rgba(255,255,255,.3);font-size:20px;cursor:pointer;line-height:1;">✕</button>' +
+      '<div style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#10b981;font-family:monospace;margin-bottom:12px;">⚡ Wait — one thing before you go</div>' +
+      '<div style="font-size:20px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.2;">Those ' + (window.__criticals || '') + ' critical issues won\'t fix themselves.</div>' +
+      '<div style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;margin-bottom:20px;">FixOps Monitor checks your portal every week and alerts you the moment something breaks. First month is $99 — normally $299/mo.</div>' +
+      '<a href="https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06?prefilled_promo_code=TRYMONITOR" target="_blank" ' +
+        'style="display:block;text-align:center;padding:12px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border-radius:9px;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:10px;">Start Monitor — $99 First Month →</a>' +
+      '<div style="text-align:center;font-size:11px;color:rgba(255,255,255,.25);">then $299/mo · cancel anytime · no contract</div>' +
+    '</div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e) { if(e.target===modal) modal.remove(); });
+  });
+})();
+
 </script>
 </body>
 </html>
