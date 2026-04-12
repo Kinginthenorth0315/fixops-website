@@ -519,6 +519,12 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <span class="tag">Done-For-You Services</span>
       <h2 class="h2">Every HubSpot Problem<br>We Actually Fix</h2>
       <p class="lead" style="max-width:620px;margin:0 auto">The platform finds the issues. Our team fixes them. Request directly from inside the app — we scope and quote within 4 hours. No discovery calls for common fixes. No open-ended billing. Ever.</p>
+    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:20px;">
+      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>Flat-rate quotes — no hourly surprises</div>
+      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>HubSpot certified team</div>
+      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>50–70% less than typical agency rates</div>
+      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>Scoped from your audit data — no guesswork</div>
+    </div>
     </div>
     <div class="svc-filter r d1">
       <div class="svc-btn on" onclick="filterSvc(this,'all')">All Services</div>
@@ -532,24 +538,24 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <div class="svc-card" data-cat="automation">
         <div class="svc-ico">⚡</div>
         <h3 class="svc-h">Quick Fix Pack</h3>
-        <p class="svc-p">Up to 5 issues from your FixOps audit resolved by our team within 48 hours. Perfect for clearing critical findings without a full engagement. Field standardization, dead workflow archiving, unowned contact reassignment, and similar targeted fixes.</p>
-        <div class="svc-price">$349</div>
+        <p class="svc-p">Up to 5 issues from your FixOps audit fixed by our team within 48 hours. No discovery call — you point us at the issues, we fix them and document every change. Field standardization, dead workflows, unowned contacts, missing lifecycle stages, and similar targeted fixes. Most agencies charge $500+ for a single fix.</p>
+        <div class="svc-price">$297</div>
         <div class="svc-note">Flat rate · 48-hour turnaround guaranteed</div>
         <div class="svc-link" onclick="requestSvc('Quick Fix Pack')">Request this → </div>
       </div>
       <div class="svc-card" data-cat="data">
         <div class="svc-ico">🧹</div>
         <h3 class="svc-h">Data CleanUp</h3>
-        <p class="svc-p">Full fuzzy-match deduplication (beyond HubSpot's exact-email-only native dedup), field standardization across country, phone, job title, and company fields, plus dead contact cleanup. Full merge preview — you approve before we touch anything.</p>
-        <div class="svc-price">From $599</div>
-        <div class="svc-note">Based on contact volume · preview required</div>
+        <p class="svc-p">Fuzzy-match deduplication that catches what HubSpot misses, field standardization across phone, company, job title, and country, plus dead contact archiving. Full merge preview — you approve every change before we touch anything. Most agencies quote $1,500+ for a full clean. We start at $399.</p>
+        <div class="svc-price">From $399</div>
+        <div class="svc-note">Based on contact volume · full preview before we touch anything</div>
         <div class="svc-link" onclick="requestSvc('Data CleanUp')">Request this → </div>
       </div>
       <div class="svc-card" data-cat="automation">
         <div class="svc-ico">⚙️</div>
         <h3 class="svc-h">Workflow Repair</h3>
         <p class="svc-p">Fix failing workflows, resolve conflicts between overlapping automations, archive dead workflows with backup, add goals to every workflow missing one, and rebuild any broken enrollment logic. Every change documented before and after.</p>
-        <div class="svc-price">From $850</div>
+        <div class="svc-price">From $599</div>
         <div class="svc-note">Based on workflow count and complexity</div>
         <div class="svc-link" onclick="requestSvc('Workflow Repair')">Request this → </div>
       </div>
@@ -557,48 +563,48 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <div class="svc-ico">📊</div>
         <h3 class="svc-h">Reporting Rebuild</h3>
         <p class="svc-p">Fix broken dashboards, rebuild attribution reports, and create the pipeline velocity, MRR trend, rep performance, and forecast accuracy dashboards your leadership actually needs — then set them up to email your team on a schedule.</p>
-        <div class="svc-price">From $899</div>
+        <div class="svc-price">From $699</div>
         <div class="svc-note">Based on dashboard count and complexity</div>
         <div class="svc-link" onclick="requestSvc('Reporting Rebuild')">Request this → </div>
       </div>
       <div class="svc-card" data-cat="integration">
         <div class="svc-ico">🔌</div>
         <h3 class="svc-h">Integration Build & Fix</h3>
-        <p class="svc-p">Connect HubSpot to Salesforce, Slack, ERPs, quoting tools, or custom systems. Fix broken OAuth connections and webhook failures. Add proper error handling so integrations stop dying silently over weekends.</p>
-        <div class="svc-price">From $1,200</div>
-        <div class="svc-note">Based on integration complexity</div>
+        <p class="svc-p">Connect HubSpot to Salesforce, NetSuite, Slack, Stripe, quoting tools, or custom systems via API. Fix broken OAuth connections, webhook failures, and sync conflicts. We add real error handling so integrations stop breaking silently. Simple connections start at $799 — we quote complex builds after a quick scope.</p>
+        <div class="svc-price">From $799</div>
+        <div class="svc-note">Based on integration complexity · simple connections start here</div>
         <div class="svc-link" onclick="requestSvc('Integration Build & Fix')">Request this → </div>
       </div>
       <div class="svc-card" data-cat="automation">
         <div class="svc-ico">🏗️</div>
         <h3 class="svc-h">HubSpot Build or Rebuild</h3>
-        <p class="svc-p">Scalable CRM architecture from scratch or a ground-up rebuild of a broken portal. Custom properties, pipeline design, lifecycle stages, automation maps, integration setup, and team training — all documented before go-live.</p>
-        <div class="svc-price">From $2,800</div>
-        <div class="svc-note">Based on scope · discovery call required</div>
+        <p class="svc-p">CRM architecture built to actually scale — custom properties, pipeline design, lifecycle stage mapping, automation blueprint, and integration setup. Done-with-you documentation and team handoff. Agencies charge $5,000–$15,000 for this. We deliver the same quality starting at $1,997 because we use the audit data we already have on your portal.</p>
+        <div class="svc-price">From $1,997</div>
+        <div class="svc-note">Based on scope · most builds land $1,997–$4,500</div>
         <div class="svc-link" onclick="requestSvc('HubSpot Build/Rebuild')">Request this → </div>
       </div>
       <div class="svc-card" data-cat="data">
         <div class="svc-ico">🔄</div>
         <h3 class="svc-h">CRM Migration</h3>
-        <p class="svc-p">Moving from Salesforce, Zoho, Pipedrive, or another CRM? We map your data model, migrate contacts, companies, deals, notes, and activity history, validate everything, and document the full process. Zero data loss, zero guesswork.</p>
-        <div class="svc-price">From $3,500</div>
-        <div class="svc-note">Based on record volume · discovery call required</div>
+        <p class="svc-p">Moving from Salesforce, Zoho, Pipedrive, or another CRM to HubSpot. We map your data model first, migrate contacts, companies, deals, notes, and activity history, validate every record, then document the full process. You get a complete before/after report. Agencies charge $5,000–$20,000 for migrations. We start at $1,997 for straightforward moves.</p>
+        <div class="svc-price">From $1,997</div>
+        <div class="svc-note">Based on record volume · complex migrations quoted after discovery</div>
         <div class="svc-link" onclick="requestSvc('CRM Migration')">Request this → </div>
       </div>
       <div class="svc-card" data-cat="reporting">
         <div class="svc-ico">📈</div>
         <h3 class="svc-h">RevOps Strategy Build</h3>
         <p class="svc-p">Full revenue operations architecture — lifecycle stage mapping, pipeline design, KPI framework, forecasting process, and the reporting stack to track it all. Built for teams ready to scale with clean, reliable data driving every decision.</p>
-        <div class="svc-price">From $2,500</div>
-        <div class="svc-note">Includes 90-day support · discovery call required</div>
+        <div class="svc-price">From $1,497</div>
+        <div class="svc-note">Includes 90-day support · scales with scope</div>
         <div class="svc-link" onclick="requestSvc('RevOps Strategy Build')">Request this → </div>
       </div>
       <div class="svc-card" data-cat="retainer">
         <div class="svc-ico">🛡</div>
         <h3 class="svc-h">Monthly Retainer</h3>
         <p class="svc-p">Ongoing portal management — monthly health reviews, proactive fixes before issues compound, priority response on service requests, and strategic RevOps support as your business evolves. Your HubSpot admin on call.</p>
-        <div class="svc-price">From $1,000<span style="font-size:14px;font-weight:400">/mo</span></div>
-        <div class="svc-note">Based on portal size · minimum 3-month commitment</div>
+        <div class="svc-price">From $799<span style="font-size:14px;font-weight:400">/mo</span></div>
+        <div class="svc-note">Based on portal size and activity · 3-month minimum</div>
         <div class="svc-link" onclick="requestSvc('Monthly Retainer')">Request this → </div>
       </div>
 
@@ -675,16 +681,16 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
   <div class="wrap">
     <div class="pulse-grid">
       <div class="r">
-        <span class="tag">FixOps Pulse — The Platform</span>
-        <h2 class="h2">Your HubSpot<br>Control Center</h2>
-        <p class="lead">The only platform that audits, monitors, documents, and fixes your HubSpot — all in one place. Not a static report. A live intelligence layer working 24/7 so you don't have to.</p>
+        <span class="tag">FixOps Intelligence Platform</span>
+        <h2 class="h2">38 intelligence views.<br>One portal. Every answer.</h2>
+        <p class="lead">The only HubSpot platform that shows you what's broken, why it's costing you money, and fixes it. Not a static report — a live intelligence layer that monitors daily and alerts the moment something breaks.</p>
         <div class="pulse-feats">
-          <div class="pf"><div class="pf-c">✓</div>210-point audit with dollar impact estimate and root-cause analysis per issue</div>
-          <div class="pf"><div class="pf-c">✓</div>Sentinel — daily monitoring, same-day alerts to email and Slack</div>
-          <div class="pf"><div class="pf-c">✓</div>Step-by-step fix guides for every issue found</div>
-          <div class="pf"><div class="pf-c">✓</div>AutoDoc — living plain-English workflow documentation</div>
-          <div class="pf"><div class="pf-c">✓</div>Full audit results with prioritized fix guides per issue</div>
-          <div class="pf"><div class="pf-c">✓</div>"Fix It For Me" — one click routes directly to our team</div>
+          <div class="pf"><div class="pf-c">✓</div>54-check audit — dollar impact, root cause, and fix guide on every issue</div>
+          <div class="pf"><div class="pf-c">✓</div>38-view Portal Snapshot dashboard — rep intel, decay, pipeline reality, and more</div>
+          <div class="pf"><div class="pf-c">✓</div>Daily monitoring + same-day Slack/email alerts when things break</div>
+          <div class="pf"><div class="pf-c">✓</div>Pipeline Reality Engine — shows actual vs inflated pipeline instantly</div>
+          <div class="pf"><div class="pf-c">✓</div>AI Report Builder — ask your portal anything in plain English</div>
+          <div class="pf"><div class="pf-c">✓</div>Fix It For Me — one click to get a flat-rate quote from our team</div>
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap">
           <a href="#" onclick="openAuditModal(event)" class="btn-v">Launch Free Audit ↗</a>
@@ -785,7 +791,92 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
   </div>
 </section>
 
-id="pricing">
+<!-- PORTAL SNAPSHOT REPORTING SHOWCASE -->
+<section id="dashboard-showcase" style="padding:80px 0;background:linear-gradient(180deg,var(--bg) 0%,rgba(124,58,237,.04) 50%,var(--bg) 100%);border-top:1px solid var(--b1);">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:56px;">
+      <span class="tag">Portal Snapshot — FixOps Sentinel</span>
+      <h2 class="h2" style="margin-top:12px;">38 Views Into Your HubSpot.<br>Most tools give you a score. We give you answers.</h2>
+      <p class="lead" style="max-width:600px;margin:16px auto 0;">Every view is built from your actual portal data. Monitor gets 15 core views. Sentinel unlocks all 38. Here's what you see when you log in.</p>
+    </div>
+
+    <!-- Tab nav -->
+    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:40px;" id="dash-tabs">
+      <button onclick="showDashTab('core',this)" style="padding:8px 18px;border-radius:20px;background:var(--brand);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Core Views (Monitor)</button>
+      <button onclick="showDashTab('intel',this)" style="padding:8px 18px;border-radius:20px;background:var(--s1);color:var(--t2);border:1px solid var(--b1);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Intelligence Views (Sentinel)</button>
+      <button onclick="showDashTab('ai',this)" style="padding:8px 18px;border-radius:20px;background:var(--s1);color:var(--t2);border:1px solid var(--b1);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">AI + Advanced (Sentinel)</button>
+    </div>
+
+    <!-- Core tab -->
+    <div id="dash-core" class="dash-tab-content">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px;">
+        <!-- 8 core view cards -->
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">📊</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Overview Dashboard</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Health score, critical issue count, monthly waste, and all KPIs in one view. The Monday morning snapshot every team needs.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">💰</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Pipeline Reality</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Strips stalled and $0 deals to show real vs inflated pipeline. Avg portal has 35% phantom pipeline their leadership thinks is real.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">📧</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Marketing Health</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Open rate, click rate, bounce and unsub vs benchmarks for every campaign. Flags HubSpot suspension risk before it happens.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">⚙️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Automation Health</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every workflow's status, enrollment count, and error state. Dead workflows highlighted. Erroring workflows listed by name with error count.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">🎫</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Service &amp; Tickets</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Open ticket count, average age, priority breakdown, unassigned tickets, SLA risk. Flags tickets past 7 days with owner info.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">👻</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Team &amp; Ghost Seats</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every seat with last-login date. Ghost seats highlighted by name with monthly cost. See exactly who to remove to save money this week.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">📋</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Lists &amp; Sequences</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Total lists, empty lists, static vs active breakdown. Sequences with enrollment rates. Which are running and which are silently inactive.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">🏢</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Revenue &amp; Commerce</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Invoice status, subscription MRR, quote pipeline, and product catalog coverage. How much revenue is in each stage of Commerce Hub.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--t3);">+ 7 more core views: Company Health · Custom Objects · Setup Health · Engagement · Velocity · Forecast · Funnel</div>
+    </div>
+
+    <!-- Intelligence tab -->
+    <div id="dash-intel" class="dash-tab-content" style="display:none;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px;">
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">🏆</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Rep Intelligence</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Full rep leaderboard — calls, meetings, pipeline, won revenue, win rate per rep. Flags ghost reps with no activity. Performance score 0–100 per person. Replaces Gainsight at 1% of the cost.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">🧬</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Contact Decay Score</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every contact scored 0–100 on engagement recency. Hot / Warm / Cooling / Cold / Dead buckets. Shows who to archive to cut your HubSpot billing tier immediately.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">⚠️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Deal Risk Scoring</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every open deal scored for risk: no activity, missing contacts, overdue close date, $0 amount. See which deals are about to fall out of pipeline before they disappear.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">❤️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Customer Health Scores</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Per-company health scoring based on ticket volume, NPS, deal activity, and engagement. See at-risk accounts before they churn and healthy accounts ready for expansion.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">📈</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Source Attribution</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Revenue by acquisition channel, win rate by source, fastest-closing channel. Shows which marketing drives closed revenue — not just lead volume.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">⏱️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Lead Response Time</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">% of new leads with no logged activity. 78% of deals go to first responder. See exactly where your team is losing leads to slow follow-up.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">📅</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Weekly Delta Report</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every Monday: what improved, what got worse, what broke — with dollar impact per change. The only weekly report your leadership will actually read.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">💳</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Billing Tier Risk</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Contact tier usage, months to next tier jump, upgrade cost, and exactly how many dead contacts to archive to delay the cost increase.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+      </div>
+      <div style="text-align:center;font-size:12px;color:var(--t3);">+ 9 more: Lifecycle Velocity · Form Funnel · Property Health · Workflow Dependencies · Score Trends · ROI Calculator · Audit History · Setup Health · Hub Utilization</div>
+    </div>
+
+    <!-- AI tab -->
+    <div id="dash-ai" class="dash-tab-content" style="display:none;">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px;">
+        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🤖</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">AI Report Builder</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Ask your portal anything in plain English. "Why did pipeline drop?" "Which reps need coaching?" Claude analyzes your actual data and responds with specific, actionable answers.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🔄</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Workflow Conflict Detector</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Detects duplicate triggers, parallel workflows competing for the same contacts, and cascade risk. Prevents the "why did that fire twice?" problem before it happens.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🎯</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Contact Enrichment Gaps</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Field-by-field completeness across your database. See exactly which missing fields block contacts from sequences, workflows, and lead scoring — with enrichment cost estimates.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">📊</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Audit History &amp; Trends</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">12-week score history showing how portal health evolves over time. See which fixes moved the needle and the compounding ROI of staying on top of issues.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🔍</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Property Usage Audit</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Fill rate per custom property. See which properties have under 5% fill rate and are bloating your data model, blocking lead scoring, and slowing your team down.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">💹</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">ROI Calculator</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Dollar value of every fix completed, waste reduced per month, and compounding ROI over time. Turns FixOps from a cost into a measurable line item your CFO can approve.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+      </div>
+    </div>
+
+    <!-- CTA bar -->
+    <div style="text-align:center;margin-top:40px;padding:28px 32px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:16px;max-width:680px;margin-left:auto;margin-right:auto;">
+      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">All 38 views. One monthly plan. Cancel anytime.</div>
+      <div style="font-size:12px;color:var(--t2);margin-bottom:20px;">FixOps Sentinel at $549/mo. Most portals recover 5–10x the cost in identified leaks within 30 days.</div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="#" onclick="openAuditModal(event)" style="padding:12px 26px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Run Free Audit First →</a>
+        <a href="#pricing" style="padding:12px 22px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--t2);border-radius:9px;font-weight:600;font-size:12px;text-decoration:none;">See All Plans →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+function showDashTab(tab, btn) {
+  document.querySelectorAll('.dash-tab-content').forEach(function(el){ el.style.display = 'none'; });
+  var el = document.getElementById('dash-' + tab);
+  if (el) el.style.display = 'block';
+  document.querySelectorAll('#dash-tabs button').forEach(function(b){
+    b.style.background = 'var(--s1)'; b.style.color = 'var(--t2)'; b.style.border = '1px solid var(--b1)';
+  });
+  if (btn) { btn.style.background = 'var(--brand)'; btn.style.color = '#fff'; btn.style.border = 'none'; }
+}
+</script>
+
+
+<section id="pricing">
   <div class="wrap">
     <div class="r" style="text-align:center">
       <span class="tag">Pricing</span>
@@ -861,7 +952,7 @@ id="pricing">
             <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;">Most portals identify $3k–$8k/mo in leaks and opportunities</div>
           </div>
           <div class="pc-feats">
-            <div class="pc-feat"><span>✓</span>Everything in Pulse</div>
+            <div class="pc-feat"><span>✓</span>Everything in Monitor</div>
             <div class="pc-feat"><span>✓</span>Full Portal Snapshot — 22-view intelligence dashboard</div>
             <div class="pc-feat"><span>✓</span>Workflow conflict detector — duplicate triggers, parallel versions</div>
             <div class="pc-feat"><span>✓</span>Contact enrichment gap report — missing fields by priority</div>
@@ -1034,7 +1125,7 @@ id="pricing">
               <div style="font-size:14px;font-weight:700;color:#fff;">Monthly Retainer</div>
               <div style="font-size:15px;font-weight:900;color:#a78bfa;">From $600<span style="font-size:12px;font-weight:400;">/mo</span></div>
             </div>
-            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Ongoing fixes + Pulse monitoring included. Your HubSpot admin on call. Cancel anytime.</div>
+            <div style="font-size:12px;color:rgba(255,255,255,.4);line-height:1.6;margin-bottom:12px;">Ongoing fixes + FixOps Sentinel monitoring included. Your HubSpot admin on call. Cancel anytime.</div>
             <button onclick="goCalendly()" style="width:100%;padding:8px;background:rgba(124,58,237,.12);color:#a78bfa;font-family:Outfit,sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(124,58,237,.25);border-radius:7px;cursor:pointer;">Book Discovery Call →</button>
           </div>
 
@@ -1245,35 +1336,35 @@ function showOnetime() {
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Sentinel — Daily Monitoring</div>
     <div class="road-p">Lightweight daily check for workflow errors, billing tier proximity, and ghost seat changes. Critical issues trigger same-day email + Slack alert. Full 210-point scan runs every Monday.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <div class="road-card live" data-cat="core">
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
-    <div class="road-h">Pulse Weekly Monitoring</div>
+    <div class="road-h">Weekly Monitoring</div>
     <div class="road-p">Full portal re-scan every Monday. Score delta, new issues found, resolved issues, dollar waste total — all delivered to your inbox before your team starts the week.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <div class="road-card live" data-cat="core">
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Rep Activity Scorecard</div>
     <div class="road-p">Weekly per-rep breakdown of calls, meetings, and stale deals — delivered in every Monday email and visible in the snapshot dashboard. See who's active and who went dark.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <div class="road-card live" data-cat="core">
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Ghost Seat Detector</div>
     <div class="road-p">Identifies paid HubSpot users with zero logins in 90+ days. Shows names, last login dates, and estimated monthly cost per unused seat. Instant savings with one deactivation.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <div class="road-card live" data-cat="core">
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Deal Risk Scoring</div>
     <div class="road-p">Every open deal scored 0–100 for risk based on inactivity, missing fields, overdue close dates, and phantom pipeline. Sort your entire pipeline by what's actually at risk — not by last modified.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <div class="road-card live" data-cat="core">
@@ -1287,7 +1378,7 @@ function showOnetime() {
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Billing Tier Warning</div>
     <div class="road-p">Tracks your contact count against HubSpot billing thresholds. Alerts you before you hit the next tier, shows cleanable contacts that could prevent the upgrade, and estimates days until overage.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <div class="road-card live" data-cat="reporting">
@@ -1301,7 +1392,7 @@ function showOnetime() {
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Score Trends &amp; ROI Tracking</div>
     <div class="road-p">12-week score history with per-dimension sparklines, monthly waste trend, issue persistence tracker, and ROI summary showing dollar savings since your first scan.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <div class="road-card live" data-cat="reporting">
@@ -1336,7 +1427,7 @@ function showOnetime() {
     <div class="road-status live"><span class="road-status-dot" style="background:#10b981;animation:pulse-dot 2s infinite;display:inline-block;"></span><span>Live Now</span></div>
     <div class="road-h">Slack Alerts</div>
     <div class="road-p">Paste your Slack incoming webhook URL and get weekly scan summaries + critical issue alerts delivered to any channel. Setup takes 2 minutes. No Slack app install required.</div>
-    <div class="road-plan">Pulse · Pro · Agency</div>
+    <div class="road-plan">Monitor · Sentinel · Command</div>
   </div>
 
   <!-- BUILDING -->
@@ -1465,7 +1556,7 @@ function showOnetime() {
         <h4>Platform</h4>
         <ul>
           <li><a href="#" onclick="openAuditModal(event)">Free Audit</a></li>
-          <li><a href="#pulse">FixOps Pulse</a></li>
+          <li><a href="#pulse">Platform</a></li>
                 <li><a href="#pricing">Pricing</a></li>
     <li><a href="#recommender">Find My Plan</a></li>
           <li><a href="#roadmap">Roadmap</a></li>
@@ -1764,8 +1855,8 @@ function showOnetime() {
       <!-- Upgrade CTA -->
       <div style="padding:20px;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.2);border-radius:14px;text-align:center;">
         <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">Your full audit has 210 checkpoints — 8 critical and 14 warnings not shown here</div>
-        <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px;font-weight:300;">Upgrade to Pulse for dollar impact estimates, step-by-step fix guides, and one-click Fix It For Me on every issue.</div>
-        <button onclick="selectPlan('pulse',null);showStep('paid')" style="padding:12px 28px;background:#7c3aed;color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">Upgrade to Pulse — $299/mo →</button>
+        <div style="font-size:13px;color:rgba(255,255,255,.45);margin-bottom:18px;font-weight:300;">Upgrade to Monitor for dollar impact estimates, step-by-step fix guides, and one-click Fix It For Me on every issue.</div>
+        <button onclick="selectPlan('pulse',null);showStep('paid')" style="padding:12px 28px;background:#7c3aed;color:#fff;border:none;border-radius:9px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='#8b5cf6'" onmouseout="this.style.background='#7c3aed'">Upgrade to Monitor — $299/mo →</button>
         <div style="font-size:11px;color:rgba(255,255,255,.25);font-family:'JetBrains Mono',monospace;margin-top:10px;">Results load instantly · email copy also sent to you</div>
       </div>
     </div>
@@ -2014,8 +2105,8 @@ async function runRecommender() {
     '- Primary goal: ' + (goalMap[a.q4] || a.q4) + '\n\n' +
     'FixOps plans:\n' +
     '- Snapshot: Free. 210-point audit, up to 1,000 contacts, PDF report, fix guides. No monitoring.\n' +
-    '- Pulse: $299/mo per portal. Full unlimited scan, weekly automated monitoring every Monday, score history, new issue alerts, PDF every scan, Fix It For Me.\n' +
-    '- Pro: $549/mo per portal. Everything in Pulse plus daily monitoring, AI report builder, portal snapshot dashboard, pipeline health, lifecycle funnel, workflow conflict detection, security monitoring.\n' +
+    '- FixOps Monitor: $299/mo per portal. Full unlimited scan, weekly automated monitoring every Monday, score history, new issue alerts, PDF every scan, Fix It For Me.\n' +
+    '- FixOps Sentinel: $549/mo per portal. Everything in Monitor plus daily monitoring, AI report builder, portal snapshot dashboard, pipeline health, lifecycle funnel, workflow conflict detection, security monitoring.\n' +
     '- Agency: $999/mo. Everything in Pro for up to 25 client portals. White-label PDF reports, multi-client dashboard, client-facing health score pages, dollar impact per client.\n' +
     '- FixOps Diagnostic: $399 one-time. Full unlimited scan of all objects, written action plan, 30-min strategy call with the team. Results stored 90 days.\n' +
     '- FixOps Full Audit: $699 one-time. Everything in FixOps Diagnostic plus full workflow analysis, form and email health scan, user permissions and security audit, portal snapshot dashboard, 60-min strategy call, 90-day fix roadmap. Results stored 1 year.\n\n' +
@@ -2045,7 +2136,7 @@ function showRec(text) {
   el.style.display = 'block';
 
   var planLinks = {
-    'Pulse':      'https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06',
+    'FixOps Monitor': 'https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06',
     'Pro':        'https://buy.stripe.com/28E4gz2rw1MC7LKeFL8Ra08',
     'Agency':     'https://buy.stripe.com/cNi3cv2rw9f46HG69f8Ra09',
     'FixOps Diagnostic': 'https://buy.stripe.com/eVqdR96HMbnc8POdBH8Ra0a',
@@ -2053,8 +2144,8 @@ function showRec(text) {
     'Snapshot':   '#pricing'
   };
 
-  var recPlan = 'Pulse';
-  var recLink = planLinks['Pulse'];
+  var recPlan = 'FixOps Monitor';
+  var recLink = planLinks['FixOps Monitor'];
 
   if (text) {
     var primaryLine = '';
