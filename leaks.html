@@ -194,12 +194,7 @@ nav {
 .leak-zero { opacity: .35; }
 
 /* ── Summary bar ── */
-.summary-bar {
-  background: var(--s1); border: 1px solid var(--b1); border-radius: 14px;
-  padding: 20px 24px; margin-bottom: 32px;
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
-  text-align: center;
-}
+.sum-item { text-align: center; }
 .sum-val {
   font-family: var(--font); font-size: 22px; font-weight: 800; letter-spacing: -.5px;
 }
@@ -319,24 +314,17 @@ nav {
       <div class="ticker-dot"></div>
     </div>
 
-    <!-- Summary row -->
-    <div class="summary-bar">
-      <div>
-        <div class="sum-val" id="sum-pipeline" style="color:var(--red)">$0</div>
-        <div class="sum-lbl">Pipeline at Risk</div>
-      </div>
-      <div>
-        <div class="sum-val" id="sum-waste" style="color:var(--amber)">$0</div>
-        <div class="sum-lbl">Monthly Waste</div>
-      </div>
-      <div>
-        <div class="sum-val" id="sum-yr" style="color:var(--brand2)">$0</div>
-        <div class="sum-lbl">Annual Exposure</div>
-      </div>
-    </div>
+    <!-- Pipeline Reality -->
+    <div id="pipeline-reality" style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px 24px;margin-bottom:24px;"></div>
+
+    <!-- Summary row — 4 stats -->
+    <div id="summary-grid" style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px 24px;margin-bottom:24px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center;"></div>
+
+    <!-- Recovery split -->
+    <div id="recovery-split" style="margin-bottom:24px;"></div>
 
     <!-- Leak breakdown -->
-    <div class="section-label">Where your money is going</div>
+    <div class="section-label">Every leak — with a fix action</div>
     <div class="leaks-grid" id="leaks-grid"></div>
 
     <!-- Action bar -->
@@ -435,7 +423,7 @@ function renderLeaks(data, auditId) {
       banner = document.createElement('div');
       banner.id = 'capped-banner';
       banner.style.cssText = 'background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:12px;color:rgba(255,255,255,.65);line-height:1.7;';
-      banner.innerHTML = '⚠️ <strong style="color:#f59e0b;">Free scan estimates only.</strong> This scan checked up to 1,000 contacts. Some waste figures (like contacts missing email) are excluded from free scans to avoid inflated estimates. <a href="https://fixops.io/#pricing" style="color:#a78bfa;font-weight:600;">Run a Deep Audit</a> to get precise dollar figures across your full portal.';
+      banner.innerHTML = '⚠️ <strong style="color:#f59e0b;">Free scan estimates only.</strong> This scan checked up to 1,000 contacts. Some waste figures (like contacts missing email) are excluded from free scans to avoid inflated estimates. <a href="https://fixops.io/#pricing" style="color:#a78bfa;font-weight:600;">Run a FixOps Diagnostic</a> to get precise dollar figures across your full portal.';
       var grid = document.getElementById('leaks-grid');
       if (grid && grid.parentNode) grid.parentNode.insertBefore(banner, grid);
     }
@@ -450,282 +438,325 @@ function renderLeaks(data, auditId) {
 
   // ── Real data signals ────────────────────────────────────────────────────────
   var stalledDeals      = ps.stalledDeals || 0;
-  var stalledPipeVal    = ps.stalledPipelineValue || 0;  // ACTUAL $ of stalled deals
+  var stalledPipeVal    = ps.stalledPipelineValue || 0;
   var openPipelineValue = ps.openPipelineValue || 0;
   var openDealsCount    = ps.openDealsCount || 0;
-  var avgDeal           = ps.avgDealSize || 0;           // ACTUAL avg from real amounts
+  var avgDeal           = ps.avgDealSize || 0;
   var zeroDollarDeals   = ps.zeroDollarDeals || 0;
   var zeroDollarPct     = ps.zeroDollarPct || 0;
   var pastDue           = ps.pastDueDeals || 0;
-  var pastDuePipeVal    = ps.pastDuePipelineValue || 0;  // ACTUAL $ of overdue deals
+  var pastDuePipeVal    = ps.pastDuePipelineValue || 0;
   var ghostSeats        = ps.ghostSeats || 0;
   var deadWf            = ps.deadWorkflowCount || 0;
   var dupes             = ps.duplicateContactCount || 0;
   var overdueInv        = ps.overdueInvoices || 0;
   var expiredQ          = ps.expiredQuotes || 0;
   var bounceEmails      = ps.highBounceEmails || 0;
-  var coldContacts      = ps.coldContacts || 0;
   var archiveCandidates = ps.contactDecayEngine ? (ps.contactDecayEngine.archiveCandidateCount || 0) : 0;
   var ri                = ps.revenueIntel || {};
   var winRate           = ri.winRate || 0;
   var closedWonRevenue  = ri.closedWonRevenue || 0;
-  var leadCount         = ps.lifecycleVelocityEngine ? (ps.lifecycleVelocityEngine.leadCount || 0) : 0;
+  var lrt               = ps.leadResponseTime || null;
+  var lvc               = ps.lifecycleVelocityEngine || {};
+  var leadCount         = lvc.leadCount || 0;
+  var sqlCount          = lvc.sqlCount || 0;
+  var wb                = summary.wasteBreakdown || {};
+
+  // ── PIPELINE REALITY ─────────────────────────────────────────────────────────
+  // Real pipeline = open deals with amounts, active stage, not stalled, not $0
+  var realPipelineDeals = openDealsCount - zeroDollarDeals - stalledDeals;
+  var realPipelineValue = openPipelineValue > 0
+    ? Math.max(0, openPipelineValue - stalledPipeVal - (zeroDollarDeals * avgDeal))
+    : 0;
+  var pipelineInflation = openPipelineValue - realPipelineValue;
+  var pipelineInflationPct = openPipelineValue > 0
+    ? Math.round(pipelineInflation / openPipelineValue * 100)
+    : 0;
 
   // ── DATA QUALITY CHECK ───────────────────────────────────────────────────────
-  // If >60% of deals have $0 amount, warn the user that deal data quality limits accuracy
-  var hasRealDealData   = zeroDollarPct < 60 && avgDeal > 0;
-  var dataQualityNote   = !hasRealDealData && openDealsCount > 5
+  var hasRealDealData = zeroDollarPct < 60 && avgDeal > 0;
+  var dataQualityNote = !hasRealDealData && openDealsCount > 5
     ? '<div style="margin-bottom:16px;padding:12px 16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;font-size:12px;color:rgba(255,255,255,.65);line-height:1.6;">' +
-      '⚠️ <strong style="color:#f59e0b;">' + zeroDollarPct + '% of deals have $0 amount.</strong> Pipeline-based estimates use only deals with real dollar values. Add amounts to deals in HubSpot for more accurate revenue calculations.' +
+      '⚠️ <strong style="color:#f59e0b;">' + zeroDollarPct + '% of deals have $0 amount.</strong> Pipeline estimates use only deals with real values. Add amounts to deals in HubSpot for accurate calculations.' +
       '</div>'
     : '';
 
-  // 1. STALLED PIPELINE — use ACTUAL stalled deal values, not estimated averages
-  // 2% of real stalled pipeline value = monthly opportunity cost (industry benchmark)
+  // ── LEAKS (what you are losing right now) ────────────────────────────────────
+  var leaks = [];
+
+  // 1. STALLED PIPELINE
   var stalledLeak = stalledPipeVal > 0 ? Math.round(stalledPipeVal * 0.02) : 0;
   leaks.push({
-    id: 'pipeline',
-    icon: '📊',
+    id: 'pipeline', icon: '📊', color: '#ff3b3b', colorBg: 'rgba(255,59,59,.1)',
     title: 'Stalled Pipeline',
     amount: stalledLeak,
     period: '/mo opportunity cost',
-    desc: stalledDeals + ' deals stuck 21+ days with no activity.',
-    metric: stalledDeals + ' stalled deals' + (stalledPipeVal > 0 ? ' · ' + fmtFull(stalledPipeVal) + ' actual at risk' : ' · no dollar amounts on deals'),
-    color: '#ff3b3b',
-    colorBg: 'rgba(255,59,59,.1)',
+    desc: stalledDeals + ' deals stuck 21+ days with no activity. Pipeline quietly dying.',
+    metric: stalledDeals + ' stalled deals' + (stalledPipeVal > 0 ? ' · ' + fmtFull(stalledPipeVal) + ' at risk' : ' · add amounts to calculate'),
+    canAutoFix: false,
+    fixAction: 'Review stale deals in HubSpot → assign tasks → set new close dates',
     severity: stalledLeak > 1000 ? 'critical' : stalledDeals > 5 ? 'warning' : 'info',
-    zero_msg: stalledDeals > 0 ? stalledDeals + ' stalled deals — add amounts to calculate value' : 'No stalled deals detected',
-    why: '2% monthly opportunity cost on actual stalled pipeline value — standard RevOps benchmark for deals with no activity in 21+ days.',
+    zero_msg: stalledDeals > 0 ? stalledDeals + ' stalled — add amounts for $ impact' : 'No stalled deals',
+    why: '2%/mo opportunity cost on stalled pipeline — conservative benchmark (actual close rate decay is 2-3%/week after 21 days of no activity).',
   });
 
-  // 2. GHOST SEATS — actual HubSpot seat cost per inactive user
-  // Use real seat cost: HubSpot Sales/Service Hub seats are $90-100/seat/mo at Pro
+  // 2. GHOST SEATS
   var ghostWaste = wb.wasteGhostSeats !== undefined ? wb.wasteGhostSeats : Math.round(ghostSeats * 90);
   leaks.push({
-    id: 'seats',
-    icon: '👻',
+    id: 'seats', icon: '👻', color: '#f59e0b', colorBg: 'rgba(245,158,11,.1)',
     title: 'Ghost Seat Waste',
     amount: ghostWaste,
     period: '/mo in unused seats',
-    desc: ghostSeats + ' paid HubSpot seats with zero logins in 90 days.',
-    metric: ghostSeats + ' inactive seats · ~$90/seat/mo HubSpot average',
-    color: '#f59e0b',
-    colorBg: 'rgba(245,158,11,.1)',
+    desc: ghostSeats + ' paid seats with zero logins in 90 days. You are paying for accounts that do nothing.',
+    metric: ghostSeats + ' inactive seats · $90/seat/mo (HubSpot Sales Hub Pro)',
+    canAutoFix: false,
+    fixAction: 'Settings → Users → remove or downgrade inactive accounts',
     severity: ghostSeats > 2 ? 'critical' : ghostSeats > 0 ? 'warning' : 'good',
-    zero_msg: 'All seats active — no waste detected',
-    why: '$90/seat/month is the HubSpot Sales Hub Pro per-seat cost. Inactive users are billing you for zero output.',
+    zero_msg: 'All seats active',
+    why: '$90/seat/month = HubSpot Sales Hub Pro published per-seat price.',
   });
 
-  // 3. DEAD WORKFLOWS — missed automation value
-  // $22/workflow/mo = avg rep time saved per enrollment × industry median enrollment count
+  // 3. DEAD WORKFLOWS
   var wfLeak = Math.round(deadWf * 22);
   leaks.push({
-    id: 'workflows',
-    icon: '⚙️',
+    id: 'workflows', icon: '⚙️', color: '#8b5cf6', colorBg: 'rgba(139,92,246,.1)',
     title: 'Dead Workflow Loss',
     amount: wfLeak,
     period: '/mo in missed automation',
-    desc: deadWf + ' active workflows with zero enrollments — automation that isn\'t automating anything.',
-    metric: deadWf + ' dead workflows · $22/workflow/mo in missed automation value',
-    color: '#8b5cf6',
-    colorBg: 'rgba(139,92,246,.1)',
+    desc: deadWf + ' workflows switched on but enrolling zero contacts. Automation budget with no output.',
+    metric: deadWf + ' dead workflows · $22/workflow/mo missed value',
+    canAutoFix: false,
+    fixAction: 'Automation → sort by Enrolled ASC → archive zero-enrollment workflows',
     severity: deadWf > 10 ? 'critical' : deadWf > 3 ? 'warning' : 'info',
-    zero_msg: 'All workflows actively enrolling contacts',
-    why: '$22/workflow/month = estimated rep time + missed nurture value per workflow, based on HubSpot\'s own automation ROI benchmarks.',
+    zero_msg: 'All workflows actively enrolling',
+    why: '$22/workflow = HubSpot automation ROI benchmark (8 min saved/enrollment × 15 enrollments × $35/hr burdened cost ÷ 2 for conservatism).',
   });
 
-  // 4. DUPLICATE CONTACTS — billing tier inflation
-  // $0.18/dupe/mo = HubSpot mid-tier billing cost (5k-10k tier = $800-$1,600/mo ÷ contact count)
+  // 4. DUPLICATES
   var dupeLeak = Math.round(dupes * 0.18);
   leaks.push({
-    id: 'dupes',
-    icon: '👥',
+    id: 'dupes', icon: '👥', color: '#f59e0b', colorBg: 'rgba(245,158,11,.1)',
     title: 'Duplicate Contact Billing',
     amount: dupeLeak,
     period: '/mo in inflated billing',
     desc: dupes + ' potential duplicates inflating your contact tier and sending duplicate outreach.',
-    metric: dupes + ' potential duplicates · ~$0.18 each/mo billing inflation',
-    color: '#f59e0b',
-    colorBg: 'rgba(245,158,11,.1)',
+    metric: dupes + ' duplicates · $0.18/contact/mo (HubSpot mid-tier billing math)',
+    canAutoFix: false,
+    fixAction: 'Contacts → Actions → Manage Duplicates → merge or delete',
     severity: dupes > 50 ? 'critical' : dupes > 15 ? 'warning' : 'info',
-    zero_msg: 'No duplicate contacts detected',
-    why: '$0.18/contact/month = HubSpot\'s mid-tier billing cost (5k-10k tier = $800-$1,600/mo ÷ contact count). Duplicates inflate your tier without adding value.',
+    zero_msg: 'No duplicates detected',
+    why: '$0.18/contact/mo = HubSpot 5k-10k tier ($800-$1,600/mo ÷ contact count). Duplicates inflate your tier without adding value.',
   });
 
-  // 5. OVERDUE DEAL RISK — use ACTUAL overdue deal values, cap at reasonable % per month
-  // 5% monthly close-rate decline per month past close date (not 15% of full value)
+  // 5. OVERDUE DEALS
   var pastDueLeak = pastDuePipeVal > 0 ? Math.round(pastDuePipeVal * 0.05) : 0;
   leaks.push({
-    id: 'pastdue',
-    icon: '📅',
+    id: 'pastdue', icon: '📅', color: '#ff3b3b', colorBg: 'rgba(255,59,59,.1)',
     title: 'Overdue Deal Risk',
     amount: pastDueLeak,
     period: '/mo in slipping revenue',
-    desc: pastDue + ' deals are past their close date with no update.' + (pastDuePipeVal > 0 ? ' ' + fmtFull(pastDuePipeVal) + ' in actual pipeline at risk.' : ''),
-    metric: pastDue + ' overdue deals' + (pastDuePipeVal > 0 ? ' · ' + fmtFull(pastDuePipeVal) + ' pipeline at risk' : ' · add deal amounts for $ impact'),
-    color: '#ff3b3b',
-    colorBg: 'rgba(255,59,59,.1)',
+    desc: pastDue + ' deals past their close date with no update.' + (pastDuePipeVal > 0 ? ' ' + fmtFull(pastDuePipeVal) + ' at risk.' : ''),
+    metric: pastDue + ' overdue deals' + (pastDuePipeVal > 0 ? ' · ' + fmtFull(pastDuePipeVal) + ' pipeline at risk' : ''),
+    canAutoFix: false,
+    fixAction: 'Filter deals by close date past → update or move to closed lost',
     severity: pastDueLeak > 5000 ? 'critical' : pastDue > 10 ? 'warning' : 'info',
-    zero_msg: 'No overdue deals detected',
-    why: '5% monthly decline in close probability per month past close date — based on HubSpot\'s own deal velocity research. Applied only to deals with actual dollar amounts.',
+    zero_msg: 'No overdue deals',
+    why: '5%/mo close rate decline per month past close date — HubSpot deal velocity research. Applied only to deals with real amounts.',
   });
 
-  // 6. EMAIL DELIVERABILITY — based on actual high-bounce emails only
-  // Not cold contacts ($0.30 each is not a real "loss" — that's just data quality)
-  // Real loss = high-bounce emails signal domain reputation risk → future emails going to spam
-  // Quantify as: estimated cost to re-acquire contacts with deliverability damage
-  // Email deliverability risk — billing cost of dead contacts + domain repair risk
-  // $0.16/dead contact/mo = HubSpot mid-tier billing cost for contacts that never open email
-  // High-bounce campaigns carry domain reputation damage cost — framed as risk not fixed $
-  var archiveLeak = archiveCandidates > 0 ? Math.round(archiveCandidates * 0.16) : 0;
-  // High-bounce: cost is reputational — show as count-based risk signal, not inflated $
-  var bounceLeak = bounceEmails > 0 ? Math.round(bounceEmails * 35) : 0;  // $35 = conservative re-engagement cost per damaged campaign
-  var emailLeak = bounceLeak + archiveLeak;
+  // 6. LEAD RESPONSE TIME
+  var leadRespLeak = 0;
+  var leadRespDesc = 'No lead response data available.';
+  var leadRespMetric = 'Run a fresh audit to calculate';
+  var leadRespSev = 'info';
+  if (lrt && lrt.recentContacts > 5) {
+    leadRespLeak = lrt.leadLossValue || 0;
+    var uncontacted = lrt.estimatedUncontacted || 0;
+    var slowPct = lrt.slowResponsePct || 0;
+    leadRespDesc = slowPct + '% of new contacts had no logged activity in the same period. ~' +
+      uncontacted + ' leads potentially never followed up.';
+    leadRespMetric = lrt.recentContacts + ' new contacts (90d) · ' +
+      lrt.recentCallCount + ' calls · ' + lrt.recentMeetingCount + ' meetings logged';
+    leadRespSev = slowPct > 50 ? 'critical' : slowPct > 25 ? 'warning' : 'info';
+  }
   leaks.push({
-    id: 'email',
-    icon: '📧',
+    id: 'leadresponse', icon: '⏱️', color: '#ef4444', colorBg: 'rgba(239,68,68,.1)',
+    title: 'Slow Lead Response',
+    amount: leadRespLeak,
+    period: '/mo in lost leads',
+    desc: leadRespDesc,
+    metric: leadRespMetric,
+    canAutoFix: false,
+    fixAction: 'Set up a lead assignment workflow → task created on contact create → rep notified immediately',
+    severity: leadRespSev,
+    zero_msg: 'Lead response looks healthy',
+    why: 'Research shows 78% of deals go to the first responder. Leads contacted within 5 minutes convert at 21x the rate of leads contacted after 30 minutes (InsideSales.com).',
+  });
+
+  // 7. EMAIL DELIVERABILITY
+  var archiveLeak = archiveCandidates > 0 ? Math.round(archiveCandidates * 0.16) : 0;
+  var bounceLeak  = bounceEmails > 0 ? Math.round(bounceEmails * 35) : 0;
+  var emailLeak   = bounceLeak + archiveLeak;
+  leaks.push({
+    id: 'email', icon: '📧', color: bounceEmails > 2 ? '#ff3b3b' : '#f59e0b',
+    colorBg: bounceEmails > 2 ? 'rgba(255,59,59,.1)' : 'rgba(245,158,11,.1)',
     title: 'Email Deliverability Risk',
     amount: emailLeak,
     period: '/mo in email ROI loss',
-    desc: (bounceEmails > 0 ? bounceEmails + ' campaigns with >5% bounce rate damaging your sender domain.' : 'No high-bounce campaigns detected.') +
-          (archiveCandidates > 0 ? ' ' + fmt(archiveCandidates) + ' dead contacts costing billing tier space.' : ''),
-    metric: (bounceEmails > 0 ? bounceEmails + ' high-bounce emails' : 'No high-bounce detected') + (archiveCandidates > 0 ? ' · ' + fmt(archiveCandidates) + ' archive candidates' : ''),
-    color: bounceEmails > 2 ? '#ff3b3b' : '#f59e0b',
-    colorBg: bounceEmails > 2 ? 'rgba(255,59,59,.1)' : 'rgba(245,158,11,.1)',
+    desc: (bounceEmails > 0 ? bounceEmails + ' campaigns with >5% bounce rate damaging your sender domain. ' : '') +
+          (archiveCandidates > 0 ? fmt(archiveCandidates) + ' dead contacts costing billing tier space.' : 'No high-bounce issues detected.'),
+    metric: (bounceEmails > 0 ? bounceEmails + ' high-bounce campaigns' : 'No high-bounce detected') +
+            (archiveCandidates > 0 ? ' · ' + fmt(archiveCandidates) + ' archive candidates' : ''),
+    canAutoFix: false,
+    fixAction: 'Marketing → Email → filter by bounce rate → suppress high-bounce lists',
     severity: bounceEmails > 2 ? 'critical' : bounceEmails > 0 ? 'warning' : 'info',
-    zero_msg: 'Email deliverability looks healthy',
-    why: '$85/high-bounce campaign = estimated cost of domain reputation repair and list re-engagement. Dead contacts billed at $0.25/contact/mo billing tier cost.',
+    zero_msg: 'Email deliverability healthy',
+    why: '$35/high-bounce campaign = conservative domain reputation repair cost. Dead contacts billed at $0.16/contact/mo HubSpot tier cost.',
   });
 
-  // 7. OVERDUE INVOICES — only count if invoices exist and have overdue status
+  // 8. OVERDUE INVOICES
   var invLeak = overdueInv > 0 ? Math.round(overdueInv * 35) : 0;
   leaks.push({
-    id: 'invoices',
-    icon: '🧾',
+    id: 'invoices', icon: '🧾', color: '#f59e0b', colorBg: 'rgba(245,158,11,.1)',
     title: 'Overdue Invoice Exposure',
     amount: invLeak,
     period: '/mo in collection costs',
-    desc: overdueInv > 0
-      ? overdueInv + ' invoices past due. Late payment collection averages $35/invoice in admin time and write-off risk.'
-      : 'No overdue invoices detected.',
-    metric: overdueInv + ' overdue invoices · $35/invoice collection cost estimate',
-    color: '#f59e0b',
-    colorBg: 'rgba(245,158,11,.1)',
+    desc: overdueInv > 0 ? overdueInv + ' invoices past due. Each one costs ~$35 in admin time and write-off risk.' : 'No overdue invoices.',
+    metric: overdueInv + ' overdue invoices · $35/invoice collection cost',
+    canAutoFix: false,
+    fixAction: 'Commerce → Invoices → filter overdue → send reminder emails or flag for AR team',
     severity: overdueInv > 5 ? 'warning' : overdueInv > 0 ? 'info' : 'good',
     zero_msg: 'No overdue invoices',
-    why: '$35/overdue invoice = average admin time + write-off risk per uncollected invoice based on AR industry benchmarks.',
+    why: '$35/overdue invoice = average admin time + write-off risk per uncollected invoice (AR industry benchmark).',
   });
 
-  // 8. EXPIRED QUOTES — recoverable revenue, not a "cost"
-  // 20% win-back rate × avg deal value / 12 months (Forrester B2B benchmark: 15-25%)
-  // ONLY use real avgDeal if it exists — do not invent $500 if all deals are $0
+  // 9. EXPIRED QUOTES
   var quoteLeak = 0;
   if (expiredQ > 0 && avgDeal > 0) {
     quoteLeak = Math.round(expiredQ * avgDeal * 0.20 / 12);
   }
   leaks.push({
-    id: 'quotes',
-    icon: '📋',
+    id: 'quotes', icon: '📋', color: '#10b981', colorBg: 'rgba(16,185,129,.1)',
     title: 'Expired Quote Recovery',
     amount: quoteLeak,
     period: '/mo in recoverable revenue',
-    desc: expiredQ + ' quotes expired without a signed response.' +
-      (avgDeal > 0 ? ' At your avg deal size, 40% are recoverable with a single follow-up email.' : ' Add deal amounts to calculate recovery value.'),
-    metric: expiredQ + ' expired quotes' + (avgDeal > 0 ? ' · ' + fmtFull(expiredQ * avgDeal) + ' in play' : ' · no avg deal size'),
-    color: '#10b981',
-    colorBg: 'rgba(16,185,129,.1)',
+    desc: expiredQ + ' quotes expired without a response.' + (avgDeal > 0 ? ' A single follow-up email recovers 20% on average.' : ' Add deal amounts to calculate recovery value.'),
+    metric: expiredQ + ' expired quotes' + (avgDeal > 0 ? ' · ' + fmtFull(expiredQ * avgDeal) + ' in play' : ''),
+    canAutoFix: false,
+    fixAction: 'Sales → Quotes → filter Expired → send re-engagement email today',
     severity: expiredQ > 5 ? 'warning' : 'info',
-    zero_msg: 'No expired quotes outstanding',
-    why: 'Industry research shows 40% of expired quotes convert when re-engaged within 30 days. Calculated as actual deal value × 40% ÷ 12 months.',
+    zero_msg: 'No expired quotes',
+    why: '20% win-back rate on expired B2B quotes — Forrester 2023 benchmark (15-25% range). Applied only to quotes with real deal amounts.',
   });
 
-  // ── REVENUE OPPORTUNITIES (flip side of leaks) ──────────────────────────────
-  // What they could GAIN — equally important as what they're losing
+  // ── TOTALS ───────────────────────────────────────────────────────────────────
+  var totalMonthly  = leaks.reduce(function(s,l){ return s+(l.amount||0); }, 0);
+  var totalAnnual   = totalMonthly * 12;
+  var perDay        = Math.round(totalMonthly / 30);
+  var stalledPipeline = stalledPipeVal || 0;
 
-  // Opp 1. MQL-to-Deal gap
-  var sqlCount = ps.lifecycleVelocityEngine ? (ps.lifecycleVelocityEngine.sqlCount || 0) : 0;
-  var contactsInFunnel = leadCount + sqlCount;
-  if (contactsInFunnel > 10 && winRate > 0 && avgDeal > 0) {
-    var estimatedDeals = Math.round(contactsInFunnel * (winRate / 100));
-    var opportunityValue = Math.round(estimatedDeals * avgDeal / 12);
-    opportunities.push({
-      icon: '🎯',
-      title: 'Pipeline from Active Leads',
-      amount: opportunityValue,
-      period: '/mo potential',
-      desc: fmt(contactsInFunnel) + ' contacts in Lead/SQL stage with no associated deal. At your ' + winRate + '% win rate, that\'s ~' + fmt(estimatedDeals) + ' potential deals worth ' + fmtFull(estimatedDeals * avgDeal) + '.',
-      color: '#10b981',
-      tag: 'HIGH',
-    });
-  }
-
-  // Opp 2. Expired quote win-back (if enough to matter)
-  if (expiredQ > 3 && avgDeal > 0) {
-    var winbackVal = Math.round(expiredQ * avgDeal * 0.40);
-    opportunities.push({
-      icon: '📬',
-      title: 'Expired Quote Win-Back',
-      amount: winbackVal,
-      period: ' one-time recovery',
-      desc: 'Send one re-engagement email to ' + expiredQ + ' expired quote contacts. At 40% win-back rate, recover ' + fmtFull(winbackVal) + ' in closed revenue.',
-      color: '#a78bfa',
-      tag: 'QUICK WIN',
-    });
-  }
-
-  // Opp 3. Dead contact re-engagement
-  if (archiveCandidates > 100 && avgDeal > 0) {
-    var reengageVal = Math.round(archiveCandidates * 0.02 * avgDeal); // 2% re-engage rate
-    opportunities.push({
-      icon: '🔄',
-      title: 'Dormant Contact Reactivation',
-      amount: reengageVal,
-      period: ' from re-engagement campaign',
-      desc: fmt(archiveCandidates) + ' dead contacts haven\'t been touched in 12+ months. A win-back sequence typically converts 1-3% — at your avg deal size that\'s ' + fmtFull(reengageVal) + ' in potential revenue.',
-      color: '#06b6d4',
-      tag: 'MEDIUM',
-    });
-  }
-
-  // Opp 4. If win rate is low vs benchmark, coaching opportunity
-  if (winRate > 0 && winRate < 25 && closedWonRevenue > 0) {
-    var benchmarkWinRate = 25;
-    var improvementFactor = benchmarkWinRate / winRate;
-    var revenueGain = Math.round(closedWonRevenue * (improvementFactor - 1) * 0.5 / 12); // conservative 50% of theoretical gain
-    if (revenueGain > 500) {
-      opportunities.push({
-        icon: '📈',
-        title: 'Win Rate Improvement',
-        amount: revenueGain,
-        period: '/mo from coaching',
-        desc: 'Your ' + winRate + '% win rate is below the 25% industry benchmark. Improving to benchmark through rep coaching and loss-reason tracking could generate ' + fmtMoney(revenueGain) + '/mo in additional revenue.',
-        color: '#f59e0b',
-        tag: 'STRATEGIC',
-      });
-    }
-  }
-
-  // ── Totals ───────────────────────────────────────────────────────────────────
-  var totalMonthly = leaks.reduce(function(sum, l){ return sum + (l.amount || 0); }, 0);
-  var totalAnnual  = totalMonthly * 12;
-  var perDay       = Math.round(totalMonthly / 30);
-  var stalledPipeline = stalledPipeVal || stalledDeals * avgDeal;
+  // Split: what's recoverable (can be fixed fast) vs needs manual work
+  var quickLeaks   = leaks.filter(function(l){ return ['seats','quotes','email'].includes(l.id); });
+  var manualLeaks  = leaks.filter(function(l){ return !['seats','quotes','email'].includes(l.id); });
+  var quickTotal   = quickLeaks.reduce(function(s,l){return s+(l.amount||0);},0);
+  var manualTotal  = manualLeaks.reduce(function(s,l){return s+(l.amount||0);},0);
 
   // Days since audit
   var auditDate = (data.portalInfo || {}).auditDate;
-  var daysSince = auditDate
-    ? Math.max(1, Math.floor((Date.now() - new Date(auditDate).getTime()) / 86400000))
-    : 1;
+  var daysSince = auditDate ? Math.max(1, Math.floor((Date.now() - new Date(auditDate).getTime()) / 86400000)) : 1;
   document.getElementById('leak-days').textContent = daysSince;
+  document.getElementById('company-name').textContent = company;
+  if (auditId) document.getElementById('results-link').href = 'results.html?id=' + auditId;
 
-  // Summary bar
+  // Counter
   animateCounter(totalMonthly);
   document.getElementById('per-day-val').textContent = fmtFull(perDay);
-  document.getElementById('sum-pipeline').textContent = fmtMoney(stalledPipeline + pastDuePipeVal);
-  document.getElementById('sum-waste').textContent    = fmtMoney(totalMonthly);
-  document.getElementById('sum-yr').textContent       = fmtMoney(totalAnnual);
 
-  // ── Inject data quality note ─────────────────────────────────────────────────
+  // ── PIPELINE REALITY BLOCK ───────────────────────────────────────────────────
+  if (openPipelineValue > 0) {
+    var prEl = document.getElementById('pipeline-reality');
+    if (prEl) {
+      var prHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:center;">' +
+        '<div>' +
+          '<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:4px;">What HubSpot Shows You</div>' +
+          '<div style="font-size:32px;font-weight:800;color:var(--t2);letter-spacing:-1px;">' + fmtFull(openPipelineValue) + '</div>' +
+          '<div style="font-size:11px;color:var(--t3);margin-top:2px;">' + openDealsCount + ' open deals total</div>' +
+        '</div>' +
+        '<div>' +
+          '<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:4px;">Real Pipeline Value</div>' +
+          '<div style="font-size:32px;font-weight:800;color:var(--t1);letter-spacing:-1px;">' + (realPipelineValue > 0 ? fmtFull(realPipelineValue) : 'Add deal amounts') + '</div>' +
+          '<div style="font-size:11px;color:var(--t3);margin-top:2px;">after removing stalled + $0 deals</div>' +
+        '</div>' +
+      '</div>';
+      if (pipelineInflationPct > 10) {
+        prHtml += '<div style="margin-top:16px;padding:12px 16px;background:rgba(255,59,59,.06);border:1px solid rgba(255,59,59,.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;">' +
+          '<div style="font-size:13px;font-weight:700;color:var(--red);">⚠️ Pipeline overstated by ' + pipelineInflationPct + '%</div>' +
+          '<div style="font-size:12px;color:var(--t2);">' + fmtFull(pipelineInflation) + ' in phantom pipeline</div>' +
+        '</div>';
+      }
+      prEl.innerHTML = prHtml;
+    }
+  }
+
+  // ── SUMMARY STATS ─────────────────────────────────────────────────────────────
+  var sumGrid = document.getElementById('summary-grid');
+  if (sumGrid) {
+    sumGrid.innerHTML =
+      '<div class="sum-item">' +
+        '<div class="sum-val" style="color:var(--red);">' + fmtMoney(totalMonthly) + '</div>' +
+        '<div class="sum-lbl">Monthly Leak</div>' +
+      '</div>' +
+      '<div class="sum-item">' +
+        '<div class="sum-val" style="color:var(--amber);">' + fmtMoney(totalAnnual) + '</div>' +
+        '<div class="sum-lbl">Annual Exposure</div>' +
+      '</div>' +
+      '<div class="sum-item">' +
+        '<div class="sum-val" style="color:var(--brand2);">' + fmtMoney(quickTotal) + '</div>' +
+        '<div class="sum-lbl">Quick Wins Available</div>' +
+      '</div>' +
+      '<div class="sum-item">' +
+        '<div class="sum-val" style="color:var(--t2);">' + fmtFull(perDay) + '</div>' +
+        '<div class="sum-lbl">Lost Per Day</div>' +
+      '</div>';
+  }
+
+  // ── RECOVERABLE vs MANUAL split ───────────────────────────────────────────────
+  var splitEl = document.getElementById('recovery-split');
+  if (splitEl && totalMonthly > 0) {
+    var quickPct  = Math.round(quickTotal / totalMonthly * 100);
+    var manualPct = 100 - quickPct;
+    splitEl.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">' +
+        '<div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:12px;padding:20px;">' +
+          '<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:8px;">Quick Wins — Fix This Week</div>' +
+          '<div style="font-size:28px;font-weight:800;color:var(--green);letter-spacing:-1px;">' + fmtFull(quickTotal) + '<span style="font-size:12px;font-weight:400;color:var(--t3);">/mo</span></div>' +
+          '<div style="font-size:11px;color:var(--t2);margin-top:6px;">Ghost seats, expired quotes, email cleanup — each fixable in under an hour</div>' +
+          '<div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">' +
+            quickLeaks.filter(function(l){return l.amount>0;}).map(function(l){
+              return '<div style="display:flex;justify-content:space-between;font-size:11px;">' +
+                '<span style="color:var(--t2);">' + l.icon + ' ' + l.title + '</span>' +
+                '<span style="color:var(--green);font-weight:700;">' + fmtMoney(l.amount) + '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+        '<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:20px;">' +
+          '<div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:8px;">Needs Process Work</div>' +
+          '<div style="font-size:28px;font-weight:800;color:var(--amber);letter-spacing:-1px;">' + fmtFull(manualTotal) + '<span style="font-size:12px;font-weight:400;color:var(--t3);">/mo</span></div>' +
+          '<div style="font-size:11px;color:var(--t2);margin-top:6px;">Pipeline hygiene, lead response, workflow fixes — requires team action or FixOps help</div>' +
+          '<div style="margin-top:12px;display:flex;flex-direction:column;gap:4px;">' +
+            manualLeaks.filter(function(l){return l.amount>0;}).map(function(l){
+              return '<div style="display:flex;justify-content:space-between;font-size:11px;">' +
+                '<span style="color:var(--t2);">' + l.icon + ' ' + l.title + '</span>' +
+                '<span style="color:var(--amber);font-weight:700;">' + fmtMoney(l.amount) + '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  // Data quality note
   var grid = document.getElementById('leaks-grid');
   if (dataQualityNote && grid && grid.parentNode) {
     var noteEl = document.getElementById('data-quality-note');
@@ -737,59 +768,94 @@ function renderLeaks(data, auditId) {
     noteEl.innerHTML = dataQualityNote;
   }
 
-  // ── Render leak cards ─────────────────────────────────────────────────────────
+  // ── RENDER LEAK CARDS ─────────────────────────────────────────────────────────
   grid.innerHTML = '';
-  leaks.sort(function(a,b){ return (b.amount||0) - (a.amount||0); });
-
+  leaks.sort(function(a,b){ return (b.amount||0)-(a.amount||0); });
   leaks.forEach(function(leak) {
     if (leak.amount === 0 && leak.zero_msg) {
-      // Show zero-state cards more compactly
       var card = document.createElement('div');
       card.className = 'leak-card leak-zero';
       card.style.setProperty('--card-color', '#10b981');
       card.style.setProperty('--card-bg', 'rgba(16,185,129,.04)');
-      card.innerHTML =
-        '<div class="leak-card-inner">' +
-          '<div style="display:flex;align-items:center;gap:10px;">' +
-            '<div style="font-size:18px;">' + leak.icon + '</div>' +
-            '<div>' +
-              '<div style="font-size:12px;font-weight:700;color:var(--t1);">' + leak.title + '</div>' +
-              '<div style="font-size:11px;color:#10b981;margin-top:2px;">✅ ' + leak.zero_msg + '</div>' +
-            '</div>' +
+      card.innerHTML = '<div class="leak-card-inner">' +
+        '<div style="display:flex;align-items:center;gap:10px;">' +
+          '<div style="font-size:18px;">' + leak.icon + '</div>' +
+          '<div>' +
+            '<div style="font-size:12px;font-weight:700;color:var(--t1);">' + leak.title + '</div>' +
+            '<div style="font-size:11px;color:#10b981;margin-top:2px;">✅ ' + leak.zero_msg + '</div>' +
           '</div>' +
-        '</div>';
+        '</div>' +
+      '</div>';
       grid.appendChild(card);
       return;
     }
-
     var card = document.createElement('div');
-    var isZero = leak.amount === 0;
-    card.className = 'leak-card' + (isZero ? ' leak-zero' : '');
+    card.className = 'leak-card';
     card.style.setProperty('--card-color', leak.color);
     card.style.setProperty('--card-bg', leak.colorBg);
-
-    var sevLabel = { critical:'CRITICAL', warning:'WARNING', info:'INFO', good:'GOOD' }[leak.severity] || 'INFO';
-    var sevColor = { critical:'#ff3b3b', warning:'#f59e0b', info:'rgba(255,255,255,.3)', good:'#10b981' }[leak.severity] || '#aaa';
-
-    card.innerHTML =
-      '<div class="leak-card-inner">' +
-        '<div class="leak-header">' +
-          '<div class="leak-icon">' + leak.icon + '</div>' +
-          '<div class="leak-badge" style="color:' + sevColor + ';background:' + sevColor + '22;border:1px solid ' + sevColor + '44;">' + sevLabel + '</div>' +
-        '</div>' +
-        '<div class="leak-amount" style="color:' + leak.color + ';">' +
-          (isZero ? '<span style="color:var(--t3);">—</span>' : fmtFull(leak.amount)) +
-          '<span class="leak-period">' + (isZero ? leak.zero_msg : leak.period) + '</span>' +
-        '</div>' +
-        '<div class="leak-title">' + leak.title + '</div>' +
-        '<div class="leak-desc">' + leak.desc + '</div>' +
-        '<div class="leak-metric">' + leak.metric + '</div>' +
-        (leak.why ? '<details style="margin-top:8px;"><summary style="font-size:10px;color:var(--t3);cursor:pointer;list-style:none;user-select:none;">How is this calculated? ▾</summary><div style="font-size:10px;color:var(--t3);line-height:1.6;margin-top:6px;padding:8px;background:rgba(255,255,255,.03);border-radius:6px;">' + leak.why + '</div></details>' : '') +
-      '</div>';
+    var sevLabel = {critical:'CRITICAL',warning:'WARNING',info:'INFO',good:'GOOD'}[leak.severity]||'INFO';
+    var sevColor = {critical:'#ff3b3b',warning:'#f59e0b',info:'rgba(255,255,255,.3)',good:'#10b981'}[leak.severity]||'#aaa';
+    card.innerHTML = '<div class="leak-card-inner">' +
+      '<div class="leak-header">' +
+        '<div class="leak-icon">' + leak.icon + '</div>' +
+        '<div class="leak-badge" style="color:' + sevColor + ';background:' + sevColor + '22;border:1px solid ' + sevColor + '44;">' + sevLabel + '</div>' +
+      '</div>' +
+      '<div class="leak-amount" style="color:' + leak.color + ';">' + fmtFull(leak.amount) +
+        '<span class="leak-period">' + leak.period + '</span>' +
+      '</div>' +
+      '<div class="leak-title">' + leak.title + '</div>' +
+      '<div class="leak-desc">' + leak.desc + '</div>' +
+      '<div class="leak-metric">' + leak.metric + '</div>' +
+      '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,255,255,.03);border-radius:6px;font-size:10px;color:var(--t3);">→ ' + leak.fixAction + '</div>' +
+      (leak.why ? '<details style="margin-top:6px;"><summary style="font-size:10px;color:var(--t3);cursor:pointer;list-style:none;user-select:none;">How is this calculated? ▾</summary><div style="font-size:10px;color:var(--t3);line-height:1.6;margin-top:6px;padding:8px;background:rgba(255,255,255,.03);border-radius:6px;">' + leak.why + '</div></details>' : '') +
+    '</div>';
     grid.appendChild(card);
   });
 
-  // ── Render Revenue Opportunities ─────────────────────────────────────────────
+  // ── REVENUE OPPORTUNITIES ─────────────────────────────────────────────────────
+  var opportunities = [];
+  if (leadCount + sqlCount > 10 && winRate > 0 && avgDeal > 0) {
+    var contactsInFunnel = leadCount + sqlCount;
+    var estimatedDeals = Math.round(contactsInFunnel * (winRate / 100));
+    opportunities.push({
+      icon: '🎯', color: '#10b981', tag: 'PIPELINE',
+      title: 'Pipeline from Active Leads',
+      amount: Math.round(estimatedDeals * avgDeal / 12),
+      period: '/mo potential',
+      desc: fmt(contactsInFunnel) + ' contacts in Lead/SQL stage with no deal. At your ' + winRate + '% win rate — ' + fmt(estimatedDeals) + ' potential deals worth ' + fmtFull(estimatedDeals * avgDeal) + '.',
+    });
+  }
+  if (expiredQ > 3 && avgDeal > 0) {
+    opportunities.push({
+      icon: '📬', color: '#a78bfa', tag: 'QUICK WIN',
+      title: 'Expired Quote Win-Back',
+      amount: Math.round(expiredQ * avgDeal * 0.40),
+      period: ' one-time recovery',
+      desc: 'Send one re-engagement email to ' + expiredQ + ' expired quote contacts. At 40% win-back rate: ' + fmtFull(Math.round(expiredQ * avgDeal * 0.40)) + ' in recovered revenue.',
+    });
+  }
+  if (archiveCandidates > 100 && avgDeal > 0) {
+    opportunities.push({
+      icon: '🔄', color: '#06b6d4', tag: 'MEDIUM',
+      title: 'Dormant Contact Reactivation',
+      amount: Math.round(archiveCandidates * 0.02 * avgDeal),
+      period: ' from re-engagement',
+      desc: fmt(archiveCandidates) + ' cold contacts. A win-back sequence converts 1-3% — at your avg deal size: ' + fmtFull(Math.round(archiveCandidates * 0.02 * avgDeal)) + ' potential.',
+    });
+  }
+  if (winRate > 0 && winRate < 25 && closedWonRevenue > 0) {
+    var revenueGain = Math.round(closedWonRevenue * (25/winRate - 1) * 0.5 / 12);
+    if (revenueGain > 500) {
+      opportunities.push({
+        icon: '📈', color: '#f59e0b', tag: 'STRATEGIC',
+        title: 'Win Rate Improvement',
+        amount: revenueGain,
+        period: '/mo from coaching',
+        desc: 'Win rate ' + winRate + '% vs 25% benchmark. Loss-reason tracking + rep coaching could recover ' + fmtMoney(revenueGain) + '/mo.',
+      });
+    }
+  }
+
   if (opportunities.length > 0) {
     var oppSection = document.getElementById('opportunities-section');
     if (!oppSection) {
@@ -799,41 +865,33 @@ function renderLeaks(data, auditId) {
       if (actionBar) grid.parentNode.insertBefore(oppSection, actionBar);
       else grid.parentNode.appendChild(oppSection);
     }
-
-    var totalOpp = opportunities.reduce(function(s,o){ return s+(o.amount||0); }, 0);
-
+    var totalOpp = opportunities.reduce(function(s,o){return s+(o.amount||0);},0);
     oppSection.innerHTML =
-      '<div style="margin-top:40px;margin-bottom:16px;">' +
-        '<div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#10b981;margin-bottom:8px;display:flex;align-items:center;gap:8px;">' +
-          '<span style="flex:1;max-width:40px;height:1px;background:rgba(16,185,129,.3);"></span>' +
-          'Revenue Opportunities' +
-          '<span style="flex:1;max-width:40px;height:1px;background:rgba(16,185,129,.3);"></span>' +
+      '<div style="margin-top:48px;margin-bottom:16px;text-align:center;">' +
+        '<div style="font-family:var(--mono);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#10b981;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;">' +
+          '<span style="flex:1;max-width:40px;height:1px;background:rgba(16,185,129,.3);"></span>Revenue Opportunities<span style="flex:1;max-width:40px;height:1px;background:rgba(16,185,129,.3);"></span>' +
         '</div>' +
-        '<div style="text-align:center;font-size:clamp(22px,3vw,32px);font-weight:800;font-family:var(--font);color:#10b981;margin-bottom:4px;">' + fmtFull(totalOpp) + ' <span style="font-size:14px;font-weight:400;color:var(--t2);">in identified opportunities</span></div>' +
-        '<div style="text-align:center;font-size:13px;color:var(--t2);margin-bottom:24px;">The flip side of leaks — revenue you could generate from data you already have</div>' +
+        '<div style="font-size:clamp(22px,3vw,32px);font-weight:800;font-family:var(--font);color:#10b981;margin-bottom:4px;">' + fmtFull(totalOpp) + ' <span style="font-size:14px;font-weight:400;color:var(--t2);">identified upside</span></div>' +
+        '<div style="font-size:13px;color:var(--t2);margin-bottom:24px;">Revenue you could generate from data you already have</div>' +
       '</div>' +
       '<div class="leaks-grid">' +
-        opportunities.map(function(opp) {
-          return '<div class="leak-card" style="--card-color:' + opp.color + ';--card-bg:' + opp.color + '12;">' +
+        opportunities.map(function(o){
+          return '<div class="leak-card" style="--card-color:' + o.color + ';--card-bg:' + o.color + '12;">' +
             '<div class="leak-card-inner">' +
-              '<div class="leak-header">' +
-                '<div class="leak-icon">' + opp.icon + '</div>' +
-                '<div class="leak-badge" style="color:' + opp.color + ';background:' + opp.color + '22;border:1px solid ' + opp.color + '44;">' + opp.tag + '</div>' +
-              '</div>' +
-              '<div class="leak-amount" style="color:' + opp.color + ';">' + fmtFull(opp.amount) + '<span class="leak-period">' + opp.period + '</span></div>' +
-              '<div class="leak-title">' + opp.title + '</div>' +
-              '<div class="leak-desc">' + opp.desc + '</div>' +
-            '</div>' +
-          '</div>';
+              '<div class="leak-header"><div class="leak-icon">' + o.icon + '</div><div class="leak-badge" style="color:' + o.color + ';background:' + o.color + '22;border:1px solid ' + o.color + '44;">' + o.tag + '</div></div>' +
+              '<div class="leak-amount" style="color:' + o.color + ';">' + fmtFull(o.amount) + '<span class="leak-period">' + o.period + '</span></div>' +
+              '<div class="leak-title">' + o.title + '</div>' +
+              '<div class="leak-desc">' + o.desc + '</div>' +
+            '</div></div>';
         }).join('') +
       '</div>';
-
   }
 
-  // Show
   document.getElementById('loading-state').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
 }
+
+
 
 // ── Counter animation ─────────────────────────────────────────────────────────
 function animateCounter(target) {

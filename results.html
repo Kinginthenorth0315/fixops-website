@@ -239,6 +239,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
     </div>
   </div>
 
+  <!-- Post-Audit Risk Score -->
+  <div id="post-audit-risk" style="display:none;flex-direction:row;align-items:center;justify-content:space-between;
+    gap:16px;padding:14px 20px;border-radius:12px;margin:0 0 16px;transition:all .3s;"></div>
+
   <!-- Portal snap bar -->
   <div class="snap-bar" id="portal-snap-bar" style="display:none;"></div>
 
@@ -357,10 +361,36 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 
   <!-- CTA -->
   <div class="cta-section" id="cta-section" style="display:none;">
-    <div class="cta-badge">Free 30-Minute Strategy Call</div>
-    <div class="cta-title">Get Your Prioritized Fix Plan</div>
-    <div class="cta-desc">We will personally review every finding, walk you through what to fix first, and send you a written action plan with flat-rate pricing for each item. No obligation, no sales pitch.</div>
-    <a href="https://fixops.io/#pricing" class="cta-btn">Book Your Free Strategy Call →</a>
+    <div class="cta-badge">FixOps Professional Services</div>
+    <div class="cta-title">We Fix HubSpot Portals for a Living</div>
+    <div class="cta-desc">Every issue flagged above is something we have fixed on a real portal. We know the exact steps, the edge cases, and the fastest path to a clean result — because this is all we do.</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:24px 0;text-align:left;">
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;">
+        <div style="font-size:20px;margin-bottom:6px;">📋</div>
+        <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;">Written Scope First</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">Flat-rate quote per issue before any work starts. You know exactly what you're getting.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;">
+        <div style="font-size:20px;margin-bottom:6px;">⚡</div>
+        <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;">Fast Turnaround</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">Most issues resolved within 1–5 business days. Critical issues prioritized same day.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;">
+        <div style="font-size:20px;margin-bottom:6px;">🔒</div>
+        <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;">HubSpot Certified</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">Every fix documented, tested, and handed over with a clear change log. No black boxes.</div>
+      </div>
+      <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:14px 16px;">
+        <div style="font-size:20px;margin-bottom:6px;">📈</div>
+        <div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;">Revenue First</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">We prioritize fixes by dollar impact. Your highest-value leaks get fixed first.</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" class="cta-btn" style="display:inline-flex;align-items:center;gap:8px;">📅 Book a Free 30-Min Call</a>
+      <a href="https://fixops.io/#pricing" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;border:1px solid rgba(124,58,237,.35);border-radius:10px;color:rgba(255,255,255,.65);font-size:14px;font-weight:600;text-decoration:none;">View All Plans →</a>
+    </div>
+    <div style="margin-top:20px;font-size:11px;color:rgba(255,255,255,.25);">No obligation · No retainer · Flat-rate per project · 24hr response guaranteed</div>
   </div>
 
   <!-- Loading state -->
@@ -577,16 +607,40 @@ function showResults(data) {
   document.getElementById('score-company').textContent = company;
   var gradeEl = document.getElementById('score-grade');
   // Grade label with business context
-  var gradeContext = ovr >= 85 ? 'Excellent — your HubSpot is working. Minor tuning only.' :
-    ovr >= 72 ? 'Good — solid foundation with fixable gaps.' :
-    ovr >= 55 ? 'Needs Attention — revenue leaks active, fix guides included.' :
-    'Critical — significant revenue risk. Prioritize immediately.';
+  // CRM Trust framing — what the score means for leadership decisions
+  var trustPct = ovr >= 85 ? 92 : ovr >= 72 ? 74 : ovr >= 55 ? 52 : 31;
+  var gradeContext = ovr >= 85 ? 'Excellent — leadership is making decisions on reliable data.' :
+    ovr >= 72 ? 'Good — mostly trustworthy, a few gaps affecting reporting accuracy.' :
+    ovr >= 55 ? 'Needs Attention — your reports are ' + trustPct + '% reliable. Revenue leaks active.' :
+    'Critical — decisions based on this CRM carry significant risk. ' + trustPct + '% data reliability.';
   gradeEl.textContent = gradeContext;
   gradeEl.style.background = gradeBg;
   gradeEl.style.color = color;
   document.getElementById('stat-critical').textContent = criticals;
   document.getElementById('stat-warnings').textContent = warnings;
   document.getElementById('stat-waste').textContent = fmtMoney(waste)+'/mo';
+
+  // ── Post-Audit Risk Score ─────────────────────────────────────────────────
+  var riskEl = document.getElementById('post-audit-risk');
+  if (riskEl) {
+    var riskLevel  = ovr >= 75 ? 'LOW' : ovr >= 55 ? 'MEDIUM' : 'HIGH';
+    var riskColor  = ovr >= 75 ? '#10b981' : ovr >= 55 ? '#f59e0b' : '#f43f5e';
+    var riskBg     = ovr >= 75 ? 'rgba(16,185,129,.08)' : ovr >= 55 ? 'rgba(245,158,11,.08)' : 'rgba(244,63,94,.08)';
+    var newIssue30 = ovr >= 75 ? '20%' : ovr >= 55 ? '60%' : '90%';
+    riskEl.style.display = 'flex';
+    riskEl.innerHTML =
+      '<div style="flex:1;">' +
+        '<div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);font-family:monospace;margin-bottom:4px;">Portal Risk Level</div>' +
+        '<div style="font-size:20px;font-weight:900;color:' + riskColor + ';letter-spacing:.5px;">' + riskLevel + ' RISK</div>' +
+        '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:3px;">~' + newIssue30 + ' probability of new critical issues in next 30 days</div>' +
+      '</div>' +
+      '<div style="text-align:right;">' +
+        '<div style="font-size:10px;color:rgba(255,255,255,.3);margin-bottom:4px;">Data reliability</div>' +
+        '<div style="font-size:18px;font-weight:800;color:' + riskColor + ';">' + trustPct + '%</div>' +
+      '</div>';
+    riskEl.style.background = riskBg;
+    riskEl.style.border = '1px solid ' + riskColor + '30';
+  }
 
   // ── Snap bar ──────────────────────────────────────────────────────────────
   var oldBar = document.getElementById('portal-snap-bar');
@@ -595,16 +649,30 @@ function showResults(data) {
   bar.id = 'portal-snap-bar';
   bar.className = 'snap-bar';
 
+  // Pipeline Reality — what's real vs inflated
+  var pipeReality = '';
+  if (ps.openPipelineValue > 0 && ps.zeroDollarPct < 80) {
+    var realPipe = Math.max(0, ps.openPipelineValue - (ps.stalledPipelineValue||0));
+    var inflatedPct = ps.openPipelineValue > 0 ? Math.round((ps.openPipelineValue - realPipe) / ps.openPipelineValue * 100) : 0;
+    pipeReality = inflatedPct > 10 ? ' (-' + inflatedPct + '% phantom)' : '';
+  }
+  // Lead response time snap item
+  var lrt = ps.leadResponseTime || null;
+  var lrtSnap = lrt && lrt.recentContacts > 5
+    ? { val: (lrt.slowResponsePct > 0 ? lrt.slowResponsePct + '% dark' : 'On track'), lbl: 'Lead Response' }
+    : null;
+
   var snapItems = [
     { val: fmt(ps.contacts||0),   lbl: 'Contacts' },
     { val: fmt(ps.companies||0),  lbl: 'Companies' },
-    { val: fmt(ps.deals||0),      lbl: 'Open Deals' },
+    { val: ps.openPipelineValue > 0 ? fmtMoney(ps.openPipelineValue) + pipeReality : fmt(ps.deals||0)+' deals', lbl: 'Pipeline' },
     { val: fmt(ps.tickets||0),    lbl: 'Tickets' },
     { val: fmt(ps.workflows||0),  lbl: 'Workflows' },
     { val: fmt(ps.forms||0),      lbl: 'Forms' },
     { val: fmt(ps.users||0),      lbl: 'Users' },
     { val: fmt(ps.lists||0),      lbl: 'Lists' },
   ];
+  if (lrtSnap) snapItems.push(lrtSnap);
   // Add conditional items based on what the portal has
   if (ps.sequences > 0)      snapItems.push({ val: fmt(ps.sequences), lbl: 'Sequences' });
   if (ps.kbArticleCount > 0) snapItems.push({ val: fmt(ps.kbArticleCount), lbl: 'KB Articles' });
@@ -754,17 +822,58 @@ function showResults(data) {
     var sc = issue.severity==='critical' ? '#f43f5e' : issue.severity==='warning' ? '#f59e0b' : '#60a5fa';
     var scC = issue.severity || 'info';
 
+    // Build expanded content — detail, guide, FixOps service CTA
+    var dimMap = {
+      'Pipeline Integrity':'Pipeline','Service Health':'Service','Automation Health':'Automation',
+      'Marketing Health':'Marketing','Reporting Quality':'Reporting','Team Adoption':'Sales',
+      'Configuration & Security':'Configuration','Data Integrity':'Data'
+    };
+    var dimLabel = dimMap[issue.dimension] || (issue.dimension || 'General');
+
     var detailHtml = '';
     if (issue.detail) {
-      detailHtml += '<div class="detail-block"><div class="detail-label">Why This Matters</div><div class="detail-text">'+esc(issue.detail)+'</div></div>';
+      detailHtml = '<div class="detail-block">' +
+        '<div class="detail-label">🔍 Why This Matters</div>' +
+        '<div class="detail-text">'+esc(issue.detail)+'</div>' +
+        '</div>';
     }
+
     var guideHtml = '';
     if (issue.guide && issue.guide.length) {
-      guideHtml = '<div class="guide-block"><div class="guide-label">How to Fix It</div>'+
+      guideHtml = '<div class="guide-block">' +
+        '<div class="guide-label">📋 Step-by-Step Fix Guide</div>' +
         issue.guide.map(function(step, i){
           return '<div class="guide-step"><div class="guide-num">'+(i+1)+'</div><div>'+esc(step)+'</div></div>';
-        }).join('')+'</div>';
+        }).join('') +
+        '</div>';
     }
+
+    // FixOps service pitch — specific to each issue type
+    var sevLabel = scC.toUpperCase();
+    var timeEst = issue.severity==='critical' ? 'Typically 1–3 days to resolve' :
+                  issue.severity==='warning' ? 'Typically 2–5 days to resolve' : 'Typically half-day to 1 day';
+    var fixImpact = issue.impact || 'Revenue and data quality improvement';
+
+    var serviceHtml = '<div style="margin-top:16px;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.25);border-radius:12px;padding:16px 18px;">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+        '<div style="flex:1;min-width:200px;">' +
+          '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:6px;">FixOps Can Fix This For You</div>' +
+          '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">We have fixed this exact issue on 100+ portals.</div>' +
+          '<div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:10px;">' +
+            timeEst + ' · Flat-rate quote before work starts · No obligation.' +
+          '</div>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+            '<button onclick="event.stopPropagation();fixItForMe('+idx+')" style="padding:8px 16px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🛠 Get a Quote</button>' +
+            '<a href="https://calendly.com/matthew-fixops/30min" target="_blank" onclick="event.stopPropagation()" style="padding:8px 16px;background:transparent;border:1px solid rgba(124,58,237,.35);border-radius:8px;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);text-decoration:none;display:inline-flex;align-items:center;">📅 Book a Call</a>' +
+          '</div>' +
+        '</div>' +
+        '<div style="text-align:center;padding:10px 14px;background:rgba(0,0,0,.2);border-radius:8px;min-width:100px;flex-shrink:0;">' +
+          '<div style="font-size:10px;color:rgba(255,255,255,.35);font-family:monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Time to Fix</div>' +
+          '<div style="font-size:14px;font-weight:700;color:#a78bfa;">' + (issue.severity==='critical'?'1–3 days':issue.severity==='warning'?'2–5 days':'<1 day') + '</div>' +
+          '<div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:4px;">with FixOps</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
 
     var card = document.createElement('div');
     card.className = 'issue-card';
@@ -785,19 +894,16 @@ function showResults(data) {
           '<div class="i-impact">'+
             '<span>💸</span>'+
             '<span>'+esc(issue.impact||'')+'</span>'+
-            ((issue.dimension ? (function(d){
-          var n={'Pipeline Integrity':'Pipeline','Service Health':'Service','Automation Health':'Automation',
-                 'Marketing Health':'Marketing','Reporting Quality':'Reporting','Team Adoption':'Sales',
-                 'Configuration & Security':'Configuration'};
-          return '<span class="i-dim">'+esc(n[d]||d)+'</span>';
-        })(issue.dimension) : ''))+
+            '<span class="i-dim">'+esc(dimLabel)+'</span>'+
           '</div>'+
         '</div>'+
-        '<div class="i-arrow">▾</div>'+
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
+          '<div class="i-arrow">▾</div>' +
+          (issue.severity==='critical' ? '<span style="font-size:9px;font-weight:700;color:#f43f5e;background:rgba(244,63,94,.12);padding:2px 6px;border-radius:4px;white-space:nowrap;">⚡ Fix First</span>' : '') +
+        '</div>'+
       '</div>'+
       '<div class="issue-expand">'+
-        detailHtml + guideHtml +
-        '<button class="fix-me-btn" onclick="event.stopPropagation();fixItForMe('+idx+')">🛠 Fix It For Me</button>'+
+        detailHtml + guideHtml + serviceHtml +
       '</div>';
 
     // For free plans: strip guide steps and fix-it button
@@ -822,7 +928,7 @@ function showResults(data) {
         '<div style="font-size:28px;margin-bottom:10px;">🔒</div>' +
         '<div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:6px;">'+issuesHidden+' More Issues Hidden</div>' +
         '<div style="font-size:13px;color:var(--t2);max-width:440px;margin:0 auto 18px;">Your free scan found ' + sorted.length + ' total issues. Upgrade to see all of them with step-by-step fix guides, revenue impact estimates, and Fix-It service options.</div>' +
-        '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:11px 28px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;margin-right:8px;">Get Deep Audit — $399 →</a>' +
+        '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:11px 28px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;margin-right:8px;">Get FixOps Diagnostic — $399 →</a>' +
         '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:11px 20px;background:transparent;color:var(--v3);border:1px solid rgba(124,58,237,.4);border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;">See All Plans</a>' +
       '</div>';
     list.appendChild(hiddenBanner);
@@ -960,12 +1066,29 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
       tagColor: teamTagColor });
   }
 
+  // Lead Response Time intel card
+  if (lrt && lrt.recentContacts > 5) {
+    var lrtColor2 = lrt.slowResponsePct > 50 ? '#f43f5e' : lrt.slowResponsePct > 25 ? '#f59e0b' : '#10b981';
+    var lrtTag    = lrt.slowResponsePct > 50 ? 'critical' : lrt.slowResponsePct > 25 ? 'warning' : 'healthy';
+    var lrtDesc2  = lrt.estimatedUncontacted > 0
+      ? lrt.estimatedUncontacted + ' leads potentially never contacted in last 90 days. ' + lrt.recentCallCount + ' calls + ' + lrt.recentMeetingCount + ' meetings logged vs ' + lrt.recentContacts + ' new contacts.'
+      : lrt.recentCallCount + ' calls and ' + lrt.recentMeetingCount + ' meetings logged for ' + lrt.recentContacts + ' new contacts in 90 days.';
+    var lrtImpact = lrt.leadLossValue > 0
+      ? '$' + Math.round(lrt.leadLossValue).toLocaleString() + '/mo estimated from slow response'
+      : 'Research shows 78% of deals go to first responder';
+    cards.push({ hub:'Lead Response', icon:'⏱️',
+      stat: lrt.slowResponsePct > 0 ? lrt.slowResponsePct + '% uncontacted' : 'On track',
+      desc: lrtDesc2,
+      tag: lrtImpact,
+      tagColor: lrtColor2 });
+  }
+
   // Upgrade prompt for free users
   var upgradeTitle = '', upgradeDesc = '', cardsHtml = '';
   var isPaid = plan && plan !== 'free';
   if (!isPaid) {
     upgradeTitle = 'Unlock Full Portal Intelligence';
-    upgradeDesc  = 'Upgrade to Deep Audit for a complete scan across all your data — contacts, deals, workflows, and more.';
+    upgradeDesc  = 'Upgrade to FixOps Diagnostic for a complete scan across all your data — contacts, deals, workflows, and more.';
     // Build compelling upgrade section
     var wasted = fmtMoney(waste);
     var criticalStr = criticals + ' critical issue' + (criticals!==1?'s':'');
@@ -977,7 +1100,7 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
             '<div style="font-size:10px;font-weight:700;font-family:var(--mono);color:var(--v3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">UPGRADE TO DEEP AUDIT</div>' +
             '<div style="font-size:17px;font-weight:800;color:var(--t1);margin-bottom:8px;line-height:1.3;">This free scan found '+criticalStr+(waste>0?' and '+wasteStr:'')+'.<br>The full portal scan goes deeper.</div>' +
             '<div style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:16px;">' +
-              'Free scans are capped at 1,000 contacts. A Deep Audit lifts all limits — every deal, workflow, contact, and automation gets analyzed. Most portals surface 2–4× more issues with no cap.' +
+              'Free scans are capped at 1,000 contacts. FixOps Diagnostic lifts all limits — every deal, workflow, contact, and automation gets analyzed. Most portals surface 2–4× more issues with no cap.' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:10px 22px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">Get Full Audit →</a>' +
           '</div>' +
@@ -1044,10 +1167,31 @@ function buildReportingUpsellCTA(plan, waste, criticals, company) {
             '<span style="color:#a78bfa;">Monthly monitoring catches this automatically.</span>' +
           '</div>' +
           '<div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;max-width:580px;">' +
-            'This was a one-time scan. HubSpot portals develop new issues every week — stale deals pile up, ' +
-            'workflows break silently, contacts go cold. Pulse and Pro monitor automatically so nothing slips past you.' +
+            'This was a one-time scan. HubSpot portals develop 3–5 new issues every month. Without monitoring, they compound silently — you will not know until pipeline is already affected.' +
           '</div>' +
         '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 24px 20px;">' +
+        '<div style="background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.15);border-radius:10px;padding:16px;">' +
+          '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(244,63,94,.7);font-family:monospace;margin-bottom:8px;">Without Monitoring</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.4);display:flex;flex-direction:column;gap:5px;">' +
+            '<div><span style="color:#f43f5e;">✗</span> Issues compound — 3–5 new/month</div>' +
+            '<div><span style="color:#f43f5e;">✗</span> Broken workflows undetected for weeks</div>' +
+            '<div><span style="color:#f43f5e;">✗</span> Ghost seats grow as team turns over</div>' +
+            '<div><span style="color:#f43f5e;">✗</span> Pipeline inflates again, forecasts break</div>' +
+            '<div><span style="color:#f43f5e;">✗</span> Same audit needed in 90 days</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.15);border-radius:10px;padding:16px;">' +
+          '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#10b981;font-family:monospace;margin-bottom:8px;">With FixOps Sentinel</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.55);display:flex;flex-direction:column;gap:5px;">' +
+            '<div><span style="color:#10b981;">✓</span> Daily scans catch issues before pipeline is hit</div>' +
+            '<div><span style="color:#10b981;">✓</span> Instant alert when any workflow breaks</div>' +
+            '<div><span style="color:#10b981;">✓</span> Ghost seats flagged within 24 hours</div>' +
+            '<div><span style="color:#10b981;">✓</span> Weekly delta: what improved vs got worse</div>' +
+            '<div><span style="color:#10b981;">✓</span> Avg ROI 5–10x — most see it in 30 days</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
         '<div style="flex-shrink:0;text-align:center;padding:20px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:14px;min-width:160px;">' +
           '<div style="font-size:11px;color:#a78bfa;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Est. Monthly Waste</div>' +
           '<div style="font-size:36px;font-weight:900;color:#fff;line-height:1;">' + (waste > 0 ? fmtMoney(waste) : '—') + '</div>' +
@@ -1320,7 +1464,7 @@ function buildFixPlan(data) {
       '<div class="fp-issues">'+issueListHtml+'</div>'+
       '<div class="fp-footer" style="display:flex;align-items:center;justify-content:space-between;gap:8px;">'+
         '<span class="fp-count-tag" style="background:'+tagBg+';color:'+tagColor+';">'+esc(tagText)+'</span>'+
-        '<button onclick="event.stopPropagation();openFixItModal();" style="flex-shrink:0;padding:5px 12px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.35);border-radius:6px;color:#a78bfa;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);">Fix These →</button>'
+        '<a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="flex-shrink:0;padding:5px 12px;background:linear-gradient(135deg,rgba(124,58,237,.2),rgba(37,99,235,.15));border:1px solid rgba(124,58,237,.4);border-radius:6px;color:#a78bfa;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Get Quote →</a>'+
       '</div>';
 
     grid.appendChild(card);
@@ -1982,45 +2126,90 @@ function copyShareUrl() {
   </div>
 </div>
 
-<div id="fixme-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.87);z-index:9999;align-items:center;justify-content:center;padding:20px;overflow-y:auto;" onclick="if(event.target===this)closeFixMeModal()">
-  <div style="background:#0c0c14;border:1px solid #2a2a45;border-radius:20px;padding:36px;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.7);">
-    <button onclick="closeFixMeModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.4);font-size:24px;cursor:pointer;line-height:1;padding:4px 8px;">&#x2715;</button>
+<div id="fixme-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;padding:20px;overflow-y:auto;" onclick="if(event.target===this)closeFixMeModal()">
+  <div style="background:#0a0a12;border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:36px;max-width:520px;width:100%;position:relative;box-shadow:0 24px 80px rgba(124,58,237,.15);">
+    <button onclick="closeFixMeModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.3);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px;">&#x2715;</button>
     <div id="fixme-form">
-      <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:10px;">Fix It For Me</div>
-      <h3 style="font-size:18px;font-weight:900;color:#fff;letter-spacing:-.5px;margin-bottom:6px;line-height:1.3;padding-right:32px;" id="fixme-issue-title">Issue</h3>
-      <div id="fixme-issue-impact" style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:22px;line-height:1.6;font-family:monospace;"></div>
-
-      <!-- Option 1: Book a call -->
-      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" onclick="submitFixMeBackground()" style="display:flex;align-items:center;gap:12px;width:100%;padding:14px 18px;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;box-sizing:border-box;margin-bottom:10px;">
-        <span style="font-size:20px;">📅</span>
+      <!-- Header -->
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+        <div style="width:36px;height:36px;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">🛠</div>
         <div>
-          <div>Book a 30-minute call</div>
-          <div style="font-size:11px;font-weight:400;opacity:.7;margin-top:2px;">We review this issue together and agree on next steps</div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;font-family:monospace;text-transform:uppercase;">FixOps Professional Services</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.4);">We fix this. You focus on revenue.</div>
         </div>
+      </div>
+
+      <!-- Issue being fixed -->
+      <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:14px 16px;margin-bottom:20px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.3);font-family:monospace;text-transform:uppercase;margin-bottom:6px;">Issue Flagged</div>
+        <div style="font-size:15px;font-weight:800;color:#fff;line-height:1.35;margin-bottom:6px;" id="fixme-issue-title">Issue</div>
+        <div id="fixme-issue-impact" style="font-size:12px;color:rgba(255,255,255,.45);line-height:1.6;font-family:monospace;"></div>
+      </div>
+
+      <!-- What we do -->
+      <div style="margin-bottom:20px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:10px;">What happens next</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:rgba(255,255,255,.6);">
+            <span style="width:20px;height:20px;border-radius:50%;background:rgba(124,58,237,.2);color:#a78bfa;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
+            <span><strong style="color:rgba(255,255,255,.85);">We review your portal</strong> — access the exact records flagged and understand the scope</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:rgba(255,255,255,.6);">
+            <span style="width:20px;height:20px;border-radius:50%;background:rgba(124,58,237,.2);color:#a78bfa;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+            <span><strong style="color:rgba(255,255,255,.85);">Flat-rate quote sent</strong> — clear price, clear deliverable, no hourly billing surprises</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:flex-start;font-size:12px;color:rgba(255,255,255,.6);">
+            <span style="width:20px;height:20px;border-radius:50%;background:rgba(124,58,237,.2);color:#a78bfa;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
+            <span><strong style="color:rgba(255,255,255,.85);">We fix it</strong> — HubSpot-certified. Documented. Tested. Done right.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary CTA: Book a call -->
+      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" onclick="submitFixMeBackground()" style="display:flex;align-items:center;gap:14px;width:100%;padding:16px 20px;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;box-sizing:border-box;margin-bottom:10px;transition:opacity .2s;" onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+        <span style="font-size:22px;flex-shrink:0;">📅</span>
+        <div style="flex:1;">
+          <div>Book a 30-min strategy call — free</div>
+          <div style="font-size:11px;font-weight:400;opacity:.75;margin-top:2px;">We walk through your top issues live and quote everything in one call</div>
+        </div>
+        <span style="font-size:16px;opacity:.6;">→</span>
       </a>
 
-      <!-- Option 2: Send details -->
-      <button id="fixme-submit-btn" onclick="submitFixMe()" style="display:flex;align-items:center;gap:12px;width:100%;padding:14px 18px;background:transparent;border:1px solid rgba(124,58,237,.35);border-radius:10px;color:rgba(255,255,255,.75);font-size:14px;font-weight:700;cursor:pointer;text-align:left;box-sizing:border-box;margin-bottom:20px;font-family:'Outfit',sans-serif;">
-        <span style="font-size:20px;">✉️</span>
-        <div>
-          <div>Send my details — we'll reach out</div>
-          <div style="font-size:11px;font-weight:400;opacity:.6;margin-top:2px;">We'll contact you within 1 business day</div>
+      <!-- Secondary CTA: Send details -->
+      <button id="fixme-submit-btn" onclick="submitFixMe()" style="display:flex;align-items:center;gap:14px;width:100%;padding:14px 20px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);border-radius:12px;color:rgba(255,255,255,.7);font-size:13px;font-weight:600;cursor:pointer;text-align:left;box-sizing:border-box;margin-bottom:20px;font-family:'Outfit',sans-serif;transition:all .2s;" onmouseover="this.style.background='rgba(124,58,237,.15)'" onmouseout="this.style.background='rgba(124,58,237,.08)'">
+        <span style="font-size:20px;flex-shrink:0;">✉️</span>
+        <div style="flex:1;">
+          <div>Send my details — we'll reach out within 24hrs</div>
+          <div style="font-size:11px;font-weight:400;opacity:.6;margin-top:2px;">We'll contact you with scope, timeline, and a flat-rate quote</div>
         </div>
       </button>
 
-      <!-- What to expect -->
-      <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:16px;">
-        <div style="font-size:11px;color:rgba(255,255,255,.3);line-height:1.8;">
-          Either way — we review the specific issue flagged in your portal, agree on scope and approach, and give you a clear price before any work starts. No obligation.
+      <!-- Trust signals -->
+      <div style="border-top:1px solid rgba(255,255,255,.05);padding-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;">
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#a78bfa;">100+</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:2px;">Portals Fixed</div>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#10b981;">$0</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:2px;">Obligation</div>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#f59e0b;">24hr</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:2px;">Response</div>
         </div>
       </div>
     </div>
-    <div id="fixme-success" style="display:none;text-align:center;padding:20px 0;">
-      <div style="font-size:48px;margin-bottom:14px;">✅</div>
-      <div style="font-size:20px;font-weight:900;color:#fff;margin-bottom:8px;">Got it — we'll be in touch</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:22px;">We'll reach out within <strong style="color:#a78bfa;">1 business day</strong> to discuss this issue and what fixing it looks like for your portal.</div>
-      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="display:inline-block;padding:11px 22px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:8px;color:#a78bfa;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:10px;">📅 Or book a call now — skip the wait</a>
-      <div><button onclick="closeFixMeModal()" style="margin-top:8px;background:none;border:none;color:rgba(255,255,255,.25);font-size:12px;cursor:pointer;">Close</button></div>
+
+    <!-- Success state -->
+    <div id="fixme-success" style="display:none;text-align:center;padding:24px 0;">
+      <div style="font-size:52px;margin-bottom:16px;">✅</div>
+      <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:8px;letter-spacing:-.5px;">Request sent — we'll be in touch</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.45);line-height:1.8;margin-bottom:24px;max-width:360px;margin-left:auto;margin-right:auto;">
+        We'll reach out within <strong style="color:#a78bfa;">1 business day</strong> with a review of your specific issue and a flat-rate quote. No obligation to proceed.
+      </div>
+      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="display:inline-block;padding:12px 24px;background:linear-gradient(135deg,#7c3aed,#2563eb);border-radius:10px;color:#fff;font-size:13px;font-weight:700;text-decoration:none;margin-bottom:12px;">📅 Skip the wait — book a call now</a>
+      <div><button onclick="closeFixMeModal()" style="margin-top:6px;background:none;border:none;color:rgba(255,255,255,.2);font-size:12px;cursor:pointer;">Close</button></div>
     </div>
   </div>
 </div>

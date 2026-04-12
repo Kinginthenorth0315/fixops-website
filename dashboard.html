@@ -328,7 +328,7 @@ function renderDashboard(data) {
 
   // Plan pill
   const planColors = { pulse: 'pill-pulse', pro: 'pill-pro', command: 'pill-command' };
-  const planLabels = { pulse: 'Pulse Active', pro: 'Pro Plan', command: 'Agency', deep: 'Deep Audit', 'pro-audit': 'Pro Audit', free: 'Free Plan' };
+  const planLabels = { pulse: 'FixOps Monitor', pro: 'FixOps Sentinel', command: 'FixOps Command', deep: 'FixOps Diagnostic', 'pro-audit': 'FixOps Full Audit', free: 'Free Snapshot' };
   const isMonthly = ['pulse','pro','command'].includes(customer.plan);
   document.getElementById('plan-pill').innerHTML = `
     <span class="plan-pill ${planColors[customer.plan]||'pill-pulse'}">

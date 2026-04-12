@@ -1773,8 +1773,8 @@ async function loadData() {
     };
     var navBadge = document.getElementById('nav-plan-badge');
     if (navBadge) {
-      var planLabels2 = {free:'FREE SNAPSHOT',pulse:'PULSE · $299/mo',pro:'PRO · $549/mo',
-        command:'AGENCY · $999/mo','pro-audit':'PRO AUDIT','deep':'DEEP AUDIT'};
+      var planLabels2 = {free:'FREE SNAPSHOT',pulse:'MONITOR · $299/mo',pro:'SENTINEL · $549/mo',
+        command:'COMMAND · $999/mo','pro-audit':'FULL AUDIT · ONE-TIME','deep':'DIAGNOSTIC · ONE-TIME'};
       navBadge.textContent = planLabels2[auditPlan] || auditPlan.toUpperCase();
       navBadge.style.display = 'inline-block';
     }
@@ -1840,8 +1840,8 @@ async function loadFromToken(token) {
     // ── Nav badge ────────────────────────────────────────────────────────────
     const navPlanBadge = document.getElementById('nav-plan-badge');
     if (navPlanBadge) {
-      const planLabels = {free:'FREE SNAPSHOT',pulse:'PULSE · $299/mo',pro:'PRO · $549/mo',
-        command:'AGENCY · $999/mo','pro-audit':'PRO AUDIT','deep':'DEEP AUDIT'};
+      const planLabels = {free:'FREE SNAPSHOT',pulse:'MONITOR · $299/mo',pro:'SENTINEL · $549/mo',
+        command:'COMMAND · $999/mo','pro-audit':'FULL AUDIT','deep':'DIAGNOSTIC'};
       const planColors = {free:'#6b7280',pulse:'#3b82f6',pro:'#10b981',
         command:'#f59e0b','pro-audit':'#8b5cf6','deep':'#7c3aed'};
       navPlanBadge.textContent = planLabels[auditPlan] || auditPlan.toUpperCase();
@@ -1860,22 +1860,22 @@ async function loadFromToken(token) {
               '<span style="font-size:18px;">⚡</span>' +
               '<div>' +
                 '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">Free Snapshot — up to 1,000 contacts · 5 issues shown</div>' +
-                '<div style="font-size:11px;color:var(--t3);">Upgrade to Deep Audit ($399 one-time) or Pulse monthly ($299/mo) for the full portal scan, all issues, fix guides, and intelligence views.</div>' +
+                '<div style="font-size:11px;color:var(--t3);">Upgrade to FixOps Diagnostic ($399 one-time) or FixOps Monitor ($299/mo) for the full portal scan, all issues, fix guides, and intelligence views.</div>' +
               '</div>' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">See Plans →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isDeep) {
-        // Deep Audit ($399): basic views only — reporting dashboard locked
+        // FixOps Diagnostic ($399): basic views only — reporting dashboard locked
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
             '<div style="display:flex;align-items:center;gap:12px;">' +
               '<span style="font-size:20px;">📸</span>' +
               '<div>' +
-                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">Deep Audit — Full one-time scan complete</div>' +
+                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">FixOps Diagnostic — Full one-time scan complete</div>' +
                 '<div style="font-size:11px;color:var(--t3);line-height:1.6;">Rep intelligence, contact decay, AI builder, audit history, and 14 other views are locked. ' +
-                  '<strong style="color:#3b82f6;">Pulse ($299/mo)</strong> unlocks all of them with weekly automated monitoring.</div>' +
+                  '<strong style="color:#10b981;">FixOps Monitor ($299/mo)</strong> unlocks weekly scans. <strong style="color:#10b981;">FixOps Sentinel ($549/mo)</strong> unlocks everything.</div>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex;gap:8px;flex-shrink:0;">' +
@@ -1885,15 +1885,15 @@ async function loadFromToken(token) {
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isProAudit) {
-        // Pro Audit ($699): Portal Snapshot unlocked, monitoring/AI/history still need monthly
+        // FixOps Full Audit ($699): Portal Snapshot unlocked, monitoring/AI/history still need monthly
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
             '<div style="display:flex;align-items:center;gap:12px;">' +
               '<span style="font-size:20px;">🔬</span>' +
               '<div>' +
-                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">Pro Audit — Portal Snapshot + Intelligence Dashboard unlocked</div>' +
-                '<div style="font-size:11px;color:var(--t3);line-height:1.6;">You have access to all 17 intelligence views. ' +
-                  'Score trends, audit history, AI report builder, and daily monitoring require a monthly plan.</div>' +
+                '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">FixOps Full Audit — Portal Snapshot + Intelligence Dashboard unlocked</div>' +
+                '<div style="font-size:11px;color:var(--t3);line-height:1.6;">Your full audit is complete. ' +
+                  'Add weekly monitoring to keep your portal healthy — FixOps Monitor ($299/mo) runs automatically every Monday.</div>' +
               '</div>' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#3b82f6,#7c3aed);color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Add Weekly Monitoring →</a>' +
@@ -1904,8 +1904,34 @@ async function loadFromToken(token) {
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
             '<div style="display:flex;align-items:center;gap:10px;">' +
               '<span style="font-size:16px;">📡</span>' +
-              '<div style="font-size:12px;color:var(--t2);">Pulse Plan active — weekly scans running. <a href="https://fixops.io/#pricing" style="color:#3b82f6;font-weight:600;">Upgrade to Pro ($549/mo)</a> for daily monitoring, AI report builder, and advanced pipeline analytics.</div>' +
+              '<div style="font-size:13px;color:var(--t2);">FixOps Monitor — 15 core views active. <strong style="color:var(--t1);">17 intelligence views locked.</strong> ' +
+                '<a href="https://fixops.io/#pricing" style="color:#10b981;font-weight:700;">Upgrade to Sentinel ($549/mo)</a> ' +
+                'for rep intelligence, contact decay, deal risk, AI builder, and 12+ more advanced views.' +
+              '</div>' +
             '</div>' +
+            '<a href="https://fixops.io/#pricing" style="flex-shrink:0;padding:6px 14px;background:linear-gradient(135deg,#10b981,#059669);border-radius:7px;' +
+              'color:#fff;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade Now →</a>' +
+          '</div>';
+        bannerEl.style.display = 'block';
+      } else if (isProMonthly2) {
+        // Sentinel ($549/mo): full access — show status + upgrade hook to Command
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+              '<span style="font-size:16px;">🛡️</span>' +
+              '<div style="font-size:13px;color:var(--t2);">FixOps Sentinel — <strong style="color:#10b981;">All 38 views active.</strong> Daily scans running. ' +
+                '<span style="color:rgba(255,255,255,.35);">Need multi-portal coverage? </span>' +
+                '<a href="https://fixops.io/#pricing" style="color:#a78bfa;font-weight:700;">Upgrade to Command ($999/mo)</a> for 25 portals + white-label.' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        bannerEl.style.display = 'block';
+      } else if (isAgency) {
+        // Command ($999/mo): everything active
+        bannerEl.innerHTML =
+          '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<span style="font-size:16px;">⚡</span>' +
+            '<div style="font-size:13px;color:var(--t2);">FixOps Command — <strong style="color:#a78bfa;">Full multi-portal intelligence active.</strong> All views, all portals, all features.</div>' +
           '</div>';
         bannerEl.style.display = 'block';
       }
@@ -1915,13 +1941,21 @@ async function loadFromToken(token) {
     // Basic views: visible to all paid plans
     // Pulse views: locked for deep/pro-audit, full for pulse+
     // Pro views:   locked for pulse and below, full for pro+
-    const BASIC_VIEWS = ['overview','pipeline','revenue','engagement','marketing',
-      'service','tickets','automation','products','customobjects','setup','team',
-      'lists','sequences','company'];
-    const PULSE_VIEWS = ['rep','decay','health','formfunnel','prophealth','source',
-      'lifecycle','trends','roi','history','delta','billing','wfdeps','settings',
-      'utilization','enrichment','dealrisk'];
-    const PRO_VIEWS   = ['ai','velocity','forecast','funnel','contacts','conflicts'];
+    // MONITOR ($299/mo): Core 15 views — everything you need to track health
+    const BASIC_VIEWS    = ['overview','pipeline','revenue','marketing','service',
+      'tickets','automation','team','lists','sequences','company',
+      'products','customobjects','setup','engagement'];
+
+    // SENTINEL ($549/mo): Intelligence views — the "why" behind the health numbers
+    const SENTINEL_VIEWS = ['rep','decay','health','formfunnel','prophealth','source',
+      'lifecycle','trends','roi','delta','billing','wfdeps',
+      'utilization','enrichment','dealrisk','history','settings'];
+
+    // COMMAND / PRO-only: Advanced AI + predictive analytics
+    const PRO_VIEWS      = ['ai','velocity','forecast','funnel','contacts','conflicts'];
+
+    // Legacy alias for backward compat
+    const PULSE_VIEWS = SENTINEL_VIEWS;
 
     document.querySelectorAll('.sidebar-item').forEach(function(item) {
       var view = item.getAttribute('data-view') || item.getAttribute('onclick');
@@ -1931,32 +1965,25 @@ async function loadFromToken(token) {
       if (!viewName) return;
 
       var badge = '';
-      if (isFree) {
-        // Free: only overview unlocked
+      if (isFree || isOneTime) {
+        // Free + one-time: wall is shown, lock everything except overview briefly
         if (viewName !== 'overview') item.classList.add('locked-sidebar');
-      } else if (isDeep) {
-        // Deep audit ($399): basic views only, no reporting dashboard
-        if (PULSE_VIEWS.includes(viewName) || PRO_VIEWS.includes(viewName)) {
-          item.classList.add('locked-sidebar');
-          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(59,130,246,.2);color:#3b82f6;">PULSE</span>';
-        }
-        if (PRO_VIEWS.includes(viewName)) {
-          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.2);color:#10b981;">PRO</span>';
-        }
-      } else if (isProAudit) {
-        // Pro Audit ($699): gets Portal Snapshot = all PULSE views, still no PRO-only AI/daily
-        if (PRO_VIEWS.includes(viewName)) {
-          item.classList.add('locked-sidebar');
-          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.2);color:#10b981;">PRO</span>';
-        }
       } else if (isPulse) {
-        // Pulse ($299/mo): all PULSE views, pro-only AI/daily locked
+        // Monitor ($299/mo): BASIC_VIEWS only — SENTINEL and PRO locked
+        if (SENTINEL_VIEWS.includes(viewName)) {
+          item.classList.add('locked-sidebar');
+          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);">SENTINEL</span>';
+        }
         if (PRO_VIEWS.includes(viewName)) {
           item.classList.add('locked-sidebar');
-          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.2);color:#10b981;">PRO</span>';
+          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);">PRO</span>';
         }
+      } else if (isProMonthly2 || isAgency) {
+        // Sentinel ($549/mo) + Command ($999/mo): everything unlocked
+        // PRO_VIEWS (AI, velocity, forecast, etc.) are included in Sentinel
+        // Nothing locked for pro/command
       }
-      // isProMonthly and isAgency: everything unlocked
+      // All monthly plans: Command/Agency gets everything, Sentinel gets all 38 views
       if (badge) item.innerHTML += badge;
     });
 
@@ -2061,15 +2088,15 @@ async function loadFromToken(token) {
     });
   }
 
-  // Contextual upgrade banner — appears after 45s on any view for free users
-  if (isFree) {
-    setTimeout(function() {
-      var banner = document.getElementById('upgrade-float');
-      if (banner) {
-        banner.style.display = 'flex';
-        banner.style.animation = 'slideUp .3s ease';
-      }
-    }, 45000);
+  // ── PLAN GATING: Free = 30s preview then full wall. One-time = immediate full wall. ─────
+  if (!isMonthly) {
+    if (isOneTime) {
+      // Deep/Pro-Audit: no reporting access at all — show wall immediately
+      setTimeout(function() { showReportingWall(auditPlan); }, 100);
+    } else if (isFree) {
+      // Free: 30-second overview preview then full page wall
+      setTimeout(function() { showReportingWall('free'); }, 30000);
+    }
   }
 
   // ── BUILD ALL VIEWS — THIS WAS MISSING from loadFromToken ────────────────
@@ -2108,6 +2135,85 @@ function safeRun(fn) {
   try { fn(); } catch(e) { console.warn('View build error (' + fn.name + '):', e.message); }
 }
 
+
+// ── FULL-PAGE REPORTING WALL ────────────────────────────────────────────────
+function showReportingWall(plan) {
+  var planLabel = plan === 'free' ? 'Free Snapshot' :
+                  plan === 'deep' ? 'FixOps Diagnostic ($399)' :
+                  plan === 'pro-audit' ? 'FixOps Full Audit ($699)' : plan;
+  var isOneTimePlan = ['deep','pro-audit'].includes(plan);
+
+  var wall = document.getElementById('reporting-wall');
+  if (!wall) {
+    wall = document.createElement('div');
+    wall.id = 'reporting-wall';
+    document.body.appendChild(wall);
+  }
+
+  wall.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;z-index:9000;' +
+    'background:rgba(5,5,8,.97);display:flex;align-items:center;justify-content:center;' +
+    'padding:24px;backdrop-filter:blur(8px);';
+
+  var title = isOneTimePlan
+    ? 'Portal Snapshot is a monthly subscription'
+    : 'Your 30-second preview has ended';
+  var sub = isOneTimePlan
+    ? 'Your ' + planLabel + ' gives you full audit results with fix guides and revenue leaks. ' +
+      'The 38-view Portal Snapshot intelligence dashboard requires a monthly plan.'
+    : 'The free snapshot gives you a quick look at your portal health. ' +
+      'Unlock the full 38-view intelligence dashboard with a monthly plan.';
+
+  wall.innerHTML =
+    '<div style="max-width:520px;width:100%;text-align:center;">' +
+      // Lock icon
+      '<div style="width:64px;height:64px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);' +
+        'border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 24px;">🔒</div>' +
+      // Title
+      '<div style="font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;' +
+        'color:var(--brand-lt);margin-bottom:10px;">' + planLabel + '</div>' +
+      '<h2 style="font-size:clamp(22px,4vw,30px);font-weight:900;color:#fff;letter-spacing:-.5px;' +
+        'margin-bottom:12px;line-height:1.2;">' + title + '</h2>' +
+      '<p style="font-size:14px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:32px;max-width:400px;' +
+        'margin-left:auto;margin-right:auto;">' + sub + '</p>' +
+
+      // Plan choices
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;">' +
+        // Monitor
+        '<div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:18px;text-align:left;">' +
+          '<div style="font-size:11px;font-weight:700;color:#60a5fa;margin-bottom:4px;">FixOps Monitor</div>' +
+          '<div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;">$299<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.4);">/mo</span></div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:12px;line-height:1.5;">Weekly scans · 15 core views · New issue alerts · Ghost seat detection</div>' +
+          '<a href="https://fixops.io/#pricing" style="display:block;padding:8px;background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.35);' +
+            'border-radius:7px;color:#60a5fa;font-size:12px;font-weight:700;text-decoration:none;text-align:center;">Start Monitor →</a>' +
+        '</div>' +
+        // Sentinel
+        '<div style="background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:18px;text-align:left;position:relative;">' +
+          '<div style="position:absolute;top:-8px;left:50%;transform:translateX(-50%);background:#10b981;' +
+            'color:#fff;font-size:8px;font-weight:800;padding:2px 10px;border-radius:10px;white-space:nowrap;letter-spacing:1px;">⭐ MOST POPULAR</div>' +
+          '<div style="font-size:11px;font-weight:700;color:#10b981;margin-bottom:4px;margin-top:6px;">FixOps Sentinel</div>' +
+          '<div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:6px;">$549<span style="font-size:12px;font-weight:400;color:rgba(255,255,255,.4);">/mo</span></div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:12px;line-height:1.5;">Daily scans · All 38 views · AI builder · Audit history · Slack alerts</div>' +
+          '<a href="https://fixops.io/#pricing" style="display:block;padding:8px;background:linear-gradient(135deg,#10b981,#059669);' +
+            'border-radius:7px;color:#fff;font-size:12px;font-weight:700;text-decoration:none;text-align:center;">Start Sentinel →</a>' +
+        '</div>' +
+      '</div>' +
+
+      // What's included
+      '<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;' +
+        'padding:16px;margin-bottom:20px;text-align:left;">' +
+        '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:10px;">Monthly subscribers get</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">' +
+          ['38-view intelligence dashboard','Daily + weekly automated scans','Rep performance leaderboard','Contact decay scoring','Pipeline reality check','Slack + email alerts','AI report builder (Sentinel+)','Full audit history + trends'].map(function(f){
+            return '<div style="font-size:11px;color:rgba(255,255,255,.5);display:flex;gap:6px;">' +
+              '<span style="color:#10b981;">✓</span>' + f + '</div>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+
+      // Back button
+      '<a href="results.html" style="font-size:12px;color:rgba(255,255,255,.25);text-decoration:none;">← Back to audit results</a>' +
+    '</div>';
+}
 function initAllViews() {
   if (!DATA) { console.error('initAllViews called before DATA loaded'); return; }
   safeRun(buildOverview);
@@ -2159,7 +2265,8 @@ async function buildDealRisk(id) {
   var el = document.getElementById('dealrisk-content');
   if (!el) return;
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
-  if (plan === 'free') {
+  // Monitor ($299) also blocked from intelligence views — requires Sentinel
+  if (plan === 'free' || plan === 'pulse') {
     el.innerHTML = upgradePrompt('Deal Risk Scoring', 'See every open deal scored for risk based on inactivity, missing fields, and overdue close dates.', 'pulse');
     return;
   }
@@ -2245,14 +2352,24 @@ async function buildEnrichmentGaps(id) {
   var el = document.getElementById('enrichment-content');
   if (!el) return;
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
-  if (plan === 'free') {
+  // Monitor ($299) also blocked from intelligence views — requires Sentinel
+  if (plan === 'free' || plan === 'pulse') {
     el.innerHTML = upgradePrompt('Contact Enrichment Gaps', 'See which fields are missing across your database and how many contacts are blocked from sequences because of it.', 'pulse');
     return;
   }
   try {
     var r = await fetch(API + '/audit/enrichment-gaps?id=' + id);
     var d = await r.json();
-    if (d.error || !d.gaps) { el.innerHTML = '<div class="empty-state">No enrichment data found.</div>'; return; }
+    if (d.error) { el.innerHTML = '<div class="empty-state">Could not load enrichment data: ' + d.error + '</div>'; return; }
+    if (d.needsRescan) {
+      el.innerHTML = '<div style="text-align:center;padding:48px 24px;">' +
+        '<div style="font-size:36px;margin-bottom:12px;">🔄</div>' +
+        '<div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:8px;">Fresh scan required</div>' +
+        '<div style="font-size:13px;color:var(--t2);max-width:420px;margin:0 auto;">Contact completeness data was added in a recent update. Run a new audit to see which fields are missing across your database.</div>' +
+        '</div>';
+      return;
+    }
+    if (!d.gaps || d.gaps.length === 0) { el.innerHTML = '<div class="empty-state">No significant field gaps detected — your contacts are well-enriched.</div>'; return; }
     var s = d.summary;
     el.innerHTML =
       '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">' +
@@ -2286,6 +2403,11 @@ async function buildEnrichmentGaps(id) {
 async function buildBillingRisk(id) {
   var el = document.getElementById('billing-content');
   if (!el) return;
+  var _bilPlan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || 'free';
+  if (_bilPlan === 'free' || _bilPlan === 'pulse') {
+    el.innerHTML = upgradePrompt('Billing Tier Risk', 'See exactly how close you are to your next HubSpot contact tier, what that upgrade would cost, and how many contacts you could remove to delay it.', 'sentinel');
+    return;
+  }
 
   // First render from inline engine data (instant, no API call needed)
   const ps  = DATA.portalInfo?.portalStats || {};
@@ -2517,12 +2639,24 @@ function refreshAIBriefing() {
 }
 
 function upgradePrompt(feature, description, minPlan) {
-  var planLabel = minPlan === 'pro' ? 'Pro Plan ($549/mo)' : 'Pulse Plan ($299/mo)';
-  return '<div style="text-align:center;padding:48px 32px;background:rgba(124,58,237,.04);border:1px dashed rgba(124,58,237,.25);border-radius:16px;">' +
+  var isCommand = minPlan === 'command';
+  var isSentinel = minPlan === 'pro' || minPlan === 'sentinel';
+  var planLabel = isCommand ? 'FixOps Command ($999/mo)' :
+                  isSentinel ? 'FixOps Sentinel ($549/mo)' : 'FixOps Monitor ($299/mo)';
+  var planColor = isCommand ? '#a78bfa' : isSentinel ? '#10b981' : '#3b82f6';
+  var planDesc  = isCommand ? 'Multi-portal management, white-label reports, and everything in Sentinel across 25 portals.' :
+                  isSentinel ? 'Rep intelligence, contact decay, deal risk, AI builder, and 17 advanced intelligence views.' :
+                               'Weekly scans, 15 core views, issue alerts, and revenue leak tracking.';
+  return '<div style="text-align:center;padding:40px 32px;background:' + planColor + '06;border:1px solid ' + planColor + '20;border-radius:16px;">' +
     '<div style="font-size:32px;margin-bottom:12px;">🔒</div>' +
-    '<div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:8px;">'+esc(feature)+' requires '+planLabel+'</div>' +
-    '<div style="font-size:13px;color:var(--t2);max-width:440px;margin:0 auto 20px;line-height:1.7;">'+esc(description)+'</div>' +
-    '<a href="https://fixops.io/#pricing" target="_blank" style="display:inline-block;padding:11px 28px;background:var(--brand);color:#fff;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade Now →</a>' +
+    '<div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:' + planColor + ';font-family:monospace;margin-bottom:8px;">' + planLabel + '</div>' +
+    '<div style="font-size:16px;font-weight:800;color:var(--t1);margin-bottom:8px;">' + esc(feature) + ' — Sentinel Intelligence</div>' +
+    '<div style="font-size:13px;color:var(--t2);max-width:420px;margin:0 auto 12px;line-height:1.7;">' + esc(description) + '</div>' +
+    '<div style="font-size:12px;color:' + planColor + ';margin-bottom:20px;font-weight:600;">' + planDesc + '</div>' +
+    '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+      '<a href="https://fixops.io/#pricing" target="_blank" style="display:inline-block;padding:11px 28px;background:linear-gradient(135deg,' + planColor + ',' + planColor + 'cc);color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Upgrade to ' + planLabel.split(' ')[1] + ' →</a>' +
+      '<a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="display:inline-block;padding:11px 20px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--t2);border-radius:9px;font-weight:600;font-size:12px;text-decoration:none;">📅 Book a Call</a>' +
+    '</div>' +
   '</div>';
 }
 
@@ -3469,6 +3603,29 @@ function buildTeam() {
 
 // ── TRENDS VIEW ───────────────────────────────────────────────────────────────
 function buildTrends() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('trends-kpis') ||
+              document.getElementById('trends-content') ||
+              document.querySelector('#view-trends .view-header + div');
+    var _content = document.querySelector('#view-trends [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-trends');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Score Trends', '12-week score history showing how your portal health evolves over time across all 8 dimensions.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const el = document.getElementById('trends-content');
   if (!el) return;
   const hist = (window.HISTORY || []).slice().reverse(); // oldest first
@@ -3614,6 +3771,29 @@ function buildTrends() {
 
 // ── ROI VIEW ──────────────────────────────────────────────────────────────────
 function buildROI() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('roi-kpis') ||
+              document.getElementById('roi-content') ||
+              document.querySelector('#view-roi .view-header + div');
+    var _content = document.querySelector('#view-roi [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-roi');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('ROI Calculator', 'Dollar value of fixes, time saved, and waste reduced over time. Shows the compounding ROI of fixing your portal.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const el = document.getElementById('roi-content');
   if (!el) return;
   const hist = (window.HISTORY || []).slice().reverse();
@@ -4846,12 +5026,165 @@ function buildService() {
 }
 
 // ── REP INTELLIGENCE VIEW ────────────────────────────────────────────────────
+function buildDecay() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('decay-kpis') ||
+              document.getElementById('decay-content') ||
+              document.querySelector('#view-decay .view-header + div');
+    var _content = document.querySelector('#view-decay [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-decay');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Contact Decay Scoring', 'Every contact scored 0–100 on engagement. See which contacts are hot, warm, cooling, cold, or dead — and what to do with each.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
+  if (!DATA) return;
+  const ps  = DATA.portalInfo?.portalStats || {};
+  const dec = ps.contactDecayEngine || {};
+  const bkt = dec.buckets || {};
+
+  const total = dec.totalContacts || 0;
+  const hot   = bkt.hot      || 0;
+  const warm  = bkt.warm     || 0;
+  const cool  = bkt.cooling  || 0;
+  const cold  = bkt.cold     || 0;
+  const dead  = bkt.dead     || 0;
+
+  const kpiEl = document.getElementById('decay-kpis');
+  if (!kpiEl) return;
+
+  if (!dec.totalContacts) {
+    kpiEl.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--t3);">Contact decay data requires a fresh audit scan.</div>';
+    return;
+  }
+
+  const pct = (n) => total > 0 ? Math.round(n / total * 100) : 0;
+  const billingWaste = dec.estBillingWaste || 0;
+  const archiveCandidates = dec.archiveCandidateCount || 0;
+
+  kpiEl.innerHTML =
+    kpi('Avg Decay Score', (dec.avgDecayScore||0)+'/100', dec.databaseHealthGrade || 'Unknown', dec.avgDecayScore >= 65 ? 'green' : dec.avgDecayScore >= 45 ? 'amber' : 'red', '') +
+    kpi('Hot Contacts', fmt(hot), pct(hot)+'% actively engaged (last 30d)', 'green', '') +
+    kpi('Cold + Dead', fmt(cold+dead), pct(cold+dead)+'% — archive candidates', cold+dead > total*0.3 ? 'red' : 'amber', '') +
+    kpi('Archive Candidates', fmt(archiveCandidates), 'contacts to remove from active tier', archiveCandidates > 0 ? 'red' : 'green', '') +
+    kpi('Billing Waste', billingWaste > 0 ? fmtMoney(billingWaste)+'/mo' : '$0', 'dead contacts inflating billing tier', billingWaste > 0 ? 'red' : 'green', '');
+
+  // Decay donut chart
+  if (document.getElementById('decayDonut') && total > 0) {
+    new Chart(document.getElementById('decayDonut'), {
+      type: 'doughnut',
+      data: {
+        labels: ['🔥 Hot', '💧 Warm', '🌤 Cooling', '❄️ Cold', '💀 Dead'],
+        datasets: [{ data: [hot, warm, cool, cold, dead],
+          backgroundColor: ['rgba(16,185,129,.75)','rgba(59,130,246,.65)','rgba(245,158,11,.65)','rgba(139,92,246,.6)','rgba(239,68,68,.65)'],
+          borderWidth: 0 }]
+      },
+      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: {size:10}, padding:8, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+    });
+  }
+
+  // Breakdown panel
+  var bdEl = document.getElementById('decay-breakdown');
+  if (bdEl) {
+    var rows = [
+      { label: '🔥 Hot', count: hot, color: '#10b981', desc: 'Opened email or logged activity in last 30 days' },
+      { label: '💧 Warm', count: warm, color: '#3b82f6', desc: 'Some activity in last 30–90 days' },
+      { label: '🌤 Cooling', count: cool, color: '#f59e0b', desc: 'No activity in 90–180 days' },
+      { label: '❄️ Cold', count: cold, color: '#8b5cf6', desc: 'No activity in 180+ days — nurture campaign needed' },
+      { label: '💀 Dead', count: dead, color: '#ef4444', desc: 'No activity ever or bounced — archive to save billing cost' },
+    ];
+    bdEl.innerHTML = rows.map(function(r) {
+      var pctW = total > 0 ? Math.round(r.count/total*100) : 0;
+      return '<div style="margin-bottom:12px;">' +
+        '<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">' +
+          '<span style="color:var(--t1);font-weight:600;">' + r.label + '</span>' +
+          '<span style="color:' + r.color + ';font-weight:700;">' + fmt(r.count) + ' (' + pctW + '%)</span>' +
+        '</div>' +
+        '<div style="height:6px;background:var(--b1);border-radius:3px;">' +
+          '<div style="height:6px;width:' + pctW + '%;background:' + r.color + ';border-radius:3px;"></div>' +
+        '</div>' +
+        '<div style="font-size:10px;color:var(--t3);margin-top:3px;">' + r.desc + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  // Action plan panel
+  var actEl = document.getElementById('decay-actions');
+  if (actEl) {
+    var actions = [];
+    if (dead > 0) actions.push({ icon:'🗑️', color:'#ef4444', title:'Archive ' + fmt(dead) + ' dead contacts', desc:'Remove from active lists and workflows. Saves ~' + fmtMoney(Math.round(dead * 0.18)) + '/mo in billing tier cost.', cta:'Filter contacts by no activity + bounced → export → archive' });
+    if (cold > 0) actions.push({ icon:'📧', color:'#8b5cf6', title:'Re-engage ' + fmt(cold) + ' cold contacts', desc:'Last chance win-back sequence. If they do not open in 3 emails, archive them.', cta:'Create a "Re-engagement" workflow with 3 emails and exit on open/click' });
+    if (cool > 0) actions.push({ icon:'⚡', color:'#f59e0b', title:'Warm up ' + fmt(cool) + ' cooling contacts', desc:'They were engaged — bring them back before they go cold.', cta:'Add to an active nurture sequence with relevant content for their lifecycle stage' });
+    if (hot > 0) actions.push({ icon:'🎯', color:'#10b981', title:fmt(hot) + ' hot contacts are ready to buy', desc:'These contacts are actively engaging. Prioritize them for outreach and conversion.', cta:'Filter by "Hot" decay score → assign to reps → run targeted sequence' });
+
+    actEl.innerHTML = actions.length > 0 ? '<div style="display:flex;flex-direction:column;gap:12px;padding:8px 0;">' +
+      actions.map(function(a) {
+        return '<div style="display:flex;gap:14px;align-items:flex-start;padding:14px;background:' + a.color + '08;border:1px solid ' + a.color + '22;border-radius:10px;">' +
+          '<div style="font-size:24px;flex-shrink:0;">' + a.icon + '</div>' +
+          '<div>' +
+            '<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px;">' + a.title + '</div>' +
+            '<div style="font-size:12px;color:var(--t2);margin-bottom:6px;">' + a.desc + '</div>' +
+            '<div style="font-size:11px;color:var(--t3);font-family:monospace;">→ ' + a.cta + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') + '</div>' :
+      '<div style="text-align:center;padding:24px;color:var(--t3);">No decay action items — database looks healthy.</div>';
+  }
+}
+
 function buildRepIntel() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('repintel-kpis') ||
+              document.getElementById('repintel-content') ||
+              document.querySelector('#view-repintel .view-header + div');
+    var _content = document.querySelector('#view-repintel [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-repintel');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Rep Intelligence', 'Full rep performance leaderboard — calls, meetings, pipeline, win rate, and coaching flags per rep.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const ps   = DATA.portalInfo?.portalStats || {};
   const ri   = ps.repIntelEngine || {};
   const reps = ri.reps || [];
 
+  // Lead Response Time KPI from leadResponseTime engine
+  var lrt = ps.leadResponseTime || null;
+  var lrtKpi = '';
+  if (lrt && lrt.recentContacts > 5) {
+    var slowPct = lrt.slowResponsePct || 0;
+    var lrtColor = slowPct > 50 ? 'red' : slowPct > 25 ? 'amber' : 'green';
+    var lrtVal = slowPct > 0 ? slowPct + '% uncontacted' : 'On Track';
+    var lrtDesc = lrt.recentContacts + ' new contacts (90d) · ' + lrt.recentCallCount + ' calls · ' + lrt.recentMeetingCount + ' meetings';
+    lrtKpi = kpi('Lead Response', lrtVal, lrtDesc, lrtColor, '');
+  }
+
   document.getElementById('rep-kpis').innerHTML =
+    (lrtKpi || '') +
     kpi('Active Reps', fmt(ri.repCount||0), 'logged activity in last 30 days', 'blue', '') +
     kpi('Team Avg Score', ri.teamAvgScore != null ? ri.teamAvgScore+'/100' : '—', 'activity + pipeline + win rate', ri.teamAvgScore >= 65 ? 'green' : ri.teamAvgScore >= 45 ? 'amber' : 'red', '') +
     kpi('Top Performer', reps.length > 0 ? reps[0].performanceScore+'/100' : '—', reps.length > 0 ? reps[0].name : '—', 'green', '') +
@@ -4936,6 +5269,29 @@ function buildRepIntel() {
 
 // ── CUSTOMER HEALTH VIEW ─────────────────────────────────────────────────────
 function buildCustomerHealth() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('customerhealth-kpis') ||
+              document.getElementById('customerhealth-content') ||
+              document.querySelector('#view-customerhealth .view-header + div');
+    var _content = document.querySelector('#view-customerhealth [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-customerhealth');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Customer Health Scores', 'Per-company health scoring based on ticket history, NPS, deal activity, and engagement. See your at-risk accounts before they churn.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const ps = DATA.portalInfo?.portalStats || {};
   const ch = ps.customerHealthEngine || {};
 
@@ -4995,6 +5351,29 @@ function buildCustomerHealth() {
 
 // ── FORM FUNNEL VIEW ─────────────────────────────────────────────────────────
 function buildFormFunnel() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('formfunnel-kpis') ||
+              document.getElementById('formfunnel-content') ||
+              document.querySelector('#view-formfunnel .view-header + div');
+    var _content = document.querySelector('#view-formfunnel [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-formfunnel');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Form Conversion Funnel', 'Conversion rates per form, zero-submission detection, and which forms are silently failing your lead capture.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const ps = DATA.portalInfo?.portalStats || {};
   const fc = ps.formConversionEngine || {};
 
@@ -5052,6 +5431,29 @@ function buildFormFunnel() {
 
 // ── PROPERTY HEALTH VIEW ─────────────────────────────────────────────────────
 function buildPropertyHealth() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('propertyhealth-kpis') ||
+              document.getElementById('propertyhealth-content') ||
+              document.querySelector('#view-propertyhealth .view-header + div');
+    var _content = document.querySelector('#view-propertyhealth [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-propertyhealth');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Property Health Audit', 'Fill rates per property, bloat detection, and which custom properties are wasting your database.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const ps  = DATA.portalInfo?.portalStats || {};
   const pu  = ps.propertyUsageEngine || {};
 
@@ -5115,6 +5517,29 @@ function buildPropertyHealth() {
 
 // ── SOURCE ATTRIBUTION VIEW ──────────────────────────────────────────────────
 function buildSource() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('source-kpis') ||
+              document.getElementById('source-content') ||
+              document.querySelector('#view-source .view-header + div');
+    var _content = document.querySelector('#view-source [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-source');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Deal Source Attribution', 'Revenue by channel, win rate by source, and which acquisition channels actually close — not just generate leads.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const ps  = DATA.portalInfo?.portalStats || {};
   const src = ps.dealSourceAttribution || {};
   const rows = src.rows || [];
@@ -5185,6 +5610,29 @@ function buildSource() {
 
 // ── LIFECYCLE VELOCITY VIEW ──────────────────────────────────────────────────
 function buildLifecycle() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('lifecycle-kpis') ||
+              document.getElementById('lifecycle-content') ||
+              document.querySelector('#view-lifecycle .view-header + div');
+    var _content = document.querySelector('#view-lifecycle [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-lifecycle');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Lifecycle Velocity', 'Stage-to-stage conversion rates, average days from lead to customer, and where your funnel is leaking the most.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   const ps  = DATA.portalInfo?.portalStats || {};
   const lv  = ps.lifecycleVelocityEngine || {};
   const sc  = lv.stageCounts || {};
@@ -5567,6 +6015,29 @@ function filterHistory() {
 
 // ── WEEK-OVER-WEEK DELTA VIEW ────────────────────────────────────────────────
 function buildDelta() {
+  // ── Plan gate: Monitor users see upgrade prompt ──
+  var _plan = window.PLAN_TIER || {};
+  if (_plan.isPulse && !_plan.isProMonthly && !_plan.isAgency) {
+    var _el = document.getElementById('delta-kpis') ||
+              document.getElementById('delta-content') ||
+              document.querySelector('#view-delta .view-header + div');
+    var _content = document.querySelector('#view-delta [id$="-content"],[id$="-kpis"]');
+    var _target = document.getElementById('view-delta');
+    if (_target) {
+      var _inner = _target.querySelector('.view-header');
+      if (_inner) {
+        var _upEl = _target.querySelector('.upgrade-gate');
+        if (!_upEl) {
+          _upEl = document.createElement('div');
+          _upEl.className = 'upgrade-gate';
+          _upEl.style.cssText = 'padding:0 24px 32px;';
+          _upEl.innerHTML = upgradePrompt('Weekly Delta Report', 'What improved, what got worse, and what broke since last scan — with revenue impact per change.', 'sentinel');
+          _inner.insertAdjacentElement('afterend', _upEl);
+        }
+      }
+    }
+    return;
+  }
   if (!DATA) return;
   const history = DATA.history || [];
   const el = document.getElementById('delta-content');
