@@ -1145,6 +1145,13 @@ var STRIPE_LINKS = {
   'pro':      'https://buy.stripe.com/28E4gz2rw1MC7LKeFL8Ra08',
   'command':  'https://buy.stripe.com/cNi3cv2rw9f46HG69f8Ra09'
 };
+// Discounted first-month links — add ?prefilled_promo_code=FIRST99 to Sentinel link
+// Create in Stripe: coupon "FIRST99" = $450 off first invoice (Sentinel goes $549→$99)
+// Create in Stripe: coupon "TRYMONITOR" = $200 off first invoice (Monitor goes $299→$99)
+var STRIPE_DISCOUNT_LINKS = {
+  'pro':   STRIPE_LINKS['pro']   + '?prefilled_promo_code=FIRST99',
+  'pulse': STRIPE_LINKS['pulse'] + '?prefilled_promo_code=TRYMONITOR',
+};
 
 var _pendingStripePlan = '';
 function goStripe(plan) {
