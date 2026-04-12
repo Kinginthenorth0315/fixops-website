@@ -962,6 +962,7 @@ function showDashTab(tab, btn) {
       <div style="display:inline-flex;align-items:center;gap:0;background:#0c0c14;border:1px solid #22223a;border-radius:10px;padding:4px;margin:0 auto 48px;">
         <button id="toggle-monthly" onclick="showMonthly()" style="padding:9px 22px;background:#7c3aed;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">Monthly Plans</button>
         <button id="toggle-onetime" onclick="showOnetime()" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">One-Time Audits</button>
+        <button id="toggle-agency" onclick="showAgency()" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">For Agencies ✦</button>
       </div>
     </div>
 
@@ -1069,7 +1070,7 @@ function showDashTab(tab, btn) {
         </div>
 
       </div>
-      <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · Agency plan covers up to 25 portals</p>
+      <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · <span onclick="showAgency()" style="color:var(--brand2);cursor:pointer;font-weight:600;">Agency plans →</span></p>
     </div>
 
     <!-- ONE-TIME AUDITS -->
@@ -1143,6 +1144,120 @@ function showDashTab(tab, btn) {
         </div>
 
       </div>
+
+      <!-- ══ AGENCY PLANS ══ -->
+      <div id="agency-plans" style="display:none;">
+
+        <!-- Header callout -->
+        <div style="text-align:center;margin-bottom:32px;padding:28px 32px;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(16,185,129,.06));border:1px solid rgba(124,58,237,.25);border-radius:16px;">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--brand2);margin-bottom:10px;">For HubSpot Agencies</div>
+          <div style="font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:-.5px;margin-bottom:8px;color:var(--t1);">Turn your HubSpot practice into a productized service</div>
+          <div style="font-size:13px;color:var(--t2);max-width:560px;margin:0 auto;">Your clients get weekly automated intelligence. You get the credit. FixOps runs invisibly behind your agency brand — your clients think it's your proprietary tool.</div>
+        </div>
+
+        <!-- Two plan cards side by side -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px;">
+
+          <!-- Command $999 -->
+          <div style="background:var(--s1);border:1px solid var(--b2);border-radius:16px;padding:32px;display:flex;flex-direction:column;">
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;">Command</div>
+            <div style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6;">For growing agencies building a monitoring practice. Full Sentinel intelligence applied to every client portal you manage.</div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;">
+              <div style="font-family:var(--font);font-size:44px;font-weight:900;letter-spacing:-2px;color:var(--t1);">$999</div>
+              <div style="font-size:14px;color:var(--t3);">/mo</div>
+            </div>
+            <div style="font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:24px;">up to 10 client portals · cancel anytime</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+              <div style="font-size:11px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Everything Sentinel gives one portal — applied to 10</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>210-point weekly audit per client portal</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>White-label PDF reports — your agency brand</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>Weekly Monday client digest per portal</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>Multi-portal agency dashboard</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>Dollar impact reporting per client</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>Ghost seat + rep scorecard per client</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>Full Portal Snapshot dashboard per client</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>Fix It For Me on any issue</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:#10b981;flex-shrink:0;margin-top:1px;">✓</span>Priority support + dedicated onboarding call</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.25);display:flex;align-items:flex-start;gap:8px;"><span style="flex-shrink:0;margin-top:1px;">–</span>AI Deal Coach</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.25);display:flex;align-items:flex-start;gap:8px;"><span style="flex-shrink:0;margin-top:1px;">–</span>RevOps AI Coach</div>
+              <div style="font-size:13px;color:rgba(255,255,255,.25);display:flex;align-items:flex-start;gap:8px;"><span style="flex-shrink:0;margin-top:1px;">–</span>Workflow AutoDoc credits</div>
+            </div>
+            <div style="padding:12px 16px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:16px;font-size:12px;color:var(--t3);">
+              💡 At 10 clients billing $500/mo each = $5k/mo revenue. FixOps is 20% of that.
+            </div>
+            <button onclick="openAgencyModal('command')" style="width:100%;padding:14px;background:var(--v);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.background='#6d28d9'" onmouseout="this.style.background='var(--v)'">Get Command — $999/mo →</button>
+            <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:8px;">Invite-only · we onboard every agency personally</div>
+          </div>
+
+          <!-- Command Unlimited $1,999 -->
+          <div style="background:var(--s1);border:2px solid rgba(124,58,237,.4);border-radius:16px;padding:32px;display:flex;flex-direction:column;position:relative;">
+            <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#10b981);color:#fff;font-family:var(--mono);font-size:9px;font-weight:800;letter-spacing:2px;padding:4px 14px;border-radius:20px;text-transform:uppercase;white-space:nowrap;">Most Powerful</div>
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brand2);margin-bottom:10px;">Command Unlimited</div>
+            <div style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6;">For agencies running their full RevOps operation through FixOps. Unlimited portals, AI coaching on every client, and the tools that make you look like a $10k/mo RevOps team.</div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;">
+              <div style="font-family:var(--font);font-size:44px;font-weight:900;letter-spacing:-2px;color:var(--brand2);">$1,999</div>
+              <div style="font-size:14px;color:var(--t3);">/mo</div>
+            </div>
+            <div style="font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:24px;">unlimited client portals · cancel anytime</div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
+              <div style="font-size:11px;font-weight:800;color:var(--brand2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Everything in Command, plus:</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Unlimited client portals — no cap</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>AI Deal Coach on every client portal — stalled deal analysis with ready-to-use scripts</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>RevOps AI Coach — 30-day strategy memo per client from their live data</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Billing Optimizer — HubSpot cost reduction per client portal</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Workflow AutoDoc — 5 AI portal bibles/mo included ($197 each normally)</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>White-label client-facing dashboard — your domain, your brand</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Dedicated Slack channel — direct line for support and onboarding</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Custom onboarding — we set up your first 5 portals with you</div>
+            </div>
+            <div style="padding:12px 16px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:8px;margin-bottom:16px;font-size:12px;color:var(--t2);">
+              💰 At 15+ clients billing $1k/mo each = $15k/mo revenue. FixOps Unlimited is <strong style="color:var(--t1);">13% of your revenue</strong> and replaces a $5k/mo RevOps hire.
+            </div>
+            <button onclick="openAgencyModal('unlimited')" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#10b981);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Get Command Unlimited — $1,999/mo →</button>
+            <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:8px;">Invite-only · full setup call included</div>
+          </div>
+
+        </div>
+
+        <!-- Feature comparison table -->
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;overflow:hidden;margin-bottom:28px;">
+          <div style="padding:20px 24px;border-bottom:1px solid var(--b1);">
+            <div style="font-size:15px;font-weight:800;color:var(--t1);">Full Feature Comparison</div>
+            <div style="font-size:12px;color:var(--t2);margin-top:4px;">Every feature across both agency tiers</div>
+          </div>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr style="background:rgba(255,255,255,.02);">
+              <th style="text-align:left;padding:12px 24px;font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Feature</th>
+              <th style="text-align:center;padding:12px 16px;font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Command<br><span style="color:var(--t1);font-size:13px;">$999/mo</span></th>
+              <th style="text-align:center;padding:12px 16px;font-size:11px;color:var(--brand2);font-weight:600;text-transform:uppercase;letter-spacing:1px;">Unlimited<br><span style="color:var(--brand2);font-size:13px;">$1,999/mo</span></th>
+            </tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">Client portals</td><td style="text-align:center;padding:11px 16px;font-size:13px;color:var(--t1);font-weight:600;">Up to 10</td><td style="text-align:center;padding:11px 16px;font-size:13px;color:var(--brand2);font-weight:600;">Unlimited</td></tr>
+            <tr style="border-top:1px solid var(--b1);background:rgba(255,255,255,.01);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">210-point weekly audit per portal</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">White-label PDF reports</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);background:rgba(255,255,255,.01);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">Weekly client digest emails</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">Multi-portal agency dashboard</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);background:rgba(255,255,255,.01);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">Dollar impact + rep scorecard per client</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">Full Portal Snapshot (38-view dashboard)</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);background:rgba(255,255,255,.01);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);font-weight:600;color:var(--t1);">AI Deal Coach</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--brand2);font-size:16px;">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;font-weight:600;color:var(--t1);">RevOps AI Coach (30-day strategy memo)</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--brand2);font-size:16px;">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);background:rgba(255,255,255,.01);"><td style="padding:11px 24px;font-size:13px;font-weight:600;color:var(--t1);">Billing Optimizer</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--brand2);font-size:16px;">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;font-weight:600;color:var(--t1);">Workflow AutoDoc (5/mo included)</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--brand2);font-size:16px;">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);background:rgba(255,255,255,.01);"><td style="padding:11px 24px;font-size:13px;font-weight:600;color:var(--t1);">White-label client portal (your domain)</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--brand2);font-size:16px;">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;font-weight:600;color:var(--t1);">Dedicated Slack support channel</td><td style="text-align:center;color:var(--t3);">—</td><td style="text-align:center;color:var(--brand2);font-size:16px;">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);background:rgba(255,255,255,.01);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">Fix It For Me on any issue</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+            <tr style="border-top:1px solid var(--b1);"><td style="padding:11px 24px;font-size:13px;color:var(--t2);">Priority support + onboarding call</td><td style="text-align:center;">✓</td><td style="text-align:center;color:var(--brand2);">✦</td></tr>
+          </table>
+        </div>
+
+        <!-- Social proof callout -->
+        <div style="text-align:center;padding:24px;background:var(--s1);border:1px solid var(--b1);border-radius:14px;margin-bottom:28px;">
+          <div style="font-size:13px;color:var(--t2);line-height:1.8;max-width:600px;margin:0 auto;">
+            <strong style="color:var(--t1);">Agencies charge $1,500–$5,000 for a manual HubSpot audit</strong> and $500–$2,000/mo per client for monitoring retainers. FixOps automates both — at a cost per client that makes your retainer almost pure margin.<br>
+            <span style="color:var(--t3);font-size:11px;">Both tiers are invite-only. We onboard every agency partner personally to make sure the setup is right.</span>
+          </div>
+        </div>
+
+      </div><!-- /agency-plans -->
 
       <!-- Services -->
       <div>
@@ -1296,22 +1411,38 @@ function goCalendly() {
   window.open('https://calendly.com/matthew-fixops/30min', '_blank');
 }
 
-function showMonthly() {
-  document.getElementById('monthly-plans').style.display = 'block';
+function _hideAllPlans() {
+  document.getElementById('monthly-plans').style.display = 'none';
   document.getElementById('onetime-plans').style.display = 'none';
+  var ag = document.getElementById('agency-plans');
+  if (ag) ag.style.display = 'none';
+  ['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.background = 'transparent';
+    el.style.color = 'rgba(255,255,255,.45)';
+  });
+}
+function showMonthly() {
+  _hideAllPlans();
+  document.getElementById('monthly-plans').style.display = 'block';
   document.getElementById('toggle-monthly').style.background = '#7c3aed';
   document.getElementById('toggle-monthly').style.color = '#fff';
-  document.getElementById('toggle-onetime').style.background = 'transparent';
-  document.getElementById('toggle-onetime').style.color = 'rgba(255,255,255,.45)';
 }
 
 function showOnetime() {
-  document.getElementById('monthly-plans').style.display = 'none';
+  _hideAllPlans();
   document.getElementById('onetime-plans').style.display = 'block';
   document.getElementById('toggle-onetime').style.background = '#7c3aed';
   document.getElementById('toggle-onetime').style.color = '#fff';
-  document.getElementById('toggle-monthly').style.background = 'transparent';
-  document.getElementById('toggle-monthly').style.color = 'rgba(255,255,255,.45)';
+}
+
+function showAgency() {
+  _hideAllPlans();
+  var ag = document.getElementById('agency-plans');
+  if (ag) ag.style.display = 'block';
+  var btn = document.getElementById('toggle-agency');
+  if (btn) { btn.style.background = '#7c3aed'; btn.style.color = '#fff'; }
 }
 </script>
 
@@ -2395,7 +2526,12 @@ function recReset() {
 </style>
 
 <script>
-function openAgencyModal() {
+function openAgencyModal(plan) {
+  // Store selected plan for form submission
+  window._agencyPlanSelected = plan || 'command';
+  var title = plan === 'unlimited' ? 'FixOps Command Unlimited — $1,999/mo' : 'FixOps Command — $999/mo';
+  var titleEl = document.getElementById('agency-modal-title');
+  if (titleEl) titleEl.textContent = title;
   document.getElementById('agency-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2443,7 +2579,7 @@ async function submitAgencyInquiry() {
     var r = await fetch(API+'/agency-inquiry', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, company, email, phone, portalCount, auditsPerMonth, priorities, notes })
+      body: JSON.stringify({ name, company, email, phone, portalCount, auditsPerMonth, priorities, notes, plan: (window._agencyPlanSelected || 'command') })
     });
     var d = await r.json();
     if (!d.success) throw new Error(d.error || 'Submit failed');
