@@ -6611,6 +6611,38 @@ function runAutoDoc() {
       html += '</div>';
     }
 
+    // Best practices
+    if (doc.bestPractices && doc.bestPractices.length) {
+      html += '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;margin-bottom:16px;">';
+      html += '<div style="padding:14px 20px;border-bottom:1px solid var(--b1);font-size:13px;font-weight:800;color:var(--t1);">✓ Best Practice Checklist</div>';
+      html += '<table style="width:100%;border-collapse:collapse;">';
+      doc.bestPractices.forEach(function(bp) {
+        var icon = bp.status==='pass'?'✅':bp.status==='fail'?'❌':'⚠️';
+        var tColor = bp.status==='pass'?'#10b981':bp.status==='fail'?'#f43f5e':'#f59e0b';
+        html += '<tr style="border-top:1px solid var(--b1);">';
+        html += '<td style="padding:10px 16px;font-size:12px;color:var(--t2);">' + (bp.check||'') + '</td>';
+        html += '<td style="padding:10px 16px;text-align:right;"><span style="font-size:10px;font-weight:800;color:'+tColor+';background:'+tColor+'15;padding:2px 8px;border-radius:4px;font-family:var(--mono);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;">' + icon + ' ' + (bp.status||'unknown').toUpperCase() + '</span></td>';
+        html += '</tr>';
+        if (bp.note) {
+          html += '<tr style="border-top:none;"><td colspan="2" style="padding:0 16px 8px;font-size:11px;color:var(--t3);">' + bp.note + '</td></tr>';
+        }
+      });
+      html += '</table></div>';
+    }
+
+    // Next steps
+    if (doc.nextSteps && doc.nextSteps.length) {
+      html += '<div style="margin-bottom:16px;">';
+      html += '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:10px;">📅 What to Do This Week</div>';
+      doc.nextSteps.forEach(function(step, i) {
+        html += '<div style="display:flex;gap:12px;padding:12px 16px;background:var(--s1);border:1px solid var(--b1);border-radius:10px;margin-bottom:8px;">';
+        html += '<div style="width:22px;height:22px;border-radius:50%;background:rgba(16,185,129,.2);color:#10b981;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + (i+1) + '</div>';
+        html += '<div style="font-size:12px;color:var(--t2);line-height:1.6;">' + step + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
     // Download prompt
     html += '<div style="padding:16px 20px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:10px;text-align:center;margin-bottom:16px;">';
     html += '<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px;">Want this as a PDF?</div>';
