@@ -1772,8 +1772,8 @@ async function loadData() {
     };
     var navBadge = document.getElementById('nav-plan-badge');
     if (navBadge) {
-      var planLabels2 = {free:'FREE SNAPSHOT',pulse:'MONITOR · $99/mo',pro:'SENTINEL · $199/mo',
-        command:'COMMAND · $999/mo','pro-audit':'FULL AUDIT · ONE-TIME','deep':'DIAGNOSTIC · ONE-TIME'};
+      var planLabels2 = {free:'FREE SNAPSHOT',pulse:'MONITOR · $2299/mo',pro:'SENTINEL · $1299/mo',
+        command:'COMMAND · $9299/mo','pro-audit':'FULL AUDIT · ONE-TIME','deep':'DIAGNOSTIC · ONE-TIME'};
       navBadge.textContent = planLabels2[auditPlan] || auditPlan.toUpperCase();
       navBadge.style.display = 'inline-block';
     }
@@ -1812,8 +1812,8 @@ async function loadFromToken(token) {
     // free       = capped scan, 5 issues shown, overview only
     // deep       = one-time full scan, basic views, premium views locked → sell monthly
     // pro-audit  = one-time full scan + advanced, basic+some views, AI locked → sell monthly
-    // pulse      = monthly $99, all basic + intelligence views, no AI/daily/advanced
-    // pro        = monthly $199, everything
+    // pulse      = monthly $299, all basic + intelligence views, no AI/daily/advanced
+    // pro        = monthly $549, everything
     // command    = agency $999, everything + multi-portal
     const isFree       = auditPlan === 'free' || !auditPlan;
     const isOneTime    = ['deep','pro-audit'].includes(auditPlan);
@@ -1839,8 +1839,8 @@ async function loadFromToken(token) {
     // ── Nav badge ────────────────────────────────────────────────────────────
     const navPlanBadge = document.getElementById('nav-plan-badge');
     if (navPlanBadge) {
-      const planLabels = {free:'FREE SNAPSHOT',pulse:'MONITOR · $99/mo',pro:'SENTINEL · $199/mo',
-        command:'COMMAND · $999/mo','pro-audit':'FULL AUDIT','deep':'DIAGNOSTIC'};
+      const planLabels = {free:'FREE SNAPSHOT',pulse:'MONITOR · $2299/mo',pro:'SENTINEL · $1299/mo',
+        command:'COMMAND · $9299/mo','pro-audit':'FULL AUDIT','deep':'DIAGNOSTIC'};
       const planColors = {free:'#6b7280',pulse:'#3b82f6',pro:'#10b981',
         command:'#f59e0b','pro-audit':'#8b5cf6','deep':'#7c3aed'};
       navPlanBadge.textContent = planLabels[auditPlan] || auditPlan.toUpperCase();
@@ -1859,7 +1859,7 @@ async function loadFromToken(token) {
               '<span style="font-size:18px;">⚡</span>' +
               '<div>' +
                 '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">Free Snapshot — up to 1,000 contacts · 5 issues shown</div>' +
-                '<div style="font-size:11px;color:var(--t3);">Upgrade to FixOps Diagnostic ($399 one-time) or FixOps Monitor ($99/mo) for the full portal scan, all issues, fix guides, and intelligence views.</div>' +
+                '<div style="font-size:11px;color:var(--t3);">Upgrade to FixOps Diagnostic ($399 one-time) or FixOps Monitor ($2299/mo) for the full portal scan, all issues, fix guides, and intelligence views.</div>' +
               '</div>' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">See Plans →</a>' +
@@ -1874,11 +1874,11 @@ async function loadFromToken(token) {
               '<div>' +
                 '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">FixOps Diagnostic — Full one-time scan complete</div>' +
                 '<div style="font-size:11px;color:var(--t3);line-height:1.6;">Rep intelligence, contact decay, AI builder, audit history, and 14 other views are locked. ' +
-                  '<strong style="color:#10b981;">FixOps Monitor ($99/mo)</strong> unlocks weekly scans. <strong style="color:#10b981;">FixOps Sentinel ($199/mo)</strong> unlocks everything.</div>' +
+                  '<strong style="color:#10b981;">FixOps Monitor ($2299/mo)</strong> unlocks weekly scans. <strong style="color:#10b981;">FixOps Sentinel ($1299/mo)</strong> unlocks everything.</div>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex;gap:8px;flex-shrink:0;">' +
-              '<a href="https://fixops.io/#pricing" target="_blank" style="padding:7px 14px;background:#3b82f6;color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;">Pulse $99/mo →</a>' +
+              '<a href="https://fixops.io/#pricing" target="_blank" style="padding:7px 14px;background:#3b82f6;color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;">Pulse $2299/mo →</a>' +
               '<a href="https://fixops.io/#pricing" target="_blank" style="padding:7px 14px;background:transparent;color:var(--t3);border:1px solid var(--b2);border-radius:6px;font-size:11px;font-weight:600;text-decoration:none;">All Plans</a>' +
             '</div>' +
           '</div>';
@@ -1892,7 +1892,7 @@ async function loadFromToken(token) {
               '<div>' +
                 '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">FixOps Full Audit — Portal Snapshot + Intelligence Dashboard unlocked</div>' +
                 '<div style="font-size:11px;color:var(--t3);line-height:1.6;">Your full audit is complete. ' +
-                  'Add weekly monitoring to keep your portal healthy — FixOps Monitor ($99/mo) runs automatically every Monday.</div>' +
+                  'Add weekly monitoring to keep your portal healthy — FixOps Monitor ($2299/mo) runs automatically every Monday.</div>' +
               '</div>' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 14px;background:linear-gradient(135deg,#3b82f6,#7c3aed);color:#fff;border-radius:6px;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Add Weekly Monitoring →</a>' +
@@ -1904,7 +1904,7 @@ async function loadFromToken(token) {
             '<div style="display:flex;align-items:center;gap:10px;">' +
               '<span style="font-size:16px;">📡</span>' +
               '<div style="font-size:13px;color:var(--t2);">FixOps Monitor — 15 core views active. <strong style="color:var(--t1);">17 intelligence views locked.</strong> ' +
-                '<a href="https://fixops.io/#pricing" style="color:#10b981;font-weight:700;">Upgrade to Sentinel ($199/mo)</a> ' +
+                '<a href="https://fixops.io/#pricing" style="color:#10b981;font-weight:700;">Upgrade to Sentinel ($1299/mo)</a> ' +
                 'for rep intelligence, contact decay, deal risk, AI builder, and 12+ more advanced views.' +
               '</div>' +
             '</div>' +
@@ -1913,20 +1913,20 @@ async function loadFromToken(token) {
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isProMonthly2) {
-        // Sentinel ($199/mo): full access — show status + upgrade hook to Command
+        // Sentinel ($1299/mo): full access — show status + upgrade hook to Command
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
             '<div style="display:flex;align-items:center;gap:10px;">' +
               '<span style="font-size:16px;">🛡️</span>' +
               '<div style="font-size:13px;color:var(--t2);">FixOps Sentinel — <strong style="color:#10b981;">All 38 views active.</strong> Daily scans running. ' +
                 '<span style="color:rgba(255,255,255,.35);">Need multi-portal coverage? </span>' +
-                '<a href="https://fixops.io/#pricing" style="color:#a78bfa;font-weight:700;">Upgrade to Command ($999/mo)</a> for 25 portals + white-label.' +
+                '<a href="https://fixops.io/#pricing" style="color:#a78bfa;font-weight:700;">Upgrade to Command ($9299/mo)</a> for 25 portals + white-label.' +
               '</div>' +
             '</div>' +
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isAgency) {
-        // Command ($999/mo): everything active
+        // Command ($9299/mo): everything active
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;gap:10px;">' +
             '<span style="font-size:16px;">⚡</span>' +
@@ -1940,12 +1940,12 @@ async function loadFromToken(token) {
     // Basic views: visible to all paid plans
     // Pulse views: locked for deep/pro-audit, full for pulse+
     // Pro views:   locked for pulse and below, full for pro+
-    // MONITOR ($99/mo): Core 15 views — everything you need to track health
+    // MONITOR ($2299/mo): Core 15 views — everything you need to track health
     const BASIC_VIEWS    = ['overview','pipeline','revenue','marketing','service',
       'tickets','automation','team','lists','sequences','company',
       'products','customobjects','setup','engagement'];
 
-    // SENTINEL ($199/mo): Intelligence views — the "why" behind the health numbers
+    // SENTINEL ($1299/mo): Intelligence views — the "why" behind the health numbers
     const SENTINEL_VIEWS = ['rep','decay','health','formfunnel','prophealth','source',
       'lifecycle','trends','roi','delta','billing','wfdeps',
       'utilization','enrichment','dealrisk','history','settings'];
@@ -1968,7 +1968,7 @@ async function loadFromToken(token) {
         // Free + one-time: wall is shown, lock everything except overview briefly
         if (viewName !== 'overview') item.classList.add('locked-sidebar');
       } else if (isPulse) {
-        // Monitor ($99/mo): BASIC_VIEWS only — SENTINEL and PRO locked
+        // Monitor ($2299/mo): BASIC_VIEWS only — SENTINEL and PRO locked
         if (SENTINEL_VIEWS.includes(viewName)) {
           item.classList.add('locked-sidebar');
           badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);">SENTINEL</span>';
@@ -1978,7 +1978,7 @@ async function loadFromToken(token) {
           badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);">PRO</span>';
         }
       } else if (isProMonthly2 || isAgency) {
-        // Sentinel ($199/mo) + Command ($999/mo): everything unlocked
+        // Sentinel ($1299/mo) + Command ($9299/mo): everything unlocked
         // PRO_VIEWS (AI, velocity, forecast, etc.) are included in Sentinel
         // Nothing locked for pro/command
       }
@@ -2014,9 +2014,9 @@ async function loadFromToken(token) {
           '</div>' +
           '<div class="view-lock-features">' + featHtml + '</div>' +
           '<div class="view-lock-compare">' +
-            '<span class="vlc-pill" style="background:rgba(59,130,246,.15);color:#3b82f6;">Pulse $99/mo</span>' +
-            '<span class="vlc-pill" style="background:rgba(16,185,129,.15);color:#10b981;">Pro $199/mo</span>' +
-            '<span class="vlc-pill" style="background:rgba(245,158,11,.15);color:#f59e0b;">Agency $999/mo</span>' +
+            '<span class="vlc-pill" style="background:rgba(59,130,246,.15);color:#3b82f6;">Pulse $2299/mo</span>' +
+            '<span class="vlc-pill" style="background:rgba(16,185,129,.15);color:#10b981;">Pro $1299/mo</span>' +
+            '<span class="vlc-pill" style="background:rgba(245,158,11,.15);color:#f59e0b;">Agency $9299/mo</span>' +
           '</div>' +
           '<a href="' + ctaLink + '" target="_blank" class="view-lock-cta ' + (requiredPlan === 'pro' ? 'pro-cta' : 'pulse-cta') + '">' +
             'Start ' + planLabel + ' — ' + planPrice + ' →' +
@@ -2045,13 +2045,13 @@ async function loadFromToken(token) {
       };
 
       Object.keys(pulseFeatures).forEach(function(vName) {
-        lockView(vName, 'pulse', 'PULSE', '#3b82f6', '$99/mo',
+        lockView(vName, 'pulse', 'PULSE', '#3b82f6', '$2299/mo',
           pulseFeatures[vName], 'https://fixops.io/#pricing');
       });
 
       // Also lock delta, enrichment, settings, utilization
       ['delta','enrichment','settings','utilization'].forEach(function(vName) {
-        lockView(vName, 'pulse', 'PULSE', '#3b82f6', '$99/mo', [
+        lockView(vName, 'pulse', 'PULSE', '#3b82f6', '$2299/mo', [
           {title:'Weekly Monitoring',desc:'Automated re-scans every Monday morning'},
           {title:'Score History',desc:'Track improvements over time with trend lines'},
           {title:'Issue Alerts',desc:'Email alerts when new critical issues appear'},
@@ -2069,7 +2069,7 @@ async function loadFromToken(token) {
         {title:'Workflow Conflict AI',desc:'AI finds conflicts and dependency risks automatically'},
       ];
       ['ai','velocity','forecast','funnel','contacts','conflicts'].forEach(function(vName) {
-        lockView(vName, 'pro', 'PRO', '#10b981', '$199/mo',
+        lockView(vName, 'pro', 'PRO', '#10b981', '$1299/mo',
           proFeatures, 'https://fixops.io/#pricing');
       });
     }
@@ -2269,7 +2269,7 @@ async function buildDealRisk(id) {
   var el = document.getElementById('dealrisk-content');
   if (!el) return;
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
-  // Monitor ($99) also blocked from intelligence views — requires Sentinel
+  // Monitor ($299) also blocked from intelligence views — requires Sentinel
   if (plan === 'free' || plan === 'pulse') {
     el.innerHTML = upgradePrompt('Deal Risk Scoring', 'See every open deal scored for risk based on inactivity, missing fields, and overdue close dates.', 'pulse');
     return;
@@ -2356,7 +2356,7 @@ async function buildEnrichmentGaps(id) {
   var el = document.getElementById('enrichment-content');
   if (!el) return;
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
-  // Monitor ($99) also blocked from intelligence views — requires Sentinel
+  // Monitor ($299) also blocked from intelligence views — requires Sentinel
   if (plan === 'free' || plan === 'pulse') {
     el.innerHTML = upgradePrompt('Contact Enrichment Gaps', 'See which fields are missing across your database and how many contacts are blocked from sequences because of it.', 'pulse');
     return;
@@ -2645,8 +2645,8 @@ function refreshAIBriefing() {
 function upgradePrompt(feature, description, minPlan) {
   var isCommand = minPlan === 'command';
   var isSentinel = minPlan === 'pro' || minPlan === 'sentinel';
-  var planLabel = isCommand ? 'FixOps Command ($999/mo)' :
-                  isSentinel ? 'FixOps Sentinel ($199/mo)' : 'FixOps Monitor ($99/mo)';
+  var planLabel = isCommand ? 'FixOps Command ($9299/mo)' :
+                  isSentinel ? 'FixOps Sentinel ($1299/mo)' : 'FixOps Monitor ($2299/mo)';
   var planColor = isCommand ? '#a78bfa' : isSentinel ? '#10b981' : '#3b82f6';
   var planDesc  = isCommand ? 'Multi-portal management, white-label reports, and everything in Sentinel across 25 portals.' :
                   isSentinel ? 'Rep intelligence, contact decay, deal risk, AI builder, and 17 advanced intelligence views.' :
