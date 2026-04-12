@@ -874,6 +874,14 @@ nav {
         <span class="si-icon">💰</span> Billing Optimizer
         <span style="font-size:8px;font-weight:800;letter-spacing:1px;color:#10b981;background:rgba(16,185,129,.15);padding:2px 5px;border-radius:3px;margin-left:4px;">NEW</span>
       </div>
+      <div class="sidebar-item" onclick="showView('autodoc')" data-view="autodoc">
+        <span class="si-icon">📋</span> Workflow AutoDoc
+        <span style="font-size:8px;font-weight:800;letter-spacing:1px;color:#10b981;background:rgba(16,185,129,.15);padding:2px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
+      <div class="sidebar-item" onclick="showView('changeintel')" data-view="changeintel">
+        <span class="si-icon">🔍</span> Change Intelligence
+        <span style="font-size:8px;font-weight:800;letter-spacing:1px;color:#10b981;background:rgba(16,185,129,.15);padding:2px 5px;border-radius:3px;margin-left:4px;">NEW</span>
+      </div>
     </div>
   </aside>
 
@@ -1698,6 +1706,48 @@ nav {
       </div>
     </div>
 
+    <!-- ══ WORKFLOW AUTODOC VIEW ══ -->
+    <div class="view" id="view-autodoc">
+      <div class="view-header">
+        <div class="vh-badge">Sentinel · Command</div>
+        <h1 class="vh-title">📋 Workflow AutoDoc</h1>
+        <p>AI-generated documentation for every workflow in your portal. Claude reads your automation health data and produces a plain-English portal bible — what each workflow does, who it affects, what's broken, and what to fix first. Agencies use this for client onboarding and handoffs.</p>
+      </div>
+      <div id="autodoc-content">
+        <div style="text-align:center;padding:60px 20px;">
+          <div style="font-size:44px;margin-bottom:16px;">📋</div>
+          <div style="font-size:16px;font-weight:700;color:var(--t1);margin-bottom:8px;">Workflow AutoDoc</div>
+          <div style="font-size:13px;color:var(--t2);max-width:480px;margin:0 auto 24px;line-height:1.7;">
+            Generate a complete automation health report for your portal. Claude documents your workflows, identifies conflicts, flags dead automations, and produces a prioritized fix list. Perfect for agency client handoffs.
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
+            <div style="padding:8px 14px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.15);border-radius:8px;font-size:11px;color:var(--t2);">📄 Downloadable report</div>
+            <div style="padding:8px 14px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.15);border-radius:8px;font-size:11px;color:var(--t2);">⚡ 60-second generation</div>
+            <div style="padding:8px 14px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.15);border-radius:8px;font-size:11px;color:var(--t2);">🏢 Agency-ready format</div>
+          </div>
+          <button onclick="runAutoDoc()" style="padding:13px 32px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);">
+            ✦ Generate Workflow AutoDoc
+          </button>
+          <div style="margin-top:12px;font-size:11px;color:var(--t3);">Normally $197 as a standalone service · included in Sentinel</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ CHANGE INTELLIGENCE VIEW ══ -->
+    <div class="view" id="view-changeintel">
+      <div class="view-header">
+        <div class="vh-badge">Sentinel · Command</div>
+        <h1 class="vh-title">🔍 Change Intelligence</h1>
+        <p>What changed in your portal this week vs last week — new workflows, deleted properties, pipeline edits, user changes — cross-referenced with your score movement so you always know exactly why your score went up or down.</p>
+      </div>
+      <div id="changeintel-content">
+        <div style="text-align:center;padding:40px 20px;">
+          <div class="load-spinner"></div>
+          <div style="font-size:13px;color:var(--t3);margin-top:12px;">Analyzing changes since last scan…</div>
+        </div>
+      </div>
+    </div>
+
     </div><!-- /views -->
   </main>
 </div>
@@ -2337,6 +2387,8 @@ function initAllViews() {
     buildBillingRisk(id);
     buildContactTierOpt(id);
   }
+  // Change Intelligence uses history data already loaded
+  buildChangeIntel();
 }
 
 // ── DEAL RISK VIEW ────────────────────────────────────────────────────────────
@@ -6468,6 +6520,247 @@ function buildContactTierOpt(id) {
     el.innerHTML = html;
   })
   .catch(function(){ el.innerHTML = '<div style="padding:24px;color:var(--red);">Analysis failed. Try again.</div>'; });
+}
+
+
+// ══════════════════════════════════════════════════════════════════════════════
+// WORKFLOW AUTODOC
+// ══════════════════════════════════════════════════════════════════════════════
+function runAutoDoc() {
+  var el = document.getElementById('autodoc-content');
+  if (!el) return;
+  var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || (DATA && DATA.plan) || 'free';
+  if (plan === 'free' || plan === 'pulse') {
+    el.innerHTML = upgradePrompt('Workflow AutoDoc', 'AI-generated documentation for every workflow — plain-English portal bible for client handoffs and team onboarding.', 'pro');
+    return;
+  }
+  var email = DATA && DATA.portalInfo && DATA.portalInfo.email;
+  var id    = auditId || (DATA && DATA.id);
+
+  el.innerHTML = '<div style="text-align:center;padding:48px 20px;">' +
+    '<div class="load-spinner"></div>' +
+    '<div style="font-size:14px;font-weight:600;color:var(--t1);margin-top:16px;">Generating your Workflow AutoDoc…</div>' +
+    '<div style="font-size:12px;color:var(--t3);margin-top:6px;font-family:var(--mono);">Claude is reading your automation data · ~30 seconds</div>' +
+    '</div>';
+
+  fetch(API + '/ai/autodoc', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ auditId: id, email: email })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    if (data.error) { el.innerHTML = '<div style="padding:24px;color:var(--red);">Error: ' + data.error + '</div>'; return; }
+    var doc = data.doc || {};
+    var html = '<div style="padding:8px 0;">';
+
+    // Header
+    html += '<div style="background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(59,130,246,.06));border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:24px 28px;margin-bottom:20px;">';
+    html += '<div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brand2);margin-bottom:10px;">📋 Workflow AutoDoc</div>';
+    html += '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:8px;">' + (data.company || 'Portal') + ' — Automation Health Report</div>';
+    html += '<div style="font-size:13px;color:var(--t2);line-height:1.7;">' + (doc.summary || 'Analysis complete.') + '</div>';
+    html += '</div>';
+
+    // Sections
+    if (doc.sections && doc.sections.length) {
+      doc.sections.forEach(function(sec) {
+        html += '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;margin-bottom:12px;">';
+        html += '<div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:6px;">' + (sec.title||'') + '</div>';
+        if (sec.status) {
+          var sColor = sec.status==='HEALTHY'?'#10b981':sec.status==='WARNING'?'#f59e0b':'#f43f5e';
+          html += '<div style="display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;color:'+sColor+';background:'+sColor+'15;border:1px solid '+sColor+'25;padding:2px 8px;border-radius:4px;margin-bottom:8px;font-family:var(--mono);text-transform:uppercase;">' + sec.status + '</div>';
+        }
+        html += '<div style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:8px;">' + (sec.description||'') + '</div>';
+        if (sec.workflows && sec.workflows.length) {
+          html += '<div style="margin-top:10px;display:flex;flex-direction:column;gap:6px;">';
+          sec.workflows.forEach(function(wf) {
+            var wColor = wf.status==='active'?'#10b981':wf.status==='error'?'#f43f5e':wf.status==='inactive'?'#f59e0b':'var(--t3)';
+            html += '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 12px;background:rgba(255,255,255,.03);border-radius:7px;">';
+            html += '<div style="width:6px;height:6px;border-radius:50%;background:'+wColor+';flex-shrink:0;margin-top:5px;"></div>';
+            html += '<div style="flex:1;font-size:12px;color:var(--t2);">' + (wf.name||wf.title||'') + '</div>';
+            if (wf.issue) html += '<div style="font-size:10px;color:'+wColor+';font-family:var(--mono);white-space:nowrap;flex-shrink:0;">' + wf.issue + '</div>';
+            html += '</div>';
+          });
+          html += '</div>';
+        }
+        html += '</div>';
+      });
+    }
+
+    // Priority fixes
+    if (doc.priorityFixes && doc.priorityFixes.length) {
+      html += '<div style="margin-bottom:20px;">';
+      html += '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:12px;">🔧 Priority Fixes</div>';
+      doc.priorityFixes.forEach(function(fix, i) {
+        html += '<div style="display:flex;gap:14px;padding:14px 16px;background:var(--s1);border:1px solid var(--b1);border-radius:10px;margin-bottom:8px;">';
+        html += '<div style="width:24px;height:24px;border-radius:50%;background:rgba(244,63,94,.2);color:#f43f5e;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + (i+1) + '</div>';
+        html += '<div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px;">' + (fix.title||fix||'') + '</div>';
+        if (fix.action) html += '<div style="font-size:12px;color:var(--t2);">' + fix.action + '</div>';
+        html += '</div></div>';
+      });
+      html += '</div>';
+    }
+
+    // Best practices
+    if (doc.bestPractices && doc.bestPractices.length) {
+      html += '<div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:12px;padding:20px 24px;margin-bottom:16px;">';
+      html += '<div style="font-size:13px;font-weight:800;color:#10b981;margin-bottom:10px;">✓ Best Practices for This Portal</div>';
+      doc.bestPractices.forEach(function(bp) {
+        html += '<div style="font-size:12px;color:var(--t2);padding:5px 0;border-top:1px solid rgba(16,185,129,.1);display:flex;gap:8px;"><span style="color:#10b981;flex-shrink:0;">→</span>' + (bp.recommendation||bp||'') + '</div>';
+      });
+      html += '</div>';
+    }
+
+    // Download prompt
+    html += '<div style="padding:16px 20px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:10px;text-align:center;margin-bottom:16px;">';
+    html += '<div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:4px;">Want this as a PDF?</div>';
+    html += '<div style="font-size:12px;color:var(--t2);margin-bottom:10px);">Download a formatted Workflow AutoDoc to share with your team or clients.</div>';
+    html += '<a href="' + API + '/audit/pdf?id=' + id + '" target="_blank" style="display:inline-block;padding:9px 20px;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.35);color:var(--brand2);border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;">Download PDF Report →</a>';
+    html += '</div>';
+
+    html += '<div style="text-align:center;"><button onclick="runAutoDoc()" style="padding:9px 20px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);color:var(--brand2);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--font);">↻ Regenerate</button></div>';
+    html += '</div>';
+    el.innerHTML = html;
+  })
+  .catch(function(){ el.innerHTML = '<div style="padding:24px;color:var(--red);">Generation failed. Try again in a moment.</div>'; });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CHANGE INTELLIGENCE LOG
+// ══════════════════════════════════════════════════════════════════════════════
+function buildChangeIntel() {
+  var el = document.getElementById('changeintel-content');
+  if (!el) return;
+  var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || (DATA && DATA.plan) || 'free';
+  if (plan === 'free' || plan === 'pulse') {
+    el.innerHTML = upgradePrompt('Change Intelligence', 'Weekly diff of what changed in your portal — new workflows, deleted properties, pipeline edits — cross-referenced with score movement.', 'pro');
+    return;
+  }
+
+  // Get history data from DATA
+  var history = DATA && DATA.history || [];
+  if (history.length < 2) {
+    el.innerHTML = '<div style="text-align:center;padding:60px 20px;">' +
+      '<div style="font-size:44px;margin-bottom:16px;">🔍</div>' +
+      '<div style="font-size:15px;font-weight:700;color:var(--t1);margin-bottom:8px;">Building Your Change History</div>' +
+      '<div style="font-size:13px;color:var(--t2);max-width:400px;margin:0 auto;line-height:1.7;">Change Intelligence requires at least 2 scans to compare. Your first diff will appear after next Monday&#39;s scan.</div>' +
+      '</div>';
+    return;
+  }
+
+  var curr = history[0];
+  var prev = history[1];
+  var currStats = (curr.portal_stats && typeof curr.portal_stats === 'object') ? curr.portal_stats : {};
+  var prevStats = (prev.portal_stats && typeof prev.portal_stats === 'object') ? prev.portal_stats : {};
+
+  var scoreDiff = (curr.score||0) - (prev.score||0);
+  var wasteDiff = (curr.monthly_waste||0) - (prev.monthly_waste||0);
+  var critDiff  = (curr.critical_count||0) - (prev.critical_count||0);
+
+  var html = '<div style="padding:8px 0;">';
+
+  // Week summary header
+  var scoreColor = scoreDiff >= 0 ? '#10b981' : '#f43f5e';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;">';
+  html += '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:18px;text-align:center;">';
+  html += '<div style="font-size:22px;font-weight:800;color:'+scoreColor+';">' + (scoreDiff >= 0 ? '+' : '') + scoreDiff + '</div>';
+  html += '<div style="font-size:9px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Score Change</div></div>';
+
+  var wColor = wasteDiff <= 0 ? '#10b981' : '#f43f5e';
+  html += '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:18px;text-align:center;">';
+  html += '<div style="font-size:22px;font-weight:800;color:'+wColor+';">' + (wasteDiff <= 0 ? '-' : '+') + '$' + Math.abs(wasteDiff).toLocaleString() + '</div>';
+  html += '<div style="font-size:9px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Waste Change/mo</div></div>';
+
+  var cColor = critDiff <= 0 ? '#10b981' : '#f43f5e';
+  html += '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:18px;text-align:center;">';
+  html += '<div style="font-size:22px;font-weight:800;color:'+cColor+';">' + (critDiff >= 0 ? '+' : '') + critDiff + '</div>';
+  html += '<div style="font-size:9px;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-top:4px;">Critical Issues Change</div></div>';
+  html += '</div>';
+
+  // Issue changes
+  var currTitles = curr.issue_titles || [];
+  var prevTitles = prev.issue_titles || [];
+  var currArr = Array.isArray(currTitles) ? currTitles : [];
+  var prevArr = Array.isArray(prevTitles) ? prevTitles : [];
+
+  var newIss = currArr.filter(function(i){ return !prevArr.find(function(p){ return p.title===i.title; }); });
+  var resolved = prevArr.filter(function(i){ return !currArr.find(function(c){ return c.title===i.title; }); });
+  var persistent = currArr.filter(function(i){ return prevArr.find(function(p){ return p.title===i.title; }); });
+
+  // New issues this week
+  if (newIss.length) {
+    html += '<div style="background:rgba(244,63,94,.05);border:1px solid rgba(244,63,94,.15);border-radius:12px;padding:18px 20px;margin-bottom:12px;">';
+    html += '<div style="font-size:12px;font-weight:800;color:#f43f5e;margin-bottom:10px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;">⚠ ' + newIss.length + ' New This Week</div>';
+    newIss.forEach(function(i) {
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(244,63,94,.08);">';
+      html += '<span style="font-size:9px;font-weight:800;color:'+(i.severity==='critical'?'#f43f5e':'#f59e0b')+';background:'+(i.severity==='critical'?'rgba(244,63,94,.15)':'rgba(245,158,11,.12)')+';padding:2px 6px;border-radius:3px;font-family:var(--mono);text-transform:uppercase;white-space:nowrap;">' + (i.severity||'').toUpperCase() + '</span>';
+      html += '<span style="font-size:12px;color:var(--t2);">' + (i.title||'') + '</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // Resolved this week
+  if (resolved.length) {
+    html += '<div style="background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.15);border-radius:12px;padding:18px 20px;margin-bottom:12px;">';
+    html += '<div style="font-size:12px;font-weight:800;color:#10b981;margin-bottom:10px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;">✓ ' + resolved.length + ' Resolved This Week</div>';
+    resolved.forEach(function(i) {
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(16,185,129,.08);">';
+      html += '<span style="font-size:12px;color:#10b981;">✓</span>';
+      html += '<span style="font-size:12px;color:var(--t2);">' + (i.title||'') + '</span></div>';
+    });
+    html += '</div>';
+  }
+
+  // Persistent issues
+  if (persistent.length) {
+    html += '<div style="background:rgba(245,158,11,.04);border:1px solid rgba(245,158,11,.12);border-radius:12px;padding:18px 20px;margin-bottom:12px;">';
+    html += '<div style="font-size:12px;font-weight:800;color:#f59e0b;margin-bottom:10px;font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;">⏳ ' + persistent.length + ' Ongoing</div>';
+    persistent.slice(0,5).forEach(function(i) {
+      html += '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid rgba(245,158,11,.08);">';
+      html += '<span style="font-size:9px;color:#f59e0b;font-family:var(--mono);">→</span>';
+      html += '<span style="font-size:12px;color:var(--t2);">' + (i.title||'') + '</span></div>';
+    });
+    if (persistent.length > 5) html += '<div style="font-size:11px;color:var(--t3);margin-top:6px;text-align:center;">+' + (persistent.length-5) + ' more</div>';
+    html += '</div>';
+  }
+
+  // Score explanation
+  if (scoreDiff !== 0) {
+    html += '<div style="padding:16px 20px;background:var(--s1);border:1px solid var(--b1);border-radius:12px;margin-bottom:16px;">';
+    html += '<div style="font-size:12px;font-weight:800;color:var(--t1);margin-bottom:8px;">Why did the score ' + (scoreDiff > 0 ? 'improve' : 'drop') + '?</div>';
+    html += '<div style="font-size:12px;color:var(--t2);line-height:1.7;">';
+    if (scoreDiff > 0 && resolved.length > 0) {
+      html += 'Your score improved by ' + scoreDiff + ' points. ' + resolved.length + ' issue' + (resolved.length!==1?'s were':' was') + ' resolved since last scan.';
+    } else if (scoreDiff < 0 && newIss.length > 0) {
+      html += 'Your score dropped by ' + Math.abs(scoreDiff) + ' points. ' + newIss.length + ' new issue' + (newIss.length!==1?'s were':' was') + ' detected since last scan.';
+    } else {
+      html += 'Score changed by ' + (scoreDiff > 0 ? '+' : '') + scoreDiff + ' points since last week.';
+    }
+    html += '</div></div>';
+  }
+
+  // History timeline
+  if (history.length > 2) {
+    html += '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;overflow:hidden;margin-bottom:16px;">';
+    html += '<div style="padding:14px 20px;border-bottom:1px solid var(--b1);font-size:12px;font-weight:800;color:var(--t1);">Scan History</div>';
+    html += '<table style="width:100%;border-collapse:collapse;">';
+    html += '<tr style="background:rgba(255,255,255,.02);"><th style="text-align:left;padding:8px 16px;font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Date</th><th style="text-align:center;padding:8px;font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Score</th><th style="text-align:center;padding:8px;font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Critical</th><th style="text-align:right;padding:8px 16px;font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:1px;">Monthly Leak</th></tr>';
+    history.slice(0,8).forEach(function(h, i) {
+      var sc = h.score || 0;
+      var scColor = sc>=80?'#10b981':sc>=60?'#f59e0b':'#f43f5e';
+      var d = h.created_at ? new Date(h.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'Week '+(history.length-i);
+      html += '<tr style="border-top:1px solid var(--b1);' + (i===0?'background:rgba(124,58,237,.05);':'') + '">';
+      html += '<td style="padding:10px 16px;font-size:12px;color:var(--t2);">' + d + (i===0?' <span style="font-size:9px;color:var(--brand2);font-family:var(--mono);margin-left:4px;">LATEST</span>':'') + '</td>';
+      html += '<td style="text-align:center;padding:10px;font-size:13px;font-weight:700;color:'+scColor+';">' + sc + '</td>';
+      html += '<td style="text-align:center;padding:10px;font-size:13px;color:var(--t2);">' + (h.critical_count||0) + '</td>';
+      html += '<td style="text-align:right;padding:10px 16px;font-size:13px;color:var(--t2);">$' + Number(h.monthly_waste||0).toLocaleString() + '</td>';
+      html += '</tr>';
+    });
+    html += '</table></div>';
+  }
+
+  html += '</div>';
+  el.innerHTML = html;
 }
 
 </script>
