@@ -1438,43 +1438,43 @@ async function submitFixMe() {
 function buildFixPlan(data) {
   var issues  = data.issues || [];
   var portal  = data.portalInfo || {};
-  var summary = data.summary || {};
+  var ps      = (portal.portalStats || {});
 
   var buckets = {
     sales: {
-      name:'Sales & Pipeline', icon:'📊', cls:'sales',
-      tagline:'Deal hygiene, pipeline accuracy, rep activity, and forecast reliability',
-      color:'#f59e0b', bg:'rgba(245,158,11,.07)', border:'rgba(245,158,11,.2)',
+      name:'Sales & Pipeline', icon:'📊',
+      headline:'Your pipeline has accuracy and activity problems.',
+      color:'#f59e0b', border:'rgba(245,158,11,.2)', bg:'rgba(245,158,11,.06)',
       dims:['Pipeline','Pipeline Integrity','Sales','Team Adoption','Sales Hub'],
-      issues:[], impact:0
+      issues:[]
     },
     marketing: {
-      name:'Marketing Hub', icon:'📣', cls:'marketing',
-      tagline:'Email deliverability, list health, form conversion, and campaign attribution',
-      color:'#3b82f6', bg:'rgba(59,130,246,.07)', border:'rgba(59,130,246,.2)',
+      name:'Marketing Hub', icon:'📣',
+      headline:'Email deliverability and list hygiene need attention.',
+      color:'#3b82f6', border:'rgba(59,130,246,.2)', bg:'rgba(59,130,246,.06)',
       dims:['Marketing','Marketing Health','Marketing Hub'],
-      issues:[], impact:0
+      issues:[]
     },
     service: {
-      name:'Service Hub', icon:'🎧', cls:'service',
-      tagline:'Ticket SLA compliance, response times, rep load balance, and churn signals',
-      color:'#10b981', bg:'rgba(16,185,129,.07)', border:'rgba(16,185,129,.2)',
+      name:'Service Hub', icon:'🎧',
+      headline:'Tickets are aging and customers are waiting too long.',
+      color:'#10b981', border:'rgba(16,185,129,.2)', bg:'rgba(16,185,129,.06)',
       dims:['Service','Service Health','Service Hub'],
-      issues:[], impact:0
+      issues:[]
     },
     automation: {
-      name:'Automation & Workflows', icon:'⚙️', cls:'automation',
-      tagline:'Dead workflows, error states, missing goals, and sequence performance',
-      color:'#8b5cf6', bg:'rgba(139,92,246,.07)', border:'rgba(139,92,246,.2)',
+      name:'Automation', icon:'⚙️',
+      headline:'Dead workflows and broken sequences are wasting your setup.',
+      color:'#8b5cf6', border:'rgba(139,92,246,.2)', bg:'rgba(139,92,246,.06)',
       dims:['Automation','Automation Health'],
-      issues:[], impact:0
+      issues:[]
     },
     data: {
-      name:'Data & Configuration', icon:'🧹', cls:'data',
-      tagline:'Duplicates, missing fields, property bloat, and security configuration',
-      color:'#06b6d4', bg:'rgba(6,182,212,.07)', border:'rgba(6,182,212,.2)',
+      name:'Data & Configuration', icon:'🧹',
+      headline:'Data quality and config gaps affect every report you run.',
+      color:'#06b6d4', border:'rgba(6,182,212,.2)', bg:'rgba(6,182,212,.06)',
       dims:['Data Integrity','Configuration','Configuration & Security','Configuration Security','Reporting','Reporting Quality','Data'],
-      issues:[], impact:0
+      issues:[]
     },
   };
 
@@ -1493,8 +1493,6 @@ function buildFixPlan(data) {
     Object.keys(buckets).forEach(function(key) {
       if (!placed && buckets[key].dims.indexOf(dim) !== -1) {
         buckets[key].issues.push(issue);
-        var imp = parseFloat((issue.impact||'').replace(/[^0-9.]/g,'')) || 0;
-        if (issue.impact && issue.impact.includes('/mo')) buckets[key].impact += imp;
         placed = true;
       }
     });
@@ -1504,102 +1502,119 @@ function buildFixPlan(data) {
   var grid = document.getElementById('fixplan-grid');
   grid.innerHTML = '';
 
-  // Section header
-  var headerDiv = document.createElement('div');
-  headerDiv.style.cssText = 'grid-column:1/-1;margin-bottom:4px;';
-  headerDiv.innerHTML =
-    '<div style="font-size:11px;font-weight:700;font-family:var(--mono);color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">ISSUES BY HUB — FIX IT FOR ME ON ANY FINDING</div>' +
-    '<div style="font-size:13px;color:var(--t2);line-height:1.6;max-width:680px;">' +
-      'Every issue below can be fixed by our team. Click <strong style="color:var(--t1);">Fix It For Me</strong> on any finding — we scope the work and send a flat-rate proposal within 24 hours. No hourly billing.' +
+  // Intro header
+  var intro = document.createElement('div');
+  intro.style.cssText = 'grid-column:1/-1;padding:0 0 8px;';
+  intro.innerHTML =
+    '<div style="font-size:13px;color:var(--t2);line-height:1.7;max-width:640px;">' +
+      'Every issue below can be fixed by our team. ' +
+      'Click <strong style="color:var(--t1);">Fix It For Me</strong> on any hub — we scope the work, send a flat-rate quote within 24 hours, and execute. No hourly billing, no open-ended retainer.' +
     '</div>';
-  grid.appendChild(headerDiv);
+  grid.appendChild(intro);
 
   var totalIssues = 0;
-  Object.keys(buckets).forEach(function(key) { totalIssues += buckets[key].issues.length; });
+  Object.keys(buckets).forEach(function(k){ totalIssues += buckets[k].issues.length; });
 
   Object.keys(buckets).forEach(function(key) {
     var b = buckets[key];
     if (b.issues.length === 0) return;
 
-    // Sort: critical first, then warning, then info
-    b.issues.sort(function(a,x){ var s={critical:0,warning:1,info:2}; return (s[a.severity]||2)-(s[x.severity]||2); });
+    // Sort critical first
+    b.issues.sort(function(a,x){
+      var s={critical:0,warning:1,info:2};
+      return (s[a.severity]||2)-(s[x.severity]||2);
+    });
 
-    var critCount = b.issues.filter(function(i){ return i.severity==='critical'; }).length;
-    var warnCount = b.issues.filter(function(i){ return i.severity==='warning'; }).length;
+    var crits  = b.issues.filter(function(i){return i.severity==='critical';}).length;
+    var warns  = b.issues.filter(function(i){return i.severity==='warning';}).length;
+    var total  = b.issues.length;
+    var top3   = b.issues.slice(0, 3);
+    var extra  = total - 3;
+
+    // Severity badge text
+    var sevText = crits > 0
+      ? crits + ' critical' + (warns > 0 ? ', ' + warns + ' warning' : '')
+      : warns + ' warning' + (total - warns > 0 ? ', ' + (total-warns) + ' info' : '');
+    var sevBg  = crits > 0 ? 'rgba(244,63,94,.12)' : 'rgba(245,158,11,.12)';
+    var sevCol = crits > 0 ? '#f43f5e' : '#f59e0b';
 
     var card = document.createElement('div');
-    card.style.cssText = 'background:'+b.bg+';border:1px solid '+b.border+';border-radius:14px;overflow:hidden;';
+    card.style.cssText =
+      'background:' + b.bg + ';' +
+      'border:1px solid ' + b.border + ';' +
+      'border-radius:14px;overflow:hidden;' +
+      'display:flex;flex-direction:column;';
 
-    // Hub header
-    var statusText = critCount > 0
-      ? critCount+' critical'+(warnCount > 0 ? ' · '+warnCount+' warning' : '')
-      : warnCount+' warning'+(b.issues.length-warnCount > 0 ? ' · '+(b.issues.length-warnCount)+' info' : '');
-
+    // ── Header ─────────────────────────────────────────────────────────────
     var headerHtml =
       '<div style="padding:16px 18px 12px;border-bottom:1px solid '+b.border+';">' +
-        '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
-          '<div style="display:flex;align-items:center;gap:10px;">' +
-            '<span style="font-size:20px;">'+b.icon+'</span>' +
-            '<div>' +
-              '<div style="font-size:14px;font-weight:800;color:var(--t1);letter-spacing:-.2px;">'+esc(b.name)+'</div>' +
-              '<div style="font-size:11px;color:var(--t3);margin-top:1px;">'+esc(b.tagline)+'</div>' +
-            '</div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;">' +
+          '<div style="display:flex;align-items:center;gap:8px;">' +
+            '<span style="font-size:18px;line-height:1;">'+b.icon+'</span>' +
+            '<span style="font-size:14px;font-weight:800;color:var(--t1);">'+esc(b.name)+'</span>' +
           '</div>' +
-          '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">' +
-            '<span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:'+
-              (critCount > 0 ? 'rgba(244,63,94,.15);color:#f43f5e' : 'rgba(245,158,11,.15);color:#f59e0b')+
-              ';">'+statusText+'</span>' +
-          '</div>' +
+          '<span style="font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;background:'+sevBg+';color:'+sevCol+';white-space:nowrap;">'+sevText+'</span>' +
         '</div>' +
+        '<div style="font-size:12px;color:var(--t2);">'+esc(b.headline)+'</div>' +
       '</div>';
 
-    // Issue rows — each with Fix It For Me
-    var issueRowsHtml = '<div style="padding:0;">';
-    b.issues.forEach(function(iss, idx_local) {
-      var dotColor = iss.severity==='critical' ? '#f43f5e' : iss.severity==='warning' ? '#f59e0b' : '#60a5fa';
-      var globalIdx = (AUDIT_DATA && AUDIT_DATA.issues) ? AUDIT_DATA.issues.indexOf(iss) : -1;
+    // ── Top 3 issues (concise rows) ────────────────────────────────────────
+    var issueRowsHtml = '<div style="padding:4px 0;">';
+    top3.forEach(function(iss) {
+      var dot = iss.severity==='critical' ? '#f43f5e' : iss.severity==='warning' ? '#f59e0b' : '#60a5fa';
       issueRowsHtml +=
-        '<div style="padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:flex-start;gap:10px;">' +
-          '<div style="width:7px;height:7px;border-radius:50%;background:'+dotColor+';flex-shrink:0;margin-top:5px;"></div>' +
-          '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:12px;font-weight:600;color:var(--t1);line-height:1.4;margin-bottom:2px;">'+esc(iss.title||'')+'</div>' +
-            (iss.impact ? '<div style="font-size:11px;color:var(--t3);">⚡ '+esc(iss.impact)+'</div>' : '') +
-          '</div>' +
-          (globalIdx >= 0 ?
-            '<button onclick="fixItForMe('+globalIdx+')" style="flex-shrink:0;padding:5px 12px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);border-radius:6px;color:#a78bfa;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🛠 Fix It</button>' :
-            '') +
+        '<div style="padding:8px 18px;display:flex;align-items:flex-start;gap:8px;">' +
+          '<div style="width:6px;height:6px;border-radius:50%;background:'+dot+';flex-shrink:0;margin-top:5px;"></div>' +
+          '<div style="font-size:12px;color:var(--t1);line-height:1.4;flex:1;">' + esc(iss.title||'') + '</div>' +
         '</div>';
     });
+    if (extra > 0) {
+      issueRowsHtml +=
+        '<div style="padding:4px 18px 8px;font-size:11px;color:var(--t3);">+'+extra+' more finding'+(extra!==1?'s':'')+' in this hub</div>';
+    }
     issueRowsHtml += '</div>';
 
-    // Hub CTA footer
-    var calLink = 'https://calendly.com/matthew-fixops/30min?utm_source=fixops&utm_campaign=hub_'+key+'&utm_content='+encodeURIComponent(b.name);
+    // ── CTA footer ─────────────────────────────────────────────────────────
+    var globalIdx = -1;
+    if (b.issues.length > 0 && AUDIT_DATA && AUDIT_DATA.issues) {
+      globalIdx = AUDIT_DATA.issues.indexOf(b.issues[0]);
+    }
+    var calUrl = 'https://calendly.com/matthew-fixops/30min?utm_source=fixops&utm_medium=fixplan&utm_campaign=hub_'+key;
     var footerHtml =
-      '<div style="padding:14px 18px;background:rgba(0,0,0,.15);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
-        '<div style="font-size:12px;color:var(--t2);">' +
-          '<strong style="color:var(--t1);">'+b.issues.length+' issue'+(b.issues.length!==1?'s':'')+' in '+b.name+'</strong>' +
-          (b.impact > 0 ? ' · <span style="color:'+b.color+';">$'+Math.round(b.impact).toLocaleString()+'/mo estimated impact</span>' : '') +
+      '<div style="padding:12px 18px;margin-top:auto;border-top:1px solid '+b.border+';display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">' +
+        '<div style="font-size:11px;color:var(--t3);">' +
+          '<strong style="color:var(--t1);">'+total+'</strong> issue'+(total!==1?'s':'')+' · flat-rate fix available' +
         '</div>' +
-        '<a href="'+calLink+'" target="_blank" style="padding:8px 16px;background:linear-gradient(135deg,'+b.color+'33,'+b.color+'22);border:1px solid '+b.border+';border-radius:8px;color:'+b.color+';font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Book a call to fix all '+b.issues.length+' →</a>' +
+        '<div style="display:flex;gap:8px;align-items:center;">' +
+          (globalIdx >= 0
+            ? '<button onclick="fixItForMe('+globalIdx+')" style="padding:7px 14px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.35);border-radius:7px;color:#a78bfa;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🛠 Fix It For Me</button>'
+            : '') +
+          '<a href="'+calUrl+'" target="_blank" style="padding:7px 14px;background:linear-gradient(135deg,'+b.color+'22,'+b.color+'15);border:1px solid '+b.border+';border-radius:7px;color:'+b.color+';font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Book a call →</a>' +
+        '</div>' +
       '</div>';
 
     card.innerHTML = headerHtml + issueRowsHtml + footerHtml;
     grid.appendChild(card);
   });
 
-  // Bottom CTA — fix everything
+  // ── Bottom all-in CTA ───────────────────────────────────────────────────
   if (totalIssues > 0) {
-    var allFixDiv = document.createElement('div');
-    allFixDiv.style.cssText = 'grid-column:1/-1;margin-top:8px;';
-    allFixDiv.innerHTML =
-      '<div style="background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(37,99,235,.07));border:1px solid rgba(124,58,237,.25);border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
-        '<div>' +
-          '<div style="font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px;">Fix everything. One engagement.</div>' +
-          '<div style="font-size:12px;color:var(--t2);line-height:1.6;max-width:500px;">Book a 30-minute call and we scope the full fix plan across all '+totalIssues+' issues. You get a flat-rate quote — no hourly billing, no open-ended retainer.</div>' +
+    var allCta = document.createElement('div');
+    allCta.style.cssText = 'grid-column:1/-1;margin-top:4px;';
+    allCta.innerHTML =
+      '<div style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(37,99,235,.05));border:1px solid rgba(124,58,237,.2);border-radius:14px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
+        '<div style="flex:1;min-width:220px;">' +
+          '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:4px;">Fix everything across all '+totalIssues+' findings.</div>' +
+          '<div style="font-size:12px;color:var(--t2);line-height:1.6;">' +
+            'One 30-minute call to scope the full engagement. Flat-rate quote for every hub. We fix it — you approve each step.' +
+          '</div>' +
         '</div>' +
-        '<a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="flex-shrink:0;padding:11px 24px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">Book Your Fix Call →</a>' +
+        '<a href="https://calendly.com/matthew-fixops/30min" target="_blank" ' +
+          'style="flex-shrink:0;padding:12px 24px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;">' +
+          'Book Your Fix Call →' +
+        '</a>' +
       '</div>';
-    grid.appendChild(allFixDiv);
+    grid.appendChild(allCta);
   }
 }
 
