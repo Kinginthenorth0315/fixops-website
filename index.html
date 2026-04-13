@@ -998,7 +998,7 @@ function showDashTab(tab, btn) {
 
     <!-- MONTHLY PLANS -->
     <div id="monthly-plans" class="r d1">
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
 
         <div class="price-card">
           <div class="pc-tier">Free</div>
@@ -1077,29 +1077,7 @@ function showDashTab(tab, btn) {
           <button class="pc-btn pcb-o" onclick="goStripe('pro')" style="background:linear-gradient(135deg,#10b981,#059669);">Start Sentinel — $549/mo →</button>
         </div>
 
-        <div class="price-card">
-          <div class="pc-tier">Agency</div>
-          <div class="pc-name">FixOps Command</div>
-          <div class="pc-desc">Everything in Sentinel across 25 client portals. White-label reports, weekly client digests, per-portal dollar impact. Agencies use this to justify $2k–5k/mo retainers.</div>
-          <div class="pc-price">$999<span>/mo</span></div>
-          <div class="pc-per">up to 25 client portals · cancel anytime · no contract</div>
-          <div class="pc-feats">
-            <div class="pc-feat"><span>✓</span>Everything in Pro — applied to every client portal</div>
-            <div class="pc-feat"><span>✓</span>Up to 25 client portals</div>
-            <div class="pc-feat"><span>✓</span>Unlimited audits across all portals</div>
-            <div class="pc-feat"><span>✓</span>White-label PDF reports — your agency brand <span style="font-size:10px;color:#f59e0b;">(coming soon)</span></div>
-            <div class="pc-feat"><span>✓</span>Weekly Monday report per client portal</div>
-            <div class="pc-feat"><span>✓</span>Dollar impact reporting per client</div>
-            <div class="pc-feat"><span>✓</span>Ghost seat + rep scorecard per client</div>
-            <div class="pc-feat"><span>✓</span>Full Portal Snapshot per client</div>
-            <div class="pc-feat"><span>✓</span>Fix It For Me on any issue</div>
-            <div class="pc-feat"><span>✓</span>Priority support + dedicated onboarding</div>
-          </div>
-          <button class="pc-btn pcb-o" onclick="openAgencyModal()">Start Command — $999/mo →</button>
-          <div style="text-align:center;margin-top:8px;font-size:11px;color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;letter-spacing:1px;">CURRENTLY INVITE-ONLY · WE'LL REACH OUT WITHIN 1 BUSINESS DAY</div>
         </div>
-
-      </div>
       <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · <span onclick="showAgency()" style="color:var(--brand2);cursor:pointer;font-weight:600;">Agency plans →</span></p>
     </div>
 
@@ -1222,30 +1200,66 @@ function showDashTab(tab, btn) {
 
           <!-- Command Unlimited $1,999 -->
           <div style="background:var(--s1);border:2px solid rgba(124,58,237,.4);border-radius:16px;padding:32px;display:flex;flex-direction:column;position:relative;">
-            <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#10b981);color:#fff;font-family:var(--mono);font-size:9px;font-weight:800;letter-spacing:2px;padding:4px 14px;border-radius:20px;text-transform:uppercase;white-space:nowrap;">Most Powerful</div>
+            <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#7c3aed,#10b981);color:#fff;font-family:var(--mono);font-size:9px;font-weight:800;letter-spacing:2px;padding:4px 14px;border-radius:20px;text-transform:uppercase;white-space:nowrap;">Best Value · Most Powerful</div>
             <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--brand2);margin-bottom:10px;">Command Unlimited</div>
-            <div style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6;">For agencies running their full RevOps operation through FixOps. Unlimited portals, AI coaching on every client, and the tools that make you look like a $10k/mo RevOps team.</div>
+            <div style="font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.6;">For agencies that want to run FixOps across their entire book of business — unlimited portals, AI coaching on every client, white-label everything. One flat fee, no per-portal math.</div>
+
             <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px;">
               <div style="font-family:var(--font);font-size:44px;font-weight:900;letter-spacing:-2px;color:var(--brand2);">$1,999</div>
               <div style="font-size:14px;color:var(--t3);">/mo</div>
             </div>
-            <div style="font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:24px;">unlimited client portals · cancel anytime</div>
-            <div style="flex:1;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">
-              <div style="font-size:11px;font-weight:800;color:var(--brand2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Everything in Command, plus:</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Unlimited client portals — no cap</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>AI Deal Coach on every client portal — stalled deal analysis with ready-to-use scripts</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>RevOps AI Coach — 30-day strategy memo per client from their live data</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Billing Optimizer — HubSpot cost reduction per client portal</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Workflow AutoDoc — included ($99/mo add-on for lower plans)</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>White-label client-facing dashboard — your domain, your brand</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Dedicated Slack channel — direct line for support and onboarding</div>
-              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Custom onboarding — we set up your first 5 portals with you</div>
+            <div style="font-size:11px;color:var(--t3);font-family:var(--mono);margin-bottom:16px;">unlimited client portals · cancel anytime</div>
+
+            <!-- ROI math block -->
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:20px;">
+              <div style="padding:10px 12px;background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.18);border-radius:8px;text-align:center;">
+                <div style="font-size:18px;font-weight:800;color:#10b981;letter-spacing:-.5px;">$133</div>
+                <div style="font-size:10px;color:var(--t3);margin-top:2px;line-height:1.4;">per portal/mo<br>at 15 clients</div>
+              </div>
+              <div style="padding:10px 12px;background:rgba(37,99,235,.07);border:1px solid rgba(37,99,235,.18);border-radius:8px;text-align:center;">
+                <div style="font-size:18px;font-weight:800;color:#3b82f6;letter-spacing:-.5px;">10×</div>
+                <div style="font-size:10px;color:var(--t3);margin-top:2px;line-height:1.4;">ROI vs. a<br>RevOps hire</div>
+              </div>
+              <div style="padding:10px 12px;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.18);border-radius:8px;text-align:center;">
+                <div style="font-size:18px;font-weight:800;color:var(--brand2);letter-spacing:-.5px;">∞</div>
+                <div style="font-size:10px;color:var(--t3);margin-top:2px;line-height:1.4;">portals, no<br>cap ever</div>
+              </div>
             </div>
-            <div style="padding:12px 16px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:8px;margin-bottom:16px;font-size:12px;color:var(--t2);">
-              💰 At 15+ clients billing $1k/mo each = $15k/mo revenue. FixOps Unlimited is <strong style="color:var(--t1);">13% of your revenue</strong> and replaces a $5k/mo RevOps hire.
+
+            <div style="flex:1;display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+              <div style="font-size:11px;font-weight:700;color:var(--brand2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Everything in Command, plus:</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Unlimited client portals — add new clients same day, no upgrade needed</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>AI Deal Coach per client — stalled deal analysis with rep-ready call scripts your team delivers</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>RevOps AI Coach — monthly strategy memo per client, written from their live portal data</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Billing Optimizer — finds HubSpot tier savings per client before their renewal hits</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Workflow AutoDoc included — your clients get a documented portal bible every month</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>White-label dashboard — clients log in at your domain, see your branding throughout</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>Dedicated Slack channel + direct line for escalations and onboarding support</div>
+              <div style="font-size:13px;color:var(--t2);display:flex;align-items:flex-start;gap:8px;"><span style="color:var(--brand2);flex-shrink:0;margin-top:1px;">✦</span>We set up your first 5 portals with you — white-glove onboarding included</div>
             </div>
+
+            <!-- Concrete ROI scenario -->
+            <div style="padding:14px 16px;background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.25);border-radius:10px;margin-bottom:16px;">
+              <div style="font-size:11px;font-weight:700;color:var(--brand2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">The math at 20 clients</div>
+              <div style="display:flex;flex-direction:column;gap:5px;">
+                <div style="display:flex;justify-content:space-between;font-size:12px;">
+                  <span style="color:var(--t3);">Your retainer revenue (20 × $1,500/mo avg)</span>
+                  <span style="color:var(--t1);font-weight:600;">$30,000/mo</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;">
+                  <span style="color:var(--t3);">FixOps Command Unlimited cost</span>
+                  <span style="color:#dc2626;font-weight:600;">−$1,999/mo</span>
+                </div>
+                <div style="height:1px;background:rgba(124,58,237,.25);margin:4px 0;"></div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;">
+                  <span style="color:var(--t2);font-weight:600;">FixOps as % of revenue</span>
+                  <span style="color:#10b981;font-weight:800;">6.7% — replaces a $6k/mo RevOps hire</span>
+                </div>
+              </div>
+            </div>
+
             <button onclick="openAgencyModal('unlimited')" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#10b981);color:#fff;border:none;border-radius:10px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">Get Command Unlimited — $1,999/mo →</button>
-            <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:8px;">Invite-only · full setup call included</div>
+            <div style="text-align:center;font-size:11px;color:var(--t3);margin-top:8px;">Invite-only · full setup call included · we onboard every agency personally</div>
           </div>
 
         </div>
