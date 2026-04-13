@@ -865,6 +865,24 @@ a { color: var(--brand-lt); }
   border-radius: 8px; border-left: 3px solid var(--brand);
   margin-bottom: 8px;
 }
+
+/* ── PLAN LOCK OVERLAY ── */
+.view-lock-overlay {
+  position: absolute; inset: 0;
+  background: rgba(10,10,18,.92);
+  backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 50; padding: 24px;
+}
+.view-lock-cta {
+  display: inline-block; padding: 12px 24px;
+  font-size: 13px; font-weight: 700; color: #fff;
+  border-radius: 9px; text-decoration: none;
+  transition: opacity .15s;
+}
+.view-lock-cta:hover { opacity: .88; }
+.view-lock-cta.pro-cta   { background: linear-gradient(135deg,#10b981,#059669); }
+.view-lock-cta.pulse-cta { background: linear-gradient(135deg,#3b82f6,#2563eb); }
 </style>
 
   <script defer data-domain="fixops.io" src="https://plausible.io/js/script.js"></script>
@@ -2759,6 +2777,18 @@ async function loadFromToken(token) {
           {title:'PDF Reports',desc:'Branded PDF on every scan for stakeholders'},
         ], 'https://fixops.io/#pricing');
       });
+
+      // Lock AI coaching + new competitive gap views (Sentinel features)
+      var sentinelNewFeats = [
+        {title:'Requires Sentinel or Command','desc':' — monthly subscription for continuous intelligence'},
+        {title:'Weekly automated re-scans',desc:' with score history and trend tracking'},
+        {title:'AI-powered coaching',desc:' that writes specific next steps from your actual data'},
+      ];
+      ['dealcoach','revopscoach','contacttier','autodoc','changeintel',
+       'breeze','hubcost','methodology'].forEach(function(vName) {
+        lockView(vName, 'pro', 'SENTINEL', '#10b981', '$549/mo',
+          sentinelNewFeats, 'https://fixops.io/#pricing');
+      });
     }
 
     // AI/advanced views locked for pulse + one-time users (need monthly Sentinel+)
@@ -2789,22 +2819,35 @@ async function loadFromToken(token) {
   }
 
   // ── PLAN GATING: Free = 30s preview then full wall. One-time = immediate full wall. ─────
-  if (!isMonthly) {
-    if (isOneTime) {
-      // Deep/Pro-Audit: immediate full wall — no views built at all
-      showReportingWall(auditPlan);
-      return; // ← don&#39;t build any views
-    } else if (isFree) {
-      // Free: 30-second overview preview then full page wall
-      // Only build overview for free users
-      safeRun(buildOverview);
-      setTimeout(function() { showReportingWall('free'); }, 30000);
-      setupAiSuggestions();
-      return; // ← don&#39;t build other views
-    }
+  if (isFree) {
+    // Free: 30-second overview preview then full page wall
+    safeRun(buildOverview);
+    setTimeout(function() { showReportingWall('free'); }, 30000);
+    setupAiSuggestions();
+    return;
   }
 
-  // ── BUILD ALL VIEWS — monthly subscribers only ────────────────────────────
+  if (isDeepAudit) {
+    // Deep Diagnostic ($399): Build basic views only
+    // Sentinel views are locked with upgrade overlays from applyViewLocks
+    safeRun(buildOverview); safeRun(buildPipeline); safeRun(buildRevenue);
+    safeRun(buildMarketing); safeRun(buildService); safeRun(buildTickets);
+    safeRun(buildAutomation); safeRun(buildTeam); safeRun(buildLists);
+    safeRun(buildSequences); safeRun(buildCompany); safeRun(buildProducts);
+    safeRun(buildCustomObjects); safeRun(buildSetupHealth); safeRun(buildEngagement);
+    setupAiSuggestions();
+    return;
+  }
+
+  if (isFullAudit) {
+    // Full Audit ($699): Build basic + sentinel views
+    // AI-specific views (ai, velocity, forecast, funnel, contacts, conflicts) still locked
+    initAllViews();
+    setupAiSuggestions();
+    return;
+  }
+
+  // ── BUILD ALL VIEWS — monthly subscribers ──────────────────────────────────
   initAllViews();
   setupAiSuggestions();
 
