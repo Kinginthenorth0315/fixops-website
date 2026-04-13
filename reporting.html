@@ -832,6 +832,312 @@ footer {
 .dim-bar-val { font-size: 11px; font-weight: 700; color: var(--t1); width: 30px; text-align: right; flex-shrink: 0; }
 
 
+
+/* ══════════════════════════════════════════════════════════════
+   PROFESSIONAL REPORTING UI UPGRADES
+   Swydo/Power BI caliber — clean, typographically strong
+══════════════════════════════════════════════════════════════ */
+
+/* ── Page header — cleaner, more structured ── */
+.page-header h1 {
+  font-size: 18px; font-weight: 700;
+  color: var(--t1); letter-spacing: -.4px;
+  margin-bottom: 2px; line-height: 1.2;
+}
+.page-header p {
+  font-size: 11.5px; color: var(--t3);
+  line-height: 1.55; max-width: 580px;
+  font-weight: 400; letter-spacing: .01em;
+}
+
+/* ── Chart card — elevated look ── */
+.chart-card {
+  background: var(--card-bg);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 20px 20px 16px;
+  position: relative; overflow: hidden;
+  transition: box-shadow .15s;
+}
+.chart-card:hover {
+  box-shadow: 0 4px 24px rgba(0,0,0,.18);
+}
+[data-theme="light"] .chart-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,.09);
+}
+.chart-title {
+  font-size: 12px; font-weight: 650;
+  color: var(--t1); letter-spacing: -.05px;
+  margin-bottom: 1px;
+}
+.chart-sub {
+  font-size: 10.5px; color: var(--t3);
+  font-weight: 400; letter-spacing: .01em;
+}
+
+/* ── KPI number styling — the core metric display ── */
+.kpi-num {
+  font-size: 28px; font-weight: 750;
+  letter-spacing: -.8px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.kpi-label-text {
+  font-size: 9.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px;
+  color: var(--t3); font-family: var(--mono);
+}
+.kpi-sub-text {
+  font-size: 10.5px; color: var(--t3);
+  line-height: 1.4; margin-top: 2px;
+}
+.kpi-change-positive {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 10px; font-weight: 700; color: var(--green);
+  background: var(--green-bg); padding: 1px 6px;
+  border-radius: 3px; margin-top: 4px;
+  font-family: var(--mono);
+}
+.kpi-change-negative {
+  display: inline-flex; align-items: center; gap: 2px;
+  font-size: 10px; font-weight: 700; color: var(--red);
+  background: var(--red-bg); padding: 1px 6px;
+  border-radius: 3px; margin-top: 4px;
+  font-family: var(--mono);
+}
+
+/* ── Score card — big centered number ── */
+.score-num {
+  font-size: 56px; font-weight: 800;
+  letter-spacing: -4px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.score-label {
+  font-size: 10px; font-weight: 600;
+  font-family: var(--mono); text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--t3);
+  margin-top: 2px;
+}
+.score-sub {
+  font-size: 11px; color: var(--t3);
+  margin-top: 6px; font-weight: 400;
+}
+
+/* ── Dimension bars — tighter, more readable ── */
+.dim-bar-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0; border-bottom: 1px solid var(--t4);
+}
+.dim-bar-row:last-child { border-bottom: none; }
+.dim-bar-label {
+  font-size: 10.5px; font-weight: 500;
+  color: var(--t2); width: 108px; flex-shrink: 0;
+  letter-spacing: -.1px;
+}
+.dim-bar-track {
+  flex: 1; height: 4px; background: var(--b1);
+  border-radius: 2px; overflow: hidden;
+}
+.dim-bar-fill {
+  height: 100%; border-radius: 2px;
+  background: var(--brand);
+  transition: width .7s cubic-bezier(.25,.46,.45,.94);
+}
+.dim-bar-fill.green { background: var(--green); }
+.dim-bar-fill.amber { background: var(--amber); }
+.dim-bar-fill.red   { background: var(--red); }
+.dim-bar-val {
+  font-size: 11px; font-weight: 700;
+  color: var(--t1); width: 26px; text-align: right;
+  flex-shrink: 0; font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Metric row — cleaner, more structured ── */
+.metric-row {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--t4);
+  gap: 12px;
+}
+.metric-row:last-child { border-bottom: none; }
+.metric-label {
+  font-size: 11.5px; font-weight: 450;
+  color: var(--t2); flex: 1;
+}
+.metric-value {
+  font-size: 13px; font-weight: 700;
+  color: var(--t1); text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.3px;
+}
+.metric-sub {
+  font-size: 10px; color: var(--t3);
+  font-family: var(--mono);
+}
+
+/* ── Issue list — sharper ── */
+.issue-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--t4);
+  cursor: pointer; transition: background .1s;
+  border-radius: 0;
+}
+.issue-row:first-child { border-radius: 0; }
+.issue-row:last-child { border-bottom: none; }
+.issue-row:hover { background: rgba(255,255,255,.025); }
+[data-theme="light"] .issue-row:hover { background: rgba(0,0,0,.025); }
+.issue-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 5px;
+}
+.issue-dot.critical { background: var(--red); box-shadow: 0 0 0 3px rgba(220,38,38,.12); }
+.issue-dot.warning  { background: var(--amber); box-shadow: 0 0 0 3px rgba(217,119,6,.12); }
+.issue-dot.info     { background: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+.issue-title-text {
+  font-size: 12px; font-weight: 550;
+  color: var(--t1); line-height: 1.4;
+}
+.issue-meta  { font-size: 10.5px; color: var(--t3); margin-top: 1px; }
+.issue-impact {
+  font-size: 10.5px; color: var(--amber);
+  margin-top: 2px; font-family: var(--mono);
+  letter-spacing: -.1px;
+}
+.issue-expand {
+  flex-shrink: 0; font-size: 14px;
+  color: var(--t3); padding: 0 4px;
+  line-height: 1; margin-top: 2px;
+  transition: color .1s;
+}
+.issue-row:hover .issue-expand { color: var(--t2); }
+
+/* ── Data table — Swydo-style clean ── */
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 11.5px;
+}
+.data-table th {
+  text-align: left; padding: 7px 12px;
+  font-size: 9.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1px;
+  color: var(--t3); border-bottom: 1px solid var(--b1);
+  white-space: nowrap; font-family: var(--mono);
+}
+.data-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--t4);
+  color: var(--t2); vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr:hover td {
+  background: rgba(255,255,255,.02);
+}
+[data-theme="light"] .data-table tbody tr:hover td {
+  background: rgba(0,0,0,.02);
+}
+.data-table td.num {
+  font-family: var(--mono); font-weight: 600;
+  color: var(--t1); text-align: right; font-size: 12px;
+}
+.data-table td.green-num { color: var(--green); font-family: var(--mono); font-weight: 700; text-align: right; }
+.data-table td.red-num   { color: var(--red);   font-family: var(--mono); font-weight: 700; text-align: right; }
+.data-table td.amber-num { color: var(--amber); font-family: var(--mono); font-weight: 700; text-align: right; }
+
+/* ── Sidebar section labels — professional mono ── */
+.sidebar-section-label {
+  font-family: var(--mono);
+  font-size: 8.5px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: rgba(255,255,255,.25);
+}
+
+/* ── Nav bar — sharper ── */
+nav {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--b1);
+}
+[data-theme="light"] nav {
+  background: #fff;
+  border-bottom-color: rgba(0,0,0,.08);
+}
+.nav-title {
+  font-size: 11px; font-weight: 500;
+  color: var(--t2); letter-spacing: .01em;
+}
+
+/* ── View section header (inside chart cards) ── */
+.section-label {
+  font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--t3); font-family: var(--mono);
+  margin-bottom: 10px; display: block;
+}
+
+/* ── Stat badge (used inline in tables/cards) ── */
+.stat-badge {
+  display: inline-block;
+  padding: 2px 7px; border-radius: 4px;
+  font-size: 9.5px; font-weight: 700;
+  font-family: var(--mono); letter-spacing: .3px;
+}
+.stat-badge.green  { background: var(--green-bg);  color: var(--green); }
+.stat-badge.red    { background: var(--red-bg);    color: var(--red); }
+.stat-badge.amber  { background: var(--amber-bg);  color: var(--amber); }
+.stat-badge.blue   { background: var(--blue-bg);   color: var(--blue); }
+.stat-badge.purple { background: var(--purple-bg); color: var(--purple); }
+
+/* ── Sparkline mini-stat (like Swydo's numbers above charts) ── */
+.spark-stat {
+  display: flex; flex-direction: column; gap: 1px;
+  padding: 12px 16px;
+  border-right: 1px solid var(--b1);
+  min-width: 100px;
+}
+.spark-stat:last-child { border-right: none; }
+.spark-stat-label {
+  font-size: 9px; font-weight: 600; font-family: var(--mono);
+  text-transform: uppercase; letter-spacing: 1.2px; color: var(--t3);
+}
+.spark-stat-value {
+  font-size: 20px; font-weight: 750;
+  color: var(--t1); letter-spacing: -.5px;
+  font-variant-numeric: tabular-nums; line-height: 1.1;
+  margin-top: 2px;
+}
+.spark-stat-delta {
+  font-size: 10px; font-weight: 600; font-family: var(--mono);
+  margin-top: 1px;
+}
+.spark-stat-delta.up   { color: var(--green); }
+.spark-stat-delta.down { color: var(--red); }
+.spark-stat-delta.flat { color: var(--t3); }
+
+/* ── Stat row (horizontal strip of mini-stats above a chart) ── */
+.stat-strip {
+  display: flex; flex-wrap: wrap;
+  border: 1px solid var(--b1); border-radius: 10px;
+  overflow: hidden; margin-bottom: 14px;
+  background: var(--card-bg2);
+}
+
+/* ── Pro gate placeholder ── */
+.pro-gate {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: 160px; padding: 32px;
+  text-align: center; gap: 10px;
+}
+.pro-gate-icon { font-size: 28px; opacity: .5; }
+.pro-gate-title {
+  font-size: 14px; font-weight: 650; color: var(--t1);
+}
+.pro-gate-sub {
+  font-size: 12px; color: var(--t3); max-width: 280px;
+  line-height: 1.6;
+}
+
 </style>
 
 </head>
@@ -1153,8 +1459,8 @@ footer {
             <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
               <div style="flex-shrink:0;text-align:center;min-width:100px;">
                 <div id="ov-score-num" class="score-num" style="color:var(--brand-lt);">—</div>
-                <div class="score-label" style="margin-top:4px;">/ 100</div>
-                <div id="ov-score-pct" class="score-sub" style="margin-top:6px;"></div>
+                <div style="font-size:9px;font-weight:600;font-family:var(--mono);text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-top:4px;">out of 100</div>
+                <div id="ov-score-pct" style="font-size:10.5px;color:var(--t3);margin-top:8px;font-weight:400;line-height:1.5;max-width:100px;"></div>
               </div>
               <div style="flex:1;min-width:200px;" id="ov-dim-bars"></div>
             </div>
@@ -3177,11 +3483,12 @@ function buildOverview() {
   ];
   if (dimBars) {
     dimBars.innerHTML = dims.map(function(d) {
-      var col = d.val >= 80 ? 'green' : d.val >= 60 ? 'amber' : 'red';
+      var col    = d.val >= 80 ? 'green' : d.val >= 60 ? 'amber' : 'red';
+      var vColor = d.val >= 80 ? 'var(--green)' : d.val >= 60 ? 'var(--amber)' : 'var(--red)';
       return '<div class="dim-bar-row">' +
         '<div class="dim-bar-label">' + d.label + '</div>' +
         '<div class="dim-bar-track"><div class="dim-bar-fill ' + col + '" style="width:' + d.val + '%;"></div></div>' +
-        '<div class="dim-bar-val">' + d.val + '</div>' +
+        '<div class="dim-bar-val" style="color:' + vColor + ';">' + d.val + '</div>' +
       '</div>';
     }).join('');
   }
@@ -3201,7 +3508,7 @@ function buildOverview() {
     statsList.innerHTML = rows.map(function(r) {
       return '<div class="metric-row">' +
         '<div class="metric-label">' + r.label + '</div>' +
-        '<div class="metric-value" style="color:' + r.color + ';">' + r.val + '</div>' +
+        '<div class="metric-value" style="color:' + r.color + ';font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:13px;font-weight:700;">' + r.val + '</div>' +
       '</div>';
     }).join('');
   }
@@ -5052,7 +5359,7 @@ function updateAiHistory() {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function kpi(label, value, sub, color, trend) {
-  // Inline styles — CSS classes don't apply to dynamically generated innerHTML
+  // Professional stat card — Swydo/Power BI caliber
   var colorMap = {
     green:  '#16a34a',
     red:    '#dc2626',
@@ -5061,21 +5368,38 @@ function kpi(label, value, sub, color, trend) {
     purple: '#7c3aed',
   };
   var bgMap = {
-    green:  'rgba(22,163,74,.09)',
-    red:    'rgba(220,38,38,.08)',
-    amber:  'rgba(217,119,6,.08)',
-    blue:   'rgba(37,99,235,.09)',
-    purple: 'rgba(124,58,237,.09)',
+    green:  'rgba(22,163,74,.07)',
+    red:    'rgba(220,38,38,.07)',
+    amber:  'rgba(217,119,6,.07)',
+    blue:   'rgba(37,99,235,.07)',
+    purple: 'rgba(124,58,237,.08)',
   };
-  var c   = colorMap[color]  || 'inherit';
-  var bg  = bgMap[color]     || 'var(--card-bg)';
-  var trendHtml = trend ? '<span style="font-size:10px;margin-left:4px;">' + (trend === 'up' ? '↑' : '↓') + '</span>' : '';
-  return '<div style="background:' + bg + ';border:1px solid var(--b1);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;">' +
-    '<div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-family:var(--mono);">' + label + '</div>' +
-    '<div style="font-size:22px;font-weight:700;color:' + c + ';letter-spacing:-.5px;line-height:1.1;">' + value + trendHtml + '</div>' +
-    (sub ? '<div style="font-size:11px;color:var(--t3);margin-top:1px;">' + sub + '</div>' : '') +
-  '</div>';
+  var borderMap = {
+    green:  'rgba(22,163,74,.18)',
+    red:    'rgba(220,38,38,.18)',
+    amber:  'rgba(217,119,6,.18)',
+    blue:   'rgba(37,99,235,.18)',
+    purple: 'rgba(124,58,237,.2)',
+  };
+  var c      = colorMap[color]  || 'var(--t1)';
+  var bg     = bgMap[color]     || 'var(--card-bg)';
+  var border = borderMap[color] || 'var(--b1)';
+  var trendHtml = '';
+  if (trend === 'up') {
+    trendHtml = '<div style="display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:700;color:#16a34a;background:rgba(22,163,74,.1);padding:1px 5px;border-radius:3px;margin-top:4px;font-family:var(--mono);">▲ vs last week</div>';
+  } else if (trend === 'down') {
+    trendHtml = '<div style="display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:700;color:#dc2626;background:rgba(220,38,38,.1);padding:1px 5px;border-radius:3px;margin-top:4px;font-family:var(--mono);">▼ vs last week</div>';
+  }
+  return (
+    '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:10px;padding:14px 16px 13px;display:flex;flex-direction:column;gap:0;position:relative;overflow:hidden;">' +
+      '<div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.3px;color:var(--t3);font-family:var(--mono);margin-bottom:7px;">' + label + '</div>' +
+      '<div style="font-size:26px;font-weight:750;color:' + c + ';letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums;">' + value + '</div>' +
+      (sub ? '<div style="font-size:10.5px;color:var(--t3);margin-top:5px;line-height:1.4;font-weight:400;">' + sub + '</div>' : '') +
+      trendHtml +
+    '</div>'
+  );
 }
+
 
 function insight(type, icon, text) {
   return `<div class="insight-banner ${type}"><span style="font-size:18px;flex-shrink:0;">${icon}</span><div>${text}</div></div>`;
