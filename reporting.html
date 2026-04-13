@@ -507,6 +507,331 @@ footer {
   .main { margin-left: 0; padding: 12px; }
   nav { left: 0; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   VIEW SYSTEM — required for sidebar nav to work
+   Without these, all views show simultaneously
+══════════════════════════════════════════════════════════════ */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--b1);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.page-header h1 {
+  font-size: 20px; font-weight: 700;
+  color: var(--t1); letter-spacing: -.4px;
+  margin-bottom: 3px;
+}
+.page-header p {
+  font-size: 12px; color: var(--t3);
+  line-height: 1.5; max-width: 600px;
+}
+.page-header-right {
+  display: flex; gap: 8px; align-items: center; flex-shrink: 0;
+}
+.vh-badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 600;
+  font-family: var(--mono); text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--brand-lt);
+  background: var(--brand-bg); padding: 3px 9px; border-radius: 4px;
+  margin-bottom: 6px;
+}
+.vh-title {
+  font-size: 20px; font-weight: 700;
+  color: var(--t1); letter-spacing: -.4px;
+  margin-bottom: 3px;
+}
+
+/* ── KPI row ── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* ── Chart grid layouts ── */
+.chart-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.chart-grid.cols-1   { grid-template-columns: 1fr; }
+.chart-grid.cols-2   { grid-template-columns: 1fr 1fr; }
+.chart-grid.cols-3   { grid-template-columns: 1fr 1fr 1fr; }
+.chart-grid.cols-2-1 { grid-template-columns: 2fr 1fr; }
+.chart-grid.cols-1-2 { grid-template-columns: 1fr 2fr; }
+
+@media (max-width: 1100px) {
+  .chart-grid.cols-2,
+  .chart-grid.cols-2-1,
+  .chart-grid.cols-1-2  { grid-template-columns: 1fr; }
+}
+@media (max-width: 800px) {
+  .chart-grid.cols-3 { grid-template-columns: 1fr; }
+}
+
+/* ── Chart card — the primary data panel ── */
+.chart-card {
+  background: var(--card-bg);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 20px 20px 16px;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="light"] .chart-card {
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.05);
+}
+.chart-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  gap: 10px;
+}
+.chart-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--t1); letter-spacing: -.1px;
+  margin-bottom: 2px;
+}
+.chart-sub {
+  font-size: 11px; color: var(--t3);
+}
+.chart-badge {
+  font-size: 9px; font-weight: 700;
+  font-family: var(--mono); text-transform: uppercase;
+  letter-spacing: 1px; padding: 3px 8px; border-radius: 4px;
+  background: var(--brand-bg); color: var(--brand-lt);
+  flex-shrink: 0; margin-top: 1px;
+}
+.chart-badge.green  { background: var(--green-bg);  color: var(--green); }
+.chart-badge.red    { background: var(--red-bg);    color: var(--red); }
+.chart-badge.amber  { background: var(--amber-bg);  color: var(--amber); }
+
+/* ── Score card — big number stat ── */
+.score-card {
+  background: var(--card-bg);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 6px;
+}
+.score-num {
+  font-size: 52px; font-weight: 800;
+  letter-spacing: -3px; line-height: 1;
+}
+.score-label {
+  font-size: 11px; font-weight: 600;
+  font-family: var(--mono); text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--t3);
+}
+.score-sub {
+  font-size: 12px; color: var(--t2);
+}
+
+/* ── Metric row inside chart card ── */
+.metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--t4);
+  gap: 12px;
+}
+.metric-row:last-child { border-bottom: none; }
+.metric-label { font-size: 12px; color: var(--t2); flex: 1; }
+.metric-value { font-size: 13px; font-weight: 700; color: var(--t1); }
+.metric-sub   { font-size: 11px; color: var(--t3); }
+
+/* ── Stat grid (inside a card) ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+.stat-item {
+  padding: 12px 14px;
+  background: var(--card-bg2);
+  border: 1px solid var(--b1);
+  border-radius: 8px;
+}
+.stat-item-label { font-size: 10px; color: var(--t3); margin-bottom: 3px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .6px; }
+.stat-item-value { font-size: 18px; font-weight: 700; color: var(--t1); }
+.stat-item-sub   { font-size: 10px; color: var(--t3); margin-top: 1px; }
+
+/* ── Data table ── */
+.data-table {
+  width: 100%; border-collapse: collapse; font-size: 12px;
+}
+.data-table th {
+  text-align: left; padding: 8px 12px;
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .8px;
+  color: var(--t3); border-bottom: 1px solid var(--b1);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--t4);
+  color: var(--t2); vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--t4); }
+[data-theme="light"] .data-table tr:hover td { background: rgba(0,0,0,.025); }
+
+/* ── Issue list ── */
+.issue-list { margin-top: 8px; }
+.issue-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--t4);
+  cursor: pointer; transition: background .1s;
+}
+.issue-row:last-child { border-bottom: none; }
+.issue-row:hover { background: var(--t4); border-radius: 6px; }
+.issue-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 4px;
+}
+.issue-dot.critical { background: var(--red); }
+.issue-dot.warning  { background: var(--amber); box-shadow: 0 0 0 2px rgba(217,119,6,.15); }
+.issue-dot.info     { background: var(--blue); }
+.issue-content { flex: 1; min-width: 0; }
+.issue-title-text { font-size: 12px; font-weight: 500; color: var(--t1); line-height: 1.4; }
+.issue-meta { font-size: 11px; color: var(--t3); margin-top: 2px; }
+.issue-impact { font-size: 11px; color: var(--amber); margin-top: 2px; }
+.issue-expand { 
+  flex-shrink: 0; font-size: 11px; color: var(--t3);
+  padding: 2px 6px; border-radius: 4px;
+  transition: all .1s;
+}
+.issue-body-expanded {
+  padding: 12px 14px 14px 31px;
+  background: var(--card-bg2);
+  border-bottom: 1px solid var(--t4);
+  font-size: 12px; color: var(--t2); line-height: 1.7;
+  display: none;
+}
+.issue-body-expanded.open { display: block; }
+.guide-steps { 
+  margin-top: 10px; padding-left: 0; list-style: none;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.guide-steps li {
+  display: flex; gap: 8px; align-items: flex-start;
+  font-size: 11.5px; color: var(--t2); line-height: 1.5;
+}
+.guide-steps li::before {
+  content: '→'; color: var(--brand-lt);
+  flex-shrink: 0; margin-top: 1px; font-size: 10px;
+}
+.fix-btn {
+  margin-top: 10px;
+  padding: 6px 14px; border-radius: 6px;
+  font-size: 11px; font-weight: 600;
+  background: var(--brand-bg); color: var(--brand-lt);
+  border: 1px solid rgba(99,102,241,.25); cursor: pointer;
+  font-family: var(--font); transition: all .12s;
+}
+.fix-btn:hover { background: rgba(99,102,241,.2); }
+
+/* ── Loading spinner ── */
+.load-spinner {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 2.5px solid var(--b2);
+  border-top-color: var(--brand);
+  animation: spin .65s linear infinite;
+  margin: 0 auto;
+}
+
+/* ── Progress bar ── */
+.progress-bar-wrap {
+  height: 6px; background: var(--b1); border-radius: 3px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; border-radius: 3px;
+  background: var(--brand); transition: width .4s ease;
+}
+.progress-bar-fill.green  { background: var(--green); }
+.progress-bar-fill.amber  { background: var(--amber); }
+.progress-bar-fill.red    { background: var(--red); }
+
+/* ── Insight callout ── */
+.insight-box {
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--brand-bg);
+  border: 1px solid rgba(99,102,241,.2);
+  font-size: 12px; color: var(--t2);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+.insight-box.warn  { background: var(--amber-bg); border-color: rgba(217,119,6,.2); }
+.insight-box.risk  { background: var(--red-bg);   border-color: rgba(220,38,38,.2); }
+.insight-box.good  { background: var(--green-bg); border-color: rgba(22,163,74,.2); }
+
+/* ── Tab row (inside views) ── */
+.tab-row {
+  display: flex; gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--b1);
+  padding-bottom: 0;
+}
+.tab-btn {
+  padding: 7px 16px; font-size: 12px; font-weight: 500;
+  color: var(--t3); cursor: pointer; border: none;
+  background: transparent; font-family: var(--font);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: all .12s;
+}
+.tab-btn:hover { color: var(--t1); }
+.tab-btn.active { color: var(--brand-lt); border-bottom-color: var(--brand); }
+
+/* ── Toast notification ── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+  padding: 12px 18px; border-radius: 10px;
+  background: var(--card-bg); border: 1px solid var(--b2);
+  box-shadow: 0 8px 24px rgba(0,0,0,.3);
+  font-size: 13px; color: var(--t1);
+  display: flex; align-items: center; gap: 10px;
+  transform: translateY(80px); opacity: 0;
+  transition: all .25s cubic-bezier(.34,1.56,.64,1);
+  max-width: 340px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* ── Dimension score bars (overview) ── */
+.dim-bar-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 7px 0; border-bottom: 1px solid var(--t4);
+}
+.dim-bar-row:last-child { border-bottom: none; }
+.dim-bar-label { font-size: 11px; color: var(--t2); width: 110px; flex-shrink: 0; }
+.dim-bar-track { flex: 1; height: 5px; background: var(--b1); border-radius: 3px; overflow: hidden; }
+.dim-bar-fill  { height: 100%; border-radius: 3px; background: var(--brand); transition: width .6s ease; }
+.dim-bar-fill.green { background: var(--green); }
+.dim-bar-fill.amber { background: var(--amber); }
+.dim-bar-fill.red   { background: var(--red); }
+.dim-bar-val { font-size: 11px; font-weight: 700; color: var(--t1); width: 30px; text-align: right; flex-shrink: 0; }
+
+
 </style>
 
 </head>
@@ -792,55 +1117,102 @@ footer {
 
       <!-- OVERVIEW -->
       <div class="view active" id="view-overview">
+        <!-- Page Header -->
         <div class="page-header">
-          <h1 id="overview-title">Portal Health Overview</h1>
-          <p id="overview-sub">Complete intelligence across your HubSpot portal</p>
+          <div>
+            <h1 id="overview-title">Portal Health Overview</h1>
+            <p id="overview-sub">Complete intelligence across your HubSpot portal</p>
+          </div>
+          <div class="page-header-right">
+            <a id="overview-results-link" href="#" style="display:none;font-size:11px;color:var(--brand-lt);text-decoration:none;padding:6px 12px;border:1px solid var(--b2);border-radius:7px;">Full Results ↗</a>
+          </div>
         </div>
 
-        <!-- ✦ AI Weekly Briefing Card -->
-        <div id="ai-briefing-card" style="display:none;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.22);border-radius:14px;padding:20px 24px;margin-bottom:20px;">
+        <!-- AI Briefing (plan-gated) -->
+        <div id="ai-briefing-card" style="display:none;background:linear-gradient(135deg,rgba(99,102,241,.10),rgba(37,99,235,.05));border:1px solid rgba(99,102,241,.18);border-radius:12px;padding:18px 20px;margin-bottom:20px;">
           <div style="display:flex;align-items:flex-start;gap:14px;">
-            <div style="flex-shrink:0;width:32px;height:32px;background:linear-gradient(135deg,#7c3aed,#a78bfa);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px;">✦</div>
+            <div style="flex-shrink:0;width:30px;height:30px;background:var(--brand-bg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;">✦</div>
             <div style="flex:1;">
-              <div style="font-size:10px;font-weight:700;color:#a78bfa;font-family:monospace;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">FixOps AI · Score Briefing</div>
-              <div id="ai-briefing-text" style="font-size:14px;color:rgba(255,255,255,.82);line-height:1.75;">Generating your weekly briefing…</div>
-              <div id="ai-briefing-meta" style="margin-top:8px;font-size:11px;color:rgba(255,255,255,.28);font-family:monospace;"></div>
+              <div style="font-size:9px;font-weight:700;color:var(--brand-lt);font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;">FixOps Intelligence · Weekly Briefing</div>
+              <div id="ai-briefing-text" style="font-size:13px;color:var(--t1);line-height:1.7;">Generating your weekly briefing…</div>
+              <div id="ai-briefing-meta" style="margin-top:6px;font-size:10px;color:var(--t3);font-family:var(--mono);"></div>
             </div>
-            <button id="ai-briefing-refresh" onclick="refreshAIBriefing()" style="flex-shrink:0;padding:6px 12px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:7px;color:#a78bfa;font-size:11px;font-weight:700;cursor:pointer;font-family:monospace;" title="Regenerate briefing">↻</button>
+            <button id="ai-briefing-refresh" onclick="refreshAIBriefing()" style="flex-shrink:0;padding:5px 10px;background:var(--brand-bg);border:1px solid rgba(99,102,241,.25);border-radius:6px;color:var(--brand-lt);font-size:11px;font-weight:700;cursor:pointer;font-family:var(--mono);" title="Regenerate">↻</button>
           </div>
         </div>
 
-        <div class="kpi-row" id="overview-kpis"></div>
-        <div class="chart-grid cols-2-1">
+        <!-- Row 1: Score + KPIs -->
+        <div class="chart-grid cols-2-1" style="margin-bottom:16px;">
+          <!-- Score card -->
           <div class="chart-card">
             <div class="chart-header">
-              <div><div class="chart-title">Deal Stage Distribution</div><div class="chart-sub">Value and count by pipeline stage</div></div>
-              <span class="chart-badge">PIPELINE</span>
+              <div><div class="chart-title">Portal Health Score</div><div class="chart-sub">Composite across 8 dimensions — updates each scan</div></div>
+              <span class="chart-badge">OVERVIEW</span>
             </div>
-            <div class="chart-wrap"><canvas id="stageChart" height="200"></canvas></div>
+            <!-- Score number + dimension bars -->
+            <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;">
+              <div style="flex-shrink:0;text-align:center;min-width:100px;">
+                <div id="ov-score-num" class="score-num" style="color:var(--brand-lt);">—</div>
+                <div class="score-label" style="margin-top:4px;">/ 100</div>
+                <div id="ov-score-pct" class="score-sub" style="margin-top:6px;"></div>
+              </div>
+              <div style="flex:1;min-width:200px;" id="ov-dim-bars"></div>
+            </div>
           </div>
-          <div class="chart-card">
-            <div class="chart-header">
-              <div><div class="chart-title">Health Score</div><div class="chart-sub">8 dimensions</div></div>
+          <!-- Quick stats -->
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="chart-card" style="flex:1;">
+              <div class="chart-title" style="margin-bottom:10px;">At a Glance</div>
+              <div id="ov-stats-list"></div>
             </div>
-            <div class="chart-wrap"><canvas id="radarChart" height="200"></canvas></div>
           </div>
         </div>
-        <div class="chart-grid cols-3">
+
+        <!-- Row 2: KPI cards -->
+        <div class="kpi-row" id="overview-kpis" style="margin-bottom:16px;"></div>
+
+        <!-- Row 3: Charts -->
+        <div class="chart-grid cols-3" style="margin-bottom:16px;">
           <div class="chart-card">
-            <div class="chart-header"><div><div class="chart-title">Contact Lifecycle</div><div class="chart-sub">Stage distribution</div></div></div>
+            <div class="chart-header">
+              <div><div class="chart-title">Contact Lifecycle</div><div class="chart-sub">Stage distribution</div></div>
+            </div>
             <div class="chart-wrap"><canvas id="lifecycleChart" height="180"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-header"><div><div class="chart-title">Deal Age Distribution</div><div class="chart-sub">Days in pipeline</div></div></div>
-            <div class="chart-wrap"><canvas id="ageChart" height="180"></canvas></div>
+            <div class="chart-header">
+              <div><div class="chart-title">Deal Health</div><div class="chart-sub">Pipeline status breakdown</div></div>
+              <span class="chart-badge amber">PIPELINE</span>
+            </div>
+            <div class="chart-wrap"><canvas id="stageChart" height="180"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-header"><div><div class="chart-title">Pipeline by Owner</div><div class="chart-sub">Value concentration</div></div></div>
-            <div class="chart-wrap"><canvas id="ownerChart" height="180"></canvas></div>
+            <div class="chart-header">
+              <div><div class="chart-title">Contact Engagement</div><div class="chart-sub">Activity recency</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="ageChart" height="180"></canvas></div>
           </div>
         </div>
+
+        <!-- Row 4: Top Issues + Radar -->
+        <div class="chart-grid cols-2-1">
+          <div class="chart-card">
+            <div class="chart-header">
+              <div><div class="chart-title">Top Issues Requiring Action</div><div class="chart-sub">Highest-impact findings — click any to expand the fix guide</div></div>
+              <span id="ov-issue-count-badge" class="chart-badge red" style="display:none;"></span>
+            </div>
+            <div id="ov-issue-list" class="issue-list"></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-header">
+              <div><div class="chart-title">Score Breakdown</div><div class="chart-sub">8 dimensions</div></div>
+            </div>
+            <div class="chart-wrap"><canvas id="radarChart" height="220"></canvas></div>
+          </div>
+        </div>
+
       </div>
+
 
       <!-- PIPELINE HEALTH -->
       <div class="view" id="view-pipeline">
@@ -1741,6 +2113,15 @@ function showView(name) {
   if (sItem) sItem.classList.add('active');
   window.scrollTo(0, 0);
 }
+
+function toggleIssueBody(row) {
+  var body = row.nextElementSibling;
+  var btn  = row.querySelector('.issue-expand');
+  if (!body) return;
+  var open = body.classList.toggle('open');
+  if (btn) btn.textContent = open ? '−' : '+';
+}
+
 
 // ── loadData — called when ?id= is in URL (no token) ─────────────────────────
 async function loadData() {
@@ -2753,223 +3134,245 @@ function getPercentile(score) {
 }
 
 function buildOverview() {
-  const s = DATA.summary || {}, sc = DATA.scores || {};
-  const pi = DATA.portalInfo || {}, ps = pi.portalStats || {};
-  const issues = DATA.issues || [];
-  const contacts = [], deals = [], tickets = [];
+  const s  = DATA.summary    || {};
+  const sc = DATA.scores     || {};
+  const pi = DATA.portalInfo || {};
+  const ps = pi.portalStats  || {};
 
+  // Header
   const company = pi.company || 'Your Portal';
-  document.getElementById('overview-title').textContent = company+' — Portal Snapshot';
-  document.getElementById('overview-sub').textContent =
-    'Audit completed '+new Date(pi.auditDate||Date.now()).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})+
-    ' · '+fmt(s.recordsScanned)+' records analyzed';
+  var titleEl = document.getElementById('overview-title');
+  var subEl   = document.getElementById('overview-sub');
+  if (titleEl) titleEl.textContent = company + ' — Portal Snapshot';
+  if (subEl)   subEl.textContent   =
+    'Audit completed ' + new Date(pi.auditDate||Date.now()).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) +
+    ' · ' + fmt(s.recordsScanned) + ' records analyzed';
 
-  // ── AI Weekly Briefing ────────────────────────────────────────────────────
+  // Results link
+  var rl = document.getElementById('overview-results-link');
+  if (rl && auditId) { rl.href = 'results.html?id=' + auditId; rl.style.display = 'inline-block'; }
+
+  // AI briefing (plan-gated)
   const plan = (pi.plan || DATA.plan || 'free');
-  const email = pi.email || '';
-  if (['pulse','pro','command'].includes(plan) && (auditId || TOKEN)) {
-    loadAIBriefing(false);
+  if (['pulse','pro','command'].includes(plan) && (auditId || TOKEN)) loadAIBriefing(false);
+
+  // ── Score number + dimension bars ─────────────────────────────────────────
+  var scoreNum = document.getElementById('ov-score-num');
+  var scorePct = document.getElementById('ov-score-pct');
+  var dimBars  = document.getElementById('ov-dim-bars');
+  var score    = s.overallScore || 0;
+  var scoreColor = score >= 80 ? '#16a34a' : score >= 60 ? '#d97706' : '#dc2626';
+  if (scoreNum) { scoreNum.textContent = score; scoreNum.style.color = scoreColor; }
+  if (scorePct) scorePct.textContent = 'Better than ' + getPercentile(score) + '% of portals';
+
+  var dims = [
+    {label:'Data Integrity',    val: sc.dataIntegrity    || 0},
+    {label:'Automation',        val: sc.automationHealth || 0},
+    {label:'Pipeline',          val: sc.pipelineIntegrity|| 0},
+    {label:'Marketing',         val: sc.marketingHealth  || 0},
+    {label:'Configuration',     val: sc.configSecurity   || 0},
+    {label:'Reporting',         val: sc.reportingQuality || 0},
+    {label:'Team Adoption',     val: sc.teamAdoption     || 0},
+    {label:'Service Health',    val: sc.serviceHealth    || 0},
+  ];
+  if (dimBars) {
+    dimBars.innerHTML = dims.map(function(d) {
+      var col = d.val >= 80 ? 'green' : d.val >= 60 ? 'amber' : 'red';
+      return '<div class="dim-bar-row">' +
+        '<div class="dim-bar-label">' + d.label + '</div>' +
+        '<div class="dim-bar-track"><div class="dim-bar-fill ' + col + '" style="width:' + d.val + '%;"></div></div>' +
+        '<div class="dim-bar-val">' + d.val + '</div>' +
+      '</div>';
+    }).join('');
   }
 
-  // KPIs
-  const waste = s.monthlyWaste || 0;
-  const percentile = getPercentile(s.overallScore||0);
-  // Add percentile context note below KPIs
-  var pctileNote = document.getElementById('overview-percentile-note');
-  if (!pctileNote) {
-    pctileNote = document.createElement('div');
-    pctileNote.id = 'overview-percentile-note';
-    pctileNote.style.cssText = 'margin-top:8px;font-size:11px;color:var(--t3);text-align:center;padding:8px 0;border-top:1px solid var(--b1);';
-    var kpiRow = document.getElementById('overview-kpis');
-    if (kpiRow && kpiRow.parentNode) kpiRow.parentNode.insertBefore(pctileNote, kpiRow.nextSibling);
+  // ── At a Glance stats ─────────────────────────────────────────────────────
+  var statsList = document.getElementById('ov-stats-list');
+  if (statsList) {
+    var waste = s.monthlyWaste || 0;
+    var rows = [
+      {label:'Critical Issues', val: s.criticalCount || 0, color: (s.criticalCount||0)>0 ? 'var(--red)' : 'var(--green)'},
+      {label:'Warnings',        val: s.warningCount  || 0, color: (s.warningCount||0)>5  ? 'var(--amber)' : 'var(--t1)'},
+      {label:'Monthly Waste',   val: fmtMoney(waste),      color: waste>0 ? 'var(--red)' : 'var(--green)'},
+      {label:'Contacts',        val: fmt(ps.contacts||0),  color: 'var(--t1)'},
+      {label:'Open Deals',      val: fmt(ps.openDealsCount||ps.deals||0), color: 'var(--t1)'},
+      {label:'Workflows',       val: fmt(ps.workflows||0), color: 'var(--t1)'},
+    ];
+    statsList.innerHTML = rows.map(function(r) {
+      return '<div class="metric-row">' +
+        '<div class="metric-label">' + r.label + '</div>' +
+        '<div class="metric-value" style="color:' + r.color + ';">' + r.val + '</div>' +
+      '</div>';
+    }).join('');
   }
-  var pctNote = 'Score ' + (s.overallScore||0) + '/100 · Better than ' + getPercentile(s.overallScore||0) + '% of HubSpot portals we audit · ' +
-    (s.criticalCount > 0 ? s.criticalCount + ' critical issue' + (s.criticalCount!==1?'s':' ') + ' need immediate attention' : 'No critical issues — focus on warnings') +
-    (s.monthlyWaste > 0 ? ' · Est. ' + fmtMoney(s.monthlyWaste) + '/mo recoverable' : '');
-  if (pctileNote) pctileNote.textContent = pctNote;
 
-  var ehs = ps.emailHealthSummary || {};
-  document.getElementById('overview-kpis').innerHTML =
-    kpi('Overall Score', s.overallScore+'/100', 'Better than '+percentile+'% of HubSpot portals',
-        s.overallScore >= 80 ? 'green' : s.overallScore >= 60 ? 'amber' : 'red', '') +
-    kpi('Est. Monthly Waste', fmtMoney(waste), waste>0 ? 'annual: '+fmtMoney(waste*12)+' · click Revenue Leaks' : 'No waste detected', waste>0?'red':'green', '') +
-    kpi('Critical Issues', s.criticalCount||0, s.criticalCount>0 ? (s.warningCount||0)+' warnings — expand to fix' : (s.warningCount||0)+' warnings only', s.criticalCount>0?'red':'amber', '') +
-    kpi('Records Scanned', fmt(s.recordsScanned), fmt(ps.contacts)+' contacts · '+fmt(ps.deals)+' deals · '+fmt(ps.tickets)+' tickets', 'blue', '') +
-    (ps.workflows > 0 ? kpi('Workflow Health', fmt(ps.workflows-(ps.deadWorkflowCount||0))+' active', (ps.deadWorkflowCount||0)+' dead · '+(ps.erroredWorkflows||0)+' erroring', (ps.deadWorkflowCount||0)>5||(ps.erroredWorkflows||0)>0?'amber':'green', '') : '') +
-    (ps.marketingEmailCount > 0 ? kpi('Email Health', ehs && ehs.totalSent > 0 ? (ehs.openRate||0)+'% open rate' : ps.publishedEmails+' published', ehs && ehs.totalSent > 0 ? (ehs.bounceRate||0)+'% bounce · '+(ehs.unsubRate||0)+'% unsub' : fmt(ps.marketingEmailCount)+' total campaigns', ehs && ehs.bounceRate>=5?'red':ehs && ehs.openRate>=20?'green':'blue', '') : '') +
-    (ps.ghostSeats > 0 ? kpi('Ghost Seats', ps.ghostSeats+' inactive', '$'+fmt(ps.ghostSeatWaste||0)+'/mo wasted on unused seats', 'red', '') : '') +
-    (ps.customObjectCount > 0 ? kpi('Custom Objects', fmt(ps.customObjectCount), (ps.customObjectNames||[]).slice(0,4).join(', '), 'blue', '') : '');
+  // ── KPI cards ─────────────────────────────────────────────────────────────
+  var ehs   = ps.emailHealthSummary || {};
+  var waste = s.monthlyWaste || 0;
+  var kpiEl = document.getElementById('overview-kpis');
+  if (kpiEl) {
+    var kpis = [
+      kpi('Overall Score',      score + '/100',
+          'Better than ' + getPercentile(score) + '% of portals',
+          score >= 80 ? 'green' : score >= 60 ? 'amber' : 'red'),
+      kpi('Est. Monthly Waste', fmtMoney(waste),
+          waste > 0 ? 'Annual: ' + fmtMoney(waste * 12) : 'No waste detected',
+          waste > 0 ? 'red' : 'green'),
+      kpi('Critical Issues',   s.criticalCount || 0,
+          (s.warningCount||0) + ' warnings',
+          (s.criticalCount||0) > 0 ? 'red' : 'amber'),
+      kpi('Records Scanned',   fmt(s.recordsScanned || 0),
+          fmt(ps.contacts||0) + ' contacts · ' + fmt(ps.deals||0) + ' deals',
+          'blue'),
+    ];
+    if ((ps.workflows||0) > 0) kpis.push(
+      kpi('Workflow Health',
+          fmt((ps.workflows||0) - (ps.deadWorkflowCount||0)) + ' active',
+          (ps.deadWorkflowCount||0) + ' dead · ' + (ps.erroredWorkflows||0) + ' erroring',
+          (ps.deadWorkflowCount||0) > 5 || (ps.erroredWorkflows||0) > 0 ? 'amber' : 'green')
+    );
+    if ((ps.ghostSeats||0) > 0) kpis.push(
+      kpi('Ghost Seats', ps.ghostSeats + ' inactive',
+          fmtMoney(ps.ghostSeatWaste||0) + '/mo wasted', 'red')
+    );
+    if (ehs.totalSent > 0) kpis.push(
+      kpi('Email Open Rate', (ehs.openRate||0) + '%',
+          (ehs.bounceRate||0) + '% bounce · ' + (ehs.unsubRate||0) + '% unsub',
+          (ehs.bounceRate||0) >= 5 ? 'red' : (ehs.openRate||0) >= 20 ? 'green' : 'amber')
+    );
+    kpiEl.innerHTML = kpis.join('');
+  }
 
-  // Build stage chart from REAL portalStats
-  const totalDeals    = ps.deals || 0;
-  const openDeals     = ps.openDealsCount || 0;
-  const stalledDeals  = ps.stalledDeals || 0;
-  const zeroDollar    = ps.zeroDollarDeals || 0;
-  const pastDue       = ps.pastDueDeals || 0;
-  const noCloseDate   = ps.dealsNoCloseDate || 0;
+  // ── Charts ────────────────────────────────────────────────────────────────
+  // Lifecycle donut
+  var lvc  = ps.lifecycleVelocityEngine || {};
+  var sc2  = lvc.stageCounts || {};
+  var totalC = ps.contacts || 0;
+  var noStageCnt = lvc.noStageCount || Math.max(0, totalC - Object.values(sc2).reduce(function(a,v){return a+v;},0));
+  var lcLabels = ['Subscriber','Lead','MQL','SQL','Opportunity','Customer','No Stage'];
+  var lcData   = [sc2.subscriber||0, sc2.lead||0, sc2.marketingqualifiedlead||0,
+                  sc2.salesqualifiedlead||0, sc2.opportunity||0, sc2.customer||0, noStageCnt];
+  if (document.getElementById('lifecycleChart') && lcData.some(function(v){return v>0;})) {
+    new Chart(document.getElementById('lifecycleChart'), {
+      type: 'doughnut',
+      data: { labels: lcLabels, datasets: [{ data: lcData, backgroundColor: PALETTE.map(function(c){return c+'cc';}), borderWidth: 0, hoverOffset: 4 }] },
+      options: { responsive: true, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, boxWidth: 10 } } } }
+    });
+  }
 
+  // Deal health bar
+  var openDeals   = ps.openDealsCount   || 0;
+  var stalledDeals= ps.stalledDeals     || 0;
+  var pastDue     = ps.pastDueDeals     || 0;
+  var zeroDollar  = ps.zeroDollarDeals  || 0;
   if (document.getElementById('stageChart')) {
     new Chart(document.getElementById('stageChart'), {
       type: 'bar',
       data: {
-        labels: ['Total Deals', 'Open', 'Stalled 21d+', '$0 Amount', 'Past Due', 'No Close Date'],
-        datasets: [{
-          data: [totalDeals, openDeals, stalledDeals, zeroDollar, pastDue, noCloseDate],
-          backgroundColor: [PALETTE[0]+'cc', PALETTE[1]+'cc', PALETTE[3]+'cc', PALETTE[2]+'cc', '#ef4444cc', '#f59e0bcc'],
-          borderRadius: 6, borderSkipped: false
-        }]
+        labels: ['Open','Stalled 21d+','Past Due','$0 Amount'],
+        datasets: [{ data: [openDeals, stalledDeals, pastDue, zeroDollar],
+          backgroundColor: [PALETTE[0]+'cc','#f59e0bcc','#ef4444cc',PALETTE[2]+'cc'],
+          borderRadius: 5, borderSkipped: false }]
       },
-      options: {
-        responsive: true, plugins: { legend: { display: false } },
-        scales: { y: { grid: { color: Chart.defaults.borderColor } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } }
-      }
+      options: { responsive: true, plugins: { legend: { display: false } },
+        scales: { y: { grid: { color: Chart.defaults.borderColor }, ticks: { font: { size: 10 } } },
+                  x: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
     });
   }
 
-  // Radar chart
-  const dimLabels = ['Data','Automation','Pipeline','Marketing','Config','Reporting','Team','Service'];
-  const dimValues = [
-    sc.dataIntegrity||0, sc.automationHealth||0, sc.pipelineIntegrity||0,
-    sc.marketingHealth||0, sc.configSecurity||0, sc.reportingQuality||0,
-    sc.teamAdoption||0, sc.serviceHealth||0
-  ];
-  if (document.getElementById('radarChart')) {
-    new Chart(document.getElementById('radarChart'), {
-      type: 'radar',
-      data: {
-        labels: dimLabels,
-        datasets: [{
-          data: dimValues,
-          backgroundColor: 'rgba(59,130,246,.15)',
-          borderColor: '#3b6fd4',
-          borderWidth: 2,
-          pointBackgroundColor: '#3b6fd4',
-          pointRadius: 3
-        }]
-      },
-      options: {
-        responsive: true,
-        scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, font: { size: 9 } }, grid: { color: Chart.defaults.borderColor }, pointLabels: { font: { size: 9 } } } },
-        plugins: { legend: { display: false } }
-      }
-    });
-  }
-
-  // Lifecycle chart — use REAL engine data
-  const lvc = ps.lifecycleVelocityEngine || {};
-  const sc2 = lvc.stageCounts || {};
-  const totalC = ps.contacts || 0;
-  const lcLabels = ['Subscriber', 'Lead', 'MQL', 'SQL', 'Opportunity', 'Customer', 'No Stage'];
-  const noStageCount = lvc.noStageCount || Math.max(0, totalC - Object.values(sc2).reduce((s,v)=>s+v, 0));
-  const lcData = [
-    sc2.subscriber||0, sc2.lead||0, sc2.marketingqualifiedlead||0,
-    sc2.salesqualifiedlead||0, sc2.opportunity||0, sc2.customer||0, noStageCount
-  ];
-  if (document.getElementById('lifecycleChart') && lcData.some(v=>v>0)) {
-    new Chart(document.getElementById('lifecycleChart'), {
-      type: 'doughnut',
-      data: {
-        labels: lcLabels,
-        datasets: [{ data: lcData, backgroundColor: PALETTE.map(c=>c+'cc'), borderWidth: 0, hoverOffset: 4 }]
-      },
-      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
-    });
-  }
-
-  // Deal age chart — use REAL stalled/pastdue data
-  const dec = ps.contactDecayEngine || {};
-  const bkt = dec.buckets || {};
+  // Contact engagement (decay buckets)
+  var dec = ps.contactDecayEngine || {};
+  var bkt = dec.buckets || {};
   if (document.getElementById('ageChart') && totalC > 0) {
     new Chart(document.getElementById('ageChart'), {
       type: 'bar',
       data: {
-        labels: ['Hot (0-30d)', 'Warm (30-90d)', 'Cooling (90-180d)', 'Cold (180d+)', 'Dead / No Activity'],
-        datasets: [{
-          data: [bkt.hot||0, bkt.warm||0, bkt.cooling||0, bkt.cold||0, bkt.dead||0],
+        labels: ['Active','Warm','Cooling','Cold','Inactive'],
+        datasets: [{ data: [bkt.hot||0, bkt.warm||0, bkt.cooling||0, bkt.cold||0, bkt.dead||0],
           backgroundColor: ['rgba(16,185,129,.7)','rgba(59,130,246,.65)','rgba(245,158,11,.65)','rgba(239,68,68,.6)','rgba(107,114,128,.5)'],
-          borderRadius: 4, borderSkipped: false
-        }]
+          borderRadius: 5, borderSkipped: false }]
       },
-      options: {
-        responsive: true, plugins: { legend: { display: false } },
-        scales: { y: { grid: { color: Chart.defaults.borderColor } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } }
-      }
+      options: { responsive: true, plugins: { legend: { display: false } },
+        scales: { y: { grid: { color: Chart.defaults.borderColor }, ticks: { font: { size: 10 } } },
+                  x: { grid: { display: false }, ticks: { font: { size: 10 } } } } }
     });
   }
 
-  // Rep/owner chart — use REAL repIntelEngine data
-  const ri = ps.repIntelEngine || {};
-  const repRows = ri.reps || [];
-  if (document.getElementById('ownerChart') && repRows.length > 0) {
-    const top5 = repRows.slice(0,5);
-    new Chart(document.getElementById('ownerChart'), {
-      type: 'doughnut',
-      data: {
-        labels: top5.map(r => (r.name||'Unknown').split(' ')[0]),
-        datasets: [{ data: top5.map(r => r.openDeals||r.deals||1), backgroundColor: PALETTE.slice(0,5).map(c=>c+'cc'), borderWidth: 0 }]
-      },
-      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
-    });
-  } else if (document.getElementById('ownerChart')) {
-    // Fallback donut showing unowned vs owned
-    const unowned = Math.round(totalDeals * 0.15);
-    new Chart(document.getElementById('ownerChart'), {
-      type: 'doughnut',
-      data: {
-        labels: ['Owned Deals', 'Unowned Deals'],
-        datasets: [{ data: [Math.max(0, openDeals - unowned), unowned], backgroundColor: [PALETTE[0]+'cc', PALETTE[3]+'cc'], borderWidth: 0 }]
-      },
-      options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { font: { size: 9 }, padding: 8, boxWidth: 10 } } } }
+  // Radar
+  var dimValues = [sc.dataIntegrity||0, sc.automationHealth||0, sc.pipelineIntegrity||0,
+    sc.marketingHealth||0, sc.configSecurity||0, sc.reportingQuality||0, sc.teamAdoption||0, sc.serviceHealth||0];
+  if (document.getElementById('radarChart')) {
+    new Chart(document.getElementById('radarChart'), {
+      type: 'radar',
+      data: { labels: ['Data','Automation','Pipeline','Marketing','Config','Reporting','Team','Service'],
+        datasets: [{ data: dimValues, backgroundColor: 'rgba(99,102,241,.12)', borderColor: '#6366f1',
+          borderWidth: 2, pointBackgroundColor: '#6366f1', pointRadius: 3 }] },
+      options: { responsive: true,
+        scales: { r: { min: 0, max: 100, ticks: { stepSize: 25, font: { size: 9 } },
+          grid: { color: Chart.defaults.borderColor }, pointLabels: { font: { size: 9 } } } },
+        plugins: { legend: { display: false } } }
     });
   }
 
-  // ── History-based quick ROI card (if history available) ──────────────────
-  const hist = window.HISTORY || [];
-  if (hist.length > 1) {
-    const firstH = hist[hist.length-1];
-    const firstWaste = firstH.monthly_waste||0;
-    const currentWaste = s.monthlyWaste||0;
-    const saved = Math.max(0, firstWaste - currentWaste);
-    const firstScore = firstH.score||0;
-    const scoreDelta = (s.overallScore||0) - firstScore;
-    const weeksCount = hist.length;
+  // ── Top issues ────────────────────────────────────────────────────────────
+  var issueListEl = document.getElementById('ov-issue-list');
+  var issueBadge  = document.getElementById('ov-issue-count-badge');
+  var allIssues   = DATA.issues || [];
+  var critIssues  = allIssues.filter(function(i){ return i.severity === 'critical'; });
+  var warnIssues  = allIssues.filter(function(i){ return i.severity === 'warning'; });
+  var topIssues   = critIssues.concat(warnIssues).slice(0, 8);
 
-    const histCard = document.createElement('div');
-    histCard.className = 'card';
-    histCard.style.cssText = 'margin-top:16px;background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(16,185,129,.03));border-color:rgba(16,185,129,.25);';
-    histCard.innerHTML =
-      '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">' +
-        '<div>' +
-          '<div style="font-size:11px;font-weight:700;color:var(--pos);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px;">📈 Progress Since Week 1 — ' + weeksCount + ' weeks monitored</div>' +
-          '<div style="font-size:13px;color:var(--t2);">' +
-            (saved > 0 ? 'Monthly waste reduced by <strong style="color:var(--pos);">$' + saved.toLocaleString() + '/mo</strong> · ' : '') +
-            'Score ' + (scoreDelta>=0 ? '<strong style="color:var(--pos);">↑' + scoreDelta + ' points</strong>' : '<strong style="color:var(--neg);">↓' + Math.abs(scoreDelta) + ' points</strong>') + ' from first scan' +
+  if (issueBadge && critIssues.length > 0) {
+    issueBadge.textContent = critIssues.length + ' CRITICAL';
+    issueBadge.style.display = 'inline-block';
+  }
+
+  if (issueListEl) {
+    if (topIssues.length === 0) {
+      issueListEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--t3);font-size:12px;">No issues found — your portal is in great shape</div>';
+    } else {
+      issueListEl.innerHTML = topIssues.map(function(issue, idx) {
+        var sev  = issue.severity || 'info';
+        var dim  = issue.dimension ? '<span style="font-size:10px;padding:1px 6px;border-radius:3px;background:var(--brand-bg);color:var(--brand-lt);margin-left:6px;">'+issue.dimension+'</span>' : '';
+        var guide = (issue.guide||[]).map(function(g){ return '<li>' + g + '</li>'; }).join('');
+        return '<div class="issue-row" onclick="toggleIssueBody(this)">' +
+          '<div class="issue-dot ' + sev + '"></div>' +
+          '<div class="issue-content">' +
+            '<div class="issue-title-text">' + (issue.title||'') + dim + '</div>' +
+            (issue.impact ? '<div class="issue-impact">⚡ ' + issue.impact + '</div>' : '') +
           '</div>' +
+          '<div class="issue-expand">+</div>' +
         '</div>' +
-        '<div style="display:flex;gap:8px;">' +
-          '<button data-nav="trends" style="padding:8px 14px;background:rgba(16,185,129,.15);color:var(--pos);border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">View Trends</button>' +
-          '<button data-nav="roi" style="padding:8px 14px;background:rgba(16,185,129,.15);color:var(--pos);border-radius:8px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,.3);cursor:pointer;font-family:inherit;">Full ROI</button>' +
-        '</div>' +
-      '</div>';
-
-    const ovEl = document.querySelector('#view-overview .card');
-    if (ovEl && ovEl.parentNode) ovEl.parentNode.appendChild(histCard);
+        '<div class="issue-body-expanded">' +
+          '<div style="color:var(--t2);margin-bottom:8px;">' + (issue.description||'') + '</div>' +
+          (guide ? '<ul class="guide-steps">' + guide + '</ul>' : '') +
+          '<button class="fix-btn" onclick="event.stopPropagation();requestFix(\'' + encodeURIComponent(issue.title||'') + '\')">🛠 Fix It For Me</button>' +
+        '</div>';
+      }).join('');
+    }
   }
 
-  // ── Deal concentration risk (Key Person Risk) ─────────────────────────────
-  const keyPersonIssue = (DATA.issues||[]).find(i => i.title?.includes('concentration') || i.title?.includes('key person'));
-  if (keyPersonIssue) {
-    const riskCard = document.createElement('div');
-    riskCard.className = 'card';
-    riskCard.style.cssText = 'margin-top:12px;background:var(--warn-bg);border-color:rgba(245,158,11,.25);';
-    riskCard.innerHTML =
-      '<div style="font-size:11px;font-weight:700;color:var(--warn);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⚠️ Pipeline Concentration Risk</div>' +
-      '<div style="font-size:13px;color:var(--t1);margin-bottom:4px;font-weight:600;">' + (keyPersonIssue.title||'') + '</div>' +
-      '<div style="font-size:12px;color:var(--t2);">' + (keyPersonIssue.impact||'') + '</div>';
-    const ovEl = document.querySelector('#view-overview .card');
-    if (ovEl && ovEl.parentNode) ovEl.parentNode.appendChild(riskCard);
+  // ── History ROI card ─────────────────────────────────────────────────────
+  var hist = window.HISTORY || [];
+  if (hist.length > 1) {
+    var firstH     = hist[hist.length-1];
+    var saved      = Math.max(0, (firstH.monthly_waste||0) - (s.monthlyWaste||0));
+    var scoreDelta = (s.overallScore||0) - (firstH.score||0);
+    var roi = document.createElement('div');
+    roi.className = 'insight-box good';
+    roi.style.cssText = 'margin-top:16px;';
+    roi.innerHTML =
+      '<strong style="color:var(--green);">📈 Progress since first scan (' + hist.length + ' weeks)</strong><br>' +
+      (saved > 0 ? 'Monthly waste reduced by <strong>' + fmtMoney(saved) + '/mo</strong> · ' : '') +
+      'Score ' + (scoreDelta >= 0
+        ? '<strong style="color:var(--green);">+' + scoreDelta + ' points</strong>'
+        : '<strong style="color:var(--red);">' + scoreDelta + ' points</strong>') +
+      ' · <a href="#" data-nav="trends" style="color:var(--brand-lt);">View Trends →</a>';
+    var kpiEl2 = document.getElementById('overview-kpis');
+    if (kpiEl2 && kpiEl2.parentNode) kpiEl2.parentNode.insertBefore(roi, kpiEl2.nextSibling);
   }
 }
+
 
 // ── PIPELINE ──────────────────────────────────────────────────────────────────
 function buildPipeline() {
