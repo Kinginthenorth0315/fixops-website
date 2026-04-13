@@ -4083,7 +4083,7 @@ function buildCustomObjects() {
     kpi('Custom Objects', objects.length || 0, objects.length > 0 ? 'in your data model' : 'none configured', objects.length > 0 ? 'blue' : 'amber', '') +
     kpi('Total Records', fmt(totalRecords), 'across all custom objects', totalRecords > 0 ? 'blue' : 'amber', '') +
     kpi('Largest Object', objects.length > 0 ? fmt(Math.max.apply(null, objects.map(function(o){return o.total||0;}))) : '—', objects.length > 0 ? objects.sort(function(a,b){return (b.total||0)-(a.total||0);})[0].labelPlural : 'no objects', 'blue', '') +
-    kpi('Custom Issues', issues.filter(function(i){return i.title&&i.title.toLowerCase().includes('custom object');}).length, 'audit findings', 'amber', '');
+    kpi('Custom Issues', issues.filter(function(i){return i.title&&i.title.toLowerCase().includes('custom object').sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);});}).sort(function(a,b){ var s={critical:0,warning:1,info:2}; return (s[a.severity]||2)-(s[b.severity]||2); }).length, 'audit findings', 'amber', '');
 
   const el = document.getElementById('customobjects-content');
   if (!el) return;
@@ -4171,7 +4171,7 @@ function buildCustomObjects() {
   }
 
   // Custom object issues
-  var coIssues = issues.filter(function(i){return i.title&&i.title.toLowerCase().includes('custom object');});
+  var coIssues = issues.filter(function(i){return i.title&&i.title.toLowerCase().includes('custom object').sort(function(a,b){ var s={critical:0,warning:1,info:2}; return (s[a.severity]||2)-(s[b.severity]||2); });}).sort(function(a,b){ var s={critical:0,warning:1,info:2}; return (s[a.severity]||2)-(s[b.severity]||2); });
   if (coIssues.length > 0) {
     html += '<div class="chart-box"><div class="chart-title">Custom Object Issues (' + coIssues.length + ')</div>';
     coIssues.forEach(function(i) {
@@ -4324,8 +4324,8 @@ function buildTickets() {
   // ── Service issues ───────────────────────────────────────────────────────
   const svcIssues = issues.filter(function(i) {
     return i.dimension === 'Service' ||
-      (i.title && (i.title.toLowerCase().includes('ticket') || i.title.toLowerCase().includes('sla')));
-  });
+      (i.title && (i.title.toLowerCase().includes('ticket') || i.title.toLowerCase().includes('sla'))).sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);});
+  }).sort(function(a,b){ var s={critical:0,warning:1,info:2}; return (s[a.severity]||2)-(s[b.severity]||2); });
 
   var issueEl = document.getElementById('tickets-issues');
   if (issueEl) {
@@ -4364,6 +4364,47 @@ function buildTeam() {
   const staleIssue = issues.find(i => i.title && i.title.includes('stale deals'));
 
   let html = '';
+
+  // ── Activity summary stats ───────────────────────────────────────────────
+  var ps = DATA.portalInfo?.portalStats || {};
+  var callsW    = ps.callsThisWeek || 0;
+  var mtgsW     = ps.meetingsThisWeek || 0;
+  var overdueT  = ps.overdueTasks || 0;
+  var noMtgLink = ps.repsWithoutMeetingLinks || 0;
+  var mtgLinks  = ps.meetingLinkCount || 0;
+  var darkRepNames = ps.darkRepNames || [];
+  var inactiveNames = ps.inactiveUserNames || [];
+
+  html += '<div class="stat-strip" style="margin-bottom:16px;">' +
+    '<div class="stat-cell"><div class="stat-cell-label">Calls (7d)</div>' +
+      '<div class="stat-cell-value ' + (callsW > 0 ? 'green' : 'amber') + '">' + callsW + '</div>' +
+      '<div class="stat-cell-sub">logged this week</div></div>' +
+    '<div class="stat-cell"><div class="stat-cell-label">Meetings (7d)</div>' +
+      '<div class="stat-cell-value ' + (mtgsW > 0 ? 'green' : 'amber') + '">' + mtgsW + '</div>' +
+      '<div class="stat-cell-sub">logged this week</div></div>' +
+    '<div class="stat-cell"><div class="stat-cell-label">Overdue Tasks</div>' +
+      '<div class="stat-cell-value ' + (overdueT > 20 ? 'red' : overdueT > 0 ? 'amber' : 'green') + '">' + overdueT + '</div>' +
+      '<div class="stat-cell-sub">past due date</div></div>' +
+    '<div class="stat-cell"><div class="stat-cell-label">Booking Links</div>' +
+      '<div class="stat-cell-value ' + (noMtgLink > 0 ? 'amber' : 'green') + '">' + mtgLinks + '</div>' +
+      '<div class="stat-cell-sub">' + (noMtgLink > 0 ? noMtgLink + ' reps missing' : 'all active') + '</div></div>' +
+  '</div>';
+
+  if (darkRepNames.length > 0) {
+    html += '<div class="insight-banner warning" style="margin-bottom:12px;"><span>🌑</span><div>' +
+      '<strong>' + darkRepNames.length + ' dark rep' + (darkRepNames.length!==1?'s':'') + ' this week</strong> — ' +
+      'no calls or meetings logged: ' + darkRepNames.slice(0,4).join(', ') +
+      (darkRepNames.length > 4 ? ' +' + (darkRepNames.length-4) + ' more' : '') +
+      '. Either not logging or not engaging — both are pipeline risks.</div></div>';
+  }
+
+  if (inactiveNames.length > 0) {
+    html += '<div class="insight-banner" style="background:rgba(99,102,241,.05);border-color:rgba(99,102,241,.15);margin-bottom:12px;"><span>💤</span><div>' +
+      '<strong>' + inactiveNames.length + ' inactive user' + (inactiveNames.length!==1?'s':'') + '</strong> with zero HubSpot activity in 90+ days: ' +
+      inactiveNames.slice(0,3).join(', ') +
+      (inactiveNames.length > 3 ? ' +' + (inactiveNames.length-3) + ' more' : '') +
+      '. These are likely paid seats going to waste.</div></div>';
+  }
 
   // ── Rep Activity Scorecard ────────────────────────────────────────────────
   if (repIssue && repIssue.repScorecard.length > 0) {
@@ -4444,6 +4485,32 @@ function buildTeam() {
     html += '<div class="card" style="opacity:.6;">' +
       '<div class="card-h">👻 Ghost Seats</div>' +
       '<div style="font-size:13px;color:var(--t2);padding:20px 0;text-align:center;">No ghost seats detected — all users have logged in within the last 90 days ✓</div>' +
+    '</div>';
+  }
+
+  // ── Appointments ─────────────────────────────────────────────────────────
+  var apptTotal    = ps.appointmentsTotal || 0;
+  var apptUpcoming = ps.appointmentsUpcoming || 0;
+  if (apptTotal > 0) {
+    html += '<div class="card">' +
+      '<div class="card-h">📅 Appointments</div>' +
+      '<div class="stat-strip">' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">Total</div>' +
+          '<div class="stat-cell-value blue">' + fmt(apptTotal) + '</div>' +
+          '<div class="stat-cell-sub">all appointments</div>' +
+        '</div>' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">Upcoming</div>' +
+          '<div class="stat-cell-value ' + (apptUpcoming > 0 ? 'green' : 'amber') + '">' + fmt(apptUpcoming) + '</div>' +
+          '<div class="stat-cell-sub">scheduled ahead</div>' +
+        '</div>' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">Booked Rate</div>' +
+          '<div class="stat-cell-value">' + (apptTotal > 0 ? Math.round(apptUpcoming/apptTotal*100) : 0) + '%</div>' +
+          '<div class="stat-cell-sub">upcoming vs total</div>' +
+        '</div>' +
+      '</div>' +
     '</div>';
   }
 
@@ -4829,6 +4896,39 @@ function buildRevenue() {
         options: { responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:9}, padding:8, boxWidth:10 } } } }
       });
     }
+
+  // ── Commerce payments (if any) ─────────────────────────────────────────────
+  var cpTotal  = ps.commercePaymentsTotal || 0;
+  var cpFailed = ps.commercePaymentsFailed || 0;
+  if (cpTotal > 0) {
+    var cpHtml = '<div class="chart-wrap" style="margin-top:14px;">' +
+      '<div class="chart-title">Commerce Payments</div>' +
+      '<div class="stat-strip" style="margin-top:12px;">' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">Total Payments</div>' +
+          '<div class="stat-cell-value blue">' + fmt(cpTotal) + '</div>' +
+          '<div class="stat-cell-sub">all time</div>' +
+        '</div>' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">Failed Payments</div>' +
+          '<div class="stat-cell-value ' + (cpFailed > 0 ? 'red' : 'green') + '">' + fmt(cpFailed) + '</div>' +
+          '<div class="stat-cell-sub">' + (cpFailed > 0 ? 'dunning risk' : 'no failures') + '</div>' +
+        '</div>' +
+        '<div class="stat-cell">' +
+          '<div class="stat-cell-label">Success Rate</div>' +
+          '<div class="stat-cell-value ' + (cpFailed/Math.max(cpTotal,1) > 0.05 ? 'red' : cpFailed > 0 ? 'amber' : 'green') + '">' +
+            Math.round((1 - cpFailed/Math.max(cpTotal,1))*100) + '%' +
+          '</div>' +
+          '<div class="stat-cell-sub">payment success</div>' +
+        '</div>' +
+      '</div>' +
+      (cpFailed > 0 ? '<div class="insight-banner warning" style="margin-top:10px;"><span>⚡</span>' +
+        cpFailed + ' failed payment' + (cpFailed!==1?'s':'') + ' detected. Set up dunning automation in Commerce Hub → Payments to automatically retry failed charges.' +
+        '</div>' : '') +
+    '</div>';
+    el.innerHTML += cpHtml;
+  }
+
   });
 }
 
@@ -4854,7 +4954,7 @@ function buildCompany() {
     '</div>' +
 
     // Company health insights from issues
-    issues.filter(i => i.dimension === 'Data Integrity' || i.title?.toLowerCase().includes('compan')).slice(0,4).map(issue => {
+    issues.filter(i => i.dimension === 'Data Integrity' || i.title?.toLowerCase().includes('compan')).sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);}).slice(0,4).map(issue => {
       const col = issue.severity==='critical'?'#dc2626':issue.severity==='warning'?'#4d94d4':'#3b6fd4';
       return '<div style="margin-bottom:10px;padding:14px 16px;background:'+col+'10;border:1px solid '+col+'30;border-radius:10px;border-left:3px solid '+col+';">' +
         '<div style="font-size:13px;font-weight:700;color:'+col+';margin-bottom:4px;">'+issue.title+'</div>' +
@@ -4974,6 +5074,33 @@ function buildContactEngagement() {
         options: { indexAxis:'y', responsive:true, plugins:{legend:{display:false}}, scales:{x:{grid:{color:Chart.defaults.borderColor}},y:{grid:{display:false}}} }
       });
     }
+
+  // ── Data quality extras ────────────────────────────────────────────────────
+  var noFName = ps.contactsNoFirstName || 0;
+  var withPersona = ps.contactsWithPersona || 0;
+  var withDeals = ps.contactsWithDeals || 0;
+  var commsLogged = ps.communicationsLogged || 0;
+  var noCompany = ps.contactsNoCompanyAssoc || 0;
+
+  if (noFName > 0 || withPersona > 0 || commsLogged > 0) {
+    var extraHtml = '<div class="stat-strip" style="margin-top:14px;">';
+    if (noFName > 0) extraHtml += '<div class="stat-cell"><div class="stat-cell-label">Missing First Name</div>' +
+      '<div class="stat-cell-value ' + (noFName > totalC*0.15 ? 'amber' : 'green') + '">' + fmt(noFName) + '</div>' +
+      '<div class="stat-cell-sub">personalization risk</div></div>';
+    if (withPersona > 0) extraHtml += '<div class="stat-cell"><div class="stat-cell-label">Have Persona</div>' +
+      '<div class="stat-cell-value ' + (withPersona/Math.max(totalC,1) > 0.5 ? 'green' : 'amber') + '">' +
+      Math.round(withPersona/Math.max(totalC,1)*100) + '%</div>' +
+      '<div class="stat-cell-sub">of contacts segmented</div></div>';
+    if (commsLogged > 0) extraHtml += '<div class="stat-cell"><div class="stat-cell-label">Communications</div>' +
+      '<div class="stat-cell-value blue">' + fmt(commsLogged) + '</div>' +
+      '<div class="stat-cell-sub">logged in CRM</div></div>';
+    if (noCompany > 0) extraHtml += '<div class="stat-cell"><div class="stat-cell-label">No Company</div>' +
+      '<div class="stat-cell-value ' + (noCompany > totalC*0.2 ? 'amber' : 'green') + '">' + fmt(noCompany) + '</div>' +
+      '<div class="stat-cell-sub">unlinked contacts</div></div>';
+    extraHtml += '</div>';
+    document.getElementById('engagement-content').innerHTML += extraHtml;
+  }
+
   });
 }
 
@@ -5045,7 +5172,7 @@ function buildDataAwareChips() {
   const s = DATA.summary || {};
   const ps = DATA.portalInfo?.portalStats || {};
   const issues = DATA.issues || [];
-  const criticals = issues.filter(i => i.severity === 'critical').slice(0,3);
+  const criticals = issues.filter(i => i.severity === 'critical').sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);}).slice(0,3);
   const chips = [];
 
   // Score-based
@@ -5490,7 +5617,7 @@ function buildMarketing() {
   const issues = DATA.issues || [];
   const mktIssues = issues.filter(i =>
     ['Marketing', 'Data Integrity'].includes(i.dimension) ||
-    (i.title && (i.title.toLowerCase().includes('form') ||
+    (i.title && (i.title.toLowerCase().sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);}).includes('form') ||
       i.title.toLowerCase().includes('list') ||
       i.title.toLowerCase().includes('campaign') ||
       i.title.toLowerCase().includes('email')))
@@ -5593,6 +5720,67 @@ function buildMarketing() {
       '</div>';
   }
 
+  // ── Landing pages + email templates summary ─────────────────────────────
+  var lpTotal  = ps.landingPagesTotal || 0;
+  var lpDraft  = ps.landingPagesDraft || 0;
+  var tmplTotal = ps.emailTemplatesTotal || 0;
+  var fcast = ps.forecastEnabled;
+
+  if (lpTotal > 0 || tmplTotal > 0) {
+    html += '<div class="stat-strip" style="margin-bottom:14px;">' +
+      (lpTotal > 0 ? '<div class="stat-cell"><div class="stat-cell-label">Landing Pages</div>' +
+        '<div class="stat-cell-value blue">' + lpTotal + '</div>' +
+        '<div class="stat-cell-sub">' + (lpDraft > 0 ? lpDraft + ' drafts unpublished' : 'all published') + '</div></div>' : '') +
+      (tmplTotal > 0 ? '<div class="stat-cell"><div class="stat-cell-label">Email Templates</div>' +
+        '<div class="stat-cell-value blue">' + tmplTotal + '</div>' +
+        '<div class="stat-cell-sub">in template library</div></div>' : '') +
+      (fcast === true ? '<div class="stat-cell"><div class="stat-cell-label">Forecasting</div>' +
+        '<div class="stat-cell-value green">Active</div>' +
+        '<div class="stat-cell-sub">HubSpot forecast enabled</div></div>' :
+       fcast === false ? '<div class="stat-cell"><div class="stat-cell-label">Forecasting</div>' +
+        '<div class="stat-cell-value amber">Off</div>' +
+        '<div class="stat-cell-sub">not enabled in HubSpot</div></div>' : '') +
+    '</div>';
+    if (lpDraft > lpTotal * 0.4 && lpTotal > 3) {
+      html += '<div class="insight-banner warning" style="margin-bottom:10px;"><span>📄</span><div>' +
+        '<strong>' + lpDraft + ' landing pages in draft</strong> (' + Math.round(lpDraft/lpTotal*100) + '% of total). ' +
+        'Unpublished pages cannot convert visitors. Review and publish or archive them.</div></div>';
+    }
+  }
+
+  // ── High bounce / low open email callouts ────────────────────────────────
+  if (ps.highBounceEmails > 0 || ps.lowOpenEmails > 0 || ps.staleDraftEmails > 0) {
+    var alertCards = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">';
+
+    var hb = ps.highBounceEmails || 0;
+    var lo = ps.lowOpenEmails || 0;
+    var sd = ps.staleDraftEmails || 0;
+
+    alertCards += '<div style="background:' + (hb > 0 ? 'rgba(239,68,68,.06)' : 'var(--card-bg2)') + ';border:1px solid ' + (hb > 0 ? 'rgba(239,68,68,.2)' : 'var(--b1)') + ';border-radius:10px;padding:14px 16px;">' +
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:' + (hb > 0 ? '#ef4444' : 'var(--t3)') + ';font-family:var(--mono);margin-bottom:6px;">High Bounce</div>' +
+      '<div style="font-size:22px;font-weight:800;color:' + (hb > 0 ? '#ef4444' : 'var(--t1)') + ';margin-bottom:3px;">' + hb + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);">campaigns with bounce rate &gt;5%</div>' +
+      (hb > 0 ? '<div style="font-size:11px;color:#ef4444;margin-top:6px;font-weight:600;">⚡ Hurting deliverability</div>' : '<div style="font-size:11px;color:#10b981;margin-top:6px;">✓ All within benchmark</div>') +
+    '</div>';
+
+    alertCards += '<div style="background:' + (lo > 0 ? 'rgba(245,158,11,.06)' : 'var(--card-bg2)') + ';border:1px solid ' + (lo > 0 ? 'rgba(245,158,11,.2)' : 'var(--b1)') + ';border-radius:10px;padding:14px 16px;">' +
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:' + (lo > 0 ? '#f59e0b' : 'var(--t3)') + ';font-family:var(--mono);margin-bottom:6px;">Low Open Rate</div>' +
+      '<div style="font-size:22px;font-weight:800;color:' + (lo > 0 ? '#f59e0b' : 'var(--t1)') + ';margin-bottom:3px;">' + lo + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);">campaigns &lt;15% open with 500+ sends</div>' +
+      (lo > 0 ? '<div style="font-size:11px;color:#f59e0b;margin-top:6px;font-weight:600;">⚡ Subject line or list issue</div>' : '<div style="font-size:11px;color:#10b981;margin-top:6px;">✓ Engagement looks healthy</div>') +
+    '</div>';
+
+    alertCards += '<div style="background:' + (sd > 0 ? 'rgba(99,102,241,.06)' : 'var(--card-bg2)') + ';border:1px solid ' + (sd > 0 ? 'rgba(99,102,241,.2)' : 'var(--b1)') + ';border-radius:10px;padding:14px 16px;">' +
+      '<div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:' + (sd > 0 ? '#818cf8' : 'var(--t3)') + ';font-family:var(--mono);margin-bottom:6px;">Stale Drafts</div>' +
+      '<div style="font-size:22px;font-weight:800;color:' + (sd > 0 ? '#818cf8' : 'var(--t1)') + ';margin-bottom:3px;">' + sd + '</div>' +
+      '<div style="font-size:11px;color:var(--t3);">draft emails not updated in 30d+</div>' +
+      (sd > 0 ? '<div style="font-size:11px;color:#818cf8;margin-top:6px;font-weight:600;">⚡ Review or archive these</div>' : '<div style="font-size:11px;color:#10b981;margin-top:6px;">✓ All drafts are current</div>') +
+    '</div>';
+
+    alertCards += '</div>';
+    html += alertCards;
+  }
+
   // List health
   if (ps.listCount > 0) {
     var staticPct = ps.staticLists ? Math.round(ps.staticLists / ps.listCount * 100) : 0;
@@ -5639,7 +5827,7 @@ function buildMarketing() {
 function buildSequences() {
   const ps = (DATA.portalInfo || {}).portalStats || {};
   const issues = DATA.issues || [];
-  const seqIssues = issues.filter(i => i.title && i.title.toLowerCase().includes('sequence'));
+  const seqIssues = issues.filter(i => i.title && i.title.toLowerCase().includes('sequence')).sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);});
 
   let html = '';
 
@@ -5738,7 +5926,7 @@ function buildAutomation() {
   const ps = (DATA.portalInfo || {}).portalStats || {};
   const scores = DATA.scores || {};
   const issues = DATA.issues || [];
-  const autoIssues = issues.filter(i => i.dimension === 'Automation');
+  const autoIssues = issues.filter(i => i.dimension === 'Automation').sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);});
   const autoScore = scores.automationHealth || 0;
   const col = autoScore >= 80 ? '#3b6fd4' : autoScore >= 60 ? '#4d94d4' : '#dc2626';
 
@@ -5796,7 +5984,7 @@ function buildService() {
     (i.title && (i.title.toLowerCase().includes('ticket') || i.title.toLowerCase().includes('nps') ||
       i.title.toLowerCase().includes('sla') || i.title.toLowerCase().includes('knowledge') ||
       i.title.toLowerCase().includes('csat') || i.title.toLowerCase().includes('survey')))
-  );
+  ).sort(function(a,b){var s={critical:0,warning:1,info:2};return (s[a.severity]||2)-(s[b.severity]||2);});
 
   const svcScore   = scores.serviceHealth || 0;
   const openTix    = ps.openTickets || 0;
@@ -5897,6 +6085,36 @@ function buildService() {
     html += '</div>';
   } else {
     html += '<div class="chart-box" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="color:var(--t3);">No service issues found</div></div>';
+  }
+
+  // ── Knowledge Base stats ────────────────────────────────────────────────
+  var kbTotal  = ps.kbArticleCount || 0;
+  var kbUnpub  = ps.kbUnpublishedCount || 0;
+  var superAdm = ps.superAdmins || 0;
+
+  if (kbTotal > 0 || superAdm > 0) {
+    html += '<div class="stat-strip" style="margin-top:14px;">' +
+      (kbTotal > 0 ? '<div class="stat-cell">' +
+        '<div class="stat-cell-label">KB Articles</div>' +
+        '<div class="stat-cell-value blue">' + kbTotal + '</div>' +
+        '<div class="stat-cell-sub">knowledge base total</div>' +
+      '</div>' +
+      '<div class="stat-cell">' +
+        '<div class="stat-cell-label">Unpublished</div>' +
+        '<div class="stat-cell-value ' + (kbUnpub > kbTotal*0.3 ? 'amber' : 'green') + '">' + kbUnpub + '</div>' +
+        '<div class="stat-cell-sub">' + (kbUnpub > 0 ? 'drafts not published' : 'all published') + '</div>' +
+      '</div>' : '') +
+      (superAdm > 0 ? '<div class="stat-cell">' +
+        '<div class="stat-cell-label">Super Admins</div>' +
+        '<div class="stat-cell-value ' + (superAdm > 3 ? 'red' : superAdm > 1 ? 'amber' : 'green') + '">' + superAdm + '</div>' +
+        '<div class="stat-cell-sub">' + (superAdm > 2 ? 'too many — security risk' : 'within best practice') + '</div>' +
+      '</div>' : '') +
+    '</div>';
+    if (superAdm > 3) {
+      html += '<div class="insight-banner critical" style="margin-top:8px;"><span>🔒</span><div>' +
+        '<strong>' + superAdm + ' super admins</strong> — best practice is 1–2. ' +
+        'Each extra super admin is a security and compliance risk. Review and downgrade excess admins in Settings → Users.</div></div>';
+    }
   }
 
   var el = document.getElementById('service-content');
@@ -7570,7 +7788,7 @@ function buildBreezeReadiness() {
     {
       name: 'Automation Reliability',
       desc: 'Broken workflows corrupt the activity data AI models train on.',
-      score: Math.max(0, Math.min(100, 100 - Math.round((ps.deadWorkflowCount||0)/Math.max(ps.totalWorkflows||1,1)*150) - (issues.filter(function(i){return i.dimension==='Automation'&&i.severity==='critical';}).length * 15))),
+      score: Math.max(0, Math.min(100, 100 - Math.round((ps.deadWorkflowCount||0)/Math.max(ps.totalWorkflows||1,1)*150) - (issues.filter(function(i){return i.dimension==='Automation'&&i.severity==='critical';}).sort(function(a,b){ var s={critical:0,warning:1,info:2}; return (s[a.severity]||2)-(s[b.severity]||2); }).length * 15))),
       issues: [
         ps.deadWorkflowCount > 0 ? (ps.deadWorkflowCount||0)+' dead workflows still marked active — corrupting activity data' : null,
         ps.workflowsMissingGoals > 0 ? (ps.workflowsMissingGoals||0)+' workflows have no goal — AI can&#39;t measure conversion' : null,
