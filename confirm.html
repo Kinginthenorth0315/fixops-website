@@ -345,8 +345,29 @@ function poll() {
       if (data.status === 'complete') {
         showComplete();
       } else if (data.status === 'error') {
-        var note = document.getElementById('status-note');
-        if (note) note.textContent = 'Audit encountered an error — our team has been notified and will follow up.';
+        // Hide running state, show full error UI
+        var rs = document.getElementById('running-state');
+        if (rs) rs.style.display = 'none';
+        var errDiv = document.getElementById('audit-error-state');
+        if (!errDiv) {
+          errDiv = document.createElement('div');
+          errDiv.id = 'audit-error-state';
+          errDiv.style.cssText = 'text-align:center;padding:48px 24px;max-width:480px;margin:0 auto;';
+          document.querySelector('.conn-wrap, main, body').appendChild(errDiv);
+        }
+        var retryLink = 'index.html';
+        errDiv.innerHTML =
+          '<div style="width:52px;height:52px;border-radius:50%;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);display:flex;align-items:center;justify-content:center;font-size:22px;margin:0 auto 18px;">⚠️</div>' +
+          '<div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;letter-spacing:-.3px;">Audit ran into an issue</div>' +
+          '<div style="font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;margin-bottom:6px;">Our team has been automatically notified and is on it. This is usually a temporary HubSpot API hiccup — a retry almost always works.</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.25);margin-bottom:24px;font-family:monospace;background:rgba(255,255,255,.03);padding:8px 12px;border-radius:6px;">' +
+            (data.message || 'Audit failed') +
+          '</div>' +
+          '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+            '<a href="' + retryLink + '" style="display:inline-block;padding:11px 22px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;">Try Again →</a>' +
+            '<a href="mailto:hello@fixops.io?subject=Audit error - ' + encodeURIComponent(auditId) + '" style="display:inline-block;padding:11px 22px;background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.12);border-radius:9px;font-size:13px;font-weight:600;text-decoration:none;">Email Support</a>' +
+          '</div>' +
+          '<div style="margin-top:16px;font-size:11px;color:rgba(255,255,255,.2);">Reference: ' + auditId + '</div>';
       } else {
         var iv = attempts < 5 ? 3000 : attempts < 15 ? 5000 : 8000;
         if (attempts < MAX_ATTEMPTS) {
