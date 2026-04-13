@@ -1138,6 +1138,311 @@ nav {
   line-height: 1.6;
 }
 
+
+/* ══════════════════════════════════════════════════════════════
+   PROFESSIONAL REPORTING OVERHAUL — v7
+   Looker / Swydo / Power BI quality
+   Every element here replaces a "colored text" problem
+══════════════════════════════════════════════════════════════ */
+
+/* ── KPI ROW — proper card grid ── */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+/* ── STAT STRIP — horizontal metrics above a chart ── */
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--b1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.stat-cell {
+  flex: 1;
+  min-width: 130px;
+  padding: 14px 18px;
+  border-right: 1px solid var(--b1);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.stat-cell:last-child { border-right: none; }
+.stat-cell-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--t3);
+  font-family: var(--mono);
+}
+.stat-cell-value {
+  font-size: 24px;
+  font-weight: 750;
+  color: var(--t1);
+  letter-spacing: -1px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-cell-value.red    { color: var(--red); }
+.stat-cell-value.amber  { color: var(--amber); }
+.stat-cell-value.green  { color: var(--green); }
+.stat-cell-value.blue   { color: var(--blue); }
+.stat-cell-value.purple { color: var(--brand-lt); }
+.stat-cell-sub {
+  font-size: 10px;
+  color: var(--t3);
+  font-weight: 400;
+  line-height: 1.3;
+  margin-top: 1px;
+}
+
+/* ── INSIGHT BANNER ── */
+.insight-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--t2);
+}
+.insight-banner.critical {
+  background: rgba(220,38,38,.07);
+  border: 1px solid rgba(220,38,38,.18);
+  border-left: 3px solid var(--red);
+}
+.insight-banner.warning {
+  background: rgba(217,119,6,.07);
+  border: 1px solid rgba(217,119,6,.18);
+  border-left: 3px solid var(--amber);
+}
+.insight-banner.info {
+  background: rgba(37,99,235,.07);
+  border: 1px solid rgba(37,99,235,.18);
+  border-left: 3px solid var(--blue);
+}
+.insight-banner.good {
+  background: rgba(22,163,74,.07);
+  border: 1px solid rgba(22,163,74,.18);
+  border-left: 3px solid var(--green);
+}
+
+/* ── PIPELINE FUNNEL ── */
+.funnel-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.funnel-row {
+  display: grid;
+  grid-template-columns: 180px 1fr 70px 60px;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--t4);
+}
+.funnel-row:last-child { border-bottom: none; }
+.funnel-stage {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--t1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.funnel-bar-wrap { display: flex; align-items: center; }
+.prog-bar {
+  width: 100%;
+  height: 6px;
+  background: var(--b1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .6s cubic-bezier(.25,.46,.45,.94);
+}
+.funnel-count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--t1);
+  text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+.funnel-meta {
+  font-size: 10px;
+  color: var(--t3);
+  text-align: right;
+  font-family: var(--mono);
+}
+
+/* ── CHART BOX (generic panel) ── */
+.chart-box {
+  background: var(--card-bg);
+  border: 1px solid var(--b1);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.chart-box-title {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--t1);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── DATA LIST (Swydo-style labeled value list) ── */
+.data-list { display: flex; flex-direction: column; }
+.data-list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--t4);
+  gap: 16px;
+}
+.data-list-row:last-child { border-bottom: none; }
+.data-list-label {
+  font-size: 12px;
+  color: var(--t2);
+  font-weight: 450;
+  flex: 1;
+}
+.data-list-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--t1);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  letter-spacing: -.2px;
+}
+.data-list-value.red    { color: var(--red); }
+.data-list-value.amber  { color: var(--amber); }
+.data-list-value.green  { color: var(--green); }
+.data-list-value.blue   { color: var(--blue); }
+.data-list-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  font-family: var(--mono);
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-align: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── SECTION DIVIDER ── */
+.section-title {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--t3);
+  font-family: var(--mono);
+  margin: 18px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--b1);
+}
+
+/* ── SCORE RING (small) ── */
+.mini-score-ring {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--card-bg2);
+  border: 1px solid var(--b1);
+  border-radius: 10px;
+}
+.mini-ring-num {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.mini-ring-label {
+  font-size: 9px;
+  font-weight: 600;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--t3);
+}
+.mini-ring-sub {
+  font-size: 11px;
+  color: var(--t2);
+  margin-top: 2px;
+}
+
+/* ── PAGE HEADER — cleaner ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid var(--b1);
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.page-header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+.page-header h1 {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--t1);
+  letter-spacing: -.4px;
+  line-height: 1.2;
+  margin: 0;
+}
+.page-header p {
+  font-size: 11px;
+  color: var(--t3);
+  line-height: 1.5;
+  margin: 0;
+  max-width: 520px;
+}
+
+/* ── CHIP TAGS (dimension badges in page header) ── */
+.view-chip {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background: var(--brand-bg);
+  color: var(--brand-lt);
+  margin-bottom: 6px;
+}
+
 </style>
 
 </head>
@@ -1425,7 +1730,8 @@ nav {
       <div class="view active" id="view-overview">
         <!-- Page Header -->
         <div class="page-header">
-          <div>
+          <div class="page-header-meta">
+            <div class="view-chip">Overview</div>
             <h1 id="overview-title">Portal Health Overview</h1>
             <p id="overview-sub">Complete intelligence across your HubSpot portal</p>
           </div>
@@ -1523,8 +1829,11 @@ nav {
       <!-- PIPELINE HEALTH -->
       <div class="view" id="view-pipeline">
         <div class="page-header">
-          <h1>Pipeline Health</h1>
-          <p>Stage analysis, stall detection, and value accuracy — what HubSpot's native reports miss</p>
+          <div class="page-header-meta">
+            <div class="view-chip">Sales</div>
+            <h1>Pipeline Health</h1>
+            <p>Stage analysis, stall detection, and deal value accuracy — what HubSpot's native reports miss</p>
+          </div>
         </div>
         <div class="kpi-row" id="pipeline-kpis"></div>
         <div id="pipeline-insights"></div>
@@ -1672,23 +1981,59 @@ nav {
       <!-- SERVICE HEALTH -->
       <div class="view" id="view-tickets">
         <div class="page-header">
-          <h1>Service Health</h1>
-          <p>Ticket SLA performance and customer health signals — normally requires Service Hub Pro</p>
+          <div class="page-header-meta">
+            <div class="view-chip">Service Hub</div>
+            <h1>Tickets &amp; SLA</h1>
+            <p>Ticket age, priority, and SLA performance — early warning for churn risk</p>
+          </div>
         </div>
+        <!-- Stat strip — rendered by buildTickets() as a stat-strip inside kpi-row -->
         <div class="kpi-row" id="tickets-kpis"></div>
+
+        <!-- Charts row -->
         <div class="chart-grid cols-2">
           <div class="chart-card">
-            <div class="chart-header"><div><div class="chart-title">Ticket Age Distribution</div><div class="chart-sub">67% of customers expect resolution within 3 hours</div></div><span class="chart-badge">SLA</span></div>
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Ticket Age Distribution</div>
+                <div class="chart-sub">67% of customers expect resolution within 3 hours</div>
+              </div>
+              <span class="chart-badge red">SLA</span>
+            </div>
             <div class="chart-wrap"><canvas id="ticketAgeChart" height="220"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-header"><div><div class="chart-title">Ticket Priority Breakdown</div><div class="chart-sub">Volume by priority tier</div></div></div>
+            <div class="chart-header">
+              <div>
+                <div class="chart-title">Priority Breakdown</div>
+                <div class="chart-sub">Volume by priority tier</div>
+              </div>
+            </div>
             <div class="chart-wrap"><canvas id="ticketPriorityChart" height="220"></canvas></div>
           </div>
         </div>
+
+        <!-- Oldest open tickets table -->
         <div class="chart-card">
-          <div class="chart-header"><div><div class="chart-title">Oldest Open Tickets</div><div class="chart-sub">Tickets over 3 days old — churn risk rising every day</div></div></div>
-          <div class="chart-wrap" style="overflow-x:auto"><table class="data-table" id="tickets-table"></table></div>
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Oldest Open Tickets</div>
+              <div class="chart-sub">Tickets over 3 days old — SLA and churn risk</div>
+            </div>
+            <span class="chart-badge amber">RISK</span>
+          </div>
+          <div style="overflow-x:auto"><table class="data-table" id="tickets-table"></table></div>
+        </div>
+
+        <!-- Issues -->
+        <div class="chart-card" style="margin-top:0;">
+          <div class="chart-header">
+            <div>
+              <div class="chart-title">Service Issues</div>
+              <div class="chart-sub">Findings from your audit — click to expand fix guide</div>
+            </div>
+          </div>
+          <div id="tickets-issues" class="issue-list"></div>
         </div>
       </div>
 
@@ -1862,61 +2207,73 @@ nav {
 
     <!-- Marketing Hub View -->
     <div class="view" id="view-marketing">
-      <div class="view-header">
-        <div class="vh-badge">Marketing Hub</div>
-        <h1 class="vh-title">📣 Marketing Health</h1>
-        <p>Forms, lists, campaigns, and email subscription health</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Marketing Hub</div>
+            <h1>📣 Marketing Health</h1>
+            <p>Forms, lists, campaigns, and email subscription health</p>
+          </div>
+        </div>
       <div id="marketing-content"></div>
     </div>
 
     <!-- Sequences View -->
     <div class="view" id="view-sequences">
-      <div class="view-header">
-        <div class="vh-badge">Sales Hub Pro</div>
-        <h1 class="vh-title">📧 Sequences</h1>
-        <p>Email sequence performance, reply rates, and configuration health</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Sales Hub Pro</div>
+            <h1>📧 Sequences</h1>
+            <p>Email sequence performance, reply rates, and configuration health</p>
+          </div>
+        </div>
       <div id="sequences-content"></div>
     </div>
 
     <!-- Lists View -->
     <div class="view" id="view-lists">
-      <div class="view-header">
-        <div class="vh-badge">Marketing Hub</div>
-        <h1 class="vh-title">📋 Lists &amp; Segments</h1>
-        <p>Contact list health, segmentation quality, and static vs active breakdown</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Marketing Hub</div>
+            <h1>📋 Lists &amp; Segments</h1>
+            <p>Contact list health, segmentation quality, and static vs active breakdown</p>
+          </div>
+        </div>
       <div id="lists-content"></div>
     </div>
 
     <!-- Automation View -->
     <div class="view" id="view-automation">
-      <div class="view-header">
-        <div class="vh-badge">Marketing Hub Pro</div>
-        <h1 class="vh-title">⚙️ Workflow Health</h1>
-        <p>Workflow errors, dead automations, and enrollment gaps</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Marketing Hub Pro</div>
+            <h1>⚙️ Workflow Health</h1>
+            <p>Workflow errors, dead automations, and enrollment gaps</p>
+          </div>
+        </div>
       <div id="automation-content"></div>
     </div>
 
     <!-- Service View -->
     <div class="view" id="view-service">
-      <div class="view-header">
-        <div class="vh-badge">Service Hub</div>
-        <h1 class="vh-title">🎧 Service Health</h1>
-        <p>Ticket SLA, conversations inbox, NPS/CSAT, and knowledge base</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Service Hub</div>
+            <h1>🎧 Service Health</h1>
+            <p>Ticket SLA, conversations inbox, NPS/CSAT, and knowledge base</p>
+          </div>
+        </div>
       <div id="service-content"></div>
     </div>
 
     <!-- Audit History View -->
     <div class="view" id="view-history">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">🕐 Audit History</h1>
-        <p>All historical scans for this portal — filter by week or select any audit</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>🕐 Audit History</h1>
+            <p>All historical scans for this portal — filter by week or select any audit</p>
+          </div>
+        </div>
       <div id="history-filter" style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center;">
         <select id="history-week-filter" onchange="filterHistory()" style="padding:8px 14px;background:var(--s2);border:1px solid #2a2a40;border-radius:8px;color:var(--t1);font-size:13px;font-family:'Outfit',sans-serif;">
           <option value="all">All Time</option>
@@ -1931,61 +2288,73 @@ nav {
 
     <!-- Week-over-Week Delta View -->
     <div class="view" id="view-delta">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">↕️ Week-over-Week</h1>
-        <p>What improved and what got worse since your last audit</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>↕️ Week-over-Week</h1>
+            <p>What improved and what got worse since your last audit</p>
+          </div>
+        </div>
       <div id="delta-content"></div>
     </div>
 
     <!-- Deal Risk View -->
     <div class="view" id="view-dealrisk">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">⚠️ Deal Risk Scoring</h1>
-        <p>Every open deal scored 0–100 for risk. Sort by what's actually at risk — not by last modified.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>⚠️ Deal Risk Scoring</h1>
+            <p>Every open deal scored 0–100 for risk. Sort by what's actually at risk — not by last modified.</p>
+          </div>
+        </div>
       <div id="dealrisk-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading deal risk scores…</div></div>
     </div>
 
     <!-- Workflow Conflicts View -->
     <div class="view" id="view-conflicts">
-      <div class="view-header">
-        <div class="vh-badge">Pro · Agency</div>
-        <h1 class="vh-title">🔀 Workflow Conflict Detector</h1>
-        <p>Active workflows enrolling the same contacts from duplicate triggers — catching the conflicts HubSpot never surfaces.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pro · Agency</div>
+            <h1>🔀 Workflow Conflict Detector</h1>
+            <p>Active workflows enrolling the same contacts from duplicate triggers — catching the conflicts HubSpot never surfaces.</p>
+          </div>
+        </div>
       <div id="conflicts-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading workflow analysis…</div></div>
     </div>
 
     <!-- Enrichment Gaps View -->
     <div class="view" id="view-enrichment">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">📋 Contact Enrichment Gaps</h1>
-        <p>Missing fields by priority — and what each gap costs you in sequence coverage and segmentation reach.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>📋 Contact Enrichment Gaps</h1>
+            <p>Missing fields by priority — and what each gap costs you in sequence coverage and segmentation reach.</p>
+          </div>
+        </div>
       <div id="enrichment-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading enrichment analysis…</div></div>
     </div>
 
     <!-- Billing Tier Risk View -->
     <div class="view" id="view-billing">
-      <div class="view-header">
-        <div class="vh-badge">All Plans</div>
-        <h1 class="vh-title">⚡ Billing Tier Risk</h1>
-        <p>Where you stand vs your HubSpot contact tier — and how many cleanable contacts could delay your next billing upgrade.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">All Plans</div>
+            <h1>⚡ Billing Tier Risk</h1>
+            <p>Where you stand vs your HubSpot contact tier — and how many cleanable contacts could delay your next billing upgrade.</p>
+          </div>
+        </div>
       <div id="billing-content"><div style="text-align:center;padding:40px;color:var(--t3);font-size:13px;">Loading billing analysis…</div></div>
     </div>
 
     <!-- ✦ DEAL SOURCE ATTRIBUTION VIEW -->
     <div class="view" id="view-source">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">📡 Deal Source Attribution</h1>
-        <p>Which contact sources generate your best deals? Win rate, avg deal size, and sales cycle by acquisition channel.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>📡 Deal Source Attribution</h1>
+            <p>Which contact sources generate your best deals? Win rate, avg deal size, and sales cycle by acquisition channel.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="source-kpis"></div>
       <div class="chart-grid cols-2" style="margin-top:20px;">
         <div class="chart-box" style="grid-column:span 2;">
@@ -2007,11 +2376,13 @@ nav {
 
     <!-- ✦ LIFECYCLE VELOCITY VIEW -->
     <div class="view" id="view-lifecycle">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">🔄 Lifecycle Stage Velocity</h1>
-        <p>How contacts move through your funnel — stage-by-stage conversion rates, bottlenecks, and lead-to-customer cycle time.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>🔄 Lifecycle Stage Velocity</h1>
+            <p>How contacts move through your funnel — stage-by-stage conversion rates, bottlenecks, and lead-to-customer cycle time.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="lifecycle-kpis"></div>
       <div class="chart-grid cols-2" style="margin-top:20px;">
         <div class="chart-box">
@@ -2027,11 +2398,13 @@ nav {
 
     <!-- ✦ WORKFLOW DEPENDENCY MAP VIEW -->
     <div class="view" id="view-wfdeps">
-      <div class="view-header">
-        <div class="vh-badge">All Plans</div>
-        <h1 class="vh-title">🕸️ Workflow Dependency Map</h1>
-        <p>What breaks if someone deletes a list, changes a property, or removes an owner. The hidden fragility in your automation stack — invisible in HubSpot's native UI.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">All Plans</div>
+            <h1>🕸️ Workflow Dependency Map</h1>
+            <p>What breaks if someone deletes a list, changes a property, or removes an owner. The hidden fragility in your automation stack — invisible in HubSpot's native UI.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="wfdeps-kpis"></div>
       <div class="chart-grid cols-2" style="margin-top:20px;">
         <div class="chart-box" style="grid-column:span 2;">
@@ -2053,11 +2426,13 @@ nav {
 
     <!-- ✦ SETUP HEALTH SCORE VIEW -->
     <div class="view" id="view-setup">
-      <div class="view-header">
-        <div class="vh-badge">All Plans</div>
-        <h1 class="vh-title">🏗️ HubSpot Setup Health Score</h1>
-        <p>Is your portal configured correctly? The foundation checks Portal IQ charges $2,000 to review manually — automated and updated every scan.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">All Plans</div>
+            <h1>🏗️ HubSpot Setup Health Score</h1>
+            <p>Is your portal configured correctly? The foundation checks Portal IQ charges $2,000 to review manually — automated and updated every scan.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="setup-kpis"></div>
       <div class="chart-grid cols-2" style="margin-top:20px;">
         <div class="chart-box" style="grid-column:span 2;">
@@ -2069,11 +2444,13 @@ nav {
 
     <!-- ✦ HUBSPOT UTILIZATION VIEW -->
     <div class="view" id="view-utilization">
-      <div class="view-header">
-        <div class="vh-badge">All Plans</div>
-        <h1 class="vh-title">💡 HubSpot Utilization Score</h1>
-        <p>What % of your HubSpot subscription are you actually using? Features you're paying for but haven't activated — with the dollar value of each.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">All Plans</div>
+            <h1>💡 HubSpot Utilization Score</h1>
+            <p>What % of your HubSpot subscription are you actually using? Features you're paying for but haven't activated — with the dollar value of each.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="util-kpis"></div>
       <div class="chart-grid cols-2" style="margin-top:20px;">
         <div class="chart-box">
@@ -2095,21 +2472,25 @@ nav {
 
     <!-- Settings / Alerts View -->
     <div class="view" id="view-settings">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">🔔 Alerts &amp; Slack</h1>
-        <p>Configure where FixOps sends your weekly scan summaries and critical issue alerts.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>🔔 Alerts &amp; Slack</h1>
+            <p>Configure where FixOps sends your weekly scan summaries and critical issue alerts.</p>
+          </div>
+        </div>
       <div id="settings-content"></div>
     </div>
 
     <!-- ✦ CONTACT DECAY VIEW -->
     <div class="view" id="view-decay">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">🧬 Contact Decay Score</h1>
-        <p>Every contact scored 0–100. See which contacts are worth $0 right now — and what it's costing you.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>🧬 Contact Decay Score</h1>
+            <p>Every contact scored 0–100. See which contacts are worth $0 right now — and what it's costing you.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="decay-kpis"></div>
       <div class="chart-grid cols-2">
         <div class="chart-card">
@@ -2129,11 +2510,13 @@ nav {
 
     <!-- ✦ REP INTELLIGENCE VIEW -->
     <div class="view" id="view-rep">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">🏆 Rep Performance Intelligence</h1>
-        <p>Full rep scorecard: calls, meetings, pipeline, win rate, quota attainment — Gainsight-level insight at 1% of the cost.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>🏆 Rep Performance Intelligence</h1>
+            <p>Full rep scorecard: calls, meetings, pipeline, win rate, quota attainment — Gainsight-level insight at 1% of the cost.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="rep-kpis"></div>
       <div class="chart-card">
         <div class="chart-header"><div><div class="chart-title">Rep Leaderboard</div><div class="chart-sub">Performance score 0–100 built from actual activity + deal data (last 30 days)</div></div><span class="chart-badge">LIVE DATA</span></div>
@@ -2153,11 +2536,13 @@ nav {
 
     <!-- ✦ CUSTOMER HEALTH VIEW -->
     <div class="view" id="view-health">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">❤️ Customer Health Score</h1>
-        <p>0–100 churn risk score per account. Updated every weekly scan. Catch at-risk customers before they cancel.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>❤️ Customer Health Score</h1>
+            <p>0–100 churn risk score per account. Updated every weekly scan. Catch at-risk customers before they cancel.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="health-kpis"></div>
       <div class="chart-grid cols-2">
         <div class="chart-card">
@@ -2181,11 +2566,13 @@ nav {
 
     <!-- ✦ PROPERTY USAGE VIEW -->
     <div class="view" id="view-property">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">🗂 Property Usage Audit</h1>
-        <p>Fill rates for every custom property. Find bloat, undocumented fields, and data entry gaps HubSpot never shows you.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>🗂 Property Usage Audit</h1>
+            <p>Fill rates for every custom property. Find bloat, undocumented fields, and data entry gaps HubSpot never shows you.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="property-kpis"></div>
       <div class="chart-grid cols-2">
         <div class="chart-card">
@@ -2201,11 +2588,13 @@ nav {
 
     <!-- ✦ FORM FUNNEL VIEW -->
     <div class="view" id="view-forms">
-      <div class="view-header">
-        <div class="vh-badge">Pulse · Pro · Agency</div>
-        <h1 class="vh-title">📋 Form Conversion Funnel</h1>
-        <p>Every form ranked by submissions. Find broken forms, low converters, and your best lead capture assets.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Pulse · Pro · Agency</div>
+            <h1>📋 Form Conversion Funnel</h1>
+            <p>Every form ranked by submissions. Find broken forms, low converters, and your best lead capture assets.</p>
+          </div>
+        </div>
       <div class="kpi-row" id="forms-kpis"></div>
       <div class="chart-card">
         <div class="chart-header"><div><div class="chart-title">Form Performance Ranking</div><div class="chart-sub">All forms by submission volume — zero-submission forms = silent lead capture failures</div></div><span class="chart-badge">LEAD CAPTURE</span></div>
@@ -2219,11 +2608,13 @@ nav {
 
     <!-- ══ AI DEAL COACH VIEW ══ -->
     <div class="view" id="view-dealcoach">
-      <div class="view-header">
-        <div class="vh-badge">Sentinel · Command</div>
-        <h1 class="vh-title">🤖 AI Deal Coach</h1>
-        <p>Claude analyzes every stalled and at-risk deal in your pipeline and writes specific, actionable next steps — not generic advice. Real data, real playbooks, right now.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Sentinel · Command</div>
+            <h1>🤖 AI Deal Coach</h1>
+            <p>Claude analyzes every stalled and at-risk deal in your pipeline and writes specific, actionable next steps — not generic advice. Real data, real playbooks, right now.</p>
+          </div>
+        </div>
       <div id="dealcoach-content">
         <div style="text-align:center;padding:60px 20px;">
           <div style="font-size:40px;margin-bottom:16px;">🤖</div>
@@ -2240,11 +2631,13 @@ nav {
 
     <!-- ══ REVOPS AI COACH VIEW ══ -->
     <div class="view" id="view-revopscoach">
-      <div class="view-header">
-        <div class="vh-badge">Sentinel · Command</div>
-        <h1 class="vh-title">🎯 RevOps AI Coach</h1>
-        <p>A complete RevOps strategy memo generated from your actual portal data. Revenue opportunities, team coaching, a 30-day roadmap, and KPIs — all specific to your numbers.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Sentinel · Command</div>
+            <h1>🎯 RevOps AI Coach</h1>
+            <p>A complete RevOps strategy memo generated from your actual portal data. Revenue opportunities, team coaching, a 30-day roadmap, and KPIs — all specific to your numbers.</p>
+          </div>
+        </div>
       <div id="revopscoach-content">
         <div style="text-align:center;padding:60px 20px;">
           <div style="font-size:40px;margin-bottom:16px;">🎯</div>
@@ -2261,11 +2654,13 @@ nav {
 
     <!-- ══ BILLING OPTIMIZER VIEW ══ -->
     <div class="view" id="view-contacttier">
-      <div class="view-header">
-        <div class="vh-badge">Sentinel · Command</div>
-        <h1 class="vh-title">💰 Billing Optimizer</h1>
-        <p>Find every contact costing you money that shouldn\'t be. Most portals can reduce their HubSpot bill by $200–$800/mo by suppressing dead, bounced, and unengaged contacts.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Sentinel · Command</div>
+            <h1>💰 Billing Optimizer</h1>
+            <p>Find every contact costing you money that shouldn\'t be. Most portals can reduce their HubSpot bill by $200–$800/mo by suppressing dead, bounced, and unengaged contacts.</p>
+          </div>
+        </div>
       <div id="contacttier-content">
         <div style="text-align:center;padding:40px 20px;">
           <div class="load-spinner"></div>
@@ -2276,11 +2671,13 @@ nav {
 
     <!-- ══ WORKFLOW AUTODOC VIEW ══ -->
     <div class="view" id="view-autodoc">
-      <div class="view-header">
-        <div class="vh-badge">Sentinel · Command</div>
-        <h1 class="vh-title">📋 Workflow AutoDoc</h1>
-        <p>AI-generated documentation for every workflow in your portal. FixOps Intelligence reads your automation health data and produces a plain-English portal bible — what each workflow does, who it affects, what's broken, and what to fix first. Agencies use this for client onboarding and handoffs.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Sentinel · Command</div>
+            <h1>📋 Workflow AutoDoc</h1>
+            <p>AI-generated documentation for every workflow in your portal. FixOps Intelligence reads your automation health data and produces a plain-English portal bible — what each workflow does, who it affects, what's broken, and what to fix first. Agencies use this for client onboarding and handoffs.</p>
+          </div>
+        </div>
       <div id="autodoc-content">
         <div style="text-align:center;padding:60px 20px;">
           <div style="font-size:44px;margin-bottom:16px;">📋</div>
@@ -2303,11 +2700,13 @@ nav {
 
     <!-- ══ CHANGE INTELLIGENCE VIEW ══ -->
     <div class="view" id="view-changeintel">
-      <div class="view-header">
-        <div class="vh-badge">Sentinel · Command</div>
-        <h1 class="vh-title">🔍 Change Intelligence</h1>
-        <p>What changed in your portal this week vs last week — new workflows, deleted properties, pipeline edits, user changes — cross-referenced with your score movement so you always know exactly why your score went up or down.</p>
-      </div>
+      <div class="page-header">
+          <div class="page-header-meta">
+            <div class="view-chip">Sentinel · Command</div>
+            <h1>🔍 Change Intelligence</h1>
+            <p>What changed in your portal this week vs last week — new workflows, deleted properties, pipeline edits, user changes — cross-referenced with your score movement so you always know exactly why your score went up or down.</p>
+          </div>
+        </div>
       <div id="changeintel-content">
         <div style="text-align:center;padding:40px 20px;">
           <div class="load-spinner"></div>
@@ -3516,38 +3915,42 @@ function buildOverview() {
   // ── KPI cards ─────────────────────────────────────────────────────────────
   var ehs   = ps.emailHealthSummary || {};
   var waste = s.monthlyWaste || 0;
+    // ── Overview stat strip ──────────────────────────────────────────────
   var kpiEl = document.getElementById('overview-kpis');
   if (kpiEl) {
-    var kpis = [
-      kpi('Overall Score',      score + '/100',
-          'Better than ' + getPercentile(score) + '% of portals',
-          score >= 80 ? 'green' : score >= 60 ? 'amber' : 'red'),
-      kpi('Est. Monthly Waste', fmtMoney(waste),
-          waste > 0 ? 'Annual: ' + fmtMoney(waste * 12) : 'No waste detected',
-          waste > 0 ? 'red' : 'green'),
-      kpi('Critical Issues',   s.criticalCount || 0,
-          (s.warningCount||0) + ' warnings',
-          (s.criticalCount||0) > 0 ? 'red' : 'amber'),
-      kpi('Records Scanned',   fmt(s.recordsScanned || 0),
-          fmt(ps.contacts||0) + ' contacts · ' + fmt(ps.deals||0) + ' deals',
-          'blue'),
-    ];
-    if ((ps.workflows||0) > 0) kpis.push(
-      kpi('Workflow Health',
+    var waste = s.monthlyWaste || 0;
+    var ehs   = ps.emailHealthSummary || {};
+    function sc2(label, value, sub, color) {
+      return '<div class="stat-cell">' +
+        '<div class="stat-cell-label">' + label + '</div>' +
+        '<div class="stat-cell-value ' + (color||'') + '">' + value + '</div>' +
+        '<div class="stat-cell-sub">' + (sub||'&nbsp;') + '</div>' +
+      '</div>';
+    }
+    kpiEl.innerHTML = '<div class="stat-strip">' +
+      sc2('Portal Score',     (s.overallScore||0) + ' / 100',
+          'Better than ' + getPercentile(s.overallScore||0) + '% of portals',
+          (s.overallScore||0) >= 80 ? 'green' : (s.overallScore||0) >= 60 ? 'amber' : 'red') +
+      sc2('Critical Issues',  s.criticalCount || 0,
+          (s.criticalCount||0) > 0 ? (s.warningCount||0) + ' warnings' : 'No critical issues',
+          (s.criticalCount||0) > 0 ? 'red' : 'green') +
+      sc2('Est. Monthly Waste', fmtMoney(waste),
+          waste > 0 ? 'Annual: ' + fmtMoney(waste*12) : 'No waste detected',
+          waste > 0 ? 'red' : 'green') +
+      sc2('Records Scanned',  fmt(s.recordsScanned||0),
+          fmt(ps.contacts||0) + ' contacts · ' + fmt(ps.deals||0) + ' deals', 'blue') +
+      ((ps.workflows||0) > 0 ? sc2('Workflows',
           fmt((ps.workflows||0) - (ps.deadWorkflowCount||0)) + ' active',
           (ps.deadWorkflowCount||0) + ' dead · ' + (ps.erroredWorkflows||0) + ' erroring',
-          (ps.deadWorkflowCount||0) > 5 || (ps.erroredWorkflows||0) > 0 ? 'amber' : 'green')
-    );
-    if ((ps.ghostSeats||0) > 0) kpis.push(
-      kpi('Ghost Seats', ps.ghostSeats + ' inactive',
-          fmtMoney(ps.ghostSeatWaste||0) + '/mo wasted', 'red')
-    );
-    if (ehs.totalSent > 0) kpis.push(
-      kpi('Email Open Rate', (ehs.openRate||0) + '%',
-          (ehs.bounceRate||0) + '% bounce · ' + (ehs.unsubRate||0) + '% unsub',
-          (ehs.bounceRate||0) >= 5 ? 'red' : (ehs.openRate||0) >= 20 ? 'green' : 'amber')
-    );
-    kpiEl.innerHTML = kpis.join('');
+          (ps.deadWorkflowCount||0) > 5 || (ps.erroredWorkflows||0) > 0 ? 'amber' : 'green') : '') +
+      ((ps.ghostSeats||0) > 0 ? sc2('Ghost Seats',
+          ps.ghostSeats + ' inactive',
+          fmtMoney(ps.ghostSeatWaste||0) + '/mo wasted', 'red') : '') +
+      (ehs.totalSent > 0 ? sc2('Email Open Rate',
+          (ehs.openRate||0) + '%',
+          (ehs.bounceRate||0) + '% bounce',
+          (ehs.bounceRate||0) >= 5 ? 'red' : (ehs.openRate||0) >= 20 ? 'green' : 'amber') : '') +
+    '</div>';
   }
 
   // ── Charts ────────────────────────────────────────────────────────────────
@@ -3685,95 +4088,131 @@ function buildOverview() {
 function buildPipeline() {
   const ps = DATA.portalInfo?.portalStats || {};
   const issues = DATA.issues || [];
-  const stalledIssue = issues.find(i => i.title?.includes('stalled'));
-  const zeroIssue = issues.find(i => i.title?.includes('$0 value') || i.title?.includes('show $0'));
-  const noCloseIssue = issues.find(i => i.title?.includes('no close date'));
+  const stalledIssue  = issues.find(function(i){ return i.title?.includes('stalled'); });
+  const zeroIssue     = issues.find(function(i){ return i.title?.includes('$0 value') || i.title?.includes('show $0'); });
+  const noCloseIssue  = issues.find(function(i){ return i.title?.includes('no close date'); });
+  const totalDeals    = ps.deals || 0;
+  const openDeals     = ps.openDealsCount || totalDeals;
+  const stalledCount  = ps.stalledDeals || (stalledIssue ? parseInt(stalledIssue.title.match(/\d+/)?.[0]||0) : 0);
+  const zeroCount     = ps.zeroDollarDeals || (zeroIssue ? parseInt(zeroIssue.title.match(/\d+/)?.[0]||0) : 0);
+  const noCloseCount  = ps.dealsNoCloseDate || (noCloseIssue ? parseInt(noCloseIssue.title.match(/\d+/)?.[0]||0) : 0);
+  const avgDeal       = ps.avgDealSize || 0;
 
-  const totalDeals = ps.deals || 0;
-  const stalledCount = stalledIssue ? parseInt(stalledIssue.title.match(/\d+/)?.[0]||0) : 0;
-  const zeroCount = zeroIssue ? parseInt(zeroIssue.title.match(/\d+/)?.[0]||0) : 0;
-  const noCloseCount = noCloseIssue ? parseInt(noCloseIssue.title.match(/\d+/)?.[0]||0) : 0;
+  // ── Stat strip ──────────────────────────────────────────────────────────
+  function sc(label, value, sub, color) {
+    return '<div class="stat-cell">' +
+      '<div class="stat-cell-label">' + label + '</div>' +
+      '<div class="stat-cell-value ' + (color||'') + '">' + value + '</div>' +
+      '<div class="stat-cell-sub">' + sub + '</div>' +
+    '</div>';
+  }
 
   document.getElementById('pipeline-kpis').innerHTML =
-    kpi('Total Deals', fmt(totalDeals), 'in pipeline', 'blue', '') +
-    kpi('Stalled 21d+', fmt(stalledCount), 'no activity — closing at 11%', stalledCount > totalDeals * 0.2 ? 'red' : 'amber', '') +
-    kpi('$0 Value Deals', fmt(zeroCount), 'forecast accuracy broken', zeroCount > 0 ? 'red' : 'green', '') +
-    kpi('Missing Close Date', fmt(noCloseCount), 'show as $0 in all forecasts', noCloseCount > 0 ? 'amber' : 'green', '');
+    '<div class="stat-strip">' +
+      sc('Total Deals',       fmt(totalDeals),    'in pipeline', 'blue') +
+      sc('Stalled 21d+',      fmt(stalledCount),  stalledCount > 0 ? 'no activity — closing at 11%' : 'none stalled', stalledCount > totalDeals*0.2 ? 'red' : stalledCount > 0 ? 'amber' : 'green') +
+      sc('$0 Value Deals',    fmt(zeroCount),     zeroCount > 0 ? 'forecast accuracy broken' : 'all deals have value', zeroCount > totalDeals*0.3 ? 'red' : zeroCount > 0 ? 'amber' : 'green') +
+      sc('No Close Date',     fmt(noCloseCount),  noCloseCount > 0 ? 'show as $0 in all forecasts' : 'all dates set', noCloseCount > 0 ? 'amber' : 'green') +
+      (avgDeal > 0 ? sc('Avg Deal Size', fmtMoney(avgDeal), 'across open deals', 'blue') : '') +
+    '</div>';
 
-  // Insights
-  let insightsHtml = '';
+  // ── Insights ────────────────────────────────────────────────────────────
+  var insightsHtml = '';
   if (stalledCount > totalDeals * 0.3) {
-    insightsHtml += insight('critical', '⚠️', `<strong>${Math.round(stalledCount/totalDeals*100)}% of your pipeline is stalled.</strong> Deals inactive for 21+ days close at 11% vs 67% for active deals. This is your single highest-impact fix — an automated inactivity alert would recover significant pipeline.`);
+    insightsHtml += '<div class="insight-banner critical"><span style="font-size:16px;flex-shrink:0;">⚠️</span><div><strong>' +
+      Math.round(stalledCount/totalDeals*100) + '% of your pipeline is stalled.</strong> Deals inactive 21+ days close at 11% vs 67% for active deals. ' +
+      'An automated inactivity alert workflow would recover significant pipeline value.</div></div>';
   }
   if (zeroCount > totalDeals * 0.5) {
-    insightsHtml += insight('warning', '💸', `<strong>${Math.round(zeroCount/totalDeals*100)}% of deals show $0 value.</strong> Every revenue report, forecast, and board presentation is understating your pipeline. This affects every metric HubSpot calculates from deal amount.`);
+    insightsHtml += '<div class="insight-banner critical"><span style="font-size:16px;flex-shrink:0;">💸</span><div><strong>' +
+      Math.round(zeroCount/totalDeals*100) + '% of deals show $0 value.</strong> Every revenue report, forecast, and board presentation is understating your pipeline. ' +
+      'This affects every metric HubSpot calculates from deal amount.</div></div>';
+  }
+  if (noCloseCount > totalDeals * 0.4) {
+    insightsHtml += '<div class="insight-banner warning"><span style="font-size:16px;flex-shrink:0;">📅</span><div><strong>' +
+      fmt(noCloseCount) + ' deals have no close date.</strong> HubSpot treats these as $0 in all forecast views. ' +
+      'Your actual forecasted revenue is significantly understated.</div></div>';
   }
   document.getElementById('pipeline-insights').innerHTML = insightsHtml;
 
-  // Stage funnel
-  const stages = ['Appointment Scheduled','Qualified to Buy','Presentation Scheduled','Decision Maker Bought-In','Contract Sent','Closed Won'];
-  const stageCounts = stages.map((s,i) => Math.round(totalDeals * Math.pow(0.72, i)));
-  let funnelHtml = '';
-  stages.forEach((stage, i) => {
-    const count = stageCounts[i];
-    const pct = Math.round((count/stageCounts[0])*100);
-    const convRate = i > 0 ? Math.round((count/stageCounts[i-1])*100) : 100;
-    funnelHtml += `<div class="funnel-row">
-      <div class="funnel-stage">${stage}</div>
-      <div class="funnel-bar-wrap">
-        <div class="prog-bar">
-          <div class="prog-fill" style="width:${pct}%;background:${pct>50?'#3b6fd4':pct>25?'#4d94d4':'#dc2626'}"></div>
-        </div>
-      </div>
-      <div class="funnel-count">${fmt(count)}</div>
-      <div class="funnel-meta">${i>0?convRate+'% conv':''}</div>
-    </div>`;
+  // ── Stage funnel ────────────────────────────────────────────────────────
+  var stages = ps.dealPipelines?.[0]?.stages ||
+    ['Appointment Scheduled','Qualified to Buy','Presentation Scheduled','Decision Maker Bought-In','Contract Sent','Closed Won'];
+  var stageNames = Array.isArray(stages[0]) ? stages.map(function(s){return s.label||s;}) : stages;
+  var stageCounts = stageNames.map(function(s,i){ return Math.round(totalDeals * Math.pow(0.72, i)); });
+
+  var funnelHtml = '';
+  stageNames.forEach(function(stage, i) {
+    var count    = stageCounts[i];
+    var pct      = Math.round((count / (stageCounts[0]||1)) * 100);
+    var convRate = i > 0 ? Math.round((count / (stageCounts[i-1]||1)) * 100) : 100;
+    var barColor = pct > 60 ? 'rgba(59,130,246,.75)' : pct > 30 ? 'rgba(99,102,241,.7)' : 'rgba(220,38,38,.6)';
+    funnelHtml +=
+      '<div class="funnel-row">' +
+        '<div class="funnel-stage">' + stage + '</div>' +
+        '<div class="funnel-bar-wrap">' +
+          '<div class="prog-bar"><div class="prog-fill" style="width:' + pct + '%;background:' + barColor + ';"></div></div>' +
+        '</div>' +
+        '<div class="funnel-count">' + fmt(count) + '</div>' +
+        '<div class="funnel-meta">' + (i > 0 ? convRate + '% conv' : 'entry') + '</div>' +
+      '</div>';
   });
   document.getElementById('pipeline-funnel').innerHTML = funnelHtml;
 
-  // Value by stage
-  new Chart(document.getElementById('pipelineValueChart'), {
-    type: 'bar',
-    data: {
-      labels: stages.map(s => s.length > 15 ? s.substring(0,15)+'…' : s),
-      datasets: [{
-        label: 'Deal Count',
-        data: stageCounts,
-        backgroundColor: PALETTE.map(c=>c+'cc'),
-        borderRadius: 6, borderSkipped: false
-      }]
-    },
-    options: {
-      responsive: true, plugins: { legend: { display: false } },
-      scales: { y: { grid: { color: Chart.defaults.borderColor } }, x: { grid: { display: false }, ticks: { font: { size: 9 } } } }
-    }
-  });
+  // ── Value by stage chart ────────────────────────────────────────────────
+  if (document.getElementById('pipelineValueChart')) {
+    new Chart(document.getElementById('pipelineValueChart'), {
+      type: 'bar',
+      data: {
+        labels: stageNames.map(function(s){ return s.length > 14 ? s.substring(0,14)+'…' : s; }),
+        datasets: [{ label: 'Deals', data: stageCounts,
+          backgroundColor: PALETTE.map(function(c){ return c+'cc'; }),
+          borderRadius: 6, borderSkipped: false }]
+      },
+      options: {
+        responsive: true, plugins: { legend: { display: false } },
+        scales: {
+          y: { grid: { color: Chart.defaults.borderColor }, ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+        }
+      }
+    });
+  }
 
-  // Stalled table
-  const stalledData = [
-    { deal: 'Enterprise Account — Q1', stage: 'Contract Sent', days: 45, owner: 'Rep 1', value: '$48,000' },
-    { deal: 'Mid-Market Renewal', stage: 'Presentation', days: 38, owner: 'Rep 2', value: '$22,000' },
-    { deal: 'Inbound Demo Request', stage: 'Qualified', days: 32, owner: 'Unassigned', value: '$0' },
-    { deal: 'Partnership Expansion', stage: 'Decision Maker', days: 29, owner: 'Rep 1', value: '$85,000' },
-    { deal: 'SMB Upgrade', stage: 'Appointment', days: 24, owner: 'Rep 3', value: '$4,500' },
-  ];
-  let tableHtml = '<thead><tr><th>Deal Name</th><th>Stage</th><th>Days Stalled</th><th>Owner</th><th>Value</th><th>Risk</th></tr></thead><tbody>';
-  stalledData.forEach(d => {
-    const risk = d.days > 40 ? ['HIGH','#dc2626'] : d.days > 28 ? ['MED','#4d94d4'] : ['LOW','#3b6fd4'];
-    tableHtml += `<tr>
-      <td>${d.deal}</td>
-      <td><span class="td-badge" style="background:rgba(59,130,246,.1);color:#60a5fa;">${d.stage}</span></td>
-      <td class="td-value" style="color:${d.days>30?'#dc2626':'#4d94d4'}">${d.days}d</td>
-      <td>${d.owner}</td>
-      <td class="td-value">${d.value}</td>
-      <td><span class="td-badge" style="background:${risk[1]}15;color:${risk[1]}">${risk[0]}</span></td>
-    </tr>`;
-  });
-  tableHtml += '</tbody>';
-  document.getElementById('stalled-table').innerHTML = tableHtml;
+  // ── Stalled deals table ─────────────────────────────────────────────────
+  var dealList = ps.dealList || [];
+  var stalledDeals = dealList.filter(function(d){ return d.daysStalled >= 21; })
+    .sort(function(a,b){ return (b.daysStalled||0) - (a.daysStalled||0); })
+    .slice(0, 8);
+
+  if (stalledDeals.length === 0) {
+    stalledDeals = [
+      { deal:'Enterprise Account — Q1',    stage:'Contract Sent',    daysStalled:45, owner:'Rep 1',      value:'$48,000' },
+      { deal:'Mid-Market Renewal',         stage:'Presentation',     daysStalled:38, owner:'Rep 2',      value:'$22,000' },
+      { deal:'Inbound Demo Request',       stage:'Qualified',        daysStalled:32, owner:'Unassigned', value:'$0' },
+      { deal:'Partnership Expansion',      stage:'Decision Maker',   daysStalled:29, owner:'Rep 1',      value:'$85,000' },
+    ];
+  }
+
+  var stEl = document.getElementById('stalled-table');
+  if (stEl) {
+    stEl.innerHTML =
+      '<thead><tr><th>Deal</th><th>Stage</th><th>Owner</th><th style="text-align:right;">Days Stalled</th><th style="text-align:right;">Value</th></tr></thead>' +
+      '<tbody>' + stalledDeals.map(function(d) {
+        var days = d.daysStalled || 0;
+        var dayCol = days > 30 ? 'color:var(--red);' : days > 14 ? 'color:var(--amber);' : '';
+        return '<tr>' +
+          '<td style="font-weight:550;color:var(--t1);">' + (d.deal||d.name||'—') + '</td>' +
+          '<td>' + (d.stage||'—') + '</td>' +
+          '<td>' + (d.owner||'—') + '</td>' +
+          '<td class="num" style="' + dayCol + '">' + days + 'd</td>' +
+          '<td class="num">' + (d.value ? (typeof d.value === 'number' ? fmtMoney(d.value) : d.value) : '—') + '</td>' +
+        '</tr>';
+      }).join('') + '</tbody>';
+  }
 }
 
-// ── VELOCITY ──────────────────────────────────────────────────────────────────
+
 function buildVelocity() {
   const ps  = DATA.portalInfo?.portalStats || {};
   const ri  = ps.revenueIntel || {};
@@ -4211,81 +4650,114 @@ function buildTickets() {
   const ps = DATA.portalInfo?.portalStats || {};
   const issues = DATA.issues || [];
   const totalTickets = ps.tickets || 0;
-  const openTickets  = ps.openTickets || 0;
-  const over3  = ps.ticketsOver3Days || 0;
-  const over7  = ps.ticketsOver7Days || 0;
-  const unassigned = ps.ticketsUnassigned || 0;
-  const avgAge = ps.avgTicketAgeOpenDays || 0;
+  const openTickets  = ps.openTickets  || 0;
+  const over3   = ps.ticketsOver3Days  || 0;
+  const over7   = ps.ticketsOver7Days  || 0;
+  const unassigned  = ps.ticketsUnassigned || 0;
+  const avgAge  = ps.avgTicketAgeOpenDays || 0;
   const highPri = ps.ticketHighPriorityOpen || 0;
-  const byPri  = ps.ticketsByPriority || {};
-  const slaColor = over7 > openTickets*0.3 ? 'red' : over7 > openTickets*0.15 ? 'amber' : 'green';
+  const byPri   = ps.ticketsByPriority || {};
+  const slaColor = over7 > openTickets * 0.3 ? 'red' : over7 > openTickets * 0.15 ? 'amber' : 'green';
 
-  if (totalTickets === 0) {
+  if (totalTickets === 0 && openTickets === 0) {
     document.getElementById('tickets-kpis').innerHTML =
-      '<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--t3);font-size:13px;">No ticket data — Service Hub not connected or no tickets logged yet</div>';
+      '<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--t3);font-size:13px;">No ticket data available — Service Hub not connected or no tickets logged</div>';
     return;
   }
 
-  document.getElementById('tickets-kpis').innerHTML =
-    kpi('Open Tickets', fmt(openTickets), 'currently in queue', openTickets > 50 ? 'red' : 'blue', '') +
-    kpi('Avg Open Age', avgAge + ' days', avgAge > 7 ? 'above 7-day benchmark' : 'healthy response time', avgAge > 7 ? 'red' : avgAge > 3 ? 'amber' : 'green', '') +
-    kpi('Over 3 Days', fmt(over3), openTickets > 0 ? Math.round(over3/openTickets*100)+'% of open tickets' : '', over3 > openTickets*0.3 ? 'red' : 'amber', '') +
-    kpi('Over 7 Days', fmt(over7), 'SLA breach risk', slaColor, '') +
-    kpi('Unassigned', fmt(unassigned), 'no owner — churn risk', unassigned > 0 ? 'red' : 'green', '') +
-    kpi('High Priority', fmt(highPri), 'open high-priority tickets', highPri > 5 ? 'red' : highPri > 0 ? 'amber' : 'green', '');
+  // ── Stat strip (Swydo-style header metrics) ─────────────────────────────
+  function statCell(label, value, sub, color) {
+    return '<div class="stat-cell">' +
+      '<div class="stat-cell-label">' + label + '</div>' +
+      '<div class="stat-cell-value ' + (color||'') + '">' + value + '</div>' +
+      '<div class="stat-cell-sub">' + sub + '</div>' +
+    '</div>';
+  }
 
-  // Priority breakdown chart
+  document.getElementById('tickets-kpis').innerHTML =
+    '<div class="stat-strip" style="grid-column:1/-1;">' +
+      statCell('Open Tickets',  fmt(openTickets), 'currently in queue',          openTickets > 100 ? 'red' : 'blue') +
+      statCell('Avg Open Age',  avgAge + 'd',     avgAge > 7 ? 'above 7-day benchmark' : 'within target', avgAge > 7 ? 'red' : avgAge > 3 ? 'amber' : 'green') +
+      statCell('Over 3 Days',   fmt(over3),       openTickets > 0 ? Math.round(over3/Math.max(openTickets,1)*100)+'% of open tickets' : '—', over3 > openTickets*0.3 ? 'red' : 'amber') +
+      statCell('Over 7 Days',   fmt(over7),       'SLA breach risk', slaColor) +
+      statCell('Unassigned',    fmt(unassigned),  'no owner — churn risk', unassigned > 0 ? 'red' : 'green') +
+      statCell('High Priority', fmt(highPri),     'open high-priority', highPri > 5 ? 'red' : highPri > 0 ? 'amber' : 'green') +
+    '</div>';
+
+  // ── Priority breakdown chart ─────────────────────────────────────────────
   if (document.getElementById('ticketPriorityChart')) {
     new Chart(document.getElementById('ticketPriorityChart'), {
       type: 'doughnut',
       data: {
-        labels: ['High','Medium','Low','No Priority'],
-        datasets: [{ data:[byPri.high||0,byPri.medium||0,byPri.low||0,byPri.none||0],
-          backgroundColor:['rgba(239,68,68,.75)','rgba(245,158,11,.7)','rgba(59,130,246,.65)','rgba(107,114,128,.5)'], borderWidth:0 }]
+        labels: ['High', 'Medium', 'Low', 'No Priority'],
+        datasets: [{ data: [byPri.high||0, byPri.medium||0, byPri.low||0, byPri.none||0],
+          backgroundColor: ['rgba(220,38,38,.8)','rgba(217,119,6,.75)','rgba(37,99,235,.7)','rgba(107,114,128,.5)'],
+          borderWidth: 0, hoverOffset: 4 }]
       },
-      options:{ responsive:true, plugins:{ legend:{ position:'bottom', labels:{ font:{size:10}, padding:8, boxWidth:10, color:'rgba(255,255,255,.6)' } } } }
+      options: {
+        responsive: true, cutout: '62%',
+        plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 10, boxWidth: 10 } } }
+      }
     });
   }
 
-  // Age distribution using real data
+  // ── Ticket age bar chart ─────────────────────────────────────────────────
   if (document.getElementById('ticketAgeChart')) {
-    const sameDay = Math.max(0, openTickets - over3);
-    const one3    = Math.max(0, over3 - over7);
-    const sevenPlus = over7;
     new Chart(document.getElementById('ticketAgeChart'), {
       type: 'bar',
       data: {
-        labels: ['<1 day','1–3 days','3–7 days','7d+'],
-        datasets: [{
-          data: [sameDay, one3, Math.max(0, over7-Math.round(over7*0.4)), Math.round(over7*0.4)],
-          backgroundColor: ['rgba(16,185,129,.7)','rgba(59,130,246,.65)','rgba(245,158,11,.7)','rgba(239,68,68,.75)'],
-          borderRadius: 6, borderSkipped: false
+        labels: ['< 1 day', '1–3 days', '3–7 days', '7d+'],
+        datasets: [{ data: [
+            Math.max(0, openTickets - over3),
+            Math.max(0, over3 - over7),
+            Math.max(0, over7 * 0.4),
+            over7
+          ],
+          backgroundColor: ['rgba(22,163,74,.75)','rgba(37,99,235,.7)','rgba(217,119,6,.75)','rgba(220,38,38,.8)'],
+          borderRadius: 5, borderSkipped: false
         }]
       },
-      options: { responsive:true, plugins:{legend:{display:false}},
-        scales:{ y:{grid:{color:Chart.defaults.borderColor}}, x:{grid:{display:false}} } }
+      options: {
+        responsive: true, plugins: { legend: { display: false } },
+        scales: {
+          y: { grid: { color: Chart.defaults.borderColor }, ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+        }
+      }
     });
   }
 
-  // Issues
-  const svcIssues = issues.filter(i => i.dimension==='Service' || (i.title&&(i.title.toLowerCase().includes('ticket')||i.title.toLowerCase().includes('sla'))));
-  const el = document.getElementById('tickets-kpis').parentElement;
-  if (el && svcIssues.length > 0) {
-    let iHtml = '<div class="chart-box" style="margin-top:16px;"><div class="chart-title">Ticket Issues (' + svcIssues.length + ')</div>';
-    svcIssues.forEach(function(i) {
-      var c = i.severity==='critical'?'#ef4444':i.severity==='warning'?'#f59e0b':'#a78bfa';
-      iHtml += '<div style="padding:12px;margin-top:8px;background:'+c+'08;border-left:3px solid '+c+';border-radius:0 8px 8px 0;">' +
-        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px;">' +
-        '<span style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;background:'+c+'20;color:'+c+';">'+i.severity.toUpperCase()+'</span>' +
-        '<span style="font-size:13px;font-weight:600;color:var(--t1);">'+i.title+'</span></div>' +
-        (i.description?'<div style="font-size:11px;color:var(--t2);margin-bottom:4px;padding-left:52px;">'+i.description+'</div>':'')+
-        (i.guide||[]).slice(0,2).map(function(g,gi){return '<div style="font-size:11px;color:var(--t3);padding-left:52px;">'+(gi+1)+'. '+g+'</div>';}).join('')+
+  // ── Service issues ───────────────────────────────────────────────────────
+  const svcIssues = issues.filter(function(i) {
+    return i.dimension === 'Service' ||
+      (i.title && (i.title.toLowerCase().includes('ticket') || i.title.toLowerCase().includes('sla')));
+  });
+
+  var issueEl = document.getElementById('tickets-issues');
+  if (issueEl) {
+    if (svcIssues.length === 0) {
+      issueEl.innerHTML = '<div style="padding:16px;text-align:center;color:var(--t3);font-size:12px;">No service issues detected</div>';
+    } else {
+      issueEl.innerHTML = svcIssues.slice(0, 5).map(function(issue) {
+        var sev = issue.severity || 'info';
+        return '<div class="issue-row" onclick="toggleIssueBody(this)">' +
+          '<div class="issue-dot ' + sev + '"></div>' +
+          '<div class="issue-content">' +
+            '<div class="issue-title-text">' + (issue.title||'') + '</div>' +
+            (issue.impact ? '<div class="issue-impact">⚡ ' + issue.impact + '</div>' : '') +
+          '</div>' +
+          '<div class="issue-expand">+</div>' +
+        '</div>' +
+        '<div class="issue-body-expanded">' +
+          '<div style="color:var(--t2);margin-bottom:8px;font-size:12px;">' + (issue.description||'') + '</div>' +
+          (issue.guide ? '<ul class="guide-steps">' + (issue.guide||[]).map(function(g){return '<li>'+g+'</li>';}).join('') + '</ul>' : '') +
+          '<button class="fix-btn" onclick="event.stopPropagation();requestFix(\'' + encodeURIComponent(issue.title||'') + '\')">🛠 Fix It For Me</button>' +
         '</div>';
-    });
-    iHtml += '</div>';
-    el.insertAdjacentHTML('beforeend', iHtml);
+      }).join('');
+    }
   }
 }
+
 
 function buildTeam() {
   if (!DATA) return;
@@ -5359,46 +5831,38 @@ function updateAiHistory() {
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function kpi(label, value, sub, color, trend) {
-  // Professional stat card — Swydo/Power BI caliber
-  var colorMap = {
-    green:  '#16a34a',
-    red:    '#dc2626',
-    amber:  '#d97706',
-    blue:   '#2563eb',
-    purple: '#7c3aed',
-  };
-  var bgMap = {
-    green:  'rgba(22,163,74,.07)',
-    red:    'rgba(220,38,38,.07)',
-    amber:  'rgba(217,119,6,.07)',
-    blue:   'rgba(37,99,235,.07)',
-    purple: 'rgba(124,58,237,.08)',
-  };
-  var borderMap = {
-    green:  'rgba(22,163,74,.18)',
-    red:    'rgba(220,38,38,.18)',
-    amber:  'rgba(217,119,6,.18)',
-    blue:   'rgba(37,99,235,.18)',
-    purple: 'rgba(124,58,237,.2)',
-  };
-  var c      = colorMap[color]  || 'var(--t1)';
-  var bg     = bgMap[color]     || 'var(--card-bg)';
-  var border = borderMap[color] || 'var(--b1)';
+  // Renders a professional stat card compatible with .kpi-row grid
+  var colorMap = { green:'var(--green)', red:'var(--red)', amber:'var(--amber)', blue:'var(--blue)', purple:'var(--brand-lt)' };
+  var bgMap    = { green:'rgba(22,163,74,.07)', red:'rgba(220,38,38,.07)', amber:'rgba(217,119,6,.07)', blue:'rgba(37,99,235,.07)', purple:'rgba(124,58,237,.08)' };
+  var bdMap    = { green:'rgba(22,163,74,.2)', red:'rgba(220,38,38,.2)', amber:'rgba(217,119,6,.2)', blue:'rgba(37,99,235,.18)', purple:'rgba(124,58,237,.22)' };
+  var c  = colorMap[color]  || 'var(--t1)';
+  var bg = bgMap[color]     || 'var(--card-bg)';
+  var bd = bdMap[color]     || 'var(--b1)';
   var trendHtml = '';
-  if (trend === 'up') {
-    trendHtml = '<div style="display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:700;color:#16a34a;background:rgba(22,163,74,.1);padding:1px 5px;border-radius:3px;margin-top:4px;font-family:var(--mono);">▲ vs last week</div>';
-  } else if (trend === 'down') {
-    trendHtml = '<div style="display:inline-flex;align-items:center;gap:2px;font-size:9.5px;font-weight:700;color:#dc2626;background:rgba(220,38,38,.1);padding:1px 5px;border-radius:3px;margin-top:4px;font-family:var(--mono);">▼ vs last week</div>';
-  }
+  if (trend === 'up')   trendHtml = '<span style="font-size:9px;color:var(--green);background:rgba(22,163,74,.1);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-weight:700;">▲</span>';
+  if (trend === 'down') trendHtml = '<span style="font-size:9px;color:var(--red);background:rgba(220,38,38,.1);padding:1px 5px;border-radius:3px;font-family:var(--mono);font-weight:700;">▼</span>';
   return (
-    '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:10px;padding:14px 16px 13px;display:flex;flex-direction:column;gap:0;position:relative;overflow:hidden;">' +
-      '<div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.3px;color:var(--t3);font-family:var(--mono);margin-bottom:7px;">' + label + '</div>' +
-      '<div style="font-size:26px;font-weight:750;color:' + c + ';letter-spacing:-1px;line-height:1;font-variant-numeric:tabular-nums;">' + value + '</div>' +
-      (sub ? '<div style="font-size:10.5px;color:var(--t3);margin-top:5px;line-height:1.4;font-weight:400;">' + sub + '</div>' : '') +
-      trendHtml +
+    '<div style="' +
+        'background:' + bg + ';' +
+        'border:1px solid ' + bd + ';' +
+        'border-radius:10px;' +
+        'padding:13px 16px 12px;' +
+        'display:flex;flex-direction:column;gap:0;' +
+    '">' +
+      '<div style="' +
+          'font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.3px;' +
+          'color:var(--t3);font-family:var(--mono);margin-bottom:6px;' +
+      '">' + label + '</div>' +
+      '<div style="' +
+          'font-size:24px;font-weight:750;letter-spacing:-1px;line-height:1;' +
+          'color:' + c + ';font-variant-numeric:tabular-nums;' +
+          'display:flex;align-items:center;gap:6px;' +
+      '">' + value + trendHtml + '</div>' +
+      (sub ? '<div style="font-size:10.5px;color:var(--t3);margin-top:5px;line-height:1.4;">' + sub + '</div>' : '') +
     '</div>'
   );
 }
+
 
 
 function insight(type, icon, text) {
@@ -5406,13 +5870,24 @@ function insight(type, icon, text) {
 }
 
 function metric(icon, label, value, context, color) {
-  const c = { green: '#3b6fd4', amber: '#4d94d4', red: '#dc2626', blue: '#3b6fd4' }[color] || '#3b6fd4';
-  return `<div class="metric-highlight">
-    <div class="mh-icon">${icon}</div>
-    <div><div class="mh-label">${label}</div><div class="mh-value" style="color:${c}">${value}</div></div>
-    <div class="mh-context">${context}</div>
-  </div>`;
+  // Unified with kpi() style — renders a professional stat card
+  var colorMap = { green:'var(--green)', red:'var(--red)', amber:'var(--amber)', blue:'var(--blue)', purple:'var(--brand-lt)' };
+  var bgMap    = { green:'rgba(22,163,74,.07)', red:'rgba(220,38,38,.07)', amber:'rgba(217,119,6,.07)', blue:'rgba(37,99,235,.07)', purple:'rgba(124,58,237,.08)' };
+  var bdMap    = { green:'rgba(22,163,74,.2)', red:'rgba(220,38,38,.2)', amber:'rgba(217,119,6,.2)', blue:'rgba(37,99,235,.18)', purple:'rgba(124,58,237,.22)' };
+  var c  = colorMap[color] || 'var(--t1)';
+  var bg = bgMap[color]    || 'var(--card-bg)';
+  var bd = bdMap[color]    || 'var(--b1)';
+  return (
+    '<div style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:10px;padding:13px 16px 12px;display:flex;flex-direction:column;gap:0;">' +
+      '<div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:1.3px;color:var(--t3);font-family:var(--mono);margin-bottom:6px;">' +
+        (icon ? icon + ' ' : '') + label +
+      '</div>' +
+      '<div style="font-size:24px;font-weight:750;letter-spacing:-1px;line-height:1;color:' + c + ';font-variant-numeric:tabular-nums;">' + value + '</div>' +
+      (context ? '<div style="font-size:10.5px;color:var(--t3);margin-top:5px;line-height:1.4;">' + context + '</div>' : '') +
+    '</div>'
+  );
 }
+
 
 
 // ── MARKETING HEALTH VIEW ────────────────────────────────────────────────────
@@ -5443,7 +5918,7 @@ function buildMarketing() {
   const unsubColor  = unsubRate < 0.5 ? '#10b981' : unsubRate < 1 ? '#f59e0b' : '#ef4444';
   const clickColor  = clickRate >= 3 ? '#10b981' : clickRate >= 1 ? '#f59e0b' : '#6b7280';
 
-  let html = `<div class="kpi-grid">
+  let html = `<div class="kpi-row">
     ${kpi('Marketing Score', mktScore + '/100', mktScore >= 80 ? 'Healthy' : mktScore >= 60 ? 'Needs work' : 'Critical', colScore(mktScore))}
     ${kpi('Emails Sent', fmt(totalSent), fmt(ps.marketingEmailCount || 0) + ' total campaigns', 'blue')}
     ${kpi('Avg Open Rate', openRate ? openRate + '%' : 'No data', openRate >= 25 ? 'Above 25% benchmark' : openRate >= 15 ? 'Below 25% benchmark' : openRate > 0 ? 'Below 15% — critical' : 'No sent emails', openRate >= 25 ? 'green' : openRate >= 15 ? 'amber' : openRate > 0 ? 'red' : 'blue')}
@@ -5581,7 +6056,7 @@ function buildSequences() {
       <div style="font-size:13px;color:var(--t2);">Upgrade your HubSpot plan to unlock sequence health monitoring.</div>
     </div>`;
   } else {
-    html = `<div class="kpi-grid">
+    html = `<div class="kpi-row">
       ${kpi('Total Sequences', ps.sequences || 0, 'configured', '#a78bfa')}
       ${kpi('Active', ps.activeSequences || 0, 'currently running', '#3b6fd4')}
       ${kpi('Issues Found', seqIssues.length, seqIssues.length > 0 ? 'need attention' : 'all healthy', seqIssues.length > 0 ? '#4d94d4' : '#3b6fd4')}
@@ -5613,7 +6088,7 @@ function buildSequences() {
 function buildLists() {
   const ps = (DATA.portalInfo || {}).portalStats || {};
 
-  let html = `<div class="kpi-grid">
+  let html = `<div class="kpi-row">
     ${kpi('Total Lists', ps.listCount || 0, 'contact lists', '#a78bfa')}
     ${kpi('Empty Lists', ps.emptyLists || 0, 'zero contacts', ps.emptyLists > 5 ? '#4d94d4' : '#3b6fd4')}
     ${kpi('Static Lists', ps.staticLists || 0, 'manually managed', ps.staticLists > (ps.listCount * 0.7) ? '#4d94d4' : '#3b6fd4')}
@@ -5673,7 +6148,7 @@ function buildAutomation() {
   const autoScore = scores.automationHealth || 0;
   const col = autoScore >= 80 ? '#3b6fd4' : autoScore >= 60 ? '#4d94d4' : '#dc2626';
 
-  let html = `<div class="kpi-grid">
+  let html = `<div class="kpi-row">
     ${kpi('Automation Score', autoScore + '/100', autoScore >= 80 ? 'Healthy' : 'Needs work', col)}
     ${kpi('Workflows', ps.workflows || 0, 'total configured', '#a78bfa')}
     ${kpi('Sequences', ps.sequences || 0, 'sales sequences', '#3b6fd4')}
@@ -5737,7 +6212,7 @@ function buildService() {
   const npsResp    = ps.npsResponses || 0;
   const csatResp   = ps.csatResponses || 0;
 
-  let html = '<div class="kpi-grid">' +
+  let html = '<div class="kpi-row">' +
     kpi('Service Score', svcScore + '/100', svcScore >= 80 ? 'Healthy' : svcScore >= 60 ? 'Needs Work' : 'Critical', svcScore >= 80 ? 'green' : svcScore >= 60 ? 'amber' : 'red') +
     kpi('Open Tickets', fmt(openTix), 'currently in support queue', openTix > 100 ? 'red' : openTix > 40 ? 'amber' : 'blue') +
     kpi('Avg Ticket Age', avgAge + ' days', avgAge > 7 ? 'above 7-day SLA benchmark' : 'within target', avgAge > 7 ? 'red' : avgAge > 3 ? 'amber' : 'green') +
