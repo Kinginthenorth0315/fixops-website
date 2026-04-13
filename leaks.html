@@ -622,7 +622,7 @@ function renderLeaks(data, auditId) {
   var leaks = [];
 
   // 1. STALLED PIPELINE
-  var stalledLeak = stalledPipeVal > 0 ? Math.round(stalledPipeVal * 0.02) : 0;
+  var stalledLeak = stalledPipeVal > 0 ? Math.min(Math.round(stalledPipeVal * 0.02), 50000) : 0;
   leaks.push({
     id: 'pipeline', icon: '📊', color: '#ff3b3b', colorBg: 'rgba(255,59,59,.1)',
     title: 'Stalled Pipeline',
@@ -686,7 +686,7 @@ function renderLeaks(data, auditId) {
   });
 
   // 5. OVERDUE DEALS
-  var pastDueLeak = pastDuePipeVal > 0 ? Math.round(pastDuePipeVal * 0.05) : 0;
+  var pastDueLeak = pastDuePipeVal > 0 ? Math.min(Math.round(pastDuePipeVal * 0.05), 30000) : 0;
   leaks.push({
     id: 'pastdue', icon: '📅', color: '#ff3b3b', colorBg: 'rgba(255,59,59,.1)',
     title: 'Overdue Deal Risk',
@@ -707,7 +707,7 @@ function renderLeaks(data, auditId) {
   var leadRespMetric = 'Run a fresh audit to calculate';
   var leadRespSev = 'info';
   if (lrt && lrt.recentContacts > 5) {
-    leadRespLeak = lrt.leadLossValue || 0;
+    leadRespLeak = Math.min(lrt.leadLossValue || 0, 50000);
     var uncontacted = lrt.estimatedUncontacted || 0;
     var slowPct = lrt.slowResponsePct || 0;
     leadRespDesc = slowPct + '% of new contacts had no logged activity in the same period. ~' +
@@ -769,8 +769,9 @@ function renderLeaks(data, auditId) {
 
   // 9. EXPIRED QUOTES
   var quoteLeak = 0;
-  if (expiredQ > 0 && avgDeal > 0) {
-    quoteLeak = Math.round(expiredQ * avgDeal * 0.20 / 12);
+  var quoteDealCap = Math.min(avgDeal || 0, 25000);
+  if (expiredQ > 0 && quoteDealCap > 0) {
+    quoteLeak = Math.min(Math.round(expiredQ * quoteDealCap * 0.20 / 12), 25000);
   }
   leaks.push({
     id: 'quotes', icon: '📋', color: '#10b981', colorBg: 'rgba(16,185,129,.1)',
@@ -787,7 +788,9 @@ function renderLeaks(data, auditId) {
   });
 
   // ── TOTALS ───────────────────────────────────────────────────────────────────
-  var totalMonthly  = leaks.reduce(function(s,l){ return s+(l.amount||0); }, 0);
+  var totalMonthlyRaw = leaks.reduce(function(s,l){ return s+(l.amount||0); }, 0);
+  // Cap at $150k/mo — higher figures require manual deal-level verification
+  var totalMonthly  = Math.min(totalMonthlyRaw, 150000);
   var totalAnnual   = totalMonthly * 12;
   var perDay        = Math.round(totalMonthly / 30);
   var stalledPipeline = stalledPipeVal || 0;
