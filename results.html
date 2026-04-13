@@ -188,6 +188,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
 }
 </style>
   <script defer data-domain="fixops.io" src="https://plausible.io/js/script.js"></script>
+
+<style>
+@keyframes slideUp   { from { transform:translateY(100%); } to { transform:translateY(0); } }
+@keyframes slideDown { from { transform:translateY(0); }   to { transform:translateY(100%); } }
+</style>
 </head>
 <body>
 
@@ -539,6 +544,16 @@ function showToast(icon, title, sub) {
 
 // Navigate to reporting with audit ID
 function goToLeaks() {
+  var flags = window.PLAN_FLAGS || {};
+  if (flags.isFree) {
+    showSoftUpgrade('Revenue Leaks Analysis', 'https://fixops.io/#pricing', function() {
+      var params = new URLSearchParams(window.location.search);
+      var auditId = params.get('id');
+      var token   = params.get('token');
+      window.location.href = auditId ? 'leaks.html?id='+auditId : (token ? 'leaks.html?token='+token : 'leaks.html');
+    });
+    return;
+  }
   var params = new URLSearchParams(window.location.search);
   var auditId = params.get('id');
   var token   = params.get('token');
@@ -1493,8 +1508,69 @@ function buildFixPlan(data) {
 }
 
 // ── Download PDF ──────────────────────────────────────────────────────────────
+async function closeSoftUpgrade(proceed) {
+  var b = document.getElementById('soft-upgrade-banner');
+  if (b) b.remove();
+  if (proceed && window._softUpgradeProceed) window._softUpgradeProceed();
+}
+
+function showSoftUpgrade(feature, ctaUrl, proceedFn) {
+  // Soft upgrade nudge — shown when free user tries a gated CTA
+  // Not a hard block — shows value, lets them proceed or upgrade
+  var flags = window.PLAN_FLAGS || {};
+  if (!flags.isFree) { if (proceedFn) proceedFn(); return; }
+
+  var existing = document.getElementById('soft-upgrade-banner');
+  if (existing) existing.remove();
+
+  var banner = document.createElement('div');
+  banner.id = 'soft-upgrade-banner';
+  banner.style.cssText = [
+    'position:fixed;bottom:0;left:0;right:0;z-index:9998;',
+    'background:linear-gradient(135deg,#0d0b1e,#12102a);',
+    'border-top:1px solid rgba(124,58,237,.4);',
+    'padding:16px 24px;',
+    'display:flex;align-items:center;justify-content:space-between;',
+    'gap:16px;flex-wrap:wrap;',
+    'animation:slideUp .25s ease;',
+  ].join('');
+
+  window._softUpgradeProceed = proceedFn || null;
+
+  banner.innerHTML =
+    '<div style="flex:1;">' +
+      '<div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;">' +
+        feature + ' is available on FixOps Monitor</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,.45);">' +
+        'Weekly monitoring, all 40 views, AI coaching, and Fix It For Me on every issue — $299/mo</div>' +
+    '</div>' +
+    '<div style="display:flex;gap:8px;align-items:center;flex-shrink:0;">' +
+      '<a href="' + ctaUrl + '" target="_blank" style="padding:8px 18px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-radius:7px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade — $299/mo →</a>' +
+      (proceedFn ?
+        '<button onclick="closeSoftUpgrade(true)" style="padding:8px 14px;background:transparent;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.4);border-radius:7px;font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;">Continue anyway</button>' :
+        '') +
+      '<button onclick="closeSoftUpgrade(false)" style="padding:8px 10px;background:transparent;border:none;color:rgba(255,255,255,.3);font-size:18px;cursor:pointer;line-height:1;">✕</button>' +
+    '</div>';
+
+  document.body.appendChild(banner);
+  // Auto-dismiss after 8s if user ignores
+  setTimeout(function() {
+    var b = document.getElementById('soft-upgrade-banner');
+    if (b) b.style.animation = 'slideDown .25s ease forwards';
+    setTimeout(function() {
+      var b2 = document.getElementById('soft-upgrade-banner');
+      if (b2) b2.remove();
+    }, 250);
+  }, 8000);
+}
+
 async function downloadPDF() {
   if (!AUDIT_DATA) { showToast('⚠️','No audit data','Run an audit first'); return; }
+  var flags = window.PLAN_FLAGS || {};
+  if (flags.isFree) {
+    showSoftUpgrade('PDF Export', 'https://fixops.io/#pricing', null);
+    return;
+  }
   var auditId = AUDIT_DATA.auditId || (new URLSearchParams(window.location.search).get('id'));
   if (!auditId) { showToast('⚠️','No audit ID found',''); return; }
   showToast('📄','Opening print dialog…','Choose "Save as PDF" as the destination');
