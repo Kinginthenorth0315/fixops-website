@@ -821,7 +821,7 @@ function renderLeaks(data, auditId) {
         '</div>' +
         '<div>' +
           '<div class="pipe-col-lbl" style="color:var(--green);">Real Pipeline Value</div>' +
-          '<div class="pipe-col-val">' + (realPipelineValue > 0 ? fmtFull(realPipelineValue) : '<span style="font-size:20px;color:var(--amber);">Add deal amounts →</span>') + '</div>' +
+          '<div class="pipe-col-val">' + (realPipelineValue > 0 ? fmtFull(realPipelineValue) : '<span style="font-size:13px;color:var(--amber);line-height:1.5;">No amounts set —<br>flagged in your audit</span>') + '</div>' +
           '<div style="font-size:11px;color:var(--t3);margin-top:2px;">after removing stalled + $0 deals</div>' +
         '</div>' +
       '</div>';
