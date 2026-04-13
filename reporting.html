@@ -7450,23 +7450,7 @@ function setTheme(theme) {
 }
 
 
-function kpi(label, value, sub, color, trend) {
-  var colorVarMap = {
-    blue:   'var(--steel2)',
-    green:  'var(--pos)',
-    amber:  'var(--warn)',
-    red:    'var(--neg)',
-    purple: 'var(--brand-lt)',
-  };
-  var c = colorVarMap[color] || 'var(--t1)';
-  var cls = color ? ' ' + color : '';
-  var trendHtml = trend ? '<span class="kpi-trend ' + trend + '">' + trend + '</span>' : '';
-  return '<div class="kpi-card' + cls + '">' +
-    '<div class="kpi-label">' + label + '</div>' +
-    '<div class="kpi-value" style="color:' + c + '">' + value + '</div>' +
-    '<div class="kpi-sub">' + (sub||'') + trendHtml + '</div>' +
-  '</div>';
-}
+// kpi() defined earlier in script
 
 // ══════════════════════════════════════════════════════════════════════════════
 // AI DEAL COACH
