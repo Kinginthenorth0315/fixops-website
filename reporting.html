@@ -534,8 +534,340 @@ a { color: var(--brand-lt); }
   nav { left: 0; }
   .two-col, .three-col, .four-col { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENT CSS — Required by all buildX() view functions
+   These were stripped in the CSS overhaul — restored here
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── STAT STRIP — horizontal KPI bar used in overview/pipeline ── */
+.stat-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px,1fr));
+  gap: 1px; background: var(--b1);
+  border: 1px solid var(--b1); border-radius: 10px;
+  overflow: hidden; margin-bottom: 16px;
+}
+.stat-cell {
+  background: var(--card-bg);
+  padding: 14px 16px;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.stat-cell-label {
+  font-size: 9px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 1.2px; color: var(--t3); font-family: var(--mono);
+}
+.stat-cell-value {
+  font-size: 20px; font-weight: 750; letter-spacing: -0.5px;
+  color: var(--t1); font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+.stat-cell-value.green  { color: var(--green); }
+.stat-cell-value.red    { color: var(--red); }
+.stat-cell-value.amber  { color: var(--amber); }
+.stat-cell-value.blue   { color: var(--blue); }
+.stat-cell-value.purple { color: var(--purple); }
+.stat-cell-sub {
+  font-size: 10px; color: var(--t3); line-height: 1.4;
+}
+
+/* ── CHART BOX / WRAP ── */
+.chart-box { margin-bottom: 14px; }
+.chart-wrap {
+  background: var(--card-bg); border: 1px solid var(--b1);
+  border-radius: 10px; padding: 18px 20px;
+  margin-bottom: 14px;
+}
+.chart-grid.cols-1   { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.chart-grid.cols-2   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.chart-grid.cols-3   { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.chart-grid.cols-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 14px; }
+.chart-grid.cols-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; }
+@media(max-width:900px) {
+  .chart-grid.cols-2, .chart-grid.cols-3,
+  .chart-grid.cols-1-2, .chart-grid.cols-2-1 { grid-template-columns: 1fr; }
+}
+
+/* ── SCORE DISPLAY ── */
+.score-num {
+  font-size: 42px; font-weight: 800; letter-spacing: -2px;
+  color: var(--t1); font-variant-numeric: tabular-nums; line-height: 1;
+}
+
+/* ── DIMENSION BARS — health score breakdown ── */
+.dim-bar-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-top: 1px solid var(--b1);
+}
+.dim-bar-row:first-child { border-top: none; }
+.dim-bar-label {
+  width: 160px; flex-shrink: 0;
+  font-size: 11px; color: var(--t2); font-weight: 500;
+}
+.dim-bar-track {
+  flex: 1; height: 6px; background: var(--b1);
+  border-radius: 3px; overflow: hidden;
+}
+.dim-bar-fill {
+  height: 100%; border-radius: 3px;
+  transition: width .4s ease;
+}
+.dim-bar-val {
+  width: 36px; text-align: right; flex-shrink: 0;
+  font-size: 12px; font-weight: 700; font-family: var(--mono);
+}
+
+/* ── METRIC ROW ── */
+.metric-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-top: 1px solid var(--b1);
+}
+.metric-row:first-child { border-top: none; }
+.metric-label { font-size: 12px; color: var(--t2); }
+.metric-value { font-size: 13px; font-weight: 700; color: var(--t1); font-variant-numeric: tabular-nums; }
+.metric-highlight {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px; background: var(--card-bg2);
+  border-radius: 8px; margin-bottom: 8px;
+}
+.mh-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.mh-label { font-size: 12px; font-weight: 700; color: var(--t1); margin-bottom: 3px; }
+.mh-context { font-size: 11px; color: var(--t3); line-height: 1.5; }
+
+/* ── INSIGHT CARD / BANNER ── */
+.insight-card {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 14px;
+  background: var(--card-bg); border: 1px solid var(--b1);
+  border-radius: 9px; margin-bottom: 8px;
+}
+.ic-icon { font-size: 18px; flex-shrink: 0; }
+.ic-title { font-size: 12px; font-weight: 700; color: var(--t1); margin-bottom: 3px; }
+.insight-banner {
+  padding: 12px 16px; border-radius: 8px;
+  display: flex; gap: 10px; align-items: flex-start;
+  margin-bottom: 10px; font-size: 12px; line-height: 1.6;
+}
+.insight-banner.critical {
+  background: var(--red-bg); border: 1px solid var(--red-bdr); color: var(--red);
+}
+.insight-banner.warning {
+  background: var(--amber-bg); border: 1px solid var(--amber-bdr); color: var(--amber);
+}
+.insight-banner.info {
+  background: var(--blue-bg); border: 1px solid var(--blue-bdr); color: var(--blue);
+}
+.insight-banner.good {
+  background: var(--green-bg); border: 1px solid var(--green-bdr); color: var(--green);
+}
+
+/* ── FUNNEL ── */
+.funnel-row {
+  display: grid; grid-template-columns: 160px 1fr 80px;
+  gap: 10px; align-items: center;
+  padding: 8px 0; border-top: 1px solid var(--b1);
+}
+.funnel-row:first-child { border-top: none; }
+.funnel-stage { font-size: 11px; color: var(--t2); font-weight: 500; }
+.funnel-bar-wrap { height: 8px; background: var(--b1); border-radius: 4px; overflow: hidden; }
+.funnel-count {
+  font-size: 12px; font-weight: 700; font-family: var(--mono);
+  color: var(--t1); text-align: right; font-variant-numeric: tabular-nums;
+}
+.funnel-meta { font-size: 10px; color: var(--t3); }
+
+/* ── MINI STAT — used in rep/team views ── */
+.mini-stat {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 12px 10px; background: var(--card-bg);
+  border: 1px solid var(--b1); border-radius: 8px;
+  min-width: 80px;
+}
+.ms-v {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
+  color: var(--t1); font-variant-numeric: tabular-nums;
+}
+.ms-l { font-size: 9px; color: var(--t3); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+
+/* ── ISSUE LIST + ROWS ── */
+.issue-list { display: flex; flex-direction: column; gap: 0; }
+.issue-row {
+  padding: 12px 14px; border-top: 1px solid var(--b1);
+  cursor: pointer; transition: background .1s;
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.issue-row:first-child { border-top: none; }
+.issue-row:hover { background: rgba(99,102,241,.03); }
+.issue-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0; margin-top: 5px;
+}
+.issue-dot.critical { background: var(--red); }
+.issue-dot.warning  { background: var(--amber); }
+.issue-dot.info     { background: var(--blue); }
+.issue-dot.good     { background: var(--green); }
+.issue-title-text {
+  font-size: 12px; font-weight: 600; color: var(--t1);
+  flex: 1; line-height: 1.5;
+}
+.issue-impact {
+  font-size: 10px; color: var(--t3); font-family: var(--mono);
+  font-weight: 600; letter-spacing: .5px; flex-shrink: 0;
+  text-transform: uppercase;
+}
+.issue-body-expanded {
+  padding: 10px 14px 14px 32px;
+  font-size: 12px; color: var(--t2); line-height: 1.7;
+  border-top: 1px solid var(--b1);
+}
+.issue-content { font-size: 12px; color: var(--t2); line-height: 1.7; }
+.issue-expand { font-size: 11px; color: var(--t3); flex-shrink: 0; }
+
+/* ── FIX BUTTON ── */
+.fix-btn {
+  font-size: 10px; font-weight: 700; font-family: var(--mono);
+  letter-spacing: .5px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 5px;
+  background: rgba(99,102,241,.12); border: 1px solid rgba(99,102,241,.22);
+  color: var(--brand-lt); cursor: pointer;
+  transition: background .12s;
+}
+.fix-btn:hover { background: rgba(99,102,241,.22); }
+
+/* ── PROGRESS BAR ── */
+.prog-bar {
+  height: 6px; background: var(--b1); border-radius: 3px;
+  overflow: hidden; margin: 4px 0 2px;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 9px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 2px; color: var(--t3); font-family: var(--mono);
+  margin: 16px 0 8px; display: block;
+}
+
+/* ── UPGRADE / PLAN LOCK WALL ── */
+.view-lock-inner {
+  background: var(--card-bg); border: 1px solid var(--b1);
+  border-radius: 16px; padding: 40px 32px;
+  text-align: center; max-width: 520px; margin: 40px auto;
+}
+.view-lock-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  font-family: var(--mono); letter-spacing: 2px; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px;
+  margin-bottom: 14px;
+}
+.view-lock-title {
+  font-size: 18px; font-weight: 800; color: var(--t1);
+  letter-spacing: -.3px; margin-bottom: 8px;
+}
+.view-lock-desc {
+  font-size: 13px; color: var(--t2); line-height: 1.7;
+  margin-bottom: 8px; max-width: 400px; margin-left: auto; margin-right: auto;
+}
+.view-lock-compare { font-size: 12px; color: var(--t3); margin-bottom: 16px; }
+.view-lock-features {
+  text-align: left; max-width: 340px; margin: 0 auto 20px;
+}
+.vlf-item {
+  display: flex; gap: 8px; font-size: 12px; color: var(--t2);
+  padding: 4px 0; align-items: flex-start;
+}
+.vlc-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+  background: var(--brand-bg); color: var(--brand-lt);
+  border: 1px solid var(--brand-bdr); margin: 2px;
+}
+
+/* ── GENERIC CARD ── */
+.card {
+  background: var(--card-bg); border: 1px solid var(--b1);
+  border-radius: 10px; padding: 16px 18px; margin-bottom: 12px;
+}
+.card-h {
+  font-size: 12px; font-weight: 700; color: var(--t1);
+  margin-bottom: 10px;
+}
+.view-card {
+  background: var(--card-bg2); border: 1px solid var(--b1);
+  border-radius: 9px; padding: 14px 16px;
+}
+.view-card-title {
+  font-size: 12px; font-weight: 700; color: var(--t1); margin-bottom: 8px;
+}
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center; padding: 48px 24px;
+  color: var(--t3);
+}
+.empty-icon { font-size: 36px; margin-bottom: 12px; }
+.empty-title { font-size: 15px; font-weight: 700; color: var(--t2); margin-bottom: 6px; }
+.empty-sub { font-size: 12px; color: var(--t3); line-height: 1.6; max-width: 320px; margin: 0 auto; }
+
+/* ── AI BUILDER ── */
+.ai-builder { padding: 0 0 8px; }
+.ai-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 16px 20px; border-bottom: 1px solid var(--b1);
+}
+.ai-icon { font-size: 18px; }
+.ai-title { font-size: 14px; font-weight: 700; color: var(--t1); }
+.ai-sub { font-size: 11px; color: var(--t3); }
+.ai-chip {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; padding: 2px 7px; border-radius: 3px;
+  background: rgba(99,102,241,.12); color: var(--brand-lt);
+  font-family: var(--mono); margin-left: auto;
+}
+.ai-suggestions { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.ai-tab {
+  font-size: 11px; font-weight: 600; padding: 5px 12px;
+  border-radius: 6px; border: 1px solid var(--b2);
+  background: transparent; color: var(--t2);
+  cursor: pointer; font-family: var(--font); transition: all .12s;
+}
+.ai-tab:hover, .ai-tab.on {
+  background: var(--brand-bg); border-color: var(--brand-bdr);
+  color: var(--brand-lt);
+}
+.ai-input-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.ai-input {
+  flex: 1; background: var(--input-bg); border: 1px solid var(--b2);
+  border-radius: 8px; padding: 10px 14px; font-size: 13px;
+  color: var(--t1); font-family: var(--font); outline: none;
+  transition: border-color .12s;
+}
+.ai-input:focus { border-color: var(--brand); }
+.ai-submit {
+  padding: 10px 18px; background: var(--brand); color: #fff;
+  border: none; border-radius: 8px; font-size: 13px; font-weight: 700;
+  cursor: pointer; font-family: var(--font); transition: opacity .12s;
+  white-space: nowrap;
+}
+.ai-submit:hover { opacity: .88; }
+.ai-thinking { color: var(--t3); font-size: 12px; padding: 10px 0; }
+.ai-dots { display: inline-block; animation: dotpulse 1.2s infinite; }
+@keyframes dotpulse {
+  0%, 80%, 100% { opacity: .2; }
+  40% { opacity: 1; }
+}
+.ai-result { padding: 16px 20px; }
+.ai-result-header { font-size: 11px; color: var(--t3); font-family: var(--mono); margin-bottom: 10px; letter-spacing: 1px; text-transform: uppercase; }
+.ai-result-title { font-size: 13px; font-weight: 700; color: var(--t1); margin-bottom: 8px; }
+.ai-insight {
+  font-size: 13px; color: var(--t2); line-height: 1.75;
+  padding: 14px 16px; background: var(--card-bg2);
+  border-radius: 8px; border-left: 3px solid var(--brand);
+  margin-bottom: 8px;
+}
 </style>
 
+  <script defer data-domain="fixops.io" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
 
@@ -2095,12 +2427,22 @@ async function loadData() {
     var isProMonthly = ['pro','command'].includes(auditPlan);
     var isMonthly    = ['pulse','pro','command'].includes(auditPlan);
     var isAgency     = auditPlan === 'command';
-    var isProOrAbove = ['pro','command','pro-audit','deep'].includes(auditPlan);
+    var isProOrAbove   = ['pro','command','pro-audit'].includes(auditPlan);  // deep does NOT get Sentinel
     var isPulseOrAbove = ['pulse','pro','command','deep','pro-audit'].includes(auditPlan);
+    // One-time audit access model:
+    // deep ($399 Diagnostic):      Basic views only + upgrade prompts for Sentinel
+    // pro-audit ($699 Full Audit): Basic + Sentinel views, no monthly AI tools
+    var isDeepAudit    = auditPlan === 'deep';         // Basic only
+    var isFullAudit    = auditPlan === 'pro-audit';    // Basic + Sentinel, no AI
+    var hasBasic       = isPulseOrAbove;               // Everyone except pure free
+    var hasSentinel    = ['pro','command','pro-audit'].includes(auditPlan);
+    var hasAI          = ['pro','command'].includes(auditPlan);  // Monthly only
     window.PLAN_TIER = {
       isFree, isOneTime, isDeep, isProAudit,
       isPulse, isProMonthly, isMonthly, isAgency,
-      isProOrAbove, isPulseOrAbove, plan: auditPlan
+      isProOrAbove, isPulseOrAbove,
+      isDeepAudit, isFullAudit, hasBasic, hasSentinel, hasAI,
+      plan: auditPlan
     };
     var navBadge = document.getElementById('nav-plan-badge');
     if (navBadge) {
@@ -2262,7 +2604,7 @@ async function loadFromToken(token) {
               'color:#fff;font-size:11px;font-weight:700;text-decoration:none;white-space:nowrap;">Upgrade Now →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
-      } else if (isProMonthly2) {
+      } else if (isProMonthly) {
         // Sentinel ($549/mo): full access — show status + upgrade hook to Command
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
@@ -2316,9 +2658,15 @@ async function loadFromToken(token) {
       if (!viewName) return;
 
       var badge = '';
-      if (isFree || isOneTime) {
-        // Free + one-time: wall is shown, lock everything except overview briefly
+      if (isFree) {
+        // Free: lock everything except overview
         if (viewName !== 'overview') item.classList.add('locked-sidebar');
+      } else if (isDeepAudit) {
+        // Deep Diagnostic ($399): Basic views unlocked, Sentinel locked
+        if (SENTINEL_VIEWS.includes(viewName)) {
+          item.classList.add('locked-sidebar');
+          badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25);">SENTINEL</span>';
+        }
       } else if (isPulse) {
         // Monitor ($299/mo): BASIC_VIEWS only — SENTINEL and PRO locked
         if (SENTINEL_VIEWS.includes(viewName)) {
@@ -2329,7 +2677,7 @@ async function loadFromToken(token) {
           item.classList.add('locked-sidebar');
           badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);">PRO</span>';
         }
-      } else if (isProMonthly2 || isAgency) {
+      } else if (isProMonthly || isAgency) {
         // Sentinel ($549/mo) + Command ($999/mo): everything unlocked
         // PRO_VIEWS (AI, velocity, forecast, etc.) are included in Sentinel
         // Nothing locked for pro/command
@@ -2378,8 +2726,9 @@ async function loadFromToken(token) {
       el.appendChild(overlay);
     }
 
-    // Pulse-only views locked for one-time audit users
-    if (tier.isFree || tier.isDeep) {  // deep audit has no reporting; pro-audit has Portal Snapshot
+    // Lock Sentinel views for: free, deep ($399 diagnostic)
+    // pro-audit ($699) DOES get Sentinel — it's the full one-time version
+    if (tier.isFree || tier.isDeepAudit) {
       var pulseFeatures = {
         'rep':        [{title:'Rep Leaderboard',desc:'Performance score per rep — calls, meetings, pipeline, win rate'},{title:'Dark Rep Detection',desc:'Zero-activity reps flagged automatically every week'},{title:'Activity Charts',desc:'Calls + meetings + emails logged per rep'},{title:'Pipeline by Rep',desc:'Open deal value and won revenue per rep'}],
         'decay':      [{title:'Contact Decay Score',desc:'Every contact scored 0–100 on engagement + recency'},{title:'Hot/Warm/Cold Buckets',desc:'Automatically segments your database by activity'},{title:'Archive Candidates',desc:'Dead contacts costing you billing tier money identified'},{title:'Re-engagement Plan',desc:'Which contacts to target first for best conversion'}],
@@ -2412,8 +2761,8 @@ async function loadFromToken(token) {
       });
     }
 
-    // Pro-only views locked for pulse users AND one-time users
-    if (!tier.isProMonthly) {
+    // AI/advanced views locked for pulse + one-time users (need monthly Sentinel+)
+    if (!tier.hasAI) {
       var proFeatures = [
         {title:'Daily Monitoring',desc:'Scans run every day not just weekly'},
         {title:'AI Report Builder',desc:'Ask anything about your portal, get instant analysis'},
