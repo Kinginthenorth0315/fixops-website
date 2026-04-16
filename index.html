@@ -296,12 +296,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     background: rgba(124,58,237,.18);
     color: #a78bfa;
   }
-</style>
-  <script defer data-domain="fixops.io" src="https://plausible.io/js/script.js"></script>
-</head>
-<body>
-<div id="stars"></div>
 
+  @keyf
+<body>
 <nav id="nav">
   <a href="index.html" class="nav-logo"><div class="nav-icon">⚡</div>FixOps.io</a>
   <ul class="nav-links">
@@ -318,646 +315,620 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <a href="https://calendly.com/matthew-fixops/30min" class="nav-cta" target="_blank">Book a call ↗</a>
   </div>
 </nav>
+<!-- ═══ TRUST BAR ══════════════════════════════════════════════════════════ -->
+<div style="background:rgba(124,58,237,.08);border-bottom:1px solid rgba(124,58,237,.15);padding:9px 0;text-align:center;position:relative;z-index:1;">
+  <span style="font-size:11px;font-family:var(--mono);color:var(--t2);letter-spacing:1.5px;">
+    <span style="color:#10b981;margin-right:8px;animation:pulse 2s infinite;display:inline-block;">●</span>
+    LIVE &nbsp;·&nbsp; 210-Point HubSpot Audit &nbsp;·&nbsp; 48 Intelligence Views &nbsp;·&nbsp; US-Based Team &nbsp;·&nbsp; HubSpot App Marketplace
+    &nbsp;·&nbsp; <a href="setup.html" style="color:var(--v3);text-decoration:none;">Run Free Audit →</a>
+  </span>
+</div>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="orb"></div>
-  <div class="hero-inner">
-    <div class="badge"><span class="badge-pill">Live</span>48 Intelligence Views · US-Based Team · Free Audit</div>
-    <h1 class="h1">HubSpot doesn't tell you<br>when things break.<br><em>FixOps does.</em></h1>
-    <p class="hero-sub">Most HubSpot portals have $2,400/mo in silent revenue leaks — stalled pipeline, ghost seats, broken automations, bad data. None of it shows up in your dashboards. FixOps finds every issue, quantifies the cost, and our team fixes it.</p>
-    <div class="hero-btns">
-      <a href="#" onclick="openAuditModal(event)" class="btn-v">Run Free Audit — See Your Leaks ↗</a>
-      <a href="#pricing" class="btn-o">View Plans</a>
+<!-- ═══ HERO ═══════════════════════════════════════════════════════════════ -->
+<section id="stars" style="padding:110px 24px 80px;text-align:center;position:relative;z-index:1;overflow:hidden;">
+  <div style="position:absolute;top:-140px;left:50%;transform:translateX(-50%);width:1100px;height:800px;background:radial-gradient(ellipse at 50% 30%,rgba(124,58,237,.22) 0%,transparent 60%);pointer-events:none;"></div>
+
+  <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);border-radius:20px;padding:6px 18px;margin-bottom:32px;">
+    <span style="width:6px;height:6px;background:#a78bfa;border-radius:50%;display:inline-block;animation:pulse 2s infinite;"></span>
+    <span style="font-size:11px;font-family:var(--mono);color:#a78bfa;letter-spacing:2px;text-transform:uppercase;">HubSpot Portal Intelligence Platform</span>
+  </div>
+
+  <h1 style="font-size:clamp(40px,6.5vw,78px);font-weight:900;letter-spacing:-2.5px;line-height:1.0;margin-bottom:28px;max-width:980px;margin-left:auto;margin-right:auto;">
+    Your HubSpot portal<br>
+    <span style="background:linear-gradient(135deg,#c4b5fd 0%,#7c3aed 45%,#3b82f6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">is bleeding money.</span><br>
+    <span style="font-size:clamp(28px,4.5vw,56px);color:rgba(255,255,255,.82);font-weight:800;letter-spacing:-1px;">FixOps finds every leak. We seal them.</span>
+  </h1>
+
+  <p style="font-size:clamp(16px,2.2vw,21px);color:var(--t2);max-width:680px;margin:0 auto 44px;line-height:1.75;">
+    A 210-point audit that finds every broken workflow, ghost seat, stalled deal, data gap, and billing waste — with the dollar cost of each, a step-by-step fix guide, and a one-click path to our team executing it for you. Faster and cheaper than any agency you've talked to.
+  </p>
+
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:60px;">
+    <button onclick="openAuditModal('free')" style="padding:17px 40px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:11px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 8px 40px rgba(124,58,237,.4);transition:transform .15s,box-shadow .15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 50px rgba(124,58,237,.55)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 8px 40px rgba(124,58,237,.4)'">
+      Run Free Audit — No Card Required ↗
+    </button>
+    <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="padding:17px 32px;background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--t1);border-radius:11px;font-size:16px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)'">
+      Book a Call ↗
+    </a>
+  </div>
+
+  <div style="display:inline-grid;grid-template-columns:repeat(4,1fr);background:var(--s1);border:1px solid var(--b1);border-radius:16px;overflow:hidden;">
+    <div style="padding:18px 30px;border-right:1px solid var(--b1);text-align:center;">
+      <div style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px;">210</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);margin-top:4px;">Audit Checks</div>
     </div>
-    <div class="trust">
-      <span class="trust-item">🔒 Read-only — we never write to your portal</span>
-      <span class="trust-item">·</span>
-      <span class="trust-item">⚡ Results in under 15 minutes</span>
-      <span class="trust-item">·</span>
-      <span class="trust-item">💸 Avg portal: $2,400/mo in identified leaks</span>
-      <span class="trust-item">·</span>
-      <span class="trust-item">🏆 HubSpot Solutions Partner</span>
-      <span class="trust-item">·</span>
-      <span class="trust-item">🇺🇸 Atlanta, GA</span>
+    <div style="padding:18px 30px;border-right:1px solid var(--b1);text-align:center;">
+      <div style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px;">48</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);margin-top:4px;">Intel Views</div>
+    </div>
+    <div style="padding:18px 30px;border-right:1px solid var(--b1);text-align:center;">
+      <div style="font-size:28px;font-weight:900;color:#f59e0b;letter-spacing:-1px;">$2,400</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);margin-top:4px;">Avg Waste Found/mo</div>
+    </div>
+    <div style="padding:18px 30px;text-align:center;">
+      <div style="font-size:28px;font-weight:900;color:#10b981;letter-spacing:-1px;">&lt;15min</div>
+      <div style="font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1.5px;font-family:var(--mono);margin-top:4px;">Full Audit Time</div>
     </div>
   </div>
 </section>
 
-
-<!-- BEFORE / AFTER PROOF SECTION -->
-<section style="padding:48px 24px 0;position:relative;z-index:1;">
-  <div style="max-width:900px;margin:0 auto;">
-    <div style="text-align:center;margin-bottom:32px;">
-      <div style="font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:10px;">Real Portal. Real Numbers.</div>
-      <h2 style="font-size:clamp(22px,3.5vw,32px);font-weight:900;letter-spacing:-.5px;margin-bottom:8px;">What FixOps finds on a typical portal</h2>
-      <p style="font-size:14px;color:var(--t2);max-width:480px;margin:0 auto;">These numbers come from real FixOps audits. Every figure is calculated from actual HubSpot data — not estimates.</p>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:center;max-width:800px;margin:0 auto 16px;">
-      <!-- Before -->
-      <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);border-radius:16px;padding:28px 24px;">
-        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(244,63,94,.6);margin-bottom:14px;">Before FixOps</div>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div>
-            <div style="font-size:28px;font-weight:900;color:rgba(255,255,255,.5);letter-spacing:-1px;">$1.1M</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:2px;">Reported pipeline</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="font-size:11px;color:rgba(244,63,94,.7);display:flex;gap:6px;"><span>✗</span>14 deals stalled 30+ days — no one noticed</div>
-            <div style="font-size:11px;color:rgba(244,63,94,.7);display:flex;gap:6px;"><span>✗</span>6 ghost seats paying for inactive users</div>
-            <div style="font-size:11px;color:rgba(244,63,94,.7);display:flex;gap:6px;"><span>✗</span>3 workflows broken, enrolling zero contacts</div>
-            <div style="font-size:11px;color:rgba(244,63,94,.7);display:flex;gap:6px;"><span>✗</span>Dashboard showing data from wrong date range</div>
-          </div>
-        </div>
-      </div>
-      <!-- Arrow -->
-      <div style="padding:0 20px;text-align:center;">
-        <div style="font-size:28px;color:var(--v3);">→</div>
-        <div style="font-size:9px;color:rgba(255,255,255,.2);font-family:var(--mono);letter-spacing:1px;margin-top:4px;">FIXOPS</div>
-      </div>
-      <!-- After -->
-      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:16px;padding:28px 24px;">
-        <div style="font-family:var(--mono);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#10b981;margin-bottom:14px;">After FixOps</div>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div>
-            <div style="font-size:28px;font-weight:900;color:#fff;letter-spacing:-1px;">$580k</div>
-            <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:2px;">Real pipeline value</div>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            <div style="font-size:11px;color:#10b981;display:flex;gap:6px;"><span>✓</span>$27k/month in leaks identified and fixed</div>
-            <div style="font-size:11px;color:#10b981;display:flex;gap:6px;"><span>✓</span>6 ghost seats removed — $540/mo saved instantly</div>
-            <div style="font-size:11px;color:#10b981;display:flex;gap:6px;"><span>✓</span>Workflows repaired — 340 contacts re-enrolled</div>
-            <div style="font-size:11px;color:#10b981;display:flex;gap:6px;"><span>✓</span>Forecast accuracy improved within first week</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="text-align:center;font-size:11px;color:rgba(255,255,255,.2);">Numbers based on composite of real FixOps audits. Individual results vary by portal size and data quality.</div>
-  </div>
-</section>
-
-<!-- PROBLEMS -->
-<section class="problems">
-  <div class="wrap">
-    <div class="r" style="text-align:center">
-      <span class="tag">What's Actually Broken Right Now</span>
-      <h2 class="h2">The Problems Living Inside<br>Most HubSpot Portals</h2>
-      <p class="lead" style="max-width:600px;margin:0 auto">HubSpot doesn't tell you when things go wrong. No alerts for silent failures. No warning before you hit your billing tier. No flag when a dashboard starts pulling corrupt data. That's what FixOps is for.</p>
-    </div>
-    <div class="prob-grid r d1">
-      <div class="prob">
-        <div class="prob-ico">⚙️</div>
-        <div class="prob-h">Workflows failing silently</div>
-        <p class="prob-p">HubSpot marks a workflow "Active" even when actions are failing. Leads disappear. Reps don't get tasks. Nobody finds out until someone complains. This is the #1 revenue leak we find every audit.</p>
-        <span class="prob-badge pb-r">Critical — affects revenue</span>
-      </div>
-      <div class="prob">
-        <div class="prob-ico">👥</div>
-        <div class="prob-h">Duplicates bleeding your billing tier</div>
-        <p class="prob-p">HubSpot's native dedup only catches exact email matches. Fuzzy duplicates — same person, different formats — pile up and push you into the next contact tier every month.</p>
-        <span class="prob-badge pb-a">Billing risk</span>
-      </div>
-      <div class="prob">
-        <div class="prob-ico">📊</div>
-        <div class="prob-h">Dashboards built on deleted properties</div>
-        <p class="prob-p">Delete a property, and every report referencing it silently returns zero or wrong data. Leadership makes decisions on numbers that haven't been accurate in weeks — nobody knows.</p>
-        <span class="prob-badge pb-r">Data integrity</span>
-      </div>
-      <div class="prob">
-        <div class="prob-ico">🔌</div>
-        <div class="prob-h">Integrations dying without warning</div>
-        <p class="prob-p">OAuth tokens expire. Salesforce sync stops. Zapier webhooks time out. HubSpot has zero native alerting for any of it. Your integrations can be down all weekend before anyone notices Monday.</p>
-        <span class="prob-badge pb-r">Integration failure</span>
-      </div>
-      <div class="prob">
-        <div class="prob-ico">🗃️</div>
-        <div class="prob-h">Dead automation bloating everything</div>
-        <p class="prob-p">Most portals have 20+ workflows with zero enrollments in 90+ days. Still "Active." Still consuming API quota. Making the real automations harder to find, manage, and trust.</p>
-        <span class="prob-badge pb-a">Portal complexity</span>
-      </div>
-      <div class="prob">
-        <div class="prob-ico">💸</div>
-        <div class="prob-h">No visibility into what's broken</div>
-        <p class="prob-p">Most HubSpot portals have broken workflows, duplicate contacts, stalled deals, and misconfigured pipelines that nobody knows about — until a lead falls through the cracks or a forecast is wrong.</p>
-        <span class="prob-badge pb-v">Reporting gap</span>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section class="features" id="features">
-  <div class="wrap">
-
-    <div class="feat-row r">
-      <div>
-        <span class="feat-tag">⚡ Portal Audit</span>
-        <h3 class="feat-h">210 checks. Every corner of your portal. Plain English results.</h3>
-        <p class="feat-p">FixOps connects via read-only OAuth and runs a 210-point audit across 8 health dimensions — Data Integrity, Automation Health, Pipeline Integrity, Configuration, Marketing Health, Reporting Quality, Service Health, and Team Adoption. Every issue includes a dollar impact estimate, a root-cause description, and a numbered fix guide you can act on immediately.</p>
-        <p class="feat-p">Not a 139-page PDF. Expandable issue cards. Step-by-step fix guides and a Fix It For Me button on every finding.</p>
-        <div class="caveat"><strong>What we actually read via API:</strong> contacts, companies, deals, tickets, quotes, invoices, subscriptions, workflows, sequences, forms, lists, email campaigns, meeting links, knowledge base articles, custom objects, users, teams, and portal settings. All read-only. We never write, create, or modify anything in your portal. Revoke access instantly from HubSpot Settings → Connected Apps.</div>
-        <a href="#" onclick="openAuditModal(event)" class="btn-v" style="font-size:14px;padding:12px 22px">Run Free Audit ↗</a>
-      </div>
-      <div class="mock-ui">
-        <div class="mock-head"><span>FixOps Score · your-portal</span><span style="color:var(--a)">73 / 100</span></div>
-        <div class="mock-row"><span>🗄 Data Integrity</span><span class="mk mk-r">61 — Critical</span></div>
-        <div class="mock-row"><span>⚙️ Automation Health</span><span class="mk mk-r">54 — Critical</span></div>
-        <div class="mock-row"><span>📊 Pipeline Integrity</span><span class="mk mk-a">71 — Warning</span></div>
-        <div class="mock-row"><span>🔧 Configuration</span><span class="mk mk-g">88 — Good</span></div>
-        <div class="mock-row"><span>📈 Reporting Quality</span><span class="mk mk-r">44 — Critical</span></div>
-        <div class="mock-row"><span>🤖 Service Health</span><span class="mk mk-a">59 — Warning</span></div>
-      </div>
-    </div>
-
-    <div class="feat-row flip r">
-      <div>
-        <span class="feat-tag">🛡 Sentinel Monitoring</span>
-        <h3 class="feat-h">The alert system HubSpot forgot to build.</h3>
-        <p class="feat-p">Sentinel runs a full portal check every day — scanning for workflow errors, broken sequences, email bounce spikes, billing tier risks, ghost seat changes, and new super admin additions.</p>
-        <p class="feat-p">When something breaks, you get an alert the same day. Via email. Via Slack (paste your webhook URL in settings). Before your team feels the impact, not after.</p>
-        <div class="caveat"><strong>How it works:</strong> Sentinel runs daily automated scans using the same read-only API access as your full audit. Weekly deep scans run every Monday and include the full 210-point check. Slack alerts require a Slack incoming webhook URL — free to set up in under 2 minutes.</div>
-        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px">See Plans ↗</a>
-      </div>
-      <div class="mock-ui">
-        <div class="mock-head"><span>🛡 Sentinel — Daily Check</span><div style="display:flex;gap:4px"><span class="mk mk-r">2 Critical</span><span class="mk mk-a">1 Warning</span></div></div>
-        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
-          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px">Salesforce sync stopped</div>
-          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">OAuth expired · 23 records queued · 6 min ago</div>
-        </div>
-        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
-          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px">Lead Router v2 failing</div>
-          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">340 leads unassigned · deleted property · 14 min ago</div>
-        </div>
-        <div style="padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px">
-          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px">Contacts at 91% of billing tier</div>
-          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">~9 days until overage · cleanup available</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="feat-row r">
-      <div>
-        <span class="feat-tag">📄 AutoDoc</span>
-        <h3 class="feat-h">Every automation documented. Automatically. Always current.</h3>
-        <p class="feat-p">AutoDoc reads your workflows via API and generates plain-English documentation for every automation — what it does, who it affects, what triggers it, what it conflicts with, and whether it has a goal set.</p>
-        <p class="feat-p">New hire onboarding. Agency handoff. RevOps audit. The Workflow Bible exports to PDF in one click. Regenerate it anytime — takes under 60 seconds no matter how many workflows you have.</p>
-        <div class="caveat"><strong>What's included:</strong> Workflow name, type, status, enrollment triggers, actions (type and sequence), enrollment count, last modified date, conflict detection, and goal status. All readable via the HubSpot Workflows API.</div>
-        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px">See Plans ↗</a>
-      </div>
-      <div class="mock-ui">
-        <div class="mock-head"><span>📄 Workflow Library</span><span style="color:var(--g)">87 documented</span></div>
-        <div style="padding:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px">
-          <div style="display:flex;gap:5px;margin-bottom:6px"><span class="mk mk-g">ACTIVE</span><span class="mk mk-r">CONFLICT</span></div>
-          <div style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:3px">Lead Nurture — Demo Requests</div>
-          <div style="font-size:12px;color:var(--t2)">Enrolls demo form contacts → 1-day wait → follow-up email → rep task</div>
-          <div style="font-size:11px;color:var(--r);margin-top:5px;font-family:var(--mono)">⚠ Overlaps with Lead Router v2 on same form trigger</div>
-        </div>
-        <div style="padding:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px">
-          <div style="display:flex;gap:5px;margin-bottom:6px"><span class="mk mk-r">DEAD — 0 enrollments</span></div>
-          <div style="font-size:13px;font-weight:700;color:var(--w);margin-bottom:3px">Onboarding Series (Legacy)</div>
-          <div style="font-size:11px;color:var(--g);font-family:var(--mono)">✓ Safe to archive with backup</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- SERVICES -->
-
-
-<section class="services" id="services">
-  <div class="wrap">
-    <div class="r" style="text-align:center">
-      <span class="tag">Done-For-You Services</span>
-      <h2 class="h2">Every HubSpot Problem<br>We Actually Fix</h2>
-      <p class="lead" style="max-width:620px;margin:0 auto">The platform finds the issues. Our team fixes them. Click "Fix It For Me" on any finding — we review your specific situation and respond within 24 hours with a flat-rate proposal. No hourly billing. No surprises.</p>
-    <div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-top:20px;">
-      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>Flat-rate quotes — no hourly surprises</div>
-      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>HubSpot certified team</div>
-      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>50–70% less than typical agency rates</div>
-      <div style="font-size:12px;color:var(--t3);display:flex;align-items:center;gap:6px;"><span style="color:#10b981;font-weight:700;">✓</span>Scoped from your audit data — no guesswork</div>
-    </div>
-    </div>
-    <div class="svc-filter r d1">
-      <div class="svc-btn on" onclick="filterSvc(this,'all')">All Services</div>
-      <div class="svc-btn" onclick="filterSvc(this,'data')">Data & CRM</div>
-      <div class="svc-btn" onclick="filterSvc(this,'automation')">Automation</div>
-      <div class="svc-btn" onclick="filterSvc(this,'reporting')">Reporting</div>
-      <div class="svc-btn" onclick="filterSvc(this,'implementation')">Implementations</div>
-      <div class="svc-btn" onclick="filterSvc(this,'migration')">Migrations</div>
-      <div class="svc-btn" onclick="filterSvc(this,'integration')">Integrations</div>
-      <div class="svc-btn" onclick="filterSvc(this,'retainer')">Retainer</div>
-      <div class="svc-btn" onclick="filterSvc(this,'custom')">Custom Dev</div>
-    </div>
-    <div class="svc-grid r d2">
-      <div class="svc-card" data-cat="data">
-        <div class="svc-ico">🧹</div>
-        <h3 class="svc-h">Data CleanUp</h3>
-        <p class="svc-p">Fuzzy-match deduplication that catches what HubSpot misses, field standardization across phone, company, job title, and country, plus dead contact archiving. Full merge preview — you approve every change before we touch anything. Most agencies quote $1,500+ for a full clean. Priced transparently after scoping.</p>
-        <div class="svc-note">Based on contact volume · full preview before we touch anything</div>
-        <div class="svc-link" onclick="requestSvc('Data CleanUp')">Request this → </div>
-      </div>
-      <div class="svc-card" data-cat="automation">
-        <div class="svc-ico">⚙️</div>
-        <h3 class="svc-h">Workflow Repair</h3>
-        <p class="svc-p">Fix failing workflows, resolve conflicts between overlapping automations, archive dead workflows with backup, add goals to every workflow missing one, and rebuild any broken enrollment logic. Every change documented before and after.</p>
-        <div class="svc-note">Based on workflow count and complexity</div>
-        <div class="svc-link" onclick="requestSvc('Workflow Repair')">Request this → </div>
-      </div>
-      <div class="svc-card" data-cat="reporting">
-        <div class="svc-ico">📊</div>
-        <h3 class="svc-h">Reporting Rebuild</h3>
-        <p class="svc-p">Fix broken dashboards, rebuild attribution reports, and create the pipeline velocity, MRR trend, rep performance, and forecast accuracy dashboards your leadership actually needs — then set them up to email your team on a schedule.</p>
-        <div class="svc-note">Based on dashboard count and complexity</div>
-        <div class="svc-link" onclick="requestSvc('Reporting Rebuild')">Request this → </div>
-      </div>
-      <div class="svc-card" data-cat="reporting">
-        <div class="svc-ico">📈</div>
-        <h3 class="svc-h">RevOps Strategy Build</h3>
-        <p class="svc-p">Full revenue operations architecture — lifecycle stage mapping, pipeline design, KPI framework, forecasting process, and the reporting stack to track it all. Built for teams ready to scale with clean, reliable data driving every decision.</p>
-        <div class="svc-note">Includes 90-day support · scales with scope</div>
-        <div class="svc-link" onclick="requestSvc('RevOps Strategy Build')">Request this → </div>
-      </div>
-      <div class="svc-card" data-cat="retainer">
-        <div class="svc-ico">🛡</div>
-        <h3 class="svc-h">Monthly Retainer</h3>
-        <p class="svc-p">Ongoing portal management — monthly health reviews, proactive fixes before issues compound, priority response on service requests, and strategic RevOps support as your business evolves. Your HubSpot admin on call.</p>
-        
-        <div class="svc-note">Based on portal size and activity · 3-month minimum</div>
-        <div class="svc-link" onclick="requestSvc('Monthly Retainer')">Request this → </div>
-      </div>
-
-    
-      <!-- ══ HUBSPOT IMPLEMENTATION ══ -->
-      <div class="svc-card" data-cat="implementation">
-        <div class="svc-ico">🏗️</div>
-        <h3 class="svc-h">HubSpot Implementation</h3>
-        <p class="svc-p">Full Sales Hub, Marketing Hub, or Service Hub setup from scratch. CRM architecture, property schema, pipeline design, lifecycle stage mapping, user permissions, automation blueprint, email templates, reporting dashboards, and team training. We build it right the first time so you don't spend the next year cleaning up a bad setup. Scoped and quoted before any work begins — most implementations land $1,000–$4,500 depending on which hubs and how many pipelines, properties, and workflows you need.</p>
-        <div class="svc-note">Based on hub count and scope · most implementations land $1,000–$4,500</div>
-        <div class="svc-link" onclick="requestSvc('HubSpot Implementation')">Request this → </div>
-      </div>
-
-      <!-- ══ PORTAL REBUILD ══ -->
-      <div class="svc-card" data-cat="implementation">
-        <div class="svc-ico">🔧</div>
-        <h3 class="svc-h">Portal Rebuild & Cleanup</h3>
-        <p class="svc-p">Your portal has been live for years and it shows — 400 custom properties nobody knows the purpose of, workflows firing on each other, pipelines nobody updates, and reports that haven't been accurate in 18 months. We audit everything with FixOps, build a rebuild plan, then systematically fix the architecture without losing your data or disrupting your team. This is our specialty.</p>
-        <div class="svc-note">Scoped directly from your FixOps audit — most rebuilds land $1,500–$5,000 depending on portal size</div>
-        <div class="svc-link" onclick="requestSvc('Portal Rebuild')">Request this → </div>
-      </div>
-
-      <!-- ══ CRM MIGRATION (expanded) ══ -->
-      <div class="svc-card" data-cat="migration">
-        <div class="svc-ico">🔄</div>
-        <h3 class="svc-h">CRM Migration to HubSpot</h3>
-        <p class="svc-p">Moving from Salesforce, Zoho, Pipedrive, Monday, or a spreadsheet. We map your data model first, migrate contacts, companies, deals, activities, notes, and custom objects, validate every record post-migration, then document the full process with a before/after report. We've done this dozens of times — we know exactly where migrations break and how to prevent it. Most straightforward single-source migrations land $1,000–$3,000. Complex multi-system or large-volume migrations are quoted after a short discovery call.</p>
-        <div class="svc-note">Based on source system and record volume · complex migrations quoted after brief discovery call</div>
-        <div class="svc-link" onclick="requestSvc('CRM Migration')">Request this → </div>
-      </div>
-
-      <!-- ══ SALESFORCE ↔ HUBSPOT ══ -->
-            <!-- ══ CUSTOM INTEGRATION ══ -->
-      <div class="svc-card" data-cat="integration">
-        <div class="svc-ico">🔌</div>
-        <h3 class="svc-h">Custom API Integration</h3>
-        <p class="svc-p">Connect HubSpot to anything — Salesforce, NetSuite, QuickBooks, Stripe, your ERP, or any custom system. We handle the full build: field mapping, sync direction, deduplication logic, error handling, retry logic, and monitoring so it doesn't fail silently at 2am. Common integrations include Salesforce two-way sync, NetSuite invoice/quote sync, Stripe subscription data, and custom internal tools with no native connector. Simple one-direction syncs start at $500. Complex bidirectional integrations with conflict resolution are quoted after a brief scoping call.</p>
-        <div class="svc-note">Bidirectional or complex integrations from $1,500 · always scoped and quoted before any work begins</div>
-        <div class="svc-link" onclick="requestSvc('Custom API Integration')">Request this → </div>
-      </div>
-
-      <!-- ══ NETSUITE ↔ HUBSPOT ══ -->
-      </div>
-
-      <!-- ══ CUSTOM DEVELOPMENT ══ -->
-      <div style="margin-top:40px;padding-top:36px;border-top:1px solid var(--b1);">
-        <div style="text-align:center;margin-bottom:28px;">
-          <div style="font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--v3);margin-bottom:8px;">Custom Development</div>
-          <h3 style="font-size:clamp(20px,3vw,28px);font-weight:900;letter-spacing:-.5px;color:var(--t1);margin-bottom:8px;">Built specifically for HubSpot.</h3>
-          <p style="font-size:13px;color:var(--t2);max-width:560px;margin:0 auto;">Custom-coded HubSpot solutions — cards, modules, workflows, quotes, and landing pages built to do exactly what you need, not limited by what HubSpot's default tools allow. Starting at $500.</p>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;">
-
-          <div class="svc-card" data-cat="custom">
-            <div class="svc-ico">🃏</div>
-            <h3 class="svc-h">Custom CRM Cards</h3>
-            <p class="svc-p">Custom sidebar cards in HubSpot CRM — pull live data from external systems, show calculated fields, display account health from your own database, or surface contextual information reps need without leaving HubSpot. Built with the UI Extensions SDK. If HubSpot's native properties can't do it, a custom card can.</p>
-            <div class="svc-note">Per card · most cards land $500–$1,500 depending on data sources</div>
-            <div class="svc-link" onclick="requestSvc('Custom CRM Card')">Request this → </div>
-          </div>
-
-          <div class="svc-card" data-cat="custom">
-            <div class="svc-ico">⚙️</div>
-            <h3 class="svc-h">Custom Coded Workflows</h3>
-            <p class="svc-p">Custom-coded workflow actions that go beyond HubSpot's native options — call external APIs, transform data mid-workflow, generate dynamic content, trigger webhooks with custom payloads, or apply business logic that HubSpot's built-in actions can't handle. Built for Operations Hub Professional and Enterprise.</p>
-            <div class="svc-note">Per workflow action · complex logic or multi-system actions from $1,000</div>
-            <div class="svc-link" onclick="requestSvc('Custom Coded Workflow')">Request this → </div>
-          </div>
-
-          <div class="svc-card" data-cat="custom">
-            <div class="svc-ico">📄</div>
-            <h3 class="svc-h">Custom Quote Templates</h3>
-            <p class="svc-p">Fully custom-designed HubSpot quote templates that match your brand exactly — custom layouts, calculated line items, conditional sections, dynamic product descriptions, approval logic, and signature fields. We've built quote templates that completely replace $200/mo CPQ tools. Delivered as a ready-to-use HubSpot template.</p>
-            <div class="svc-note">Flat rate · most quote templates land $500–$1,200</div>
-            <div class="svc-link" onclick="requestSvc('Custom Quote Template')">Request this → </div>
-          </div>
-
-          <div class="svc-card" data-cat="custom">
-            <div class="svc-ico">🧩</div>
-            <h3 class="svc-h">Custom HubSpot Modules</h3>
-            <p class="svc-p">Custom-coded CMS modules for HubSpot — pricing tables, comparison grids, interactive forms, calculators, product configurators, dynamic content blocks, and anything else that Drag & Drop doesn't support. Built for HubSpot CMS and fully editable by your marketing team after delivery.</p>
-            <div class="svc-note">Per module · complex interactive modules from $1,000</div>
-            <div class="svc-link" onclick="requestSvc('Custom HubSpot Module')">Request this → </div>
-          </div>
-
-          <div class="svc-card" data-cat="custom">
-            <div class="svc-ico">🖥️</div>
-            <h3 class="svc-h">Custom Landing Pages</h3>
-            <p class="svc-p">Pixel-perfect HubSpot landing pages custom-coded to your design — not limited by template drag-and-drop. Full custom HTML/CSS/JS inside HubSpot CMS, smart content rules, A/B testing setup, form integration with thank-you logic, and UTM tracking built in. Delivered tested and fully connected to your portal.</p>
-            <div class="svc-note">Per page · complex pages with dynamic content from $800</div>
-            <div class="svc-link" onclick="requestSvc('Custom Landing Page')">Request this → </div>
-          </div>
-
-          <div class="svc-card" data-cat="custom" style="background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(37,99,235,.04));border-color:rgba(124,58,237,.2);">
-            <div class="svc-ico">✦</div>
-            <h3 class="svc-h">Custom Build — Anything Else</h3>
-            <p class="svc-p">If it's HubSpot and it requires code, we build it. Embeddable calculators, client portals surfacing HubSpot data, custom reporting pipelines, HubSpot-connected Zapier alternatives, or any bespoke solution your team needs. Book a 30-min call to scope it — we'll tell you exactly what's possible and what it costs before you commit to anything.</p>
-            <div class="svc-note">Scoped on a free 30-min discovery call · flat-rate quotes always</div>
-            <div class="svc-link" onclick="window.open('https://calendly.com/matthew-fixops/30min','_blank')">Book scoping call → </div>
-          </div>
-
-        </div>
-      </div>
-
-    <!-- Coming Soon Teaser -->
-  <div class="r d3" style="margin-top:48px;text-align:center;">
-    <div style="display:inline-flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--b2);border-radius:12px;padding:16px 28px;">
-      <span style="font-size:20px;">🗺</span>
-      <div style="text-align:left;">
-        <div style="font-size:13px;font-weight:700;color:var(--w);">More coming to the platform</div>
-        <div style="font-size:12px;color:var(--t3);margin-top:2px;">Deal Risk Scoring · Workflow Conflict Detector · Billing Tier Alerts · Multi-Portal Dashboard · and more</div>
-      </div>
-      <a href="#roadmap" style="margin-left:12px;font-size:12px;font-weight:700;color:var(--v3);text-decoration:none;white-space:nowrap;">Discuss This →</a>
-    </div>
-  </div>
-
-    <div class="feat-row r" style="margin-top:60px;">
-      <div>
-        <span class="feat-tag">⚠️ Deal Risk Scoring</span>
-        <h3 class="feat-h">Know which deals are at risk before the quarter ends.</h3>
-        <p class="feat-p">Every open deal gets a risk score based on days without activity, missing close date, no owner, zero probability, and overdue close date. Sort your entire pipeline by risk in seconds — not by gut feel.</p>
-        <p class="feat-p">High-value deals get extra weight. A $50k deal that hasn't moved in 3 weeks is flagged harder than a $500 deal. Finally, a pipeline view your CRO will actually trust.</p>
-        <div class="caveat"><strong>What we score:</strong> Days since last activity, close date status, owner assignment, deal value, probability, and stage age — all from your live HubSpot data. No manual tagging required.</div>
-        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px;">See Plans ↗</a>
-      </div>
-      <div class="mock-ui">
-        <div class="mock-head"><span>⚠️ Deal Risk — Open Pipeline</span><span style="color:var(--r)">4 at risk</span></div>
-        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="font-size:12.5px;font-weight:700;color:var(--w);">Acme Corp Renewal</div><div style="font-size:10px;font-weight:800;color:var(--r);background:rgba(244,63,94,.12);padding:2px 7px;border-radius:4px;">RISK 87</div></div>
-          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">$48,000 · 34 days no activity · close date 12d overdue</div>
-        </div>
-        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="font-size:12.5px;font-weight:700;color:var(--w);">TechFlow Inc — Q4</div><div style="font-size:10px;font-weight:800;color:var(--r);background:rgba(244,63,94,.12);padding:2px 7px;border-radius:4px;">RISK 74</div></div>
-          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">$22,000 · no close date · 0% probability</div>
-        </div>
-        <div style="padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px"><div style="font-size:12.5px;font-weight:700;color:var(--w);">Northstar Media</div><div style="font-size:10px;font-weight:800;color:var(--a);background:rgba(245,158,11,.12);padding:2px 7px;border-radius:4px;">RISK 41</div></div>
-          <div style="font-size:11px;color:var(--t3);font-family:var(--mono)">$9,500 · 18 days no activity · close date in 3 days</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="feat-row flip r">
-      <div>
-        <span class="feat-tag">🔀 Workflow Conflict Detector</span>
-        <h3 class="feat-h">Two workflows. Same trigger. Nobody noticed.</h3>
-        <p class="feat-p">The most expensive HubSpot mistake nobody talks about: two active workflows enrolling the same contacts from the same form submission, sending duplicate emails for months until someone unsubscribes.</p>
-        <p class="feat-p">FixOps maps every active workflow trigger and flags any pair that will co-enroll contacts. Duplicate form triggers, parallel lifecycle workflows, multiple versions running simultaneously — all caught automatically.</p>
-        <div class="caveat"><strong>What we detect:</strong> Duplicate form submission triggers, overlapping lifecycle stage triggers, parallel active workflow versions with similar names, and conflicting enrollment conditions.</div>
-        <a href="#pricing" class="btn-v" style="font-size:14px;padding:12px 22px;">See Plans ↗</a>
-      </div>
-      <div class="mock-ui">
-        <div class="mock-head"><span>🔀 Workflow Conflicts</span><span style="color:var(--r)">2 found</span></div>
-        <div style="padding:10px 12px;background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.15);border-radius:8px">
-          <div style="font-size:10px;font-weight:700;color:var(--r);font-family:var(--mono);margin-bottom:4px;">DUPLICATE FORM TRIGGER</div>
-          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px)">3 workflows enrolled from Demo Form</div>
-          <div style="font-size:11px;color:var(--t3)">Lead Nurture v1 · Lead Nurture v2 · Demo Follow-Up</div>
-          <div style="font-size:11px;color:var(--r);margin-top:4px;font-family:var(--mono)">⚠ 4,200 contacts double-enrolled</div>
-        </div>
-        <div style="padding:10px 12px;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:8px">
-          <div style="font-size:10px;font-weight:700;color:var(--a);font-family:var(--mono);margin-bottom:4px;">PARALLEL ACTIVE VERSIONS</div>
-          <div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:3px)">Onboarding Series + Onboarding Series v2</div>
-          <div style="font-size:11px;color:var(--t3)">Both active · both enrolling new customers · conflicting delays</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- PULSE PLATFORM -->
-<section class="pulse" id="pulse">
-  <div class="wrap">
-    <div class="pulse-grid">
-      <div class="r">
-        <span class="tag">FixOps Intelligence Platform</span>
-        <h2 class="h2">38 intelligence views.<br>One portal. Every answer.</h2>
-        <p class="lead">The only HubSpot platform that shows you what's broken, why it's costing you money, and fixes it. Not a static report — a live intelligence layer that monitors daily and alerts the moment something breaks.</p>
-        <div class="pulse-feats">
-          <div class="pf"><div class="pf-c">✓</div>54-check audit — dollar impact, root cause, and fix guide on every issue</div>
-          <div class="pf"><div class="pf-c">✓</div>48-view Portal Snapshot dashboard — rep intel, decay, pipeline reality, and more</div>
-          <div class="pf"><div class="pf-c">✓</div>Daily monitoring + same-day Slack/email alerts when things break</div>
-          <div class="pf"><div class="pf-c">✓</div>Pipeline Reality Engine — shows actual vs inflated pipeline instantly</div>
-          <div class="pf"><div class="pf-c">✓</div>AI Report Builder — ask your portal anything in plain English</div>
-          <div class="pf"><div class="pf-c">✓</div>Fix It For Me — one click to get a flat-rate quote from our team</div>
-        </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="#" onclick="openAuditModal(event)" class="btn-v">Launch Free Audit ↗</a>
-          <a href="#pricing" class="btn-o">View Pricing</a>
-        </div>
-      </div>
-      <div class="r d2">
-        <div class="score-box">
-          <div style="font-size:10px;color:var(--t3);font-family:var(--mono);text-align:center;margin-bottom:12px">FixOps Score · acme-corp · last scan 4 hrs ago</div>
-          <div class="score-ring"><div class="score-n">73</div></div>
-          <div style="text-align:center;margin-bottom:16px"><span style="display:inline-block;padding:3px 12px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:999px;font-size:11px;font-weight:700;color:var(--a)">⚠ Needs Attention</span></div>
-          <div class="score-issues">
-            <div class="si"><div class="si-bar" style="background:var(--r)"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:2px">847 duplicate contacts</div><div style="font-size:10.5px;color:var(--t3)">~$284/mo excess billing · fix guide included</div></div><div style="font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);background:var(--vd);padding:3px 9px;border-radius:5px;cursor:pointer">FIX →</div></div>
-            <div class="si"><div class="si-bar" style="background:var(--r)"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:2px">11 workflows failing silently</div><div style="font-size:10.5px;color:var(--t3)">340 leads lost · 14 days undetected</div></div><div style="font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);background:var(--vd);padding:3px 9px;border-radius:5px;cursor:pointer">FIX →</div></div>
-            <div class="si"><div class="si-bar" style="background:var(--a)"></div><div style="flex:1"><div style="font-size:12.5px;font-weight:700;color:var(--w);margin-bottom:2px">9 dashboards on deleted properties</div><div style="font-size:10.5px;color:var(--t3)">6 weeks of corrupt attribution data</div></div><div style="font-size:10px;font-weight:700;color:var(--v3);font-family:var(--mono);background:var(--vd);padding:3px 9px;border-radius:5px;cursor:pointer">FIX →</div></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- COMPARE -->
-<section class="compare">
-  <div class="wrap">
-    <div class="r" style="text-align:center">
-      <span class="tag">Why FixOps</span>
-      <h2 class="h2">With FixOps vs. Without</h2>
-      <p class="lead" style="max-width:560px;margin:0 auto">The gap between a HubSpot portal that runs itself and one that quietly drains your team isn't strategy — it's maintenance. We handle the maintenance.</p>
-    </div>
-    <div class="cmp-grid r d1">
-      <div class="cmp-col cmp-bad">
-        <div class="cmp-h">❌ Without FixOps</div>
-        <div class="cmp-list">
-          <div class="cmp-item"><span>✗</span>Workflows fail silently — you find out when a rep asks where their leads went</div>
-          <div class="cmp-item"><span>✗</span>Duplicates pile up until billing jumps a tier unexpectedly mid-quarter</div>
-          <div class="cmp-item"><span>✗</span>Dashboards return wrong data for weeks before anyone notices</div>
-          <div class="cmp-item"><span>✗</span>Integrations die over a weekend — nobody knows until Monday morning</div>
-          <div class="cmp-item"><span>✗</span>Broken workflows running silently, stalled deals nobody is chasing, duplicates inflating your billing</div>
-          <div class="cmp-item"><span>✗</span>New team members inherit a portal with zero documentation</div>
-          <div class="cmp-item"><span>✗</span>Portal cleanup is a once-a-year panic when it's too painful to ignore</div>
-        </div>
-      </div>
-      <div class="cmp-col cmp-good">
-        <div class="cmp-h">✅ With FixOps</div>
-        <div class="cmp-list">
-          <div class="cmp-item"><span style="color:var(--g)">✓</span>Workflow failures caught within the hour — before leads go cold</div>
-          <div class="cmp-item"><span style="color:var(--g)">✓</span>Duplicates caught and merged before they hit your billing tier</div>
-          <div class="cmp-item"><span style="color:var(--g)">✓</span>Dashboard issues flagged automatically — every report stays accurate</div>
-          <div class="cmp-item"><span style="color:var(--g)">✓</span>Integration failures trigger an alert before they cause downstream damage</div>
-          <div class="cmp-item"><span style="color:var(--g)">✓</span>Revenue dashboards emailed automatically every week — no spreadsheets</div>
-          <div class="cmp-item"><span style="color:var(--g)">✓</span>Full workflow documentation auto-generated and kept current</div>
-          <div class="cmp-item"><span style="color:var(--g)">✓</span>Continuous monitoring — your portal gets healthier every single week</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing" 
-<!-- MONITORING BRIDGE — what happens without monitoring -->
-<section style="background:linear-gradient(180deg,var(--bg) 0%,rgba(244,63,94,.04) 50%,var(--bg) 100%);padding:64px 24px;">
-  <div style="max-width:900px;margin:0 auto;">
+<!-- ═══ WHAT WE FIND ════════════════════════════════════════════════════════ -->
+<section style="padding:24px 24px 80px;position:relative;z-index:1;">
+  <div style="max-width:1100px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:48px;">
-      <div style="font-family:var(--mono);font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(244,63,94,.7);margin-bottom:12px;">The Risk of Doing Nothing</div>
-      <h2 style="font-size:clamp(26px,4vw,38px);font-weight:900;letter-spacing:-.5px;margin-bottom:12px;">What happens after a one-time audit?</h2>
-      <p style="font-size:15px;color:var(--t2);max-width:520px;margin:0 auto;">HubSpot portals break continuously. New workflows, new reps, new integrations — most portals develop 3–5 new issues every month. None of it shows up in your dashboards until it has already cost you pipeline.</p>
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">What We Find on a Typical Portal</div>
+      <h2 style="font-size:clamp(26px,4vw,46px);font-weight:900;letter-spacing:-.8px;line-height:1.15;">HubSpot looks fine on the surface.<br><span style="color:var(--t2);font-weight:400;font-size:.88em;">It rarely is.</span></h2>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px;margin:0 auto 40px;">
-      <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.2);border-radius:16px;padding:28px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(244,63,94,.7);margin-bottom:14px;font-family:var(--mono);">Without Monitoring</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#f43f5e;flex-shrink:0;">✗</span>Issues quietly compound for weeks before anyone notices</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#f43f5e;flex-shrink:0;">✗</span>New workflows break without alerts — contacts go unworked</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#f43f5e;flex-shrink:0;">✗</span>Ghost seats accumulate as team turns over</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#f43f5e;flex-shrink:0;">✗</span>Pipeline inflates again — forecasts become unreliable</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#f43f5e;flex-shrink:0;">✗</span>You need another audit in 6 months — same problems</div>
-        </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
+      <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.16);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">🔴</div>
+        <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:7px;">Broken Workflows</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Workflows enrolling zero contacts. Errors nobody got notified about. Two workflows sharing the same trigger and writing conflicting data to the same property — race conditions causing intermittent bugs that are nearly impossible to diagnose manually.</div>
       </div>
-      <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:16px;padding:28px;">
-        <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#10b981;margin-bottom:14px;font-family:var(--mono);">With FixOps Sentinel</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#10b981;flex-shrink:0;">✓</span>Daily scans catch new issues before pipeline is affected</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#10b981;flex-shrink:0;">✓</span>Instant alerts when workflows break or leads go unassigned</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#10b981;flex-shrink:0;">✓</span>Ghost seats flagged by name within 24 hours of inactivity</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#10b981;flex-shrink:0;">✓</span>Weekly delta shows exactly what improved, what got worse</div>
-          <div style="display:flex;gap:10px;font-size:13px;color:var(--t2);"><span style="color:#10b981;flex-shrink:0;">✓</span>ROI compounds: most portals save 5–10x the plan cost monthly</div>
-        </div>
+      <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">👻</div>
+        <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:7px;">Ghost Seats & Billing Waste</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Paid HubSpot seats assigned to people who left 6 months ago. $90/seat/month, zero logins in 90 days. We calculate this using exact HubSpot pricing — not an estimate. Most portals have 3–8 ghost seats.</div>
       </div>
-    </div>
-    <div style="text-align:center;">
-      <a href="#pricing" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;">Start Monitoring — $399/mo →</a>
-      <div style="margin-top:12px;font-size:12px;color:var(--t3);">Cancel anytime · No contract · First scan runs in minutes</div>
+      <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.16);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">📊</div>
+        <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:7px;">Stalled Pipeline & Rep Gaps</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Deals past their close date with zero tasks scheduled — nobody following up. We surface each one by name, amount, and days overdue. Your pipeline value is inflated. Your close rate is worse than your dashboard shows.</div>
+      </div>
+      <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">📧</div>
+        <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:7px;">Email Deliverability Risk</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Missing SPF, DKIM, or DMARC on your sending domain. High-bounce campaigns quietly destroying your sender reputation. Every marketing email, every sales sequence, every notification you send is at risk.</div>
+      </div>
+      <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.16);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">👥</div>
+        <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:7px;">Contact Tier Inflation</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Duplicate contacts and 12-month inactive contacts inflating your HubSpot billing tier. You're paying to store people who will never convert and for contacts that represent the same person entered twice.</div>
+      </div>
+      <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">🌑</div>
+        <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:7px;">Dark Funnel & Missing Attribution</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">New contacts created in the last 90 days with no source attribution. You're generating leads you can't trace to a campaign, channel, or ad spend. Every budget decision you make is based on incomplete data.</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- PORTAL SNAPSHOT REPORTING SHOWCASE -->
-<section id="dashboard-showcase" style="padding:80px 0;background:linear-gradient(180deg,var(--bg) 0%,rgba(124,58,237,.04) 50%,var(--bg) 100%);border-top:1px solid var(--b1);">
-  <div class="wrap">
+<!-- ═══ HOW IT WORKS ════════════════════════════════════════════════════════ -->
+<section style="padding:80px 24px;border-top:1px solid var(--b1);position:relative;z-index:1;">
+  <div style="max-width:900px;margin:0 auto;text-align:center;">
+    <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">How It Works</div>
+    <h2 style="font-size:clamp(26px,4vw,46px);font-weight:900;letter-spacing:-.8px;margin-bottom:52px;">From connection to clarity in 15 minutes.</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;position:relative;">
+      <div style="position:absolute;top:38px;left:calc(16.7% + 14px);right:calc(16.7% + 14px);height:1px;background:linear-gradient(90deg,transparent,rgba(124,58,237,.4),transparent);pointer-events:none;"></div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:32px 24px;">
+        <div style="width:54px;height:54px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">🔗</div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--v3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Step 1</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Connect</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.65;">One-click HubSpot OAuth. Read-only — we never write to your portal. 49 scopes, all documented. Takes 60 seconds.</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:32px 24px;">
+        <div style="width:54px;height:54px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">⚡</div>
+        <div style="font-size:10px;font-family:var(--mono);color:var(--v3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Step 2</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Audit</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.65;">210-point scan runs automatically. Every issue ranked critical/warning/info, quantified in dollars, explained in plain English. Results in under 15 minutes.</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:32px 24px;">
+        <div style="width:54px;height:54px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 20px;">🛠</div>
+        <div style="font-size:10px;font-family:var(--mono);color:#10b981;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Step 3</div>
+        <div style="font-size:17px;font-weight:800;margin-bottom:10px;">Fix</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.65;">Use the step-by-step guide yourself — or click "Fix It For Me" and our team sends a flat-rate proposal from your exact audit data within 24 hours.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PLATFORM FEATURES ═══════════════════════════════════════════════════ -->
+<section id="features" style="padding:80px 24px;border-top:1px solid var(--b1);position:relative;z-index:1;">
+  <div style="max-width:1140px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:60px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">The Platform</div>
+      <h2 style="font-size:clamp(28px,4vw,50px);font-weight:900;letter-spacing:-.8px;margin-bottom:18px;">Not a report. A revenue protection system.</h2>
+      <p style="font-size:17px;color:var(--t2);max-width:640px;margin:0 auto;line-height:1.75;">Every other HubSpot audit tool gives you a static PDF and calls it done. FixOps gives you a live intelligence layer — audit, daily monitoring, 48-view dashboard, AI queries, and a team that executes the fixes.</p>
+    </div>
+
+    <!-- Row 1 — big 2-col cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;">
+
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:34px;transition:border-color .2s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(124,58,237,.4)'" onmouseout="this.style.borderColor='var(--b1)'">
+        <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(124,58,237,.1),transparent 70%);pointer-events:none;"></div>
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
+          <div style="width:54px;height:54px;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.2);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">🔍</div>
+          <div>
+            <div style="font-size:10px;font-family:var(--mono);color:var(--v3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">210-Point Portal Audit</div>
+            <div style="font-size:21px;font-weight:900;letter-spacing:-.4px;line-height:1.2;">Every problem. Every dollar. Plain English.</div>
+          </div>
+        </div>
+        <p style="font-size:14px;color:var(--t2);line-height:1.8;margin-bottom:22px;">Scans 8 health dimensions — Data Integrity, Automation, Pipeline, Marketing, Service, Configuration, Reporting, Team Adoption. Every finding gets a severity (critical/warning/info), a precise dollar impact, a root cause explanation, and a numbered fix guide you can act on immediately or hand to our team.</p>
+        <div style="background:rgba(255,255,255,.03);border:1px solid var(--b2);border-radius:10px;padding:16px;">
+          <div style="font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px;">Advanced checks nobody else runs</div>
+          <div style="display:flex;flex-wrap:wrap;gap:7px;">
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">SPF/DKIM/DMARC auth</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Workflow collision detection</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Dark funnel analysis</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Rep accountability gaps</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Sequence reply rate analysis</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Contact tier inflation</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Feature utilization audit</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Breeze AI readiness</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Never Log config</span>
+            <span style="font-size:11px;font-family:var(--mono);padding:4px 10px;background:var(--b1);border-radius:5px;color:var(--t2);">Billing tier projection</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:34px;transition:border-color .2s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='rgba(37,99,235,.4)'" onmouseout="this.style.borderColor='var(--b1)'">
+        <div style="position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(37,99,235,.08),transparent 70%);pointer-events:none;"></div>
+        <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;">
+          <div style="width:54px;height:54px;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.2);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">📡</div>
+          <div>
+            <div style="font-size:10px;font-family:var(--mono);color:#60a5fa;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Continuous Monitoring</div>
+            <div style="font-size:21px;font-weight:900;letter-spacing:-.4px;line-height:1.2;">The alert system HubSpot forgot to build.</div>
+          </div>
+        </div>
+        <p style="font-size:14px;color:var(--t2);line-height:1.8;margin-bottom:22px;">Monitor runs a full rescan every week. Sentinel runs daily checks on critical items. The moment a workflow breaks, your billing tier gets close to the next threshold, ghost seats appear, or deliverability drops — you get an alert with the exact fix attached. Not a notification — a solution.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--b2);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:19px;margin-bottom:6px;">🔄</div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Weekly Full Rescans</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.6;">Complete 210-point re-audit every Monday. Score delta, new issues, and resolved items emailed automatically.</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--b2);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:19px;margin-bottom:6px;">⚡</div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Daily Critical Checks</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.6;">Sentinel checks workflows, billing tier, ghost seats, and deliverability every day. Same-day alert if anything breaks.</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--b2);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:19px;margin-bottom:6px;">📈</div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:4px;">12-Week Score History</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.6;">Trend graphs show whether fixes are sticking, scores improving, and whether new issues are appearing week-over-week.</div>
+          </div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--b2);border-radius:10px;padding:14px 16px;">
+            <div style="font-size:19px;margin-bottom:6px;">🔄</div>
+            <div style="font-size:12px;font-weight:700;margin-bottom:4px;">Change Intelligence</div>
+            <div style="font-size:11px;color:var(--t2);line-height:1.6;">Week-over-week diff — new workflows, deleted properties, pipeline edits — cross-referenced with your score movement.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — 3 cards -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:30px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(16,185,129,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+        <div style="width:50px;height:50px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;">📊</div>
+        <div style="font-size:10px;font-family:var(--mono);color:#10b981;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">48-View Dashboard</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:14px;line-height:1.25;">Every answer from your actual data.</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:18px;">Pipeline velocity by stage, rep performance scores, deal risk engine, contact decay analysis, lead funnel, email health, workflow dependency maps, billing optimizer, customer health scores, Breeze AI readiness. Not benchmarks — your real numbers.</div>
+        <div style="font-size:12px;color:var(--t3);font-family:var(--mono);border-top:1px solid var(--b2);padding-top:12px;">Monitor: 15 core views &nbsp;·&nbsp; Sentinel: all 48</div>
+      </div>
+
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:30px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(245,158,11,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+        <div style="width:50px;height:50px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;">💸</div>
+        <div style="font-size:10px;font-family:var(--mono);color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Revenue Leak Calculator</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:14px;line-height:1.25;">Confirmed waste vs. at-risk revenue. No fluff.</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:18px;">Every dollar split into Confirmed Waste (exact HubSpot billing math) and At-Risk Revenue (conservative estimates from your actual deal data). Ghost seats at $90/seat. Duplicates at $0.18/contact/month. Stalled pipeline at 2%/month decay rate.</div>
+        <div style="font-size:12px;color:var(--t3);font-family:var(--mono);border-top:1px solid var(--b2);padding-top:12px;">Risk register format · No inflated numbers</div>
+      </div>
+
+      <div style="background:linear-gradient(145deg,rgba(124,58,237,.1),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.22);border-radius:18px;padding:30px;position:relative;overflow:hidden;">
+        <div style="position:absolute;bottom:-30px;right:-30px;width:150px;height:150px;background:radial-gradient(circle,rgba(124,58,237,.18),transparent 70%);pointer-events:none;"></div>
+        <div style="width:50px;height:50px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px;">🤖</div>
+        <div style="font-size:10px;font-family:var(--mono);color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">AI Intelligence Layer</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:14px;line-height:1.25;">Ask your portal anything in plain English.</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:14px;">Natural language queries across your full audit data, powered by Claude with your portal as context. "Which rep has the most overdue deals?" "What's costing me the most this month?" "Show me all contacts in the wrong lifecycle stage." Answers in seconds.</div>
+        <div style="background:rgba(124,58,237,.1);border-radius:8px;padding:10px 12px;font-size:11px;font-family:var(--mono);color:#a78bfa;">Full Audit: 5 queries &nbsp;·&nbsp; Sentinel: unlimited AI</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 48 INTELLIGENCE VIEWS ════════════════════════════════════════════ -->
+<section id="pulse" style="padding:80px 24px;border-top:1px solid var(--b1);background:linear-gradient(180deg,transparent,rgba(124,58,237,.04) 50%,transparent);position:relative;z-index:1;">
+  <div style="max-width:1100px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:56px;">
-      <span class="tag">Portal Snapshot — FixOps Sentinel</span>
-      <h2 class="h2" style="margin-top:12px;">48 Views Into Your HubSpot.<br>Most tools give you a score. We give you answers.</h2>
-      <p class="lead" style="max-width:600px;margin:16px auto 0;">Every view is built from your actual portal data. Monitor gets 15 core views. Sentinel unlocks all 40. Here's what you see when you log in.</p>
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">Portal Snapshot Dashboard</div>
+      <h2 style="font-size:clamp(28px,4vw,50px);font-weight:900;letter-spacing:-.8px;margin-bottom:18px;">48 views into your HubSpot.</h2>
+      <p style="font-size:17px;color:var(--t2);max-width:600px;margin:0 auto 8px;line-height:1.75;">Most tools give you a score. FixOps gives you answers. Every view built from your actual portal data — not generic benchmarks or industry averages.</p>
     </div>
 
-    <!-- Tab nav -->
-    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:40px;" id="dash-tabs">
-      <button onclick="showDashTab('core',this)" style="padding:8px 18px;border-radius:20px;background:var(--brand);color:#fff;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">Core Views (Monitor)</button>
-      <button onclick="showDashTab('intel',this)" style="padding:8px 18px;border-radius:20px;background:var(--s1);color:var(--t2);border:1px solid var(--b1);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">Intelligence Views (Sentinel)</button>
-      <button onclick="showDashTab('ai',this)" style="padding:8px 18px;border-radius:20px;background:var(--s1);color:var(--t2);border:1px solid var(--b1);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;">AI + Advanced (Sentinel)</button>
-    </div>
-
-    <!-- Core tab -->
-    <div id="dash-core" class="dash-tab-content">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px;">
-        <!-- 8 core view cards -->
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">📊</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Overview Dashboard</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Health score, critical issue count, monthly waste, and all KPIs in one view. The Monday morning snapshot every team needs.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">💰</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Pipeline Reality</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Strips stalled and $0 deals to show real vs inflated pipeline. Avg portal has 35% phantom pipeline their leadership thinks is real.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">📧</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Marketing Health</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Open rate, click rate, bounce and unsub vs benchmarks for every campaign. Flags HubSpot suspension risk before it happens.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">⚙️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Automation Health</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every workflow's status, enrollment count, and error state. Dead workflows highlighted. Erroring workflows listed by name with error count.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">🎫</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Service &amp; Tickets</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Open ticket count, average age, priority breakdown, unassigned tickets, SLA risk. Flags tickets past 7 days with owner info.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">👻</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Team &amp; Ghost Seats</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every seat with last-login date. Ghost seats highlighted by name with monthly cost. See exactly who to remove to save money this week.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">📋</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Lists &amp; Sequences</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Total lists, empty lists, static vs active breakdown. Sequences with enrollment rates. Which are running and which are silently inactive.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
-        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:20px;border-top:3px solid #3b82f6;"><div style="font-size:20px;margin-bottom:8px;">🏢</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Revenue &amp; Commerce</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Invoice status, subscription MRR, quote pipeline, and product catalog coverage. How much revenue is in each stage of Commerce Hub.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#3b82f6;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Monitor + Sentinel</div></div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px;">
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">📊 Sales & Pipeline</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:12px;color:var(--t2);">Pipeline Health & Stage Funnel</div>
+          <div style="font-size:12px;color:var(--t2);">Deal Velocity by Stage</div>
+          <div style="font-size:12px;color:var(--t2);">Deal Risk Scoring Engine</div>
+          <div style="font-size:12px;color:var(--t2);">Rep Performance Intelligence</div>
+          <div style="font-size:12px;color:var(--t2);">MEDDIC/SPICED/BANT Scoring</div>
+          <div style="font-size:12px;color:var(--t2);">Revenue Forecast Accuracy</div>
+          <div style="font-size:12px;color:var(--t2);">Lead Funnel Analysis</div>
+          <div style="font-size:12px;color:var(--t2);">Lifecycle Velocity Tracking</div>
+        </div>
       </div>
-      <div style="text-align:center;font-size:12px;color:var(--t3);">+ 7 more core views: Company Health · Custom Objects · Setup Health · Engagement · Velocity · Forecast · Funnel</div>
-    </div>
-
-    <!-- Intelligence tab -->
-    <div id="dash-intel" class="dash-tab-content" style="display:none;">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px;">
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">🏆</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Rep Intelligence</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Full rep leaderboard — calls, meetings, pipeline, won revenue, win rate per rep. Flags ghost reps with no activity. Performance score 0–100 per person. Replaces Gainsight at 1% of the cost.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">🧬</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Contact Decay Score</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every contact scored 0–100 on engagement recency. Hot / Warm / Cooling / Cold / Dead buckets. Shows who to archive to cut your HubSpot billing tier immediately.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">⚠️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Deal Risk Scoring</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every open deal scored for risk: no activity, missing contacts, overdue close date, $0 amount. See which deals are about to fall out of pipeline before they disappear.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">❤️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Customer Health Scores</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Per-company health scoring based on ticket volume, NPS, deal activity, and engagement. See at-risk accounts before they churn and healthy accounts ready for expansion.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">📈</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Source Attribution</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Revenue by acquisition channel, win rate by source, fastest-closing channel. Shows which marketing drives closed revenue — not just lead volume.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">⏱️</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Lead Response Time</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">% of new leads with no logged activity. 78% of deals go to first responder. See exactly where your team is losing leads to slow follow-up.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">📅</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Weekly Delta Report</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Every Monday: what improved, what got worse, what broke — with dollar impact per change. The only weekly report your leadership will actually read.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(16,185,129,.2);border-radius:14px;padding:20px;border-top:3px solid #10b981;"><div style="font-size:20px;margin-bottom:8px;">💳</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Billing Tier Risk</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Contact tier usage, months to next tier jump, upgrade cost, and exactly how many dead contacts to archive to delay the cost increase.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#10b981;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#3b82f6;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">📧 Marketing</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:12px;color:var(--t2);">Email Health & Bounce Rates</div>
+          <div style="font-size:12px;color:var(--t2);">Form Funnel Conversion</div>
+          <div style="font-size:12px;color:var(--t2);">Source Attribution Analysis</div>
+          <div style="font-size:12px;color:var(--t2);">Sequence Reply Rate Analysis</div>
+          <div style="font-size:12px;color:var(--t2);">List Health & Overlap</div>
+          <div style="font-size:12px;color:var(--t2);">Campaign Revenue Attribution</div>
+          <div style="font-size:12px;color:var(--t2);">Contact Engagement Decay</div>
+          <div style="font-size:12px;color:var(--t2);">Dark Funnel Detection</div>
+        </div>
       </div>
-      <div style="text-align:center;font-size:12px;color:var(--t3);">+ 9 more: Lifecycle Velocity · Form Funnel · Property Health · Workflow Dependencies · Score Trends · ROI Calculator · Audit History · Setup Health · Hub Utilization</div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#10b981;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">🎫 Service & Data</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:12px;color:var(--t2);">Ticket SLA & Resolution Rate</div>
+          <div style="font-size:12px;color:var(--t2);">Customer Health Scoring</div>
+          <div style="font-size:12px;color:var(--t2);">Contact Decay Engine</div>
+          <div style="font-size:12px;color:var(--t2);">Property Health Audit</div>
+          <div style="font-size:12px;color:var(--t2);">Custom Object Intelligence</div>
+          <div style="font-size:12px;color:var(--t2);">Billing Tier Optimizer</div>
+          <div style="font-size:12px;color:var(--t2);">Contact Tier Inflation</div>
+          <div style="font-size:12px;color:var(--t2);">Company Intelligence</div>
+        </div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">🧠 Intelligence</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:12px;color:var(--t2);">Workflow Dependency Map</div>
+          <div style="font-size:12px;color:var(--t2);">Breeze AI Readiness Score</div>
+          <div style="font-size:12px;color:var(--t2);">12-Week Score Trends</div>
+          <div style="font-size:12px;color:var(--t2);">Change Intelligence Diff</div>
+          <div style="font-size:12px;color:var(--t2);">Portal Setup Health</div>
+          <div style="font-size:12px;color:var(--t2);">Security Activity Log</div>
+          <div style="font-size:12px;color:var(--t2);">Hub Cost Optimizer</div>
+          <div style="font-size:12px;color:var(--t2);">AI Query Interface</div>
+        </div>
+      </div>
     </div>
 
-    <!-- AI tab -->
-    <div id="dash-ai" class="dash-tab-content" style="display:none;">
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:24px;">
-        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🤖</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">AI Report Builder</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Ask your portal anything in plain English. "Why did pipeline drop?" "Which reps need coaching?" FixOps Intelligence analyzes your actual data and responds with specific, actionable answers.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🔄</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Workflow Conflict Detector</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Detects duplicate triggers, parallel workflows competing for the same contacts, and cascade risk. Prevents the "why did that fire twice?" problem before it happens.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🎯</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Contact Enrichment Gaps</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Field-by-field completeness across your database. See exactly which missing fields block contacts from sequences, workflows, and lead scoring — with enrichment cost estimates.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">📊</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Audit History &amp; Trends</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">12-week score history showing how portal health evolves over time. See which fixes moved the needle and the compounding ROI of staying on top of issues.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">🔍</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">Property Usage Audit</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Fill rate per custom property. See which properties have under 5% fill rate and are bloating your data model, blocking lead scoring, and slowing your team down.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
-        <div style="background:var(--s1);border:1px solid rgba(167,139,250,.2);border-radius:14px;padding:20px;border-top:3px solid #a78bfa;"><div style="font-size:20px;margin-bottom:8px;">💹</div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:5px;">ROI Calculator</div><div style="font-size:11px;color:var(--t2);line-height:1.6;">Dollar value of every fix completed, waste reduced per month, and compounding ROI over time. Turns FixOps from a cost into a measurable line item your CFO can approve.</div><div style="margin-top:10px;font-size:9px;font-weight:700;color:#a78bfa;font-family:monospace;text-transform:uppercase;letter-spacing:1px;">Sentinel Only</div></div>
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+      <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:center;">
+        <div>
+          <div style="font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">Monitor · $199/mo</div>
+          <div style="font-size:14px;font-weight:700;">15 core views + weekly rescans</div>
+        </div>
+        <div style="width:1px;height:32px;background:var(--b2);"></div>
+        <div>
+          <div style="font-size:10px;font-family:var(--mono);color:var(--v3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">Sentinel · $399/mo</div>
+          <div style="font-size:14px;font-weight:700;">All 48 views + AI + daily scans + white-label</div>
+        </div>
+        <div style="width:1px;height:32px;background:var(--b2);"></div>
+        <div>
+          <div style="font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">One-Time</div>
+          <div style="font-size:14px;font-weight:700;">Diagnostic $299 · Full Audit $499</div>
+        </div>
+      </div>
+      <button onclick="openAuditModal('free')" style="padding:12px 26px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">See Your Portal Data Free →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICES — FULL AGENCY COMPARISON ══════════════════════════════════ -->
+<section id="services" style="padding:80px 24px;border-top:1px solid var(--b1);position:relative;z-index:1;">
+  <div style="max-width:1140px;margin:0 auto;">
+
+    <div style="text-align:center;margin-bottom:56px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">Done-For-You Services</div>
+      <h2 style="font-size:clamp(28px,4vw,50px);font-weight:900;letter-spacing:-.8px;margin-bottom:18px;">We fix what the audit finds.<br><span style="color:var(--t2);font-weight:400;font-size:.82em;">Faster and cheaper than any agency you've talked to.</span></h2>
+      <p style="font-size:17px;color:var(--t2);max-width:640px;margin:0 auto;line-height:1.75;">Every issue in your audit has a "Fix It For Me" button. Click it — we scope the work directly from your audit data, send a flat-rate proposal within 24 hours, and start only when you approve. No hourly billing. No retainers. No guessing.</p>
+    </div>
+
+    <!-- Agency comparison table -->
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:20px;overflow:hidden;margin-bottom:40px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
+        <div style="padding:20px 24px;font-size:12px;font-weight:700;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;"></div>
+        <div style="padding:20px 24px;border-left:1px solid var(--b1);background:rgba(244,63,94,.04);">
+          <div style="font-size:12px;font-weight:700;color:#f87171;font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">❌ Typical Agency</div>
+          <div style="font-size:13px;color:var(--t3);">$150–$250/hr · retainer required</div>
+        </div>
+        <div style="padding:20px 24px;border-left:1px solid var(--b1);background:rgba(124,58,237,.06);">
+          <div style="font-size:12px;font-weight:700;color:#a78bfa;font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">✅ FixOps</div>
+          <div style="font-size:13px;color:var(--t3);">Flat-rate · scoped from your audit</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
+        <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">How work is scoped</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Discovery calls, intake forms, weeks of back-and-forth before a proposal</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Scoped directly from your audit data. We already know the issues before you book the call.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
+        <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">Time to proposal</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">1–3 weeks for a proper scoping document</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">24 hours after you click "Fix It For Me"</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
+        <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">Pricing model</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Hourly — scope creep is the agency's friend. Final bill always higher than quoted.</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">Flat-rate. You see the number before anything starts. No surprises.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
+        <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">Typical cost</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">$5,000–$15,000 for a full portal cleanup + setup</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">50–70% less. Most single-issue fixes: $300–$1,500.</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;">
+        <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">What they know going in</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Whatever you tell them in discovery. Usually incomplete.</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">Your full 210-point audit — every issue, ranked by severity, with dollar impact pre-calculated.</div>
+      </div>
+    </div>
+
+    <!-- Service types grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;">
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;">
+        <div style="font-size:22px;margin-bottom:12px;">🗂</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Data Cleanup</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;">Deduplication, lifecycle stage repair, association fixes, property standardization, contact hygiene campaigns. We clean what the audit finds — no guessing what needs fixing.</div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Typical: $800–$2,500</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;">
+        <div style="font-size:22px;margin-bottom:12px;">⚙️</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Workflow Rebuild</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;">Fix erroring workflows, consolidate dead automation, resolve collision conflicts, add goals and enrollment guardrails. Built from your dependency map so nothing breaks downstream.</div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Typical: $500–$1,500</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;">
+        <div style="font-size:22px;margin-bottom:12px;">📈</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Pipeline Configuration</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;">Multi-pipeline setup, required field enforcement, close date automation, deal scoring models, rep accountability workflows. Built from your actual pipeline velocity data.</div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Typical: $600–$1,800</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;">
+        <div style="font-size:22px;margin-bottom:12px;">📧</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Email Deliverability</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;">SPF, DKIM, and DMARC configuration with your DNS provider. List cleaning, bounce removal, subscription health. Domain reputation recovery.</div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Typical: $400–$1,000</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;">
+        <div style="font-size:22px;margin-bottom:12px;">🎯</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Reporting & Attribution</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;">Custom dashboards, revenue attribution models, exec-ready pipeline reporting, rep scorecards. Built from the exact gaps your audit identified.</div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Typical: $400–$1,200</div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;">
+        <div style="font-size:22px;margin-bottom:12px;">🏗</div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Full Implementations</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:14px;">New HubSpot hub setup, Salesforce sync, NetSuite integration, custom API work. We've done this across manufacturing, SaaS, professional services, and hospitality.</div>
+        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Scoped per project</div>
       </div>
     </div>
 
     <!-- CTA bar -->
-    <div style="text-align:center;margin-top:40px;padding:28px 32px;background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.2);border-radius:16px;max-width:680px;margin-left:auto;margin-right:auto;">
-      <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;">All 48 views. One monthly plan. Cancel anytime.</div>
-      <div style="font-size:12px;color:var(--t2);margin-bottom:20px;">FixOps Sentinel at $399/mo. Most portals recover 5–10x the cost in identified leaks within 30 days.</div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="#" onclick="openAuditModal(event)" style="padding:12px 26px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:9px;font-weight:700;font-size:13px;text-decoration:none;">Run Free Audit First →</a>
-        <a href="#pricing" style="padding:12px 22px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--t2);border-radius:9px;font-weight:600;font-size:12px;text-decoration:none;">See All Plans →</a>
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.2);border-radius:16px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:6px;">Start with a free audit. See the issues. Then decide.</div>
+        <div style="font-size:14px;color:var(--t2);">Run the audit yourself — if you want our team to fix what it finds, click "Fix It For Me" on any issue. No obligation, no discovery call required first.</div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button onclick="openAuditModal('free')" style="padding:13px 28px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">Run Free Audit →</button>
+        <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="padding:13px 22px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--t1);border-radius:9px;font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;">Book a Scoping Call</a>
       </div>
     </div>
-
   </div>
 </section>
 
-<script>
-function showDashTab(tab, btn) {
-  document.querySelectorAll('.dash-tab-content').forEach(function(el){ el.style.display = 'none'; });
-  var el = document.getElementById('dash-' + tab);
-  if (el) el.style.display = 'block';
-  document.querySelectorAll('#dash-tabs button').forEach(function(b){
-    b.style.background = 'var(--s1)'; b.style.color = 'var(--t2)'; b.style.border = '1px solid var(--b1)';
-  });
-  if (btn) { btn.style.background = 'var(--brand)'; btn.style.color = '#fff'; btn.style.border = 'none'; }
-}
-</script>
+<!-- ═══ WITH vs WITHOUT ════════════════════════════════════════════════════ -->
+<section style="padding:80px 24px;border-top:1px solid var(--b1);position:relative;z-index:1;">
+  <div style="max-width:980px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">Why FixOps</div>
+      <h2 style="font-size:clamp(26px,4vw,46px);font-weight:900;letter-spacing:-.8px;">Nothing else does all of this.</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div style="background:rgba(244,63,94,.04);border:1px solid rgba(244,63,94,.15);border-radius:16px;padding:32px;">
+        <div style="font-size:11px;font-weight:700;color:#f87171;margin-bottom:24px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;">❌ Without FixOps</div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(244,63,94,.25);line-height:1.65;">Workflows fail silently — you find out when a rep asks where their leads went</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(244,63,94,.25);line-height:1.65;">Duplicate contacts inflate your billing tier without warning — surprise jump mid-quarter</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(244,63,94,.25);line-height:1.65;">Static PDF audit costs $1,500–$3,500 and is outdated before you finish reading it</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(244,63,94,.25);line-height:1.65;">Issues fixed manually, no way to know if they stay fixed or if new ones appear</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(244,63,94,.25);line-height:1.65;">Paying for HubSpot features your team has never touched — Playbooks, Sequences, AI tools</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(244,63,94,.25);line-height:1.65;">Bloated agency charges $150–$250/hr and needs 2–3 weeks just to scope the work</div>
+        </div>
+      </div>
+      <div style="background:rgba(16,185,129,.04);border:1px solid rgba(16,185,129,.15);border-radius:16px;padding:32px;">
+        <div style="font-size:11px;font-weight:700;color:#10b981;margin-bottom:24px;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;">✅ With FixOps</div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(16,185,129,.3);line-height:1.65;">Workflow errors flagged same day with the exact fix — before any lead is missed</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(16,185,129,.3);line-height:1.65;">Billing tier projection months in advance — know exactly which contacts to archive to stay lower</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(16,185,129,.3);line-height:1.65;">Live dashboard updated every scan — not a snapshot taken 6 weeks ago by someone else</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(16,185,129,.3);line-height:1.65;">Score history shows what's improving, what's regressing, what new issues appeared this week</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(16,185,129,.3);line-height:1.65;">Feature utilization audit shows exactly what you're paying for that nobody's using</div>
+          <div style="font-size:14px;color:var(--t2);padding-left:18px;border-left:2px solid rgba(16,185,129,.3);line-height:1.65;">Flat-rate fix in 24 hours — scoped from your audit, no discovery process, 50–70% cheaper</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- ═══ NEW FAQ SECTION ════════════════════════════════════════════════════ -->
+<section id="faq" style="padding:80px 24px;border-top:1px solid var(--b1);position:relative;z-index:1;">
+  <div style="max-width:860px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">FAQs</div>
+      <h2 style="font-size:clamp(26px,4vw,44px);font-weight:900;letter-spacing:-.6px;">Good Questions. Honest Answers.</h2>
+    </div>
 
-<section id="pricing">
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <details style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;cursor:pointer;">
+        <summary style="font-size:15px;font-weight:700;color:var(--t1);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          What can FixOps actually read from my HubSpot portal?
+          <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
+        </summary>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">Via read-only OAuth, FixOps reads: contacts, companies, deals, tickets, tasks, calls, emails, meetings, workflows (structure, triggers, actions, enrollment counts, error logs), pipelines, properties, lists, forms, email campaign stats, sequences, integrations, users, teams, and security activity logs. We cannot read private note content or any data your HubSpot plan doesn't expose via the API. You can revoke our access from your HubSpot connected apps settings at any time.</div>
+      </details>
+
+      <details style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;cursor:pointer;">
+        <summary style="font-size:15px;font-weight:700;color:var(--t1);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          How is FixOps different from HubSpot's native Data Hub?
+          <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
+        </summary>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">HubSpot Data Hub (formerly Operations Hub) is an Enterprise-only tool focused on data sync and automation — it doesn't audit your portal health, flag workflow errors, calculate dollar waste, or give you rep intelligence. FixOps works across all HubSpot tiers and specifically finds problems Data Hub doesn't look for: broken workflow logic, billing tier inflation, deliverability risks, dark funnel attribution, and the 200+ configuration checks that require cross-referencing multiple data sources.</div>
+      </details>
+
+      <details style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;cursor:pointer;">
+        <summary style="font-size:15px;font-weight:700;color:var(--t1);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          Why would I use FixOps instead of just hiring a HubSpot agency?
+          <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
+        </summary>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">A typical agency charges $150–$250/hr and needs 2–4 weeks of discovery calls, intake forms, and scoping meetings before they even send a proposal — and the final bill is almost always higher than quoted. FixOps scopes every engagement directly from your audit data. We already know what's wrong before the first call. Proposals go out within 24 hours at a flat rate you approve before anything starts. Most single-issue fixes cost 50–70% less than agency rates. For ongoing monitoring, $199–$399/mo replaces what agencies charge $2,000–$5,000/mo to do manually.</div>
+      </details>
+
+      <details style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;cursor:pointer;">
+        <summary style="font-size:15px;font-weight:700;color:var(--t1);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          How does the Fix It For Me service actually work?
+          <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
+        </summary>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">Run a free audit. When you see an issue, click "Fix It For Me." We review the specific finding from your portal data and send a flat-rate proposal within 24 hours. The proposal includes exactly what we'll do, what we won't touch, and the price. You approve and we schedule. For larger engagements — a full portal cleanup, a hub implementation, or an integration — book a 30-minute call and we'll scope from your full audit report. No discovery process, no retainer required.</div>
+      </details>
+
+      <details style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;cursor:pointer;">
+        <summary style="font-size:15px;font-weight:700;color:var(--t1);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          Is the revenue waste estimate accurate, or is it inflated to impress me?
+          <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
+        </summary>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">We split the estimate into two buckets. Confirmed Waste uses exact HubSpot pricing — ghost seats at $90/seat/month (published HubSpot pricing), duplicate contacts at $0.18/contact/month (mid-point of the 5k-10k Marketing Hub tier math). These are exact. At-Risk Revenue uses conservative industry benchmarks applied to your actual deal data — stalled pipeline at 2%/month close rate decay (HubSpot deal velocity research). We show you the math on every card. If you have zero stalled deals with dollar amounts, we show $0 — not a fake estimate.</div>
+      </details>
+
+      <details style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;cursor:pointer;">
+        <summary style="font-size:15px;font-weight:700;color:var(--t1);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          What HubSpot tiers and plan sizes do you support?
+          <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
+        </summary>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">FixOps works across all HubSpot tiers — Free, Starter, Professional, and Enterprise. Portals with 1,000 contacts to 500,000+ contacts all run fine. Some checks (Sequences, Playbooks, Breeze AI readiness) are specific to Professional and Enterprise tiers — if you're on a lower tier, those checks are skipped gracefully. The audit adapts to what's available in your specific portal.</div>
+      </details>
+
+      <details style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;cursor:pointer;">
+        <summary style="font-size:15px;font-weight:700;color:var(--t1);list-style:none;display:flex;justify-content:space-between;align-items:center;">
+          Can I use FixOps to audit client portals as an agency?
+          <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
+        </summary>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">Yes. Sentinel includes white-label client sharing — generate a shareable URL with custom branding for client deliverables. Command is built specifically for agencies managing multiple portals. Each client portal gets its own audit, its own dashboard, and its own monitoring. We also do partner engagements where you run FixOps audits for your clients and our team handles the Fix It For Me work — reach out to discuss.</div>
+      </details>
+
+    </div>
+  </div>
+</section>
+<section id="intel-views" style="padding:80px 24px;border-top:1px solid var(--b1);background:linear-gradient(180deg,transparent,rgba(124,58,237,.04) 50%,transparent);position:relative;z-index:1;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:56px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">Portal Snapshot Dashboard</div>
+      <h2 style="font-size:clamp(28px,4vw,48px);font-weight:900;letter-spacing:-.8px;margin-bottom:18px;">48 views into your HubSpot.</h2>
+      <p style="font-size:17px;color:var(--t2);max-width:580px;margin:0 auto;line-height:1.7;">Most tools give you a score. FixOps gives you answers. Every view is built from your actual portal data — real numbers, not generic industry benchmarks.</p>
+    </div>
+
+    <!-- Big 4-column view grid -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;">
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#f59e0b;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">📊 Sales & Pipeline</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:13px;color:var(--t2);">Pipeline Health</div>
+          <div style="font-size:13px;color:var(--t2);">Deal Velocity by Stage</div>
+          <div style="font-size:13px;color:var(--t2);">Deal Risk Scoring</div>
+          <div style="font-size:13px;color:var(--t2);">Rep Performance Intel</div>
+          <div style="font-size:13px;color:var(--t2);">Sales Methodology (MEDDIC)</div>
+          <div style="font-size:13px;color:var(--t2);">Revenue Forecast</div>
+          <div style="font-size:13px;color:var(--t2);">Lead Funnel Analysis</div>
+          <div style="font-size:13px;color:var(--t2);">Lifecycle Velocity</div>
+        </div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#3b82f6;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">📧 Marketing</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:13px;color:var(--t2);">Email Health & Bounce Rates</div>
+          <div style="font-size:13px;color:var(--t2);">Form Funnel Conversion</div>
+          <div style="font-size:13px;color:var(--t2);">Source Attribution</div>
+          <div style="font-size:13px;color:var(--t2);">Sequence Performance</div>
+          <div style="font-size:13px;color:var(--t2);">List Health & Overlap</div>
+          <div style="font-size:13px;color:var(--t2);">Campaign Revenue</div>
+          <div style="font-size:13px;color:var(--t2);">Contact Engagement Decay</div>
+          <div style="font-size:13px;color:var(--t2);">Dark Funnel Analysis</div>
+        </div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#10b981;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">🎫 Service & Data</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:13px;color:var(--t2);">Ticket SLA & Resolution Rate</div>
+          <div style="font-size:13px;color:var(--t2);">Customer Health Scores</div>
+          <div style="font-size:13px;color:var(--t2);">Contact Decay Engine</div>
+          <div style="font-size:13px;color:var(--t2);">Property Health Audit</div>
+          <div style="font-size:13px;color:var(--t2);">Custom Object Intel</div>
+          <div style="font-size:13px;color:var(--t2);">Billing Tier Optimizer</div>
+          <div style="font-size:13px;color:var(--t2);">Contact Tier Inflation</div>
+          <div style="font-size:13px;color:var(--t2);">Company Intelligence</div>
+        </div>
+      </div>
+      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;">
+        <div style="font-size:10px;font-family:var(--mono);color:#a78bfa;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b2);">🧠 Intelligence</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="font-size:13px;color:var(--t2);">Workflow Dependency Map</div>
+          <div style="font-size:13px;color:var(--t2);">Breeze AI Readiness</div>
+          <div style="font-size:13px;color:var(--t2);">Score Trends (12-week)</div>
+          <div style="font-size:13px;color:var(--t2);">Change Intelligence</div>
+          <div style="font-size:13px;color:var(--t2);">Portal Setup Health</div>
+          <div style="font-size:13px;color:var(--t2);">Security Activity Log</div>
+          <div style="font-size:13px;color:var(--t2);">Hub Cost Optimizer</div>
+          <div style="font-size:13px;color:var(--t2);">AI Query Interface</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monitoring tier callout -->
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
+      <div style="display:flex;gap:32px;flex-wrap:wrap;">
+        <div>
+          <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Monitor</div>
+          <div style="font-size:14px;font-weight:700;">15 core views · $199/mo</div>
+        </div>
+        <div style="width:1px;background:var(--b2);"></div>
+        <div>
+          <div style="font-size:11px;font-family:var(--mono);color:var(--v3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Sentinel</div>
+          <div style="font-size:14px;font-weight:700;">All 48 views · AI · Daily scans · $399/mo</div>
+        </div>
+        <div style="width:1px;background:var(--b2);"></div>
+        <div>
+          <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">One-time</div>
+          <div style="font-size:14px;font-weight:700;">Diagnostic $299 · Full Audit $499</div>
+        </div>
+      </div>
+      <button onclick="openAuditModal('free')" style="padding:11px 24px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">See All 48 Views Free →</button>
+    </div>
+  </div>
+</section>
+id="pricing">
   <div class="wrap">
     <div class="r" style="text-align:center">
       <span class="tag">Pricing</span>
@@ -1844,53 +1815,18 @@ function showAgency() {
 </section>
 
 <!-- FAQ -->
-<section class="faq" id="faq">
-  <div class="wrap">
-    <div class="faq-wrap">
-      <div class="r" style="text-align:center">
-        <span class="tag">FAQs</span>
-        <h2 class="h2">Good Questions.<br>Honest Answers.</h2>
-      </div>
-      <div class="faq-list r d1">
-        <div class="faq-item">
-          <button class="faq-q" onclick="doFaq(this)">What can FixOps actually read from my HubSpot portal?<span class="faq-arr">+</span></button>
-          <div class="faq-a">Via read-only OAuth, FixOps reads: contacts, companies, deals, tickets, notes, tasks, calls, emails, meetings, properties, property groups, workflows (structure, actions, enrollment counts, error logs), pipelines, lists, forms, email campaign stats, integrations, users, and teams. We cannot read private note content or access data your HubSpot plan doesn't expose via the API. You can revoke our access from your HubSpot portal at any time.</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" onclick="doFaq(this)">Can FixOps actually fix things automatically, and is it safe?<span class="faq-arr">+</span></button>
-          <div class="faq-a">Every issue in your audit includes a step-by-step fix guide you can implement yourself, or click “Fix It For Me” to have our team handle it. We review every request and reply within a few hours with a flat-rate quote. No surprise costs, no contracts.</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" onclick="doFaq(this)">How does the reporting work — what data can you actually calculate?<span class="faq-arr">+</span></button>
-          <div class="faq-a">Your audit results include a full breakdown of every issue found across 8 dimensions — with fix guides, dollar impact estimates, and a prioritized action plan. Everything is delivered by email immediately after the scan, with a PDF report you can download and share.</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" onclick="doFaq(this)">What HubSpot plans do you support?<span class="faq-arr">+</span></button>
-          <div class="faq-a">FixOps works with all HubSpot plans — Free, Starter, Professional, and Enterprise. The audit depth scales with your plan since some API endpoints are only available on Professional and Enterprise. We clearly show in the platform what's available at your tier. The core audit — data integrity, workflow health, pipeline gaps, configuration, and reporting quality — works on all plans.</div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-q" onclick="doFaq(this)">How does the Fix It For Me service work exactly?<span class="faq-arr">+</span></button>
-          <div class="faq-a">Every issue card in the platform has a "Fix It For Me" button. Clicking it sends a pre-filled request to our team with the full context — what the issue is, what it's costing you, and what needs to happen. We review it, scope the work, and send a flat-rate quote within 4 hours. You approve the quote, we do the work. No open-ended billing, no surprise charges. Larger projects (builds, migrations, RevOps strategy) start with a discovery call to scope properly.</div>
-        </div>
-      </div>
+
+<section style="padding:80px 24px;border-top:1px solid var(--b1);text-align:center;position:relative;z-index:1;">
+  <div style="max-width:700px;margin:0 auto;">
+    <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:16px;">Get Started</div>
+    <h2 style="font-size:clamp(26px,4vw,46px);font-weight:900;letter-spacing:-.8px;margin-bottom:18px;">Let's build the HubSpot system you've been missing.</h2>
+    <p style="font-size:16px;color:var(--t2);margin-bottom:36px;line-height:1.75;">Start with a free audit. Connect your portal, see exactly what's wrong, and get a full report in under 15 minutes. No credit card. No commitment. Just clarity.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <button onclick="openAuditModal('free')" style="padding:16px 36px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:11px;font-size:16px;font-weight:700;cursor:pointer;font-family:var(--font);box-shadow:0 8px 32px rgba(124,58,237,.4);">Run Free Portal Audit ↗</button>
+      <a href="https://calendly.com/matthew-fixops/30min" target="_blank" style="padding:16px 28px;background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--t1);border-radius:11px;font-size:16px;font-weight:600;text-decoration:none;">Book a Free Call</a>
     </div>
   </div>
-</section>
-
-<!-- CTA -->
-<div class="cta-s">
-  <div class="cta-box r">
-    <h2 class="cta-h">Let's Build the HubSpot<br>System You've Been Missing</h2>
-    <p class="cta-p">Start with a free audit. Connect your portal, we review the results, and you get a full report in under 15 minutes · No credit card, no commitment — just clarity on what's actually happening inside your portal.</p>
-    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;position:relative;z-index:1">
-      <a href="#" onclick="openAuditModal(event)" class="btn-v">Run Free Portal Audit ↗</a>
-      <a href="https://calendly.com/matthew-fixops/30min" class="btn-o" target="_blank">Book a Free Call</a>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
+</section><footer>
   <div class="ft-wrap">
     <div class="ft-grid">
       <div>
@@ -2761,7 +2697,138 @@ function submitSfEarly() {
 </script>
 
 <!-- ── Pre-Stripe Modal (one-time audits) ──────────────────────────────────── -->
-<div id="pre-stripe-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.87);z-index:9999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closePreStripeModal()">
+<div <script>
+var STRIPE_LINKS = {
+  'diagnostic': 'https://buy.stripe.com/7sYdR9feifDs4zy2X38Ra0b',
+  'full':       'https://buy.stripe.com/4gM9AT4zEgHwea89lr8Ra0c',
+  'monitor':    'https://buy.stripe.com/eVqeVd9TYbncea89lr8Ra0d',
+  'sentinel':   'https://buy.stripe.com/5kQ3cvfei62S5DC0OV8Ra0e',
+  'command':    'https://buy.stripe.com/dRm28rd6a3UK0jidBH8Ra0f'
+};
+// Discounted first-month links — add ?prefilled_promo_code=FIRST99 to Sentinel link
+// Create in Stripe: coupon "FIRST99" = $200 off first invoice (Sentinel $399→$199 first month)oice (Sentinel goes $549→$199)
+// Create in Stripe: coupon "TRYMONITOR" = $200 off first invoice (Monitor goes $299→$99)
+var STRIPE_DISCOUNT_LINKS = {
+  'pro':   STRIPE_LINKS['pro']   + '?prefilled_promo_code=FIRST99',
+  'pulse': STRIPE_LINKS['pulse'] + '?prefilled_promo_code=TRYMONITOR',
+};
+
+var _pendingStripePlan = '';
+function goStripe(plan) {
+  // Normalise legacy plan codes to new names
+  var _pm = {'deep':'diagnostic','pro_audit':'full','pulse':'monitor','pro':'sentinel'};
+  plan = _pm[plan] || plan;
+  // Monthly plans — go straight to Stripe (email captured at OAuth step)
+  if (['pulse','pro','command','monitor','sentinel'].includes(plan)) {
+    var link = STRIPE_LINKS[plan];
+    if (link) window.open(link, '_blank');
+    return;
+  }
+  // One-time audits — collect email + company first, then redirect to Stripe
+  _pendingStripePlan = plan;
+  var label = plan === 'pro_audit' ? 'FixOps Full Audit — $499' : 'FixOps Diagnostic — $399';
+  document.getElementById('pre-stripe-plan-label').textContent = label;
+  document.getElementById('pre-stripe-email').value = '';
+  document.getElementById('pre-stripe-company').value = '';
+  document.getElementById('pre-stripe-error').style.display = 'none';
+  document.getElementById('pre-stripe-modal').style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ document.getElementById('pre-stripe-email').focus(); }, 100);
+}
+
+function closePreStripeModal() {
+  document.getElementById('pre-stripe-modal').style.display = 'none';
+  document.body.style.overflow = '';
+  _pendingStripePlan = '';
+}
+
+async function proceedToStripe() {
+  var email   = document.getElementById('pre-stripe-email').value.trim();
+  var company = document.getElementById('pre-stripe-company').value.trim();
+  var errEl   = document.getElementById('pre-stripe-error');
+  var btn     = document.getElementById('pre-stripe-btn');
+
+  errEl.style.display = 'none';
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.style.display = 'block';
+    document.getElementById('pre-stripe-email').focus();
+    return;
+  }
+  if (!company) {
+    errEl.textContent = 'Company name is required so we can personalise your audit.';
+    errEl.style.display = 'block';
+    document.getElementById('pre-stripe-company').focus();
+    return;
+  }
+
+  // Save lead silently
+  fetch('https://fixops-api-production.up.railway.app/lead/capture', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ email, company, plan: _pendingStripePlan, source: 'one-time-pre-stripe' })
+  }).catch(()=>{});
+
+  // Redirect to Stripe with email pre-filled
+  var baseUrl = STRIPE_LINKS[_pendingStripePlan];
+  if (!baseUrl) return;
+  var stripeUrl = baseUrl + '?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + encodeURIComponent(company);
+  btn.textContent = 'Redirecting to payment…';
+  btn.disabled = true;
+  closePreStripeModal();
+  window.open(stripeUrl, '_blank');
+}
+
+function goCalendly() {
+  window.open('https://calendly.com/matthew-fixops/30min', '_blank');
+}
+
+function _hideAllPlans() {
+  document.getElementById('monthly-plans').style.display = 'none';
+  document.getElementById('onetime-plans').style.display = 'none';
+  var ag = document.getElementById('agency-plans');
+  if (ag) ag.style.display = 'none';
+  ['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.style.background = 'transparent';
+    el.style.color = 'rgba(255,255,255,.45)';
+  });
+}
+function showMonthly() {
+  _hideAllPlans();
+  document.getElementById('monthly-plans').style.display = 'block';
+  document.getElementById('toggle-monthly').style.background = '#7c3aed';
+  document.getElementById('toggle-monthly').style.color = '#fff';
+}
+
+function showOnetime() {
+  _hideAllPlans();
+  document.getElementById('onetime-plans').style.display = 'block';
+  document.getElementById('toggle-onetime').style.background = '#7c3aed';
+  document.getElementById('toggle-onetime').style.color = '#fff';
+}
+
+function showAgency() {
+  _hideAllPlans();
+  var ag = document.getElementById('agency-plans');
+  if (ag) ag.style.display = 'block';
+  var btn = document.getElementById('toggle-agency');
+  if (btn) { btn.style.background = '#7c3aed'; btn.style.color = '#fff'; }
+}
+</script><div <script>
+function showDashTab(tab, btn) {
+  document.querySelectorAll('.dash-tab-content').forEach(function(el){ el.style.display = 'none'; });
+  var el = document.getElementById('dash-' + tab);
+  if (el) el.style.display = 'block';
+  document.querySelectorAll('#dash-tabs button').forEach(function(b){
+    b.style.background = 'var(--s1)'; b.style.color = 'var(--t2)'; b.style.border = '1px solid var(--b1)';
+  });
+  if (btn) { btn.style.background = 'var(--brand)'; btn.style.color = '#fff'; btn.style.border = 'none'; }
+}
+</script>
+
+
+<section id="pre-stripe-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.87);z-index:9999;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closePreStripeModal()">
   <div style="background:#0c0c14;border:1px solid #22223a;border-radius:20px;padding:36px;max-width:460px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.7);">
     <button onclick="closePreStripeModal()" style="position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.35);font-size:22px;cursor:pointer;line-height:1;padding:4px 8px;">&#x2715;</button>
     <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:8px;">One-Time Audit</div>
