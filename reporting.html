@@ -4388,6 +4388,10 @@ function buildTeam() {
     '<div class="stat-cell"><div class="stat-cell-label">Booking Links</div>' +
       '<div class="stat-cell-value ' + (noMtgLink > 0 ? 'amber' : 'green') + '">' + mtgLinks + '</div>' +
       '<div class="stat-cell-sub">' + (noMtgLink > 0 ? noMtgLink + ' reps missing' : 'all active') + '</div></div>' +
+    (ps.repsWithoutEmailInt > 0 ?
+      '<div class="stat-cell"><div class="stat-cell-label">Email Integration</div>' +
+        '<div class="stat-cell-value amber">' + ps.repsWithoutEmailInt + '</div>' +
+        '<div class="stat-cell-sub">reps without Gmail/Outlook</div></div>' : '') +
   '</div>';
 
   if (darkRepNames.length > 0) {
@@ -5968,6 +5972,27 @@ function buildAutomation() {
     html += '</div>';
   } else {
     html += `<div class="view-card" style="text-align:center;padding:32px;"><div style="font-size:32px;margin-bottom:8px;">✅</div><div style="color:var(--t3);">All automation healthy</div></div>`;
+  }
+
+  // ── Workflow collisions + feature utilization ──────────────────────────────
+  var collisions = ps.workflowCollisions || 0;
+  var unusedFeats = ps.unusedFeatureCount || 0;
+  var unusedList  = ps.unusedFeatures || [];
+
+  if (collisions > 0) {
+    html += '<div class="insight-banner critical" style="margin-top:12px;"><span>⚡</span><div>' +
+      '<strong>' + collisions + ' workflow collision' + (collisions!==1?'s':'') + ' detected</strong> — ' +
+      'workflows sharing enrollment triggers. Race conditions will cause unpredictable property writes. ' +
+      'Consolidate into single workflows with branching logic.' +
+    '</div></div>';
+  }
+
+  if (unusedFeats >= 2) {
+    html += '<div class="insight-banner" style="background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.15);margin-top:12px;"><span>📦</span><div>' +
+      '<strong>' + unusedFeats + ' HubSpot feature' + (unusedFeats!==1?'s':'')+' in your plan unused</strong> — ' +
+      unusedList.slice(0,3).join('; ') + (unusedList.length > 3 ? ' + ' + (unusedList.length-3) + ' more' : '') + '. ' +
+      'You are paying for capabilities your team has not been set up on.' +
+    '</div></div>';
   }
 
   const el = document.getElementById('automation-content');

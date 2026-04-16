@@ -419,9 +419,9 @@ nav {
 
     <!-- Big number -->
     <div class="hero-counter">
-      <div class="counter-eyebrow">Estimated Monthly Revenue Leak</div>
+      <div class="counter-eyebrow">Confirmed Waste + At-Risk Revenue</div>
       <div class="counter-number" id="counter-display">$0</div>
-      <div class="counter-sub">per month · <span id="company-name">your portal</span></div>
+      <div class="counter-sub">estimated per month · <span id="company-name">your portal</span></div>
       <div class="per-day">
         <div class="per-day-num" id="per-day-val">$0</div>
         <div class="per-day-lbl">per day</div>
@@ -625,6 +625,7 @@ function renderLeaks(data, auditId) {
   var stalledLeak = stalledPipeVal > 0 ? Math.min(Math.round(stalledPipeVal * 0.02), 50000) : 0;
   leaks.push({
     id: 'pipeline', icon: '📊', color: '#ff3b3b', colorBg: 'rgba(255,59,59,.1)',
+    confirmed: false,
     title: 'Stalled Pipeline',
     amount: stalledLeak,
     period: '/mo opportunity cost',
@@ -641,6 +642,7 @@ function renderLeaks(data, auditId) {
   var ghostWaste = wb.wasteGhostSeats !== undefined ? wb.wasteGhostSeats : Math.round(ghostSeats * 90);
   leaks.push({
     id: 'seats', icon: '👻', color: '#f59e0b', colorBg: 'rgba(245,158,11,.1)',
+    confirmed: true,
     title: 'Ghost Seat Waste',
     amount: ghostWaste,
     period: '/mo in unused seats',
@@ -673,6 +675,7 @@ function renderLeaks(data, auditId) {
   var dupeLeak = Math.round(dupes * 0.18);
   leaks.push({
     id: 'dupes', icon: '👥', color: '#f59e0b', colorBg: 'rgba(245,158,11,.1)',
+    confirmed: true,
     title: 'Duplicate Contact Billing',
     amount: dupeLeak,
     period: '/mo in inflated billing',
@@ -735,7 +738,7 @@ function renderLeaks(data, auditId) {
   var bounceLeak  = bounceEmails > 0 ? Math.round(bounceEmails * 35) : 0;
   var emailLeak   = bounceLeak + archiveLeak;
   leaks.push({
-    id: 'email', icon: '📧', color: bounceEmails > 2 ? '#ff3b3b' : '#f59e0b',
+    id: 'email', icon: '📧', dataQuality: true, color: bounceEmails > 2 ? '#ff3b3b' : '#f59e0b',
     colorBg: bounceEmails > 2 ? 'rgba(255,59,59,.1)' : 'rgba(245,158,11,.1)',
     title: 'Email Deliverability Risk',
     amount: emailLeak,
@@ -893,6 +896,51 @@ function renderLeaks(data, auditId) {
   // ── RENDER LEAK CARDS ─────────────────────────────────────────────────────────
   grid.innerHTML = '';
   leaks.sort(function(a,b){ return (b.amount||0)-(a.amount||0); });
+
+  // ── Risk Register: Group leaks into categories ─────────────────────────────
+  var confirmedWaste = leaks.filter(function(l){ return l.confirmed && l.amount > 0; });
+  var atRiskRevenue  = leaks.filter(function(l){ return !l.confirmed && !l.dataQuality && l.amount > 0; });
+  var dataQuality    = leaks.filter(function(l){ return l.dataQuality; });
+
+  var confirmedTotal = confirmedWaste.reduce(function(s,l){return s+(l.amount||0);},0);
+  var atRiskTotal    = atRiskRevenue.reduce(function(s,l){return s+(l.amount||0);},0);
+
+  // Build Risk Register header
+  var rrEl = document.getElementById('leaks-list');
+  if (rrEl) {
+    var rrHeader = document.createElement('div');
+    rrHeader.style.cssText = 'margin-bottom:24px;';
+    rrHeader.innerHTML =
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:20px;">' +
+
+        // Confirmed waste bucket
+        '<div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:16px 18px;">' +
+          '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ef4444;font-family:monospace;margin-bottom:8px;">✓ CONFIRMED WASTE</div>' +
+          '<div style="font-size:24px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:4px;">'+fmtMoney(confirmedTotal)+'</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">Exact amounts calculated from HubSpot pricing data. No estimates.</div>' +
+        '</div>' +
+
+        // At-risk revenue bucket
+        '<div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:16px 18px;">' +
+          '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f59e0b;font-family:monospace;margin-bottom:8px;">⚡ AT-RISK REVENUE</div>' +
+          '<div style="font-size:24px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:4px;">'+fmtMoney(atRiskTotal)+'</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">Conservative estimates based on your actual deal data. See methodology below each card.</div>' +
+        '</div>' +
+
+        // Data quality bucket
+        '<div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:16px 18px;">' +
+          '<div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#818cf8;font-family:monospace;margin-bottom:8px;">📊 DATA QUALITY</div>' +
+          '<div style="font-size:24px;font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:4px;">'+dataQuality.length+' issue'+(dataQuality.length!==1?'s':'')+'</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.4);line-height:1.5;">No dollar estimate — fix the data first, then measure the real cost.</div>' +
+        '</div>' +
+
+      '</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,.35);padding:10px 14px;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.06);">' +
+        '⚠️  Confirmed Waste uses exact HubSpot pricing. At-Risk Revenue uses conservative industry benchmarks with your actual data — see the "Why this number" on each card. Numbers this high likely mean one deal in your data has an unusually large amount. We cap estimates at $150k/mo total.' +
+      '</div>';
+    rrEl.insertBefore(rrHeader, rrEl.firstChild);
+  }
+
   leaks.forEach(function(leak, _idx) {
     var row = document.createElement('div');
     if (leak.amount === 0 && leak.zero_msg) {
