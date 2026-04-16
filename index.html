@@ -376,38 +376,81 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <div style="text-align:center;margin-bottom:48px;">
       <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">What We Find on a Typical Portal</div>
       <h2 style="font-size:clamp(26px,4vw,46px);font-weight:900;letter-spacing:-.8px;line-height:1.15;">HubSpot looks fine on the surface.<br><span style="color:var(--t2);font-weight:400;font-size:.88em;">It rarely is.</span></h2>
+      <p style="font-size:16px;color:var(--t2);max-width:600px;margin:20px auto 0;line-height:1.75;">The average portal we scan has $2,400/mo in confirmed waste and at-risk revenue — most of it invisible without the right checks. Here's what we find every week.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
+
+    <!-- Row 1: The classic audit problems — what's broken right now -->
+    <div style="font-size:11px;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--b1);">🔍 Found in the audit — things broken right now</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:36px;">
       <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.16);border-radius:12px;padding:22px;">
         <div style="font-size:22px;margin-bottom:10px;">🔴</div>
         <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:7px;">Broken Workflows</div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Workflows enrolling zero contacts. Errors nobody got notified about. Two workflows sharing the same trigger and writing conflicting data to the same property — race conditions causing intermittent bugs that are nearly impossible to diagnose manually.</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Workflows enrolling zero contacts. Errors nobody got notified about. Two workflows fighting over the same contact with conflicting data — race conditions causing bugs that are nearly impossible to find manually.</div>
       </div>
       <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:12px;padding:22px;">
         <div style="font-size:22px;margin-bottom:10px;">👻</div>
         <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:7px;">Ghost Seats & Billing Waste</div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Paid HubSpot seats assigned to people who left 6 months ago. $90/seat/month, zero logins in 90 days. We calculate this using exact HubSpot pricing — not an estimate. Most portals have 3–8 ghost seats.</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Paid seats assigned to people who left 6 months ago. $90/seat/month, zero logins in 90 days. We calculate this using exact HubSpot pricing. Most portals have 3–8 ghost seats nobody noticed.</div>
       </div>
       <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.16);border-radius:12px;padding:22px;">
         <div style="font-size:22px;margin-bottom:10px;">📊</div>
         <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:7px;">Stalled Pipeline & Rep Gaps</div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Deals past their close date with zero tasks scheduled — nobody following up. We surface each one by name, amount, and days overdue. Your pipeline value is inflated. Your close rate is worse than your dashboard shows.</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Deals past close date, zero tasks scheduled, nobody following up. We name each deal, show the amount, and flag which rep owns it. Your pipeline is inflated. Your close rate is worse than your dashboard shows.</div>
       </div>
       <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:12px;padding:22px;">
         <div style="font-size:22px;margin-bottom:10px;">📧</div>
         <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:7px;">Email Deliverability Risk</div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Missing SPF, DKIM, or DMARC on your sending domain. High-bounce campaigns quietly destroying your sender reputation. Every marketing email, every sales sequence, every notification you send is at risk.</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Missing SPF, DKIM, or DMARC. High-bounce campaigns destroying your sender reputation. We score every campaign by open rate, click rate, and bounce rate — and flag the ones actively hurting your domain.</div>
       </div>
       <div style="background:rgba(244,63,94,.06);border:1px solid rgba(244,63,94,.16);border-radius:12px;padding:22px;">
         <div style="font-size:22px;margin-bottom:10px;">👥</div>
         <div style="font-size:13px;font-weight:700;color:#f87171;margin-bottom:7px;">Contact Tier Inflation</div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Duplicate contacts and 12-month inactive contacts inflating your HubSpot billing tier. You're paying to store people who will never convert and for contacts that represent the same person entered twice.</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Duplicate contacts and 12-month inactive records pushing you toward the next billing tier. We calculate the exact dollar cost per month and show which contacts to archive to drop back down.</div>
       </div>
       <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.16);border-radius:12px;padding:22px;">
         <div style="font-size:22px;margin-bottom:10px;">🌑</div>
         <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-bottom:7px;">Dark Funnel & Missing Attribution</div>
-        <div style="font-size:12px;color:var(--t2);line-height:1.65;">New contacts created in the last 90 days with no source attribution. You're generating leads you can't trace to a campaign, channel, or ad spend. Every budget decision you make is based on incomplete data.</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Leads with no source. Campaigns with no attribution. Ad spend you can't connect to closed revenue. Every budget decision you make is based on incomplete data — and you don't know how incomplete.</div>
       </div>
+    </div>
+
+    <!-- Row 2: What monitoring catches that a one-time audit misses -->
+    <div style="font-size:11px;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--b1);">📡 Found by monitoring — things that break after the audit</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:8px;">
+      <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">⚡</div>
+        <div style="font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:7px;">New Workflow Errors — Same Day</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">A workflow that was clean last week broke today. Someone edited a trigger. A list got deleted. A property was renamed. Without daily monitoring, you find out when a rep asks where their leads went — usually weeks later.</div>
+      </div>
+      <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">📈</div>
+        <div style="font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:7px;">Billing Tier Creep</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Your contact count grows 200/month. Your billing tier jump is 4 months away and climbing. A one-time audit catches the snapshot — monitoring tracks the trajectory and alerts you before the invoice surprises you.</div>
+      </div>
+      <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">📉</div>
+        <div style="font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:7px;">Rep Activity Drop-Off</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">A rep was active in March. By May their logged calls dropped 60% and they have 11 stalled deals. Your CRM didn't tell you. Your Monday morning report will — every week, automatically, by rep name.</div>
+      </div>
+      <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">🔄</div>
+        <div style="font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:7px;">Score Regression After Fixes</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">You fixed 8 issues from the audit. Three came back. One new one appeared. Without 12-week score history you have no way to know if your improvements are sticking or if new problems are quietly undoing your work.</div>
+      </div>
+      <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">🔧</div>
+        <div style="font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:7px;">Portal Changes You Didn't Approve</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">A new workflow was created. A pipeline stage was renamed. A property was deleted. The change intelligence log cross-references every portal change against your score movement — so you always know why something broke.</div>
+      </div>
+      <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.15);border-radius:12px;padding:22px;">
+        <div style="font-size:22px;margin-bottom:10px;">💸</div>
+        <div style="font-size:13px;font-weight:700;color:#60a5fa;margin-bottom:7px;">Unused Features You're Paying For</div>
+        <div style="font-size:12px;color:var(--t2);line-height:1.65;">Playbooks: 0 uses. Sequences: 2 active out of 47. Forecast tool: never opened. You're paying for features your team has never touched. The feature utilization audit shows exactly where HubSpot money is being wasted.</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;padding-top:32px;">
+      <div style="font-size:12px;font-family:var(--mono);color:var(--t3);">Row 1 is what the audit finds in 15 minutes. Row 2 is why you need monitoring every week after that.</div>
     </div>
   </div>
 </section>
@@ -1712,68 +1755,72 @@ function showAgency() {
 <section id="roadmap" style="padding:80px 24px;border-top:1px solid var(--b1);position:relative;z-index:1;">
   <div class="wrap">
     <div class="r" style="text-align:center">
-      <span class="tag">What's Coming</span>
-      <h2 class="h2" style="margin-top:12px;">Built for HubSpot today.<br><span style="color:var(--t2);font-weight:400;font-size:.75em;">More CRMs and connectors coming soon.</span></h2>
-      <p class="lead" style="max-width:580px;margin:20px auto 0;">FixOps is a complete HubSpot intelligence platform — live today with 210 audit checks, 48 views, and AI coaching. The next phase brings the same engine to Salesforce and adds direct CRM integrations.</p>
+      <span class="tag">What's Next</span>
+      <h2 class="h2" style="margin-top:12px;">FixOps for Salesforce.<br><span style="color:#3b82f6;font-weight:400;font-size:.75em;">In active development. Be first.</span></h2>
+      <p class="lead" style="max-width:560px;margin:20px auto 0;">The same 210-point audit engine, 48-view dashboard, AI coaching, and monitoring — brought to Salesforce orgs. We're selecting 50 beta testers. Early access is free.</p>
     </div>
 
-    <!-- Coming soon cards -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:48px;max-width:960px;margin-left:auto;margin-right:auto;">
+    <!-- Single in-development card + feature bullets -->
+    <div style="max-width:860px;margin:48px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;">
 
-      <!-- Salesforce connector — building now -->
-      <div style="background:var(--s1);border:1px solid rgba(59,130,246,.3);border-radius:18px;padding:30px;position:relative;overflow:hidden;">
-        <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(59,130,246,.08),transparent 70%);pointer-events:none;"></div>
-        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:20px;padding:4px 12px;margin-bottom:18px;">
-          <span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;display:inline-block;animation:pulse 2s infinite;"></span>
+      <!-- Left: what it includes -->
+      <div style="background:var(--s1);border:1px solid rgba(59,130,246,.3);border-radius:18px;padding:32px;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-50px;right:-50px;width:180px;height:180px;background:radial-gradient(circle,rgba(59,130,246,.09),transparent 70%);pointer-events:none;"></div>
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);border-radius:20px;padding:5px 14px;margin-bottom:20px;">
+          <span style="width:7px;height:7px;border-radius:50%;background:#3b82f6;display:inline-block;animation:pulse 2s infinite;"></span>
           <span style="font-size:10px;font-weight:700;color:#60a5fa;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;">In Development</span>
         </div>
-        <div style="font-size:22px;margin-bottom:12px;">⚡</div>
-        <div style="font-size:18px;font-weight:800;margin-bottom:10px;line-height:1.25;">Salesforce Connector</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:16px;">Two-way sync between Salesforce and HubSpot — field mapping, conflict resolution, error alerting, and a live sync health dashboard. Built by the team that has wired these together hundreds of times.</div>
-        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Command · Command Unlimited</div>
+        <div style="font-size:24px;margin-bottom:14px;">⚡</div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:10px;line-height:1.2;">FixOps for Salesforce</div>
+        <div style="font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:20px;">Everything FixOps does for HubSpot — brought to Salesforce orgs. Same audit engine, same intelligence dashboard, same AI coaching suite. Built by the team that has wired Salesforce and HubSpot together hundreds of times.</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t2);">
+            <span style="color:#3b82f6;flex-shrink:0;">●</span>210-point Salesforce org audit
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t2);">
+            <span style="color:#3b82f6;flex-shrink:0;">●</span>48-view intelligence dashboard
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t2);">
+            <span style="color:#3b82f6;flex-shrink:0;">●</span>AI Deal Coach + RevOps AI Coach
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t2);">
+            <span style="color:#3b82f6;flex-shrink:0;">●</span>HubSpot ↔ Salesforce sync health
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t2);">
+            <span style="color:#3b82f6;flex-shrink:0;">●</span>Weekly monitoring + same-day alerts
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--t2);">
+            <span style="color:#3b82f6;flex-shrink:0;">●</span>Early testers get 3 months free
+          </div>
+        </div>
       </div>
 
-      <!-- Salesforce audit — planned -->
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:30px;">
-        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);border-radius:20px;padding:4px 12px;margin-bottom:18px;">
-          <span style="font-size:10px;font-weight:700;color:#a78bfa;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;">Coming Soon</span>
+      <!-- Right: email capture -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.2);border-radius:16px;padding:28px 28px 24px;">
+          <div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:6px;">Join the beta — 50 spots</div>
+          <div style="font-size:12px;color:var(--t3);line-height:1.65;margin-bottom:20px;">We're working through a list. Tell us you're interested and we'll reach out when your spot opens. Early testers get 3 months free and help shape what gets built.</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <input type="email" id="sf-email" placeholder="your@company.com"
+              style="width:100%;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(59,130,246,.25);border-radius:9px;color:var(--t1);font-family:var(--font);font-size:13px;outline:none;box-sizing:border-box;"
+              onkeydown="if(event.key==='Enter')submitSfEarly()">
+            <button onclick="submitSfEarly()"
+              style="width:100%;padding:13px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);">
+              Request Early Access →
+            </button>
+          </div>
+          <div id="sf-early-msg" style="display:none;margin-top:12px;font-size:12px;color:#10b981;font-weight:600;"></div>
+          <div style="margin-top:12px;font-size:11px;color:var(--t3);">No spam · One email when your spot opens · Unsubscribe any time</div>
         </div>
-        <div style="font-size:22px;margin-bottom:12px;">☁️</div>
-        <div style="font-size:18px;font-weight:800;margin-bottom:10px;line-height:1.25;">FixOps for Salesforce</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:16px;">The full FixOps audit engine — pipeline health, rep scoring, automation failures, billing risk, AI coaching — brought to Salesforce orgs. Same intelligence, different CRM.</div>
-        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">All Plans</div>
-      </div>
 
-      <!-- More CRM connectors — planned -->
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:18px;padding:30px;">
-        <div style="display:inline-flex;align-items:center;gap:7px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);border-radius:20px;padding:4px 12px;margin-bottom:18px;">
-          <span style="font-size:10px;font-weight:700;color:#a78bfa;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;">Coming Soon</span>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:18px 20px;">
+          <div style="font-size:11px;font-family:var(--mono);color:var(--t3);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Already on HubSpot?</div>
+          <div style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:12px;">The full FixOps platform is live for HubSpot today — 210 checks, 48 views, AI coaching, and continuous monitoring.</div>
+          <button onclick="openAuditModal('free')" style="padding:10px 20px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);">Run Free HubSpot Audit →</button>
         </div>
-        <div style="font-size:22px;margin-bottom:12px;">🔗</div>
-        <div style="font-size:18px;font-weight:800;margin-bottom:10px;line-height:1.25;">More CRM Connectors</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.75;margin-bottom:16px;">Pipedrive, Zoho, Monday CRM, and NetSuite connectors for sync health monitoring, migration audits, and cross-CRM data consistency checks.</div>
-        <div style="font-size:11px;font-family:var(--mono);color:var(--t3);">Roadmap — vote for what you need</div>
       </div>
 
     </div>
-
-    <!-- Early access email capture -->
-    <div style="margin-top:40px;max-width:560px;margin-left:auto;margin-right:auto;background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.2);border-radius:16px;padding:28px 32px;text-align:center;">
-      <div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:4px;">Get early access to the Salesforce connector</div>
-      <div style="font-size:12px;color:var(--t3);margin-bottom:18px;">We're selecting 50 beta testers. Early access is free. You'll shape what gets built.</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-        <input type="email" id="sf-email" placeholder="your@company.com"
-          style="flex:1;min-width:200px;max-width:280px;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(59,130,246,.25);border-radius:9px;color:var(--t1);font-family:var(--font);font-size:13px;outline:none;"
-          onkeydown="if(event.key==='Enter')submitSfEarly()">
-        <button onclick="submitSfEarly()"
-          style="padding:12px 22px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">
-          Request Early Access →
-        </button>
-      </div>
-      <div id="sf-early-msg" style="display:none;margin-top:12px;font-size:12px;color:#10b981;font-weight:600;"></div>
-      <div style="margin-top:10px;font-size:11px;color:var(--t3);">No spam. One email when we launch. Unsubscribe any time.</div>
-    </div>
-
   </div>
 </section>
 
