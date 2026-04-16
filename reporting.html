@@ -3804,6 +3804,43 @@ function buildPipeline() {
         '</tr>';
       }).join('') + '</tbody>';
   }
+
+  // ── Deal velocity by stage ──────────────────────────────────────────────
+  var sv2 = ps.stageVelocity || {};
+  var svKeys = Object.keys(sv2).filter(function(k){ return sv2[k] && sv2[k].avgDays > 0; });
+
+  if (svKeys.length > 0) {
+    html += '<div class="chart-wrap" style="margin-top:14px;">';
+    html += '<div class="chart-title">Days Spent Per Stage — where deals slow down</div>';
+    html += '<div style="margin-top:12px;display:flex;flex-direction:column;gap:6px;">';
+
+    var maxDays = Math.max.apply(null, svKeys.map(function(k){ return sv2[k].avgDays || 0; }));
+    svKeys.forEach(function(stage) {
+      var v = sv2[stage];
+      var avg = v.avgDays || 0;
+      var cnt = v.count || 0;
+      var pct = maxDays > 0 ? Math.round(avg / maxDays * 100) : 0;
+      var col = avg > 21 ? '#ef4444' : avg > 14 ? '#f59e0b' : '#10b981';
+      html += '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<div style="font-size:11px;color:var(--t2);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(stage) + '</div>' +
+        '<div style="flex:1;background:var(--b1);border-radius:4px;height:10px;overflow:hidden;">' +
+          '<div style="width:' + pct + '%;height:100%;background:' + col + ';border-radius:4px;transition:width .6s;"></div>' +
+        '</div>' +
+        '<div style="font-size:11px;color:' + col + ';font-weight:700;width:50px;text-align:right;">' + avg + 'd avg</div>' +
+        '<div style="font-size:10px;color:var(--t3);width:50px;text-align:right;">' + cnt + ' deals</div>' +
+      '</div>';
+    });
+
+    html += '</div>';
+    if (maxDays > 21) {
+      var bottleneck = svKeys.reduce(function(a,b){ return (sv2[a].avgDays||0) > (sv2[b].avgDays||0) ? a : b; });
+      html += '<div class="insight-banner warning" style="margin-top:10px;"><span>⚡</span><div>' +
+        'Pipeline bottleneck: <strong>' + esc(bottleneck) + '</strong> stage averages ' + sv2[bottleneck].avgDays + ' days. ' +
+        'Deals stalling here are your biggest velocity drag. Review why deals pause at this stage.' +
+      '</div></div>';
+    }
+    html += '</div>';
+  }
 }
 
 
@@ -6140,6 +6177,81 @@ function buildService() {
         '<strong>' + superAdm + ' super admins</strong> — best practice is 1–2. ' +
         'Each extra super admin is a security and compliance risk. Review and downgrade excess admins in Settings → Users.</div></div>';
     }
+  }
+
+  // ── Ticket resolution rate + category breakdown ──────────────────────────
+  var resRate = ps.ticketResolutionRate || 0;
+  var ticketCats = ps.ticketTopCategories || [];
+  var totalTix = ps.tickets || 0;
+  var sampledTix = ps.ticketsSampled || totalTix;
+  var unassigned2 = ps.ticketsUnassigned || 0;
+  var highPri = ps.ticketHighPriorityOpen || 0;
+  var repCount = ps.ticketRepCount || 0;
+  var avgLoad2 = ps.ticketAvgLoad || 0;
+  var maxLoad2 = ps.ticketMaxLoad || 0;
+
+  if (totalTix > 0) {
+    html += '<div class="chart-wrap" style="margin-top:14px;">' +
+      '<div class="chart-title">Ticket Queue Health</div>' +
+      '<div class="stat-strip" style="margin-top:12px;">';
+
+    // Resolution rate
+    if (sampledTix > 0) {
+      var closed = Math.round((1 - (ps.openTickets||0) / Math.max(sampledTix,1)) * 100);
+      var resColor = closed >= 70 ? 'green' : closed >= 50 ? 'amber' : 'red';
+      html += '<div class="stat-cell"><div class="stat-cell-label">Resolution Rate</div>' +
+        '<div class="stat-cell-value ' + resColor + '">' + closed + '%</div>' +
+        '<div class="stat-cell-sub">of sampled tickets closed</div></div>';
+    }
+
+    // Unassigned
+    html += '<div class="stat-cell"><div class="stat-cell-label">Unassigned Open</div>' +
+      '<div class="stat-cell-value ' + (unassigned2 > 0 ? 'red' : 'green') + '">' + fmt(unassigned2) + '</div>' +
+      '<div class="stat-cell-sub">no owner assigned</div></div>';
+
+    // High priority open
+    html += '<div class="stat-cell"><div class="stat-cell-label">High Priority Open</div>' +
+      '<div class="stat-cell-value ' + (highPri > 0 ? 'red' : 'green') + '">' + fmt(highPri) + '</div>' +
+      '<div class="stat-cell-sub">need same-day response</div></div>';
+
+    // Rep load balance
+    if (repCount > 0 && maxLoad2 > avgLoad2 * 2) {
+      html += '<div class="stat-cell"><div class="stat-cell-label">Load Imbalance</div>' +
+        '<div class="stat-cell-value amber">⚠ ' + maxLoad2 + ' max</div>' +
+        '<div class="stat-cell-sub">vs ' + avgLoad2 + ' avg per rep</div></div>';
+    }
+
+    html += '</div>'; // close stat-strip
+
+    // True total notice if sampled
+    if (totalTix > sampledTix) {
+      html += '<div style="font-size:11px;color:var(--t3);margin-top:8px;padding:8px 12px;background:var(--card-bg2);border-radius:6px;">' +
+        '📊 Stats based on ' + fmt(sampledTix) + ' sampled tickets from your total ' + fmt(totalTix) + ' ticket queue. Sampling is used for large portals to keep audits fast while maintaining statistical accuracy.' +
+      '</div>';
+    }
+
+    // Category breakdown
+    if (ticketCats && ticketCats.length > 0) {
+      html += '<div style="margin-top:14px;">' +
+        '<div class="chart-title" style="margin-bottom:8px;">Top Ticket Categories</div>';
+      var maxCat = ticketCats[0] ? ticketCats[0][1] : 1;
+      ticketCats.forEach(function(cat) {
+        var catName = cat[0] || 'Uncategorized';
+        var catCount = cat[1] || 0;
+        var pct2 = maxCat > 0 ? Math.round(catCount / maxCat * 100) : 0;
+        var col2 = catName === 'Uncategorized' ? '#6b7280' : '#3b82f6';
+        html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' +
+          '<div style="font-size:11px;color:var(--t2);width:140px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;">' + esc(catName) + '</div>' +
+          '<div style="flex:1;background:var(--b1);border-radius:3px;height:8px;overflow:hidden;">' +
+            '<div style="width:' + pct2 + '%;height:100%;background:' + col2 + ';border-radius:3px;"></div>' +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--t2);width:40px;text-align:right;">' + catCount + '</div>' +
+        '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>'; // close chart-wrap
   }
 
   var el = document.getElementById('service-content');

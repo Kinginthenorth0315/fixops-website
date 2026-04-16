@@ -668,7 +668,7 @@ function renderLeaks(data, auditId) {
     fixAction: 'Automation → sort by Enrolled ASC → archive zero-enrollment workflows',
     severity: deadWf > 10 ? 'critical' : deadWf > 3 ? 'warning' : 'info',
     zero_msg: 'All workflows actively enrolling',
-    why: '$22/workflow = HubSpot automation ROI benchmark (8 min saved/enrollment × 15 enrollments × $35/hr burdened cost ÷ 2 for conservatism).',
+    why: '$22/workflow/mo = automation ROI benchmark: 8 min saved per enrollment × 15 avg enrollments/mo × $35/hr burdened labor cost ÷ 2 for conservatism. Source: HubSpot partner automation ROI data.',
   });
 
   // 4. DUPLICATES
@@ -685,7 +685,7 @@ function renderLeaks(data, auditId) {
     fixAction: 'Contacts → Actions → Manage Duplicates → merge or delete',
     severity: dupes > 50 ? 'critical' : dupes > 15 ? 'warning' : 'info',
     zero_msg: 'No duplicates detected',
-    why: '$0.18/contact/mo = HubSpot 5k-10k tier ($800-$1,600/mo ÷ contact count). Duplicates inflate your tier without adding value.',
+    why: '$0.18/contact/mo = mid-point of HubSpot Marketing Hub Professional billing at the 5k-10k contact tier ($800–$1,600/mo). Each duplicate contact occupies a billing slot without adding a real customer relationship. Remove duplicates to stay in a lower tier longer.',
   });
 
   // 5. OVERDUE DEALS
@@ -735,14 +735,14 @@ function renderLeaks(data, auditId) {
 
   // 7. EMAIL DELIVERABILITY
   var archiveLeak = archiveCandidates > 0 ? Math.round(archiveCandidates * 0.16) : 0;
-  var bounceLeak  = bounceEmails > 0 ? Math.round(bounceEmails * 35) : 0;
+  var bounceLeak  = 0; // Bounce rate affects deliverability, not directly quantifiable in $/mo
   var emailLeak   = bounceLeak + archiveLeak;
   leaks.push({
     id: 'email', icon: '📧', dataQuality: true, color: bounceEmails > 2 ? '#ff3b3b' : '#f59e0b',
     colorBg: bounceEmails > 2 ? 'rgba(255,59,59,.1)' : 'rgba(245,158,11,.1)',
     title: 'Email Deliverability Risk',
     amount: emailLeak,
-    period: '/mo in email ROI loss',
+    period: ' estimated billing waste',
     desc: (bounceEmails > 0 ? bounceEmails + ' campaigns with >5% bounce rate damaging your sender domain. ' : '') +
           (archiveCandidates > 0 ? fmt(archiveCandidates) + ' dead contacts costing billing tier space.' : 'No high-bounce issues detected.'),
     metric: (bounceEmails > 0 ? bounceEmails + ' high-bounce campaigns' : 'No high-bounce detected') +
@@ -755,7 +755,12 @@ function renderLeaks(data, auditId) {
   });
 
   // 8. OVERDUE INVOICES
-  var invLeak = overdueInv > 0 ? Math.round(overdueInv * 35) : 0;
+  var invLeak = 0;
+  if (overdueInv > 0) {
+    // $35/overdue invoice = conservative AR collection cost (time + write-off risk)
+    // Only applies if portal actually uses HubSpot Commerce Hub invoicing
+    invLeak = Math.min(Math.round(overdueInv * 35), 5000);
+  }
   leaks.push({
     id: 'invoices', icon: '🧾', color: '#f59e0b', colorBg: 'rgba(245,158,11,.1)',
     title: 'Overdue Invoice Exposure',

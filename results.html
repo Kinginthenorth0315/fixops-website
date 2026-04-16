@@ -725,15 +725,32 @@ function showResults(data) {
     ? { val: (lrt.slowResponsePct > 0 ? lrt.slowResponsePct + '% dark' : 'On track'), lbl: 'Lead Response' }
     : null;
 
+  // Build contextual snap items — show health indicators not just raw counts
+  var contactHealth = ps.duplicateContactCount > ps.contacts * 0.1 ? ' ⚠️' :
+    (ps.noEmailContactCount > ps.contacts * 0.2 ? ' ⚠️' : '');
+  var wfHealth = ps.erroredWorkflows > 0 ? ' (' + ps.erroredWorkflows + ' errors)' :
+    ps.deadWorkflowCount > 5 ? ' (' + ps.deadWorkflowCount + ' dead)' : '';
+  var ticketHealth = ps.ticketsUnassigned > 0 ? ' (' + ps.ticketsUnassigned + ' unassigned)' :
+    ps.ticketsOver7Days > 0 ? ' (' + ps.ticketsOver7Days + ' overdue)' : '';
+  var userHealth = ps.ghostSeats > 0 ? ' (' + ps.ghostSeats + ' ghost)' : '';
+  var emailHealth = ps.avgOpenRate > 0
+    ? (ps.avgOpenRate >= 20 ? ' ✓ ' + ps.avgOpenRate + '% open' : ' ⚠️ ' + ps.avgOpenRate + '% open')
+    : '';
+  var dealsDisplay = ps.openPipelineValue > 0
+    ? fmtMoney(ps.openPipelineValue) + pipeReality
+    : fmt(ps.deals||0) + ' deals';
+
   var snapItems = [
-    { val: fmt(ps.contacts||0),   lbl: 'Contacts' },
-    { val: fmt(ps.companies||0),  lbl: 'Companies' },
-    { val: ps.openPipelineValue > 0 ? fmtMoney(ps.openPipelineValue) + pipeReality : fmt(ps.deals||0)+' deals', lbl: 'Pipeline' },
-    { val: fmt(ps.tickets||0),    lbl: 'Tickets' },
-    { val: fmt(ps.workflows||0),  lbl: 'Workflows' },
-    { val: fmt(ps.forms||0),      lbl: 'Forms' },
-    { val: fmt(ps.users||0),      lbl: 'Users' },
-    { val: fmt(ps.lists||0),      lbl: 'Lists' },
+    { val: fmt(ps.contacts||0) + contactHealth,  lbl: 'Contacts',  warn: !!contactHealth },
+    { val: fmt(ps.companies||0),                  lbl: 'Companies', warn: false },
+    { val: dealsDisplay,                          lbl: 'Pipeline',  warn: !!pipeReality },
+    { val: fmt(ps.tickets||0) + ticketHealth,     lbl: 'Tickets',   warn: !!ticketHealth },
+    { val: fmt(ps.workflows||0) + wfHealth,       lbl: 'Workflows', warn: !!wfHealth },
+    { val: fmt(ps.users||0) + userHealth,         lbl: 'Users/Seats', warn: !!userHealth },
+    { val: fmt(ps.forms||0),                      lbl: 'Forms',     warn: false },
+    { val: fmt(ps.lists||0),                      lbl: 'Lists',     warn: false },
+    { val: ps.marketingEmailCount > 0 ? fmt(ps.marketingEmailCount) + emailHealth : '—', lbl: 'Emails', warn: emailHealth.includes('⚠️') },
+    { val: ps.sequences > 0 ? fmt(ps.sequences) : '—', lbl: 'Sequences', warn: false },
   ];
   if (lrtSnap) snapItems.push(lrtSnap);
   // Add conditional items based on what the portal has
@@ -754,7 +771,8 @@ function showResults(data) {
     snapItems.push({ val: fmt(ps.customObjectCount), lbl: coLabel });
   }
   bar.innerHTML = snapItems.map(function(si){
-    return '<div class="snap-item"><div class="snap-val">'+esc(si.val)+'</div><div class="snap-lbl">'+esc(si.lbl)+'</div></div>';
+    var warnStyle = si.warn ? 'color:#f59e0b;' : '';
+    return '<div class="snap-item"><div class="snap-val" style="'+warnStyle+'">'+esc(si.val)+'</div><div class="snap-lbl">'+esc(si.lbl)+'</div></div>';
   }).join('');
 
   var page = document.getElementById('main-page');
@@ -805,19 +823,26 @@ function showResults(data) {
   try { renderHubIntelligence(ps, scores, plan, waste, criticals); } catch(e) { console.warn('hub intel:', e); }
 
   // ── PLAN TIER SYSTEM ─────────────────────────────────────────────────────
-  // Free        = score + top 5 critical issues only, no guides, hard CTA
-  // Deep        = full issues + guides + fix-it service + revenue leaks (no reporting, no AI)
-  // Pro-Audit   = deep + deal risk + workflow conflicts + enrichment gaps
-  // Pulse/mo    = reporting access (basic views), weekly monitoring, basic AI
-  // Pro/mo      = full reporting all views, unlimited AI, trends/history
-  // Agency/mo   = everything + white-label
-  var isOneTime   = ['deep','pro-audit'].includes(plan);
-  var isMonthly   = ['pulse','pro','command'].includes(plan);
-  var isProMonthly= ['pro','command'].includes(plan);
-  var isAgency    = plan === 'command';
-  var isFree      = plan === 'free' || !plan;
+  // Free        = score + top 5 critical issues, no guides, hard CTA
+  // Diagnostic  = full 210-point scan, all issues, guides, fix-it, revenue leaks
+  // Full Audit  = Diagnostic + all 48 views, AI queries, deal risk, workflow conflicts
+  // Monitor/mo  = weekly rescans, alerts, 15 core views, Fix It For Me
+  // Sentinel/mo = daily scans, all 48 views, unlimited AI, white-label
+  // Command/mo  = everything + agency features
+  // Plan codes: free | deep/diagnostic | pro-audit/full | pulse/monitor | pro/sentinel | command
+  var isOneTime    = ['deep','diagnostic','deep-audit','pro-audit','full','full-audit'].includes(plan);
+  var isDiagnostic = ['deep','diagnostic','deep-audit'].includes(plan);
+  var isFullAudit  = ['pro-audit','full','full-audit'].includes(plan);
+  var isMonthly    = ['pulse','monitor','pro','sentinel','command'].includes(plan);
+  var isMonitor    = ['pulse','monitor'].includes(plan);
+  var isSentinel   = ['pro','sentinel'].includes(plan);
+  var isAgency     = plan === 'command';
+  var isFree       = plan === 'free' || !plan;
+  var hasAI        = isFullAudit || isSentinel || isAgency;
+  var hasAllViews  = isFullAudit || isSentinel || isAgency;
 
-  window.PLAN_FLAGS = { isFree, isOneTime, isMonthly, isProMonthly, isAgency, plan };
+  window.PLAN_FLAGS = { isFree, isOneTime, isDiagnostic, isFullAudit,
+    isMonthly, isMonitor, isSentinel, isAgency, hasAI, hasAllViews, plan };
 
   // ── Show plan badge on nav ─────────────────────────────────────────────
   var navBadge = document.getElementById('nav-plan-badge');
@@ -917,57 +942,38 @@ function showResults(data) {
                   issue.severity==='warning' ? 'Typically 2–5 days to resolve' : 'Typically half-day to 1 day';
     var fixImpact = issue.impact || 'Revenue and data quality improvement';
 
-    var serviceHtml = '<div style="margin-top:16px;background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.25);border-radius:12px;padding:16px 18px;">' +
+    // ── Build dimension-specific Fix It For Me CTA ────────────────────────
+    var dimEng = {
+      'Pipeline':      { label:'Pipeline Fix',    what:'Deal hygiene, pipeline config, close date enforcement' },
+      'Sales':         { label:'Sales Setup',      what:'Templates, sequences, playbooks, rep onboarding' },
+      'Marketing':     { label:'Marketing Fix',    what:'Email deliverability, list cleanup, form conversion' },
+      'Service':       { label:'Service Hub Setup',what:'SLA rules, ticket routing, escalation workflows' },
+      'Automation':    { label:'Workflow Rebuild', what:'Fix errors, consolidate dead workflows, add goals' },
+      'Data Integrity':{ label:'Data Cleanup',     what:'Deduplicate, fix lifecycle stages, repair associations' },
+      'Configuration': { label:'Portal Config',    what:'Permissions, email auth, integrations, settings' },
+      'Reporting':     { label:'Reporting Setup',  what:'Dashboards, custom reports, attribution tracking' },
+    };
+    var DIM_NORMALIZE_SVC = {
+      'Pipeline Integrity':'Pipeline','Service Health':'Service','Automation Health':'Automation',
+      'Marketing Health':'Marketing','Reporting Quality':'Reporting','Team Adoption':'Sales',
+      'Configuration & Security':'Configuration','Configuration Security':'Configuration','Data':'Data Integrity',
+    };
+    var issueDim = DIM_NORMALIZE_SVC[issue.dimension] || issue.dimension || 'Pipeline';
+    var eng = dimEng[issueDim] || { label:'Portal Fix', range:'$500–$2,500', what:'Scoped from this audit finding' };
+
+    var serviceHtml = '<div style="margin-top:14px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:14px 16px;">' +
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
-        '<div style="flex:1;min-width:200px;">' +
-          '<div style="font-size:10px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:6px;">FixOps Can Fix This For You</div>' +
-          '<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">We have fixed this exact issue on 100+ portals.</div>' +
-          '<div style="font-size:12px;color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:10px;">' +
-            timeEst + ' · Flat-rate quote before work starts · No obligation.' +
-          '</div>' +
-          '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
-            '<button onclick="event.stopPropagation();fixItForMe('+idx+')" style="padding:8px 16px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;">🛠 Get a Quote</button>' +
-            '<a href="https://calendly.com/matthew-fixops/30min" target="_blank" onclick="event.stopPropagation()" style="padding:8px 16px;background:transparent;border:1px solid rgba(124,58,237,.35);border-radius:8px;font-size:12px;font-weight:600;color:rgba(255,255,255,.65);text-decoration:none;display:inline-flex;align-items:center;">📅 Book a Call</a>' +
-          '</div>' +
+        '<div style="flex:1;min-width:180px;">' +
+          '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:5px;">🛠 FixOps Can Fix This</div>' +
+          '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:2px;">' + eng.label + '</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.5;">' + eng.what + '. Scoped from this audit. Quote sent within 24 hours.</div>' +
         '</div>' +
-        '<div style="text-align:center;padding:10px 14px;background:rgba(0,0,0,.2);border-radius:8px;min-width:100px;flex-shrink:0;">' +
-          '<div style="font-size:10px;color:rgba(255,255,255,.35);font-family:monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Time to Fix</div>' +
-          '<div style="font-size:14px;font-weight:700;color:#a78bfa;">' + (issue.severity==='critical'?'1–3 days':issue.severity==='warning'?'2–5 days':'<1 day') + '</div>' +
-          '<div style="font-size:10px;color:rgba(255,255,255,.25);margin-top:4px;">with FixOps</div>' +
+        '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">' +
+          '<button onclick="event.stopPropagation();fixItForMe(' + idx + ')" style="padding:7px 14px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🛠 Fix It For Me</button>' +
+          '<a href="https://calendly.com/matthew-fixops/30min?utm_source=fixops&utm_medium=issue&utm_campaign=' + encodeURIComponent(issueDim) + '" target="_blank" onclick="event.stopPropagation()" style="display:block;text-align:center;padding:6px 14px;background:transparent;border:1px solid rgba(124,58,237,.3);border-radius:7px;color:#a78bfa;font-size:10px;font-weight:600;text-decoration:none;white-space:nowrap;">Book a Call →</a>' +
         '</div>' +
       '</div>' +
-    '</div>';
-
-    var card = document.createElement('div');
-    card.className = 'issue-card';
-    card.setAttribute('data-dimension', issue.dimension || '');
-    card.setAttribute('data-severity', issue.severity || '');
-    card.onclick = (function(i){ return function(){ toggleIssue(i); }; })(idx);
-    card.id = 'ic-'+idx;
-
-    card.innerHTML =
-      '<div class="issue-top">'+
-        '<div class="sev-bar" style="background:'+sc+';"></div>'+
-        '<div class="i-body">'+
-          '<div class="i-header">'+
-            '<div class="i-title">'+esc(issue.title)+'</div>'+
-            '<div class="sev-tag '+scC+'">'+scC.toUpperCase()+'</div>'+
-          '</div>'+
-          '<div class="i-desc">'+esc(issue.description)+'</div>'+
-          '<div class="i-impact">'+
-            '<span>💸</span>'+
-            '<span>'+esc(issue.impact||'')+'</span>'+
-            '<span class="i-dim">'+esc(dimLabel)+'</span>'+
-          '</div>'+
-        '</div>'+
-        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">' +
-          '<div class="i-arrow">▾</div>' +
-          (issue.severity==='critical' ? '<span style="font-size:9px;font-weight:700;color:#f43f5e;background:rgba(244,63,94,.12);padding:2px 6px;border-radius:4px;white-space:nowrap;">⚡ Fix First</span>' : '') +
-        '</div>'+
-      '</div>'+
-      '<div class="issue-expand">'+
-        detailHtml + guideHtml + serviceHtml +
-      '</div>';
+    '</div>'
 
     // For free plans: strip guide steps and fix-it button
     if (flags.isFree) {
@@ -1583,7 +1589,17 @@ function buildFixPlan(data) {
     var footerHtml =
       '<div style="padding:12px 18px;margin-top:auto;border-top:1px solid '+b.border+';display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">' +
         '<div style="font-size:11px;color:var(--t3);">' +
-          '<strong style="color:var(--t1);">'+total+'</strong> issue'+(total!==1?'s':'')+' · flat-rate fix available' +
+          (() => {
+          var engMap = {
+            sales:'Sales Setup',
+            marketing:'Marketing Fix',
+            service:'Service Hub Setup',
+            automation:'Workflow Rebuild',
+            data:'Data Cleanup'
+          };
+          var label = engMap[key] || 'Portal Fix';
+          return '<strong style="color:var(--t1);">'+total+'</strong> issue'+(total!==1?'s':'')+' · <span style="color:#a78bfa;">'+label+' available</span>';
+        })() +
         '</div>' +
         '<div style="display:flex;gap:8px;align-items:center;">' +
           (globalIdx >= 0
@@ -1606,7 +1622,7 @@ function buildFixPlan(data) {
         '<div style="flex:1;min-width:220px;">' +
           '<div style="font-size:15px;font-weight:800;color:var(--t1);margin-bottom:4px;">Fix everything across all '+totalIssues+' findings.</div>' +
           '<div style="font-size:12px;color:var(--t2);line-height:1.6;">' +
-            'One 30-minute call to scope the full engagement. Flat-rate quote for every hub. We fix it — you approve each step.' +
+            'One 30-minute call. We review your audit together, scope exactly what needs fixing, and send a proposal within 24 hours. You approve before anything starts.' +
           '</div>' +
         '</div>' +
         '<a href="https://calendly.com/matthew-fixops/30min" target="_blank" ' +
