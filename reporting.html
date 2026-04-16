@@ -3104,7 +3104,7 @@ async function buildDealRisk(id) {
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
   // Monitor ($299) also blocked from intelligence views — requires Sentinel
   if (plan === 'free' || plan === 'pulse' || plan === 'monitor' || plan === 'diagnostic' || plan === 'deep') {
-    el.innerHTML = upgradePrompt('Deal Risk Scoring', 'See every open deal scored for risk based on inactivity, missing fields, and overdue close dates.', 'monitor');
+    el.innerHTML = upgradePrompt('Deal Risk Scoring', 'See every open deal scored for risk based on inactivity, missing fields, and overdue close dates.', 'sentinel');
     return;
   }
   try {
@@ -3191,7 +3191,7 @@ async function buildEnrichmentGaps(id) {
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
   // Monitor ($299) also blocked from intelligence views — requires Sentinel
   if (plan === 'free' || plan === 'pulse' || plan === 'monitor') {
-    el.innerHTML = upgradePrompt('Contact Enrichment Gaps', 'See which fields are missing across your database and how many contacts are blocked from sequences because of it.', 'monitor');
+    el.innerHTML = upgradePrompt('Contact Enrichment Gaps', 'See which fields are missing across your database and how many contacts are blocked from sequences because of it.', 'sentinel');
     return;
   }
   try {
@@ -3333,7 +3333,7 @@ function buildSettings() {
   var plan = (DATA && DATA.portalInfo && DATA.portalInfo.plan) || DATA && DATA.plan || 'free';
   var email = DATA && DATA.portalInfo && DATA.portalInfo.email;
   if (!['pulse','pro','command'].includes(plan)) {
-    el.innerHTML = upgradePrompt('Slack Alerts', 'Get weekly scan summaries and critical issue alerts delivered to any Slack channel. Setup takes 2 minutes.', 'monitor');
+    el.innerHTML = upgradePrompt('Slack Alerts', 'Get weekly scan summaries and critical issue alerts delivered to any Slack channel. Setup takes 2 minutes.', 'sentinel');
     return;
   }
   el.innerHTML =
