@@ -444,6 +444,90 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
 </section>
 
 <!-- ═══ PLATFORM FEATURES ═══════════════════════════════════════════════════ -->
+<section style="padding:60px 24px 0;border-top:1px solid var(--b1);position:relative;z-index:1;">
+  <div style="max-width:1100px;margin:0 auto;">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">What It Actually Looks Like</div>
+      <h2 style="font-size:clamp(24px,3.5vw,42px);font-weight:900;letter-spacing:-.7px;margin-bottom:14px;">Every finding lands like this.</h2>
+      <p style="font-size:16px;color:var(--t2);max-width:560px;margin:0 auto;line-height:1.7;">Not a score. Not a vague warning. Severity, dollar impact, root cause, and a numbered fix guide — on every single issue.</p>
+    </div>
+
+    <!-- Mock audit finding card -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:60px;">
+
+      <!-- Finding example -->
+      <div style="background:var(--s1);border:1px solid rgba(244,63,94,.25);border-radius:16px;overflow:hidden;">
+        <div style="background:rgba(244,63,94,.08);border-bottom:1px solid rgba(244,63,94,.2);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="width:8px;height:8px;background:#f43f5e;border-radius:50%;display:inline-block;"></span>
+            <span style="font-size:10px;font-weight:800;color:#f87171;font-family:var(--mono);letter-spacing:1.5px;text-transform:uppercase;">CRITICAL</span>
+          </div>
+          <span style="font-size:10px;font-family:var(--mono);color:var(--t3);">Automation · Issue #3 of 14</span>
+        </div>
+        <div style="padding:20px 22px;">
+          <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:8px;">7 workflows enrolling contacts with no active goal or exit condition</div>
+          <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.2);border-radius:6px;padding:5px 12px;margin-bottom:14px;">
+            <span style="font-size:11px;font-weight:700;color:#f87171;">⚡ Impact:</span>
+            <span style="font-size:11px;color:var(--t2);">Contacts cycling indefinitely · Estimated $340/mo in duplicate email sends</span>
+          </div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:14px;">Workflows without an enrollment goal or exit condition run until manually turned off. Contacts who already converted are re-enrolling and receiving duplicate nurture emails — inflating your send volume and confusing engaged customers.</div>
+          <div style="background:rgba(255,255,255,.03);border:1px solid var(--b2);border-radius:8px;padding:14px 16px;margin-bottom:14px;">
+            <div style="font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">Fix Guide</div>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="font-size:12px;color:var(--t2);display:flex;gap:10px;"><span style="color:#a78bfa;flex-shrink:0;font-family:var(--mono);">1.</span>Open each flagged workflow in HubSpot → Automation → Workflows</div>
+              <div style="font-size:12px;color:var(--t2);display:flex;gap:10px;"><span style="color:#a78bfa;flex-shrink:0;font-family:var(--mono);">2.</span>Click "Goal" → add a lifecycle stage or deal stage goal matching the workflow's intent</div>
+              <div style="font-size:12px;color:var(--t2);display:flex;gap:10px;"><span style="color:#a78bfa;flex-shrink:0;font-family:var(--mono);">3.</span>Add "Re-enrollment" suppression: contacts who already met the goal should not re-enter</div>
+              <div style="font-size:12px;color:var(--t2);display:flex;gap:10px;"><span style="color:#a78bfa;flex-shrink:0;font-family:var(--mono);">4.</span>Save and turn on. FixOps will confirm resolution on next Monday's rescan.</div>
+            </div>
+          </div>
+          <button style="width:100%;padding:10px;background:rgba(124,58,237,.15);border:1px solid rgba(124,58,237,.3);border-radius:8px;color:#a78bfa;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--font);">🛠 Fix It For Me — Get a flat-rate proposal in 24 hours</button>
+        </div>
+      </div>
+
+      <!-- Monitoring alert example -->
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <!-- Weekly score card -->
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:16px;padding:20px 24px;">
+          <div style="font-size:10px;font-family:var(--mono);color:var(--t3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;">📊 Monday Morning Report — Portal Health</div>
+          <div style="display:flex;align-items:center;gap:20px;margin-bottom:14px;">
+            <div style="text-align:center;">
+              <div style="font-size:42px;font-weight:900;color:#10b981;letter-spacing:-2px;line-height:1;">78</div>
+              <div style="font-size:10px;color:var(--t3);font-family:var(--mono);">/ 100</div>
+            </div>
+            <div style="flex:1;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:var(--t2);">vs last week</span><span style="color:#10b981;font-weight:700;">↑ +4 points</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px;"><span style="color:var(--t2);">Issues resolved</span><span style="color:#10b981;font-weight:700;">3 fixed ✓</span></div>
+              <div style="display:flex;justify-content:space-between;font-size:12px;"><span style="color:var(--t2);">New issues</span><span style="color:#f87171;font-weight:700;">2 new ↑</span></div>
+            </div>
+          </div>
+          <div style="height:1px;background:var(--b1);margin-bottom:12px;"></div>
+          <div style="font-size:11px;color:var(--t3);">Est. monthly waste: <span style="color:#f59e0b;font-weight:700;">$1,840</span> &nbsp;·&nbsp; Better than <span style="color:#10b981;font-weight:700;">71%</span> of portals scanned</div>
+        </div>
+
+        <!-- Same-day alert example -->
+        <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.25);border-radius:16px;padding:20px 24px;">
+          <div style="font-size:10px;font-family:var(--mono);color:#f59e0b;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">⚡ Same-Day Alert · Thursday 2:14 PM</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Billing tier warning — 94% of limit reached</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:12px;">You're 247 contacts from your next tier. At current growth rate: <strong style="color:#fff;">~18 days</strong> until a billing tier increase. FixOps identified 1,840 archivable contacts that would delay this by at least 3 months.</div>
+          <div style="height:8px;background:var(--b1);border-radius:4px;overflow:hidden;margin-bottom:8px;">
+            <div style="height:100%;width:94%;background:linear-gradient(90deg,#f59e0b,#f43f5e);border-radius:4px;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t3);font-family:var(--mono);">
+            <span>Current: 49,753 contacts</span><span style="color:#f43f5e;">Limit: 50,000</span>
+          </div>
+        </div>
+
+        <!-- AI query example -->
+        <div style="background:var(--s1);border:1px solid rgba(124,58,237,.2);border-radius:16px;padding:20px 24px;">
+          <div style="font-size:10px;font-family:var(--mono);color:#a78bfa;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;">✦ AI Report Builder</div>
+          <div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.15);border-radius:8px;padding:10px 14px;margin-bottom:10px;font-size:12px;color:var(--t2);font-style:italic;">"Which rep has the most stalled deals and what's the total value at risk?"</div>
+          <div style="font-size:12px;color:var(--t1);line-height:1.7;">Marcus has 8 stalled deals (21+ days no activity) totaling <strong style="color:#f59e0b;">$142,000</strong> in at-risk pipeline. 3 deals are past their close date with no tasks scheduled. His last logged call was 11 days ago. Recommend an activity review and automated inactivity alert workflow.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 <section id="features" style="padding:80px 24px;border-top:1px solid var(--b1);position:relative;z-index:1;">
   <div style="max-width:1140px;margin:0 auto;">
     <div style="text-align:center;margin-bottom:60px;">
@@ -664,7 +748,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         <div style="width:1px;height:32px;background:var(--b2);"></div>
         <div>
           <div style="font-size:10px;font-family:var(--mono);color:var(--v3);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:3px;">Sentinel · $399/mo</div>
-          <div style="font-size:14px;font-weight:700;">All 48 views + AI + daily scans + white-label</div>
+          <div style="font-size:14px;font-weight:700;">All 48 views · AI · Daily scans · Branded share URLs</div>
         </div>
         <div style="width:1px;height:32px;background:var(--b2);"></div>
         <div>
@@ -682,90 +766,135 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
   <div style="max-width:1140px;margin:0 auto;">
 
     <div style="text-align:center;margin-bottom:56px;">
-      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">Done-For-You Services</div>
-      <h2 style="font-size:clamp(28px,4vw,50px);font-weight:900;letter-spacing:-.8px;margin-bottom:18px;">We fix what the audit finds.<br><span style="color:var(--t2);font-weight:400;font-size:.82em;">Faster and cheaper than any agency you've talked to.</span></h2>
-      <p style="font-size:17px;color:var(--t2);max-width:640px;margin:0 auto;line-height:1.75;">Every issue in your audit has a "Fix It For Me" button. Click it — we scope the work directly from your audit data, send a flat-rate proposal within 24 hours, and start only when you approve. No hourly billing. No retainers. No guessing.</p>
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:3px;text-transform:uppercase;color:var(--v3);margin-bottom:14px;">Full-Service HubSpot Partner</div>
+      <h2 style="font-size:clamp(28px,4vw,50px);font-weight:900;letter-spacing:-.8px;margin-bottom:18px;">The platform finds it.<br><span style="color:var(--t2);font-weight:400;font-size:.82em;">Our team fixes it — or builds it from scratch.</span></h2>
+      <p style="font-size:17px;color:var(--t2);max-width:680px;margin:0 auto;line-height:1.75;">FixOps is both a SaaS platform and a certified HubSpot Solutions Partner. We run the audit, we monitor the portal, and when you need hands-on work — cleanups, migrations, builds, integrations, or a full new implementation — our team handles it. Every engagement is scoped from your audit data, not a discovery call.</p>
     </div>
 
-    <!-- Agency comparison table -->
-    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:20px;overflow:hidden;margin-bottom:40px;">
+    <!-- Agency comparison table — NO dollar amounts -->
+    <div style="background:var(--s1);border:1px solid var(--b1);border-radius:20px;overflow:hidden;margin-bottom:48px;">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
-        <div style="padding:20px 24px;font-size:12px;font-weight:700;color:var(--t3);font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;"></div>
+        <div style="padding:20px 24px;"></div>
         <div style="padding:20px 24px;border-left:1px solid var(--b1);background:rgba(244,63,94,.04);">
           <div style="font-size:12px;font-weight:700;color:#f87171;font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">❌ Typical Agency</div>
           <div style="font-size:13px;color:var(--t3);">$150–$250/hr · retainer required</div>
         </div>
         <div style="padding:20px 24px;border-left:1px solid var(--b1);background:rgba(124,58,237,.06);">
           <div style="font-size:12px;font-weight:700;color:#a78bfa;font-family:var(--mono);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">✅ FixOps</div>
-          <div style="font-size:13px;color:var(--t3);">Flat-rate · scoped from your audit</div>
+          <div style="font-size:13px;color:var(--t3);">Flat-rate · scoped from your audit data</div>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
         <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">How work is scoped</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Discovery calls, intake forms, weeks of back-and-forth before a proposal</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Scoped directly from your audit data. We already know the issues before you book the call.</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Discovery calls, intake forms, and weeks of back-and-forth before they even send a proposal</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Scoped directly from your audit data. We already know every issue, its severity, and its dollar impact before the first call.</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
         <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">Time to proposal</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">1–3 weeks for a proper scoping document</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">24 hours after you click "Fix It For Me"</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">1–3 weeks for a scoping document</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">24 hours after you click "Fix It For Me" on any audit finding</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
         <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">Pricing model</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Hourly — scope creep is the agency's friend. Final bill always higher than quoted.</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">Flat-rate. You see the number before anything starts. No surprises.</div>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);">
-        <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">Typical cost</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">$5,000–$15,000 for a full portal cleanup + setup</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">50–70% less. Most single-issue fixes: $300–$1,500.</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Hourly — scope creep is the agency's best friend. Final invoice almost always higher than quoted.</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">Flat-rate, approved before anything starts. No surprises.</div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;">
         <div style="padding:18px 24px;font-size:13px;font-weight:600;color:var(--t2);">What they know going in</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Whatever you tell them in discovery. Usually incomplete.</div>
-        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">Your full 210-point audit — every issue, ranked by severity, with dollar impact pre-calculated.</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:var(--t2);">Whatever you told them during discovery. Usually incomplete and sometimes wrong.</div>
+        <div style="padding:18px 24px;border-left:1px solid var(--b1);font-size:13px;color:#10b981;font-weight:600;">Your full 210-point audit — every issue, every dollar, ranked by severity. We read the report before you call.</div>
       </div>
     </div>
 
-    <!-- Service types grid -->
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;">
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
-        <div style="font-size:22px;margin-bottom:12px;">🗂</div>
-        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Data Cleanup</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.7;">Deduplication, lifecycle stage repair, association fixes, property standardization, contact hygiene campaigns. We clean what the audit finds — scoped from your exact findings, not a generic checklist.</div>
+    <!-- Fix & Optimize: audit-driven work -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b1);">🛠 Fix &amp; Optimize — Audit-Driven Engagements</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:36px;">
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🗂</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Data Cleanup</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Deduplication, lifecycle stage repair, property standardization, contact hygiene, association fixes. Scoped from your exact audit findings — not a generic checklist.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">⚙️</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Workflow Rebuild</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Fix erroring workflows, consolidate dead automation, resolve collision conflicts, add goals and enrollment guardrails. Built from your dependency map so nothing breaks downstream.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">📊</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Pipeline Configuration</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Multi-pipeline setup, required fields, close date enforcement, deal scoring, rep accountability workflows. Built from your actual velocity data — not a template.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">📧</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Email Deliverability</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">SPF, DKIM, and DMARC configuration, list cleaning, bounce removal, domain reputation recovery. We fix the root cause your audit surfaced — not just the symptom.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🎯</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Reporting &amp; Attribution</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Custom dashboards, revenue attribution, exec-ready pipeline reports, rep scorecards, MQL-to-close tracking. Built from the exact data gaps your audit identified.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🔗</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Integration Fixes</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Broken Salesforce syncs, NetSuite mismatches, failed webhook triggers, stale API connections. We trace the exact failure point and rebuild it correctly.</div>
+        </div>
       </div>
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
-        <div style="font-size:22px;margin-bottom:12px;">⚙️</div>
-        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Workflow Rebuild</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.7;">Fix erroring workflows, consolidate dead automation, resolve collision conflicts, add goals and enrollment guardrails. Built from your dependency map so nothing breaks downstream when we make changes.</div>
-      </div>
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
-        <div style="font-size:22px;margin-bottom:12px;">📈</div>
-        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Pipeline Configuration</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.7;">Multi-pipeline setup, required field enforcement, close date automation, deal scoring models, rep accountability workflows. Built from your actual pipeline velocity data — not a template you have to adapt.</div>
-      </div>
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
-        <div style="font-size:22px;margin-bottom:12px;">📧</div>
-        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Email Deliverability</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.7;">SPF, DKIM, and DMARC configuration. List cleaning, bounce removal, subscription health, domain reputation recovery. If your audit flagged deliverability issues, we fix the root cause — not just the symptoms.</div>
-      </div>
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
-        <div style="font-size:22px;margin-bottom:12px;">🎯</div>
-        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Reporting & Attribution</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.7;">Custom dashboards, revenue attribution models, exec-ready pipeline reporting, rep scorecards, MQL-to-close tracking. Built from the exact data gaps your audit identified — so the numbers you needed yesterday are there tomorrow.</div>
-      </div>
-      <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:24px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(124,58,237,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
-        <div style="font-size:22px;margin-bottom:12px;">🏗</div>
-        <div style="font-size:15px;font-weight:700;margin-bottom:8px;">Full Implementations</div>
-        <div style="font-size:13px;color:var(--t2);line-height:1.7;">New HubSpot hub setup, Salesforce sync, NetSuite integration, custom API work. We've built across manufacturing, SaaS, professional services, and hospitality. Audit-first means we know what your setup needs before we write a line of config.</div>
+    </div>
+
+    <!-- Build & Implement: full agency scope -->
+    <div style="margin-bottom:40px;">
+      <div style="font-size:11px;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--b1);">🏗 Build &amp; Implement — Full HubSpot Solutions Partner</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🚀</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Hub Implementations</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Full Sales Hub, Marketing Hub, Service Hub, and CMS Hub setups from scratch. Proper object structure, pipeline design, lifecycle stages, team permissions, and training — done right the first time.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🔄</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">CRM Migrations</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Salesforce → HubSpot, Pipedrive → HubSpot, spreadsheet → HubSpot. Clean data mapping, dedup before import, association rebuilds, and zero-downtime cutover plans.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🌐</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Website Migrations</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">WordPress → HubSpot CMS, custom site → HubSpot. SEO-preserving migrations, HubDB data migrations, custom module builds, and full forms/tracking setup post-launch.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">⚡</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Custom Integrations</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Salesforce bi-directional sync, NetSuite, custom API work, webhook architecture, and third-party app connections. We've built across manufacturing, SaaS, and professional services.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">👨‍💻</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">HubSpot Development</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Custom modules, HubL templates, calculated properties, private apps, HubDB-driven pages, and anything HubSpot's native UI can't build. If HubSpot has an API for it, we can build it.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">📣</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Marketing &amp; Content</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Email campaigns, landing pages, nurture sequences, blog content, and campaign architecture. Built inside HubSpot with proper tracking, attribution, and reporting from day one.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🏢</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Portal Rebuilds</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">When a portal is too broken to fix incrementally — we scope a full rebuild. New object structure, clean data migration, rebuilt automation, and a Sentinel subscription to keep it clean after.</div>
+        </div>
+        <div style="background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(99,102,241,.3)'" onmouseout="this.style.borderColor='var(--b1)'">
+          <div style="font-size:20px;margin-bottom:10px;">🎓</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:6px;">Training &amp; Enablement</div>
+          <div style="font-size:12px;color:var(--t2);line-height:1.7;">Team training sessions, SOP documentation, custom playbooks, and rep onboarding guides. Tailored to your specific HubSpot setup — not generic HubSpot Academy content.</div>
+        </div>
       </div>
     </div>
 
     <!-- CTA bar -->
     <div style="background:linear-gradient(135deg,rgba(124,58,237,.1),rgba(37,99,235,.06));border:1px solid rgba(124,58,237,.2);border-radius:16px;padding:28px 32px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;">
       <div>
-        <div style="font-size:18px;font-weight:800;margin-bottom:6px;">Start with a free audit. See the issues. Then decide.</div>
-        <div style="font-size:14px;color:var(--t2);">Run the audit yourself — if you want our team to fix what it finds, click "Fix It For Me" on any issue. No obligation, no discovery call required first.</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:6px;">Start with the audit. We'll handle the rest.</div>
+        <div style="font-size:14px;color:var(--t2);">The audit tells us exactly what's wrong, what to fix first, and what a clean version of your portal looks like. Every service engagement starts from that data — no wasted discovery time.</div>
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <button onclick="openAuditModal('free')" style="padding:13px 28px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);white-space:nowrap;">Run Free Audit →</button>
@@ -874,7 +1003,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
           Can I use FixOps to audit client portals as an agency?
           <span style="color:var(--v3);font-size:18px;font-weight:400;margin-left:12px;flex-shrink:0;">+</span>
         </summary>
-        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">Yes. Sentinel includes white-label client sharing — generate a shareable URL with custom branding for client deliverables. Command is built specifically for agencies managing multiple portals. Each client portal gets its own audit, its own dashboard, and its own monitoring. We also do partner engagements where you run FixOps audits for your clients and our team handles the Fix It For Me work — reach out to discuss.</div>
+        <div style="margin-top:14px;font-size:14px;color:var(--t2);line-height:1.75;">Yes. Sentinel includes white-label client sharing — generate a shareable URL and branded PDF reports with your agency name on them, for client deliverables. Command is built specifically for agencies managing multiple portals: full white-label portal where clients log in at your domain with your branding, plus each client portal gets its own audit, dashboard, and monitoring. We also do partner engagements where you run FixOps audits for your clients and our team handles the Fix It For Me work — reach out to discuss.</div>
       </details>
 
     </div>
