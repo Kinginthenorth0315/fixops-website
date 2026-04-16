@@ -1352,11 +1352,11 @@ function showDashTab(tab, btn) {
 
 <script>
 var STRIPE_LINKS = {
-  'deep':     'https://buy.stripe.com/eVqdR96HMbnc8POdBH8Ra0a',
-  'pro_audit':'https://buy.stripe.com/6oU8wP8PU9f4d644178Ra07',
-  'pulse':    'https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06',
-  'pro':      'https://buy.stripe.com/28E4gz2rw1MC7LKeFL8Ra08',
-  'command':  'https://buy.stripe.com/cNi3cv2rw9f46HG69f8Ra09'
+  'diagnostic': 'https://buy.stripe.com/7sYdR9feifDs4zy2X38Ra0b',
+  'full':       'https://buy.stripe.com/4gM9AT4zEgHwea89lr8Ra0c',
+  'monitor':    'https://buy.stripe.com/eVqeVd9TYbncea89lr8Ra0d',
+  'sentinel':   'https://buy.stripe.com/5kQ3cvfei62S5DC0OV8Ra0e',
+  'command':    'https://buy.stripe.com/dRm28rd6a3UK0jidBH8Ra0f'
 };
 // Discounted first-month links — add ?prefilled_promo_code=FIRST99 to Sentinel link
 // Create in Stripe: coupon "FIRST99" = $200 off first invoice (Sentinel $399→$199 first month)oice (Sentinel goes $549→$199)
@@ -1368,8 +1368,11 @@ var STRIPE_DISCOUNT_LINKS = {
 
 var _pendingStripePlan = '';
 function goStripe(plan) {
+  // Normalise legacy plan codes to new names
+  var _pm = {'deep':'diagnostic','pro_audit':'full','pulse':'monitor','pro':'sentinel'};
+  plan = _pm[plan] || plan;
   // Monthly plans — go straight to Stripe (email captured at OAuth step)
-  if (['pulse','pro','command'].includes(plan)) {
+  if (['pulse','pro','command','monitor','sentinel'].includes(plan)) {
     var link = STRIPE_LINKS[plan];
     if (link) window.open(link, '_blank');
     return;
@@ -2484,12 +2487,12 @@ function showRec(text) {
   el.style.display = 'block';
 
   var planLinks = {
-    'FixOps Monitor': 'https://buy.stripe.com/28E5kDfeicrg6HGcxD8Ra06',
-    'Pro':        'https://buy.stripe.com/28E4gz2rw1MC7LKeFL8Ra08',
-    'Agency':     'https://buy.stripe.com/cNi3cv2rw9f46HG69f8Ra09',
-    'FixOps Diagnostic': 'https://buy.stripe.com/eVqdR96HMbnc8POdBH8Ra0a',
-    'FixOps Full Audit':  'https://buy.stripe.com/6oU8wP8PU9f4d644178Ra07',
-    'Snapshot':   '#pricing'
+    'FixOps Diagnostic': 'https://buy.stripe.com/7sYdR9feifDs4zy2X38Ra0b',
+    'FixOps Full Audit': 'https://buy.stripe.com/4gM9AT4zEgHwea89lr8Ra0c',
+    'FixOps Monitor':    'https://buy.stripe.com/eVqeVd9TYbncea89lr8Ra0d',
+    'FixOps Sentinel':   'https://buy.stripe.com/5kQ3cvfei62S5DC0OV8Ra0e',
+    'FixOps Command':    'https://buy.stripe.com/dRm28rd6a3UK0jidBH8Ra0f',
+    'Snapshot':          '#pricing'
   };
 
   var recPlan = 'FixOps Monitor';
