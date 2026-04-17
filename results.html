@@ -925,7 +925,14 @@ function getDemoData() {
           { name:'Morgan S.', calls: 11, meetings: 3, deals: 20, stalled: 3, score: 79 },
           { name:'Casey W.', calls: 0, meetings: 0, deals: 11, stalled: 9, score: 18 },
         ],
-        leadResponseTime: 4.2,
+        leadResponseTime: {
+          recentContacts: 240,
+          slowResponsePct: 38,
+          estimatedUncontacted: 91,
+          recentCallCount: 47,
+          recentMeetingCount: 23,
+          leadLossValue: 14200,
+        },
 
         // Integrations
         io: [
@@ -1069,7 +1076,7 @@ function showResults(data) {
     pipeReality = inflatedPct > 10 ? ' (-' + inflatedPct + '% phantom)' : '';
   }
   // Lead response time snap item
-  var lrt = ps.leadResponseTime || null;
+  var lrt = (ps.leadResponseTime && typeof ps.leadResponseTime === 'object') ? ps.leadResponseTime : null;
   var lrtSnap = null;
   if (lrt && typeof lrt === 'object' && lrt.recentContacts > 5) {
     lrtSnap = { val: (lrt.slowResponsePct > 0 ? lrt.slowResponsePct + '% dark' : 'On track'), lbl: 'Lead Response' };
@@ -1218,11 +1225,12 @@ function showResults(data) {
   var isSentinel   = ['pro','sentinel'].includes(plan);
   var isAgency     = plan === 'command';
   var isFree       = plan === 'free' || !plan;
+  var isProMonthly = isSentinel || isMonitor || isAgency;
   var hasAI        = isFullAudit || isSentinel || isAgency;
   var hasAllViews  = isFullAudit || isSentinel || isAgency;
 
   window.PLAN_FLAGS = { isFree, isOneTime, isDiagnostic, isFullAudit,
-    isMonthly, isMonitor, isSentinel, isAgency, hasAI, hasAllViews, plan };
+    isMonthly, isMonitor, isSentinel, isAgency, isProMonthly, hasAI, hasAllViews, plan };
 
   // ── Show plan badge on nav ─────────────────────────────────────────────
   var navBadge = document.getElementById('nav-plan-badge');
@@ -1237,9 +1245,9 @@ function showResults(data) {
     navBadge.style.display = 'inline-block';
   }
 
-  // ── Feature panels (async) ────────────────────────────────────────────────
+  // ── Feature panels (async) — skip for demo mode ──────────────────────────
   var auditIdParam = (new URLSearchParams(window.location.search)).get('id');
-  if (auditIdParam) {
+  if (auditIdParam && auditIdParam !== 'demo') {
     loadBillingRisk(auditIdParam);
     loadDealRisk(auditIdParam, plan);
     if (['pro-audit','pro','command'].includes(plan)) {
@@ -1573,6 +1581,7 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
   }
 
   // Lead Response Time intel card
+  var lrt = (typeof ps.leadResponseTime === 'object') ? ps.leadResponseTime : null;
   if (lrt && lrt.recentContacts > 5) {
     var lrtColor2 = lrt.slowResponsePct > 50 ? '#f43f5e' : lrt.slowResponsePct > 25 ? '#f59e0b' : '#10b981';
     var lrtTag    = lrt.slowResponsePct > 50 ? 'critical' : lrt.slowResponsePct > 25 ? 'warning' : 'healthy';
