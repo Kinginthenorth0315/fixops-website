@@ -515,6 +515,12 @@ function fmtFull(n) { return '$' + Math.round(n||0).toLocaleString(); }
     return;
   }
 
+  // Demo mode
+  if (auditId === 'demo') {
+    setTimeout(function() { renderLeaks(getLeaksDemoData(), 'demo'); }, 500);
+    return;
+  }
+
   var endpoint = token
     ? API + '/auth/verify?token=' + encodeURIComponent(token)
     : API + '/audit/status/' + auditId;
@@ -538,6 +544,94 @@ function showError() {
 }
 
 // ── Main render ──────────────────────────────────────────────────────────────
+// ── LEAKS DEMO DATA ──────────────────────────────────────────────────────────
+function getLeaksDemoData() {
+  return {
+    status: 'complete',
+    summary: {
+      overallScore: 61,
+      checksRun: 235,
+      recordsScanned: 14820,
+      monthlyWaste: 2840,
+      confirmedWaste: 2840,
+      estimatedWaste: 2840,
+      wasteBreakdown: {
+        wasteGhostSeats: 360,
+        wasteDupes: 421,
+        wasteBillingTier: 1800,
+        wasteDeadWorkflows: 120,
+        wasteNoEmail: 140,
+      },
+    },
+    issues: [
+      { dimension: 'Automation Health', severity: 'critical', title: '4 ghost seats — $360/mo confirmed waste', wasteUsd: 360 },
+      { dimension: 'Configuration', severity: 'critical', title: 'Contact tier at 91% — $1,800/yr billing upgrade risk', wasteUsd: 1800 },
+      { dimension: 'Automation Health', severity: 'critical', title: '7 workflows with no exit condition — $340/mo duplicate sends', wasteUsd: 340 },
+      { dimension: 'Pipeline Integrity', severity: 'warning', title: '14 stalled deals — $94k stale pipeline', wasteUsd: 0 },
+      { dimension: 'Data Integrity', severity: 'warning', title: '2,847 duplicate contacts — $421/mo billing inflation', wasteUsd: 421 },
+    ],
+    portalInfo: {
+      plan: 'sentinel',
+      email: 'demo@example.com',
+      company: 'Acme Corp (Demo)',
+      portalStats: {
+        contacts: 12400,
+        deals: 847,
+        openDealsCount: 847,
+        openPipelineValue: 420000,
+        stalledDeals: 14,
+        stalledPipelineValue: 94000,
+        pastDuePipelineValue: 94000,
+        pastDueDeals: 14,
+        zeroDollarDeals: 22,
+        zeroDollarPct: 8,
+        avgDealSize: 8400,
+        ghostSeats: 4,
+        ghostSeatCost: 360,
+        duplicateContactCount: 2847,
+        deadWorkflowCount: 11,
+        highBounceEmails: 3,
+        expiredQuotes: 7,
+        overdueInvoices: 3,
+        io: [
+          { name:'Salesforce', status:'stale', lastSync:'19 days ago' },
+          { name:'Slack', status:'healthy', lastSync:'2 hours ago' },
+        ],
+        leadResponseTime: {
+          recentContacts: 240, slowResponsePct: 38,
+          estimatedUncontacted: 91, recentCallCount: 47,
+          recentMeetingCount: 23, leadLossValue: 14200,
+        },
+        revenueIntel: {
+          pipelineAtRisk: 94000,
+          forecastAccuracy: 61,
+          avgDaysToClose: 34,
+          dealVelocityTrend: -12,
+        },
+        lifecycleVelocityEngine: {
+          avgLeadToMql: 8.4,
+          avgMqlToSql: 12.1,
+          avgSqlToClose: 34.0,
+          bottleneck: 'MQL → SQL',
+        },
+        contactDecayEngine: {
+          grade: 'C',
+          decayRate: 11,
+          stalePct: 28,
+          noActivityCount: 3480,
+        },
+        wasteBreakdown: {
+          wasteGhostSeats: 360,
+          wasteDupes: 421,
+          wasteBillingTier: 1800,
+          wasteDeadWorkflows: 120,
+          wasteNoEmail: 140,
+        },
+      },
+    },
+  };
+}
+
 function renderLeaks(data, auditId) {
   AUDIT_DATA = data;
   var ps      = (data.portalInfo || {}).portalStats || {};

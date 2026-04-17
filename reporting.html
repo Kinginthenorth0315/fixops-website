@@ -2422,8 +2422,139 @@ function stat(label, value, sub, color) {
   '</div>';
 }
 
+// ── Demo mode helpers ────────────────────────────────────────────────────────
+function renderDashboard(data) {
+  DATA = data;
+  try { initAllViews(); } catch(e) { console.error('initAllViews demo:', e); }
+  try { annotatePlanRequirements(); } catch(e) {}
+  // Show demo banner
+  var banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;background:linear-gradient(135deg,rgba(124,58,237,.95),rgba(37,99,235,.9));color:#fff;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 8px 30px rgba(124,58,237,.4);display:flex;align-items:center;gap:12px;';
+  banner.innerHTML = '<span>👁 Sample Dashboard — Acme Corp (Demo)</span>' +
+    '<a href="results.html?id=demo" style="color:rgba(255,255,255,.8);font-weight:600;text-decoration:underline;font-size:12px;">← Back to Audit Report</a>' +
+    '<a href="setup.html" style="background:rgba(255,255,255,.2);padding:6px 14px;border-radius:6px;color:#fff;text-decoration:none;font-size:12px;font-weight:700;">Run Free Audit →</a>';
+  document.body.appendChild(banner);
+}
+
+function getReportingDemoData() {
+  return {
+    status: 'complete',
+    summary: {
+      overallScore: 61,
+      checksRun: 235,
+      recordsScanned: 14820,
+      criticalCount: 4,
+      warningCount: 9,
+      monthlyWaste: 2840,
+      confirmedWaste: 2840,
+      estimatedWaste: 2840,
+      automationScore: 44,
+      dataScore: 58,
+      marketingScore: 67,
+      salesScore: 55,
+      serviceScore: 74,
+      configScore: 62,
+      billingScore: 45,
+      integrationScore: 63,
+      wasteBreakdown: {
+        wasteGhostSeats: 360, wasteDupes: 421, wasteBillingTier: 1800,
+        wasteDeadWorkflows: 120, wasteNoEmail: 140,
+      },
+    },
+    scores: {
+      dataIntegrity: 58, automationHealth: 44, pipelineIntegrity: 55,
+      marketingHealth: 67, configSecurity: 62, reportingQuality: 70,
+      teamAdoption: 53, serviceHealth: 74,
+    },
+    issues: [
+      { dimension:'Automation Health', severity:'critical', title:'7 workflows enrolling contacts with no exit condition', wasteUsd:340, impact:'$340/mo duplicate sends' },
+      { dimension:'Automation Health', severity:'critical', title:'4 ghost seats — paid users with zero logins in 90+ days', wasteUsd:360, impact:'$360/mo confirmed waste' },
+      { dimension:'Configuration', severity:'critical', title:'Marketing contacts at 91% of billing tier limit', wasteUsd:1800, impact:'$1,800/yr upgrade risk' },
+      { dimension:'Automation Health', severity:'critical', title:'3 workflows in error state — contacts dropping silently', impact:'Revenue impact unquantified' },
+      { dimension:'Pipeline Integrity', severity:'warning', title:'14 open deals past close date with no activity in 21+ days', impact:'$94k stale pipeline' },
+      { dimension:'Data Integrity', severity:'warning', title:'2,847 duplicate contacts detected', wasteUsd:421, impact:'$421/mo billing inflation' },
+      { dimension:'Configuration', severity:'warning', title:'Salesforce sync has not written data in 19 days', impact:'CRM data 19 days stale' },
+      { dimension:'Marketing', severity:'warning', title:'Primary sending domain missing DMARC record', impact:'Email deliverability at risk' },
+      { dimension:'Automation Health', severity:'warning', title:'11 sequences below 3% reply rate with 50+ enrollments', impact:'Domain reputation risk' },
+      { dimension:'Team Adoption', severity:'warning', title:'6 sales reps logged zero activity in last 14 days', impact:'Forecast accuracy degraded' },
+      { dimension:'Data Integrity', severity:'info', title:'43 custom properties with zero fill rate in 90 days', impact:'Property bloat' },
+      { dimension:'Configuration', severity:'info', title:'Workflow error notifications not configured', impact:'Automation failures go undetected' },
+    ],
+    portalInfo: {
+      plan: 'sentinel',
+      email: 'demo@example.com',
+      company: 'Acme Corp (Demo)',
+      portalStats: {
+        contacts: 12400, companies: 1820, deals: 847, tickets: 203,
+        workflows: 64, activeWorkflows: 41, sequences: 47, activeSequences: 31,
+        lowReplySequences: 11, forms: 28, lists: 312, listCount: 312,
+        users: 24, teamCount: 3, customProperties: 187, customContactProps: 187,
+        kbArticleCount: 34, marketingEmailCount: 84, recordsScanned: 14820,
+        checksRun: 235,
+        // Pipeline
+        openDealsCount: 847, openPipelineValue: 420000, stalledDeals: 14,
+        stalledPipelineValue: 94000, pastDuePipelineValue: 94000, pastDueDeals: 14,
+        zeroDollarDeals: 22, zeroDollarPct: 8, avgDealSize: 8400,
+        closedWonMtd: 68000, closedWonQtd: 182000, mrrTotal: 22000,
+        dealsNoCloseDate: 22,
+        // Rep data
+        ghostSeats: 4, ghostSeatCost: 360, ghostSeatWaste: 360,
+        repsWithoutMeetingLinks: 6,
+        repScorecard: [
+          { name:'Alex M.', calls:14, meetings:4, deals:22, stalled:2, score:88 },
+          { name:'Jordan K.', calls:9, meetings:2, deals:18, stalled:5, score:71 },
+          { name:'Taylor R.', calls:3, meetings:0, deals:14, stalled:8, score:34 },
+          { name:'Morgan S.', calls:11, meetings:3, deals:20, stalled:3, score:79 },
+          { name:'Casey W.', calls:0, meetings:0, deals:11, stalled:9, score:18 },
+        ],
+        // Emails
+        avgOpenRate: 18.4, avgClickRate: 2.1, avgBounceRate: 3.8, avgUnsubRate: 0.4,
+        highBounceEmails: 3, lowOpenEmails: 7, staleDraftEmails: 4, emptyLists: 18,
+        // Data quality
+        duplicateContactCount: 2847, noEmailContactCount: 1840,
+        contactsNoFirstName: 3200, undocumentedProps: 43,
+        // Service
+        openTickets: 47, ticketsOver3Days: 18, ticketsOver7Days: 9,
+        ticketsUnassigned: 6, ticketHighPriorityOpen: 4, npsResponses: 84,
+        // Engines
+        billingTierEngine: { grade:'D', pctUsed:91, daysToLimit:47, suppressCandidates:847 },
+        integrationHealthEngine: { grade:'C', staleIntegrations:1, authFailures:0 },
+        workflowGovernanceEngine: { grade:'C', noOwner:8, stale:5, lowEnrollment:4 },
+        importHealthEngine: { grade:'B', failedImports:0, highErrorImports:1 },
+        emailSenderEngine: { grade:'B', domainCount:2, abTestsNoWinner:3, missingDmarc:true },
+        apiRateLimitEngine: { usagePct:34, grade:'A' },
+        leadResponseTime: {
+          recentContacts:240, slowResponsePct:38, estimatedUncontacted:91,
+          recentCallCount:47, recentMeetingCount:23, leadLossValue:14200,
+        },
+        contactDecayEngine: { grade:'C', decayRate:11, stalePct:28, noActivityCount:3480 },
+        lifecycleVelocityEngine: {
+          avgLeadToMql:8.4, avgMqlToSql:12.1, avgSqlToClose:34.0, bottleneck:'MQL → SQL',
+        },
+        revenueIntel: {
+          pipelineAtRisk:94000, forecastAccuracy:61, avgDaysToClose:34, dealVelocityTrend:-12,
+        },
+        wasteBreakdown: {
+          wasteGhostSeats:360, wasteDupes:421, wasteBillingTier:1800,
+          wasteDeadWorkflows:120, wasteNoEmail:140,
+        },
+        io: [
+          { name:'Salesforce', status:'stale', lastSync:'19 days ago' },
+          { name:'Slack', status:'healthy', lastSync:'2 hours ago' },
+          { name:'Zapier', status:'healthy', lastSync:'1 hour ago' },
+        ],
+        openQuotes: 3, expiredQuotes: 7, overdueInvoices: 3,
+        customObjectCount: 0, customObjectData: [], customObjectNames: [],
+        deadWorkflowCount: 11, erroredWorkflows: 3, noOwnerWorkflows: 8,
+      },
+    },
+  };
+}
+
 // ── Load data ────────────────────────────────────────────────────────────────
-if (TOKEN) {
+if (auditId === 'demo') {
+  setTimeout(function() { renderDashboard(getReportingDemoData()); }, 400);
+} else if (TOKEN) {
   // Token auth — verify and get latest audit data
   loadFromToken(TOKEN);
 } else if (auditId) {

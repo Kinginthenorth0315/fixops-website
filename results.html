@@ -562,6 +562,12 @@ function showToast(icon, title, sub) {
 // Navigate to reporting with audit ID
 function goToLeaks() {
   var flags = window.PLAN_FLAGS || {};
+  // Demo mode — go directly to leaks with demo data
+  var _dParams = new URLSearchParams(window.location.search);
+  if (_dParams.get('id') === 'demo') {
+    window.location.href = 'leaks.html?id=demo';
+    return;
+  }
   if (flags.isFree) {
     showSoftUpgrade('Revenue Leaks Analysis', 'https://fixops.io/#pricing', function() {
       var params = new URLSearchParams(window.location.search);
@@ -587,6 +593,10 @@ function goToSnapshot() {
   var params = new URLSearchParams(window.location.search);
   var auditId = params.get('id');
   var token   = params.get('token');
+  if (auditId === 'demo') {
+    window.location.href = 'reporting.html?id=demo';
+    return;
+  }
   if (auditId) {
     window.location.href = 'reporting.html?id=' + auditId;
   } else if (token) {
@@ -949,6 +959,52 @@ function getDemoData() {
         emailSenderEngine: { grade: 'B', domainCount: 2, abTestsNoWinner: 3, missingDmarc: true },
         apiRateLimitEngine: { usagePct: 34, grade: 'A' },
 
+        // Intelligence engines for insight cards
+        repIntelEngine: {
+          totalReps: 5,
+          activeReps: 3,
+          ghostReps: 2,
+          avgCallsPerRep: 7.4,
+          avgMeetingsPerRep: 1.8,
+          topRep: 'Alex M.',
+          topRepScore: 88,
+          lowestRep: 'Casey W.',
+          lowestRepScore: 18,
+          repsNoActivity: 2,
+        },
+        customerHealthEngine: {
+          grade: 'B',
+          atRiskCount: 8,
+          healthyCount: 31,
+          totalCustomers: 47,
+        },
+        formConversionEngine: {
+          grade: 'C',
+          avgConversionRate: 3.2,
+          lowConversionForms: 6,
+          totalSubmissions: 847,
+          formsWithNoSubmissions: 9,
+        },
+        propertyUsageEngine: {
+          grade: 'C',
+          totalProps: 187,
+          unusedProps: 43,
+          zeroFillProps: 43,
+          duplicateProps: 8,
+        },
+        setupHealthEngine: {
+          grade: 'C',
+          score: 62,
+          missingDmarc: true,
+          noSandbox: true,
+          noErrorNotifications: true,
+        },
+        dealSourceAttribution: {
+          unattributed: 34,
+          totalDeals: 847,
+          topSource: 'Outbound Email',
+        },
+
         // Custom objects & quotes (not used in this demo portal)
         customObjectCount: 0,
         customObjectData: [],
@@ -1008,6 +1064,29 @@ function showResults(data) {
     // Show lead-gen CTA at bottom
     var bottomCta = document.getElementById('demo-bottom-cta');
     if (bottomCta) bottomCta.style.display = 'block';
+
+    // Add rep scorecard to insight rows for demo
+    var insightRows = document.getElementById('insight-rows');
+    if (insightRows && ps && ps.repScorecard && ps.repScorecard.length) {
+      var repCard = document.createElement('div');
+      repCard.style.cssText = 'background:var(--s1);border:1px solid var(--b1);border-radius:14px;padding:22px 24px;margin-bottom:16px;';
+      var repHtml = '<div style="font-size:12px;font-family:monospace;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;margin-bottom:14px;">📊 Rep Activity Scorecard — Last 30 Days</div>';
+      repHtml += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;">';
+      ps.repScorecard.forEach(function(rep) {
+        var sc = rep.score >= 75 ? '#10b981' : rep.score >= 50 ? '#f59e0b' : '#f43f5e';
+        repHtml += '<div style="background:var(--s2);border:1px solid var(--b2);border-radius:10px;padding:14px;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">' +
+            '<div style="font-size:13px;font-weight:700;color:var(--t1);">' + rep.name + '</div>' +
+            '<div style="font-size:16px;font-weight:900;color:' + sc + ';">' + rep.score + '</div>' +
+          '</div>' +
+          '<div style="font-size:11px;color:var(--t2);">📞 ' + rep.calls + ' calls &nbsp;·&nbsp; 🤝 ' + rep.meetings + ' meetings</div>' +
+          '<div style="font-size:11px;color:var(--t2);margin-top:3px;">💼 ' + rep.deals + ' open deals &nbsp;·&nbsp; <span style="color:#f59e0b;">' + rep.stalled + ' stalled</span></div>' +
+        '</div>';
+      });
+      repHtml += '</div>';
+      repCard.innerHTML = repHtml;
+      insightRows.insertBefore(repCard, insightRows.firstChild);
+    }
   }
 
   // ── Score ring ────────────────────────────────────────────────────────────
