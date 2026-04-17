@@ -515,6 +515,12 @@ function showToast(icon, title, sub) {
     return;
   }
 
+  // Demo mode — load sample data without hitting the API
+  if (auditId === 'demo') {
+    setTimeout(function(){ showResults(getDemoData()); }, 600);
+    return;
+  }
+
   var endpoint = token
     ? API + '/auth/verify?token=' + encodeURIComponent(token)
     : API + '/audit/status/' + auditId;
@@ -636,6 +642,186 @@ function showAuditError(msg) {
 }
 
 // ── Main render ──────────────────────────────────────────────────────────────
+// ── DEMO DATA ─────────────────────────────────────────────────────────────────
+function getDemoData() {
+  return {
+    status: 'complete',
+    summary: {
+      overallScore: 61,
+      checksRun: 235,
+      recordsScanned: 14820,
+      criticalCount: 4,
+      warningCount: 9,
+      infoCount: 6,
+      estimatedWaste: 2840,
+      atRiskRevenue: 18500,
+      confirmedWaste: 2840,
+      automationScore: 52,
+      dataScore: 68,
+      marketingScore: 71,
+      salesScore: 58,
+      serviceScore: 74,
+      configScore: 66,
+      billingScore: 55,
+      integrationScore: 63,
+    },
+    scores: {
+      automation: 52, data: 68, marketing: 71,
+      sales: 58, service: 74, config: 66,
+      billing: 55, integration: 63,
+    },
+    issues: [
+      {
+        dimension: 'Automation Health',
+        severity: 'critical',
+        title: '7 workflows enrolling contacts with no active goal or exit condition',
+        description: 'These workflows have no defined goal and no exit condition, meaning contacts cycle through them indefinitely. Contacts who already converted are re-enrolling and receiving duplicate nurture emails.',
+        detail: 'Workflows without an enrollment goal or exit condition run until manually turned off. This creates duplicate sends, inflated email volume, and confused contacts.',
+        impact: 'Contacts cycling indefinitely · Estimated $340/mo in duplicate email sends',
+        guide: [
+          'Go to Automation → Workflows → filter by workflows with 0 goals set',
+          'For each flagged workflow: click Goal → add a lifecycle stage or deal stage goal',
+          'Add Re-enrollment suppression to prevent already-converted contacts from re-entering',
+          'Save and verify on the next Monday rescan',
+        ],
+        wasteUsd: 340,
+      },
+      {
+        dimension: 'Billing & Seats',
+        severity: 'critical',
+        title: '4 ghost seats — paid users with zero logins in 90+ days',
+        description: 'You have 4 paid Sales Hub seats assigned to users who have not logged in for over 90 days. At $90/seat/month, these are costing $360/mo with zero activity.',
+        detail: 'Ghost seats are one of the most common and most avoidable HubSpot costs. Former employees, contractors, or reassigned team members are often left active for months.',
+        impact: '$360/mo in confirmed waste · 4 seats to deactivate immediately',
+        affectedNames: ['sarah.jones@company.com', 'mike.r@company.com', 'contractor_2023@gmail.com', 'old.manager@company.com'],
+        guide: [
+          'Go to Settings → Users & Teams → sort by Last Login',
+          'Identify users with no login in 90+ days — confirm with your team they are no longer active',
+          'Deactivate each user → their seat is released and billing stops at next cycle',
+          'Reassign any open deals or contacts from deactivated users to active reps',
+        ],
+        wasteUsd: 360,
+      },
+      {
+        dimension: 'Billing & Contacts',
+        severity: 'critical',
+        title: 'Contact tier at 91% — billing upgrade in approximately 47 days',
+        description: 'Your marketing contacts count is at 91% of your current tier limit. At your current growth rate of ~280 contacts/month, you will hit your tier limit in roughly 47 days and trigger an automatic upgrade.',
+        detail: 'HubSpot billing tier upgrades lock in for the remainder of your contract year. A single month of inaction could cost thousands in additional annual spend.',
+        impact: 'Tier upgrade will add $1,200–$3,600/yr if not addressed · 847 suppressible contacts identified',
+        guide: [
+          'Go to Contacts → filter by Last Email Open Date → older than 12 months AND Marketing Contact = true',
+          'Review the list — these are strong suppression candidates',
+          'Set Marketing Contact = false for inactive records to free up tier space',
+          'Run this process monthly to stay ahead of your tier limit',
+        ],
+        wasteUsd: 1800,
+      },
+      {
+        dimension: 'Automation Health',
+        severity: 'critical',
+        title: '3 workflows in error state — contacts may be dropping silently',
+        description: 'Three active workflows have hit errors and are failing to process contacts. No team member has been notified. Contacts that entered these workflows after the error began have been silently dropped.',
+        detail: 'Workflow errors are one of the most damaging silent failures in HubSpot. The most common causes are deleted properties, archived lists used as triggers, or disconnected integrations.',
+        impact: 'Unknown number of contacts dropped · Revenue impact unquantified without knowing workflow purpose',
+        affectedNames: ['MQL to SQL Handoff Workflow', 'New Customer Welcome Series', 'Trial Expiry Re-engagement'],
+        guide: [
+          'Go to Automation → Workflows → filter by Status: Error',
+          'Click into each erroring workflow → check the History tab for the specific failing step',
+          'Fix the root cause: update deleted property, reconnect the integration, or restore the archived list',
+          'Enable workflow error notifications in Settings → Notifications so you get same-day alerts when this recurs',
+        ],
+      },
+      {
+        dimension: 'Pipeline & Sales',
+        severity: 'warning',
+        title: '14 open deals past close date with no activity in 21+ days',
+        description: '14 deals in your pipeline have passed their expected close date and have had zero logged activity (calls, emails, meetings, tasks) in the last 21 days. These are inflating your pipeline value with stale opportunities.',
+        detail: 'Stale deals without activity skew your forecast, mislead leadership, and quietly erode pipeline confidence. Each deal should either have a next action or be moved to closed-lost.',
+        impact: '$94,000 in pipeline value at risk · Forecast accuracy degraded',
+        guide: [
+          'Filter deals by Close Date < today AND Last Activity > 21 days ago',
+          'For each deal: either log a next action (task/call/email) or mark Closed Lost with a reason',
+          'Set up a workflow to alert the deal owner when a deal has no activity for 14 days',
+        ],
+      },
+      {
+        dimension: 'Data Quality',
+        severity: 'warning',
+        title: '2,847 duplicate contact records detected',
+        description: 'FixOps identified 2,847 contacts with duplicate email addresses or matching name + company combinations. Duplicates inflate your contact count, fragment communication history, and push you toward billing tier limits faster.',
+        detail: 'Duplicates are a compounding problem — every new form submission, import, or integration sync creates new ones if not deduplicated regularly.',
+        impact: '$421/mo in billing tier inflation · Reporting accuracy degraded',
+        guide: [
+          'Go to Contacts → Actions → Manage Duplicates',
+          'Work through the suggested merges — HubSpot will show you likely duplicates with a confidence score',
+          'After merging, set up a quarterly deduplication review as a recurring task',
+        ],
+        wasteUsd: 421,
+      },
+      {
+        dimension: 'Integration Health',
+        severity: 'warning',
+        title: 'Salesforce sync has not written data in 19 days',
+        description: 'Your Salesforce integration is connected but has not successfully synced data in 19 days. Contact records updated in Salesforce during this period are not reflected in HubSpot, and vice versa.',
+        detail: 'Integration sync failures are often caused by expired OAuth tokens, changed field mappings, or permission changes on the connected account.',
+        impact: 'Data in HubSpot may be 19 days out of date for synced records · Reporting across systems unreliable',
+        guide: [
+          'Go to Settings → Integrations → Salesforce → check the Sync Health panel',
+          'Re-authenticate the connection if the token has expired',
+          'Review field mapping errors — a renamed or deleted field in either system breaks the sync',
+          'Run a manual sync after fixing and confirm records are updating',
+        ],
+      },
+      {
+        dimension: 'Marketing',
+        severity: 'warning',
+        title: 'Email sender domain missing DMARC record',
+        description: 'Your primary sending domain does not have a DMARC policy configured. Without DMARC, your domain is vulnerable to spoofing and email providers (Gmail, Outlook) may filter or reject your campaigns.',
+        detail: 'Google and Yahoo now require DMARC for bulk senders. Without it, your deliverability will degrade over time as inbox providers increase filtering.',
+        impact: 'Email deliverability at risk · Campaigns may land in spam without warning',
+        guide: [
+          'Add a DMARC TXT record to your DNS: v=DMARC1; p=none; rua=mailto:dmarc-reports@yourdomain.com',
+          'Start with p=none to monitor without blocking, then move to p=quarantine after 30 days',
+          'Verify SPF and DKIM are also correctly configured in HubSpot Email Settings',
+        ],
+      },
+    ],
+    portalInfo: {
+      plan: 'sentinel',
+      email: 'demo@example.com',
+      company: 'Acme Corp (Demo)',
+      portalStats: {
+        contacts: 12400,
+        deals: 847,
+        companies: 1820,
+        tickets: 203,
+        workflows: 64,
+        activeWorkflows: 41,
+        customProperties: 187,
+        lists: 312,
+        forms: 28,
+        ghostSeats: 4,
+        ghostSeatCost: 360,
+        recordsScanned: 14820,
+        checksRun: 235,
+        billingTierEngine: { grade: 'D', pctUsed: 91, daysToLimit: 47 },
+        integrationHealthEngine: { grade: 'C', staleIntegrations: 1 },
+        workflowGovernanceEngine: { grade: 'C', noOwner: 8, stale: 5 },
+        importHealthEngine: { grade: 'B', failedImports: 0, highErrorImports: 1 },
+        emailSenderEngine: { grade: 'B', domainCount: 2, abTestsNoWinner: 1 },
+        apiRateLimitEngine: { usagePct: 34, grade: 'A' },
+        wasteBreakdown: {
+          wasteGhostSeats: 360, wasteDupes: 421, wasteBillingTier: 1800,
+          wasteDeadWorkflows: 120, wasteNoEmail: 140,
+        },
+        openPipelineValue: 420000,
+        closedWonMtd: 68000,
+      },
+    },
+  };
+}
+
 function showResults(data) {
   AUDIT_DATA = data;
   var summary  = data.summary   || {};
