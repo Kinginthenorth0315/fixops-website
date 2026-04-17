@@ -707,7 +707,7 @@ function getDemoData() {
         wasteUsd: 340,
       },
       {
-        dimension: 'Billing & Seats',
+        dimension: 'Automation Health',
         severity: 'critical',
         title: '4 ghost seats — paid users with zero logins in 90+ days',
         description: 'You have 4 paid Sales Hub seats assigned to users with no logins in 90+ days. At $90/seat/month these are costing $360/mo with zero activity — likely former employees or reassigned contractors.',
@@ -723,7 +723,7 @@ function getDemoData() {
         wasteUsd: 360,
       },
       {
-        dimension: 'Billing & Contacts',
+        dimension: 'Configuration',
         severity: 'critical',
         title: 'Marketing contacts at 91% of tier limit — billing upgrade in ~47 days',
         description: 'Your marketing contact count is at 91% of your current tier limit. At your growth rate of ~280 contacts/month you will hit the limit in ~47 days, triggering an automatic upgrade that locks in for the remainder of your contract.',
@@ -753,7 +753,7 @@ function getDemoData() {
         ],
       },
       {
-        dimension: 'Pipeline & Sales',
+        dimension: 'Pipeline Integrity',
         severity: 'warning',
         title: '14 open deals past close date with no activity in 21+ days',
         description: '14 deals have passed their expected close date and have had zero logged activity in 21+ days. These inflate pipeline value, mislead forecasting, and confuse reps on what to prioritize.',
@@ -766,7 +766,7 @@ function getDemoData() {
         ],
       },
       {
-        dimension: 'Data Quality',
+        dimension: 'Data Integrity',
         severity: 'warning',
         title: '2,847 duplicate contact records detected',
         description: '2,847 contacts have duplicate email addresses or matching name + company combinations. Duplicates inflate your contact count, fragment communication history, and accelerate billing tier growth.',
@@ -780,7 +780,7 @@ function getDemoData() {
         wasteUsd: 421,
       },
       {
-        dimension: 'Integration Health',
+        dimension: 'Configuration',
         severity: 'warning',
         title: 'Salesforce sync has not written data in 19 days',
         description: 'Your Salesforce integration is connected but has not successfully synced in 19 days. Contacts updated in Salesforce are not reflected in HubSpot — your CRM data is nearly three weeks out of date.',
@@ -835,7 +835,7 @@ function getDemoData() {
         ],
       },
       {
-        dimension: 'Data Quality',
+        dimension: 'Data Integrity',
         severity: 'info',
         title: '187 custom properties — 43 have zero fill rate in the last 90 days',
         description: '43 of your 187 custom contact properties have not been populated in 90 days. These are likely orphaned from a previous campaign, import, or integration and are contributing to property bloat.',
@@ -883,6 +883,7 @@ function getDemoData() {
         teamCount: 3,
         sequences: 47,
         activeSequences: 31,
+        lowReplySequences: 11,
         marketingEmailCount: 84,
         kbArticleCount: 34,
         recordsScanned: 14820,
@@ -896,12 +897,16 @@ function getDemoData() {
         // Pipeline
         openDealsCount: 847,
         stalledDeals: 14,
+        dealsNoActivity14d: 14,
+        dealsNearExpiry: 8,
         dealsNoCloseDate: 22,
         openPipelineValue: 420000,
         stalledPipelineValue: 94000,
         zeroDollarPct: 8,
         closedWonMtd: 68000,
         mrrTotal: 22000,
+        closedWonQtd: 182000,
+        avgDealSize: 8400,
 
         // Workflows
         erroredWorkflows: 3,
@@ -1086,9 +1091,12 @@ function showResults(data) {
   }
   // Lead response time snap item
   var lrt = ps.leadResponseTime || null;
-  var lrtSnap = lrt && lrt.recentContacts > 5
-    ? { val: (lrt.slowResponsePct > 0 ? lrt.slowResponsePct + '% dark' : 'On track'), lbl: 'Lead Response' }
-    : null;
+  var lrtSnap = null;
+  if (lrt && typeof lrt === 'object' && lrt.recentContacts > 5) {
+    lrtSnap = { val: (lrt.slowResponsePct > 0 ? lrt.slowResponsePct + '% dark' : 'On track'), lbl: 'Lead Response' };
+  } else if (lrt && typeof lrt === 'number') {
+    lrtSnap = { val: lrt.toFixed(1) + 'h avg', lbl: 'Lead Response', warn: lrt > 2 };
+  }
 
   // Build contextual snap items — show health indicators not just raw counts
   var contactHealth = ps.duplicateContactCount > ps.contacts * 0.1 ? ' ⚠️' :
@@ -1115,11 +1123,14 @@ function showResults(data) {
     { val: fmt(ps.forms||0),                      lbl: 'Forms',     warn: false },
     { val: fmt(ps.lists||0),                      lbl: 'Lists',     warn: false },
     { val: ps.marketingEmailCount > 0 ? fmt(ps.marketingEmailCount) + emailHealth : '—', lbl: 'Emails', warn: emailHealth.includes('⚠️') },
-    { val: ps.sequences > 0 ? fmt(ps.sequences) : '—', lbl: 'Sequences', warn: false },
+
   ];
   if (lrtSnap) snapItems.push(lrtSnap);
-  // Add conditional items based on what the portal has
-  if (ps.sequences > 0)      snapItems.push({ val: fmt(ps.sequences), lbl: 'Sequences' });
+  // Conditional items based on portal config
+  if (ps.sequences > 0) {
+    var seqWarn = (ps.lowReplySequences||0) > 3;
+    snapItems.push({ val: fmt(ps.activeSequences||ps.sequences)+' active', lbl: 'Sequences', warn: seqWarn });
+  }
   // New engine health indicators
   if (ps.workflowGovernanceEngine) {
     var wge = ps.workflowGovernanceEngine;
@@ -1302,9 +1313,17 @@ function showResults(data) {
 
     // Dimension label
     var dimMap = {
-      'Pipeline Integrity':'Pipeline','Service Health':'Service','Automation Health':'Automation',
-      'Marketing Health':'Marketing','Reporting Quality':'Reporting','Team Adoption':'Sales',
-      'Configuration & Security':'Configuration','Data Integrity':'Data','Data':'Data'
+      'Pipeline Integrity':'Pipeline','Pipeline & Sales':'Pipeline',
+      'Service Health':'Service','Service Hub':'Service',
+      'Automation Health':'Automation','Automation':'Automation',
+      'Marketing Health':'Marketing','Marketing Hub':'Marketing','Marketing':'Marketing',
+      'Reporting Quality':'Reporting',
+      'Team Adoption':'Sales','Sales Hub':'Sales',
+      'Configuration & Security':'Configuration','Configuration Security':'Configuration',
+      'Configuration':'Configuration',
+      'Data Integrity':'Data','Data Quality':'Data','Data':'Data',
+      'Billing & Seats':'Automation','Billing & Contacts':'Configuration',
+      'Integration Health':'Configuration','Billing':'Configuration',
     };
     var dimLabel = dimMap[issue.dimension] || (issue.dimension || 'General');
 
@@ -1470,7 +1489,7 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
         (ps.avgBounceRate > 0 ? ' · ' + ps.avgBounceRate+'% bounce' : '')
       : (ps.emptyLists||ps.listCount||0) > 0 ? (ps.listCount||0)+' lists tracked' : (ps.forms||0)+' forms active';
     var mktTag = ps.highBounceEmails > 0
-      ? ps.highBounceEmails+' high-bounce emails'
+      ? ps.highBounceEmails+' emails high bounce — domain risk'
       : ps.lowOpenEmails > 0
         ? ps.lowOpenEmails+' low open-rate emails'
         : ps.avgUnsubRate > 1
@@ -1511,16 +1530,34 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
   // Automation
   if (ps.workflows > 0 || ps.sequences > 0) {
     var autoTag = ps.erroredWorkflows > 0
-      ? ps.erroredWorkflows+' workflow'+(ps.erroredWorkflows!==1?'s':'')+' in error state'
-      : ps.deadWorkflowCount > 0
-        ? ps.deadWorkflowCount+' dead workflows (0 enrollments)'
-        : ps.activeSequences > 0 ? ps.activeSequences+' active sequences' : 'No active sequences';
-    var autoTagColor = ps.erroredWorkflows > 0 ? '#f43f5e' : ps.deadWorkflowCount > 3 ? '#f59e0b' : '#10b981';
+      ? ps.erroredWorkflows + ' workflow' + (ps.erroredWorkflows!==1?'s':'') + ' in error — contacts dropping'
+      : ps.deadWorkflowCount > 3
+        ? ps.deadWorkflowCount + ' dead workflows burning quota'
+        : ps.sequences > 0 && ps.activeSequences > 0
+          ? ps.activeSequences + ' sequences · ' + (ps.sequences - ps.activeSequences) + ' idle'
+          : 'No sequence activity';
+  var autoTagColor = ps.erroredWorkflows > 0 ? '#f43f5e' : ps.deadWorkflowCount > 3 ? '#f59e0b' : '#10b981';
     cards.push({ hub:'Automation', icon:'⚙️',
-      stat: fmt(ps.workflows||0)+' workflows',
-      desc: fmt(ps.sequences||0)+' sequences',
+      stat: fmt(ps.activeWorkflows||ps.workflows||0)+' active workflows',
+      desc: fmt(ps.erroredWorkflows||0)+' errors · '+fmt(ps.sequences||0)+' sequences',
       tag: autoTag,
       tagColor: autoTagColor });
+  }
+
+  // Sequences — own card since we have reply rate data
+  if (ps.sequences > 0) {
+    var seqActive = ps.activeSequences || ps.sequences;
+    var seqReplyTag = seqActive > 0
+      ? (ps.lowReplySequences > 0
+          ? ps.lowReplySequences + ' sequence' + (ps.lowReplySequences!==1?'s':'') + ' below 3% reply rate'
+          : 'Reply rates within benchmark')
+      : 'No enrollment data yet';
+    var seqReplyColor = ps.lowReplySequences > 3 ? '#f43f5e' : ps.lowReplySequences > 0 ? '#f59e0b' : '#10b981';
+    cards.push({ hub:'Sequences', icon:'📨',
+      stat: fmt(seqActive)+' active',
+      desc: fmt(ps.sequences)+' total · ' + fmt(ps.sequences - seqActive) + ' idle',
+      tag: seqReplyTag,
+      tagColor: seqReplyColor });
   }
 
   // Data
@@ -1531,7 +1568,7 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
         ? ps.contactsNoFirstName+' contacts missing first name'
         : (ps.customContactProps||0)+' custom contact properties';
     cards.push({ hub:'Data Integrity', icon:'🗄️',
-      stat: fmt(ps.contacts), desc: 'total contacts',
+      stat: fmt(ps.contacts), desc: fmt(ps.duplicateContactCount||0)+' dupes · '+fmt(ps.noEmailContactCount||0)+' no email',
       tag: dataTag,
       tagColor: ps.undocumentedProps > 10 ? '#f59e0b' : '#10b981' });
   }
@@ -1550,7 +1587,7 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
       ? repsNoLink+' rep'+(repsNoLink!==1?'s':'')+' missing booking link'
       : teamInfo;
     cards.push({ hub:'Team & Seats', icon:'👥',
-      stat: fmt(ps.users)+' seats',
+      stat: fmt(ps.users)+' seats · '+fmt(ps.ghostSeats||0)+' ghost',
       desc: teamDesc,
       tag: teamTagStr,
       tagColor: teamTagColor });
