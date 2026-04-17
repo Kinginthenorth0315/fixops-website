@@ -907,85 +907,116 @@ function showResults(data) {
   document.getElementById('issues-header').innerHTML = hdr;
 
   visibleIssues.forEach(function(issue, idx) {
-    var sc = issue.severity==='critical' ? '#f43f5e' : issue.severity==='warning' ? '#f59e0b' : '#60a5fa';
+    var sc  = issue.severity==='critical' ? '#f43f5e' : issue.severity==='warning' ? '#f59e0b' : '#60a5fa';
     var scC = issue.severity || 'info';
 
-    // Build expanded content — detail, guide, FixOps service CTA
+    // Dimension label
     var dimMap = {
       'Pipeline Integrity':'Pipeline','Service Health':'Service','Automation Health':'Automation',
       'Marketing Health':'Marketing','Reporting Quality':'Reporting','Team Adoption':'Sales',
-      'Configuration & Security':'Configuration','Data Integrity':'Data'
+      'Configuration & Security':'Configuration','Data Integrity':'Data','Data':'Data'
     };
     var dimLabel = dimMap[issue.dimension] || (issue.dimension || 'General');
 
+    // ── Detail block (why this matters) ─────────────────────────────────────
     var detailHtml = '';
-    if (issue.detail) {
-      detailHtml = '<div class="detail-block">' +
-        '<div class="detail-label">🔍 Why This Matters</div>' +
-        '<div class="detail-text">'+esc(issue.detail)+'</div>' +
+    var detailText = issue.detail || issue.description || '';
+    if (detailText) {
+      detailHtml =
+        '<div class="detail-block">' +
+          '<div class="detail-label">🔍 Why This Matters</div>' +
+          '<div class="detail-text">' + esc(detailText) + '</div>' +
         '</div>';
     }
 
+    // ── Step-by-step fix guide ───────────────────────────────────────────────
     var guideHtml = '';
     if (issue.guide && issue.guide.length) {
-      guideHtml = '<div class="guide-block">' +
-        '<div class="guide-label">📋 Step-by-Step Fix Guide</div>' +
-        issue.guide.map(function(step, i){
-          return '<div class="guide-step"><div class="guide-num">'+(i+1)+'</div><div>'+esc(step)+'</div></div>';
-        }).join('') +
+      guideHtml =
+        '<div class="guide-block">' +
+          '<div class="guide-label">📋 Step-by-Step Fix Guide</div>' +
+          issue.guide.map(function(step, si){
+            return '<div class="guide-step"><div class="guide-num">' + (si+1) + '</div><div>' + esc(step) + '</div></div>';
+          }).join('') +
         '</div>';
     }
 
-    // FixOps service pitch — specific to each issue type
-    var sevLabel = scC.toUpperCase();
-    var timeEst = issue.severity==='critical' ? 'Typically 1–3 days to resolve' :
-                  issue.severity==='warning' ? 'Typically 2–5 days to resolve' : 'Typically half-day to 1 day';
-    var fixImpact = issue.impact || 'Revenue and data quality improvement';
-
-    // ── Build dimension-specific Fix It For Me CTA ────────────────────────
+    // ── Fix It For Me CTA ────────────────────────────────────────────────────
     var dimEng = {
-      'Pipeline':      { label:'Pipeline Fix',    what:'Deal hygiene, pipeline config, close date enforcement' },
-      'Sales':         { label:'Sales Setup',      what:'Templates, sequences, playbooks, rep onboarding' },
-      'Marketing':     { label:'Marketing Fix',    what:'Email deliverability, list cleanup, form conversion' },
-      'Service':       { label:'Service Hub Setup',what:'SLA rules, ticket routing, escalation workflows' },
-      'Automation':    { label:'Workflow Rebuild', what:'Fix errors, consolidate dead workflows, add goals' },
-      'Data Integrity':{ label:'Data Cleanup',     what:'Deduplicate, fix lifecycle stages, repair associations' },
-      'Configuration': { label:'Portal Config',    what:'Permissions, email auth, integrations, settings' },
-      'Reporting':     { label:'Reporting Setup',  what:'Dashboards, custom reports, attribution tracking' },
+      'Pipeline':      { label:'Pipeline Fix',     what:'Deal hygiene, pipeline config, close date enforcement' },
+      'Sales':         { label:'Sales Setup',       what:'Templates, sequences, playbooks, rep onboarding' },
+      'Marketing':     { label:'Marketing Fix',     what:'Email deliverability, list cleanup, form conversion' },
+      'Service':       { label:'Service Hub Setup', what:'SLA rules, ticket routing, escalation workflows' },
+      'Automation':    { label:'Workflow Rebuild',  what:'Fix errors, consolidate dead workflows, add goals' },
+      'Data Integrity':{ label:'Data Cleanup',      what:'Deduplicate, fix lifecycle stages, repair associations' },
+      'Configuration': { label:'Portal Config',     what:'Permissions, email auth, integrations, settings' },
+      'Reporting':     { label:'Reporting Setup',   what:'Dashboards, custom reports, attribution tracking' }
     };
-    var DIM_NORMALIZE_SVC = {
+    var DIM_NORM = {
       'Pipeline Integrity':'Pipeline','Service Health':'Service','Automation Health':'Automation',
       'Marketing Health':'Marketing','Reporting Quality':'Reporting','Team Adoption':'Sales',
-      'Configuration & Security':'Configuration','Configuration Security':'Configuration','Data':'Data Integrity',
+      'Configuration & Security':'Configuration','Configuration Security':'Configuration','Data':'Data Integrity'
     };
-    var issueDim = DIM_NORMALIZE_SVC[issue.dimension] || issue.dimension || 'Pipeline';
-    var eng = dimEng[issueDim] || { label:'Portal Fix', range:'$500–$2,500', what:'Scoped from this audit finding' };
+    var issueDim = DIM_NORM[issue.dimension] || issue.dimension || 'Pipeline';
+    var eng = dimEng[issueDim] || { label:'Portal Fix', what:'Scoped from this audit finding' };
 
-    var serviceHtml = '<div style="margin-top:14px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:14px 16px;">' +
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
-        '<div style="flex:1;min-width:180px;">' +
-          '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:5px;">🛠 FixOps Can Fix This</div>' +
-          '<div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:2px;">' + eng.label + '</div>' +
-          '<div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.5;">' + eng.what + '. Scoped from this audit. Quote sent within 24 hours.</div>' +
-        '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">' +
-          '<button onclick="event.stopPropagation();fixItForMe(' + idx + ')" style="padding:7px 14px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">🛠 Fix It For Me</button>' +
-          '<a href="https://calendly.com/matthew-fixops/30min?utm_source=fixops&utm_medium=issue&utm_campaign=' + encodeURIComponent(issueDim) + '" target="_blank" onclick="event.stopPropagation()" style="display:block;text-align:center;padding:6px 14px;background:transparent;border:1px solid rgba(124,58,237,.3);border-radius:7px;color:#a78bfa;font-size:10px;font-weight:600;text-decoration:none;white-space:nowrap;">Book a Call →</a>' +
-        '</div>' +
-      '</div>' +
-    '</div>'
-
-    // For free plans: strip guide steps and fix-it button
-    if (flags.isFree) {
-      var expand = card.querySelector('.issue-expand');
-      if (expand) {
-        expand.innerHTML = '<div style="padding:20px 24px;border-top:1px solid var(--b1);text-align:center;">' +
-          '<div style="font-size:13px;color:var(--t2);margin-bottom:12px;">🔒 Fix guide and action steps require a paid audit</div>' +
-          '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:9px 20px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none;">Get Full Audit — from $399 →</a>' +
-          '</div>';
-      }
+    var serviceHtml = '';
+    if (!flags.isFree) {
+      serviceHtml =
+        '<div style="margin-top:12px;background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.22);border-radius:10px;padding:12px 14px;">' +
+          '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">' +
+            '<div style="flex:1;min-width:160px;">' +
+              '<div style="font-size:9px;font-weight:700;letter-spacing:1.5px;color:#a78bfa;font-family:monospace;text-transform:uppercase;margin-bottom:3px;">🛠 FixOps Can Fix This</div>' +
+              '<div style="font-size:11px;color:rgba(255,255,255,.55);line-height:1.5;">' + esc(eng.what) + '. Flat-rate quote within 24 hrs.</div>' +
+            '</div>' +
+            '<div style="display:flex;gap:6px;flex-shrink:0;">' +
+              '<button onclick="event.stopPropagation();fixItForMe(' + idx + ')" ' +
+                'style="padding:6px 13px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;">' +
+                '🛠 Fix It For Me' +
+              '</button>' +
+              '<a href="https://calendly.com/matthew-fixops/30min?utm_source=fixops&utm_medium=issue&utm_campaign=' + encodeURIComponent(issueDim) + '" ' +
+                'target="_blank" onclick="event.stopPropagation()" ' +
+                'style="display:flex;align-items:center;padding:6px 10px;background:transparent;border:1px solid rgba(124,58,237,.3);border-radius:7px;color:#a78bfa;font-size:10px;font-weight:600;text-decoration:none;white-space:nowrap;">' +
+                'Book Call →' +
+              '</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
     }
 
+    // ── Assemble the card ────────────────────────────────────────────────────
+    var card = document.createElement('div');
+    card.className = 'issue-card';
+    card.id = 'ic-' + idx;
+
+    // Severity stripe | title+meta | arrow
+    var topHtml =
+      '<div class="issue-top" onclick="toggleIssue(' + idx + ')">' +
+        '<div style="width:3px;align-self:stretch;min-height:42px;background:' + sc + ';border-radius:2px;flex-shrink:0;"></div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap;">' +
+            '<span style="font-size:9px;font-weight:800;padding:2px 8px;border-radius:4px;background:' + sc + '22;color:' + sc + ';font-family:monospace;letter-spacing:1px;text-transform:uppercase;">' + esc(scC) + '</span>' +
+            '<span style="font-size:10px;color:var(--t3);font-family:monospace;">' + esc(dimLabel) + '</span>' +
+          '</div>' +
+          '<div style="font-size:13px;font-weight:700;color:var(--t1);line-height:1.4;">' + esc(issue.title || '') + '</div>' +
+          (issue.impact ? '<div style="font-size:11px;color:' + sc + ';font-weight:600;margin-top:4px;">⚡ ' + esc(issue.impact) + '</div>' : '') +
+        '</div>' +
+        '<div class="i-arrow" style="color:var(--t3);font-size:14px;flex-shrink:0;margin-top:2px;transition:transform .2s;">▾</div>' +
+      '</div>';
+
+    // Expand section
+    var expandInner = '';
+    if (flags.isFree) {
+      expandInner =
+        '<div style="padding:16px 0;text-align:center;">' +
+          '<div style="font-size:12px;color:var(--t2);margin-bottom:10px;">🔒 Fix guide and action steps require a paid audit</div>' +
+          '<a href="https://fixops.io/#pricing" style="display:inline-block;padding:8px 20px;background:var(--v);color:#fff;border-radius:8px;font-weight:700;font-size:12px;text-decoration:none;">Get Full Audit → from $299</a>' +
+        '</div>';
+    } else {
+      expandInner = detailHtml + guideHtml + serviceHtml;
+    }
+
+    card.innerHTML = topHtml + '<div class="issue-expand">' + expandInner + '</div>';
     list.appendChild(card);
   });
 
