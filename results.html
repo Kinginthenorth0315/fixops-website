@@ -240,8 +240,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
           <div class="stat-lbl">Monthly Waste</div>
         </div>
         <div class="stat-item">
-          <div class="stat-val" id="stat-checks" style="color:var(--v3);">210</div>
+          <div class="stat-val" id="stat-checks" style="color:var(--v3);">235</div>
           <div class="stat-lbl">Checks Run</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val" id="stat-records" style="color:var(--t2);">—</div>
+          <div class="stat-lbl">Records Scanned</div>
         </div>
       </div>
     </div>
@@ -682,6 +686,11 @@ function showResults(data) {
   document.getElementById('stat-critical').textContent = criticals;
   document.getElementById('stat-warnings').textContent = warnings;
   document.getElementById('stat-waste').textContent = fmtMoney(waste)+'/mo';
+  // Update checks run and records scanned dynamically from server data
+  var checksEl = document.getElementById('stat-checks');
+  if (checksEl && summary.checksRun) checksEl.textContent = summary.checksRun.toLocaleString();
+  var recsEl = document.getElementById('stat-records');
+  if (recsEl && summary.recordsScanned) recsEl.textContent = Number(summary.recordsScanned).toLocaleString();
 
   // ── Post-Audit Risk Score ─────────────────────────────────────────────────
   var riskEl = document.getElementById('post-audit-risk');
@@ -755,6 +764,31 @@ function showResults(data) {
   if (lrtSnap) snapItems.push(lrtSnap);
   // Add conditional items based on what the portal has
   if (ps.sequences > 0)      snapItems.push({ val: fmt(ps.sequences), lbl: 'Sequences' });
+  // New engine health indicators
+  if (ps.workflowGovernanceEngine) {
+    var wge = ps.workflowGovernanceEngine;
+    var wgeWarn = wge.noOwner > 0 || wge.staleActive > 3;
+    snapItems.push({ val: wge.grade || 'OK', lbl: 'WF Governance', warn: wgeWarn });
+  }
+  if (ps.integrationHealthEngine) {
+    var ihe = ps.integrationHealthEngine;
+    var iheWarn = ihe.errors > 0 || ihe.stale > 0;
+    snapItems.push({ val: ihe.grade || 'OK', lbl: 'Integrations', warn: iheWarn });
+  }
+  if (ps.importHealthEngine) {
+    var imhe = ps.importHealthEngine;
+    var imheWarn = imhe.failed > 0 || imhe.highError > 0;
+    if (imhe.recent > 0) snapItems.push({ val: imhe.grade || 'OK', lbl: 'Import Health', warn: imheWarn });
+  }
+  if (ps.emailSenderEngine) {
+    var ese = ps.emailSenderEngine;
+    var eseWarn = ese.issues && ese.issues.length > 0;
+    snapItems.push({ val: ese.issues && ese.issues.length > 0 ? ese.issues.length + ' issue' + (ese.issues.length !== 1 ? 's' : '') : 'Healthy', lbl: 'Email Health', warn: eseWarn });
+  }
+  if (ps.apiRateLimitEngine && ps.apiRateLimitEngine.pct > 0) {
+    var arle = ps.apiRateLimitEngine;
+    snapItems.push({ val: arle.pct + '% quota', lbl: 'API Usage', warn: arle.pct >= 70 });
+  }
   if (ps.kbArticleCount > 0) snapItems.push({ val: fmt(ps.kbArticleCount), lbl: 'KB Articles' });
   if (ps.mrrTotal > 0)       snapItems.push({ val: '$'+Math.round((ps.mrrTotal||0)/100).toLocaleString(), lbl: 'MRR' });
   if (ps.openQuotes > 0)     snapItems.push({ val: fmt(ps.openQuotes), lbl: 'Open Quotes' });
