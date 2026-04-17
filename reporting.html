@@ -1165,6 +1165,9 @@ a { color: var(--brand-lt); }
         <span class="si-icon">✨</span> Breeze Readiness
         <span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25);">SENTINEL</span>
       </div>
+      <div class="sidebar-item" data-view="leadscore" onclick="showView('leadscore')">
+        <span>🎯</span> Lead Scoring
+      </div>
       <div class="sidebar-item" onclick="showView('hubcost')" data-view="hubcost">
         <span class="si-icon">💸</span> Subscription Waste
         <span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25);">SENTINEL</span>
@@ -2279,6 +2282,18 @@ a { color: var(--brand-lt); }
 
     </div><!-- /views -->
 
+
+    <!-- Lead Scoring View -->
+    <div class="view" id="view-leadscore">
+      <div class="page-header">
+        <div class="page-header-meta">
+          <div class="view-chip sentinel-badge">SENTINEL</div>
+          <h1>Lead Scoring Health</h1>
+          <p>Scoring configuration, distribution, high-score contacts without owner, and MQL alignment</p>
+        </div>
+      </div>
+      <div id="leadscore-content"></div>
+    </div>
 
     <!-- Workflow Governance View -->
     <div class="view" id="view-governance">
@@ -8727,6 +8742,54 @@ function buildEmailHealth() {
     });
   } else {
     html += `<div class="view-card" style="border-color:rgba(16,185,129,.3);"><div class="view-card-title" style="color:#10b981;">✅ Email Sender Health: Healthy</div><p style="font-size:13px;color:var(--t2);margin:0;">Consistent sending domain, no unresolved A/B tests, and automated emails are configured. FixOps monitors these every scan.</p></div>`;
+  }
+
+  el.innerHTML = html;
+}
+
+
+// ── LEAD SCORING VIEW ─────────────────────────────────────────────────────────
+function buildLeadScore() {
+  const ps = (DATA.portalInfo || {}).portalStats || {};
+  const lse = ps.leadScoringEngine || null;
+  const el = document.getElementById('leadscore-content');
+  if (!el) return;
+  if (!lse || !lse.isConfigured) {
+    el.innerHTML = '<div class="empty-state" style="text-align:center;padding:48px 24px;"><div style="font-size:36px;margin-bottom:14px;">🎯</div><div style="font-size:16px;font-weight:700;margin-bottom:8px;">Lead Scoring Not Configured</div><div style="font-size:13px;color:var(--t2);max-width:400px;margin:0 auto;line-height:1.65;">No lead scoring is active on this portal. Set up HubSpot\'s Lead Scoring tool in Marketing → Lead Scoring to automatically prioritize your highest-intent contacts.</div></div>';
+    return;
+  }
+
+  const scoreColor = lse.pctScored >= 60 ? '#10b981' : lse.pctScored >= 30 ? '#f59e0b' : '#ef4444';
+  const toolLabel = lse.isNewTool ? 'New Lead Scoring Tool' : lse.isLegacyOnly ? 'Legacy Score Property' : 'Lead Scoring';
+
+  let html = `<div class="kpi-row">
+    ${kpi('Contacts Scored', lse.pctScored + '%', 'of database scored', scoreColor)}
+    ${kpi('Total Scored', (lse.scoredCount || 0).toLocaleString(), 'contacts with score > 0', '#a78bfa')}
+    ${kpi('High Score (50+)', (lse.highScoreCount || 0).toLocaleString(), 'MQL candidates', '#10b981')}
+    ${kpi('Score Tool', toolLabel, '', lse.isNewTool ? '#10b981' : '#f59e0b')}
+  </div>`;
+
+  if (lse.dist) {
+    const total = Math.max(1, lse.scoredCount || 1);
+    html += `<div class="view-card"><div class="view-card-title">📊 Score Distribution</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px;">
+        ${[{l:'Very High (75+)',v:lse.dist.veryHigh,c:'#10b981'},{l:'High (50-74)',v:lse.dist.high,c:'#3b82f6'},{l:'Medium (25-49)',v:lse.dist.medium,c:'#f59e0b'},{l:'Low (<25)',v:lse.dist.low,c:'#ef4444'}].map(b =>
+          `<div style="text-align:center;padding:12px;background:var(--s2);border-radius:8px;"><div style="font-size:20px;font-weight:800;color:${b.c};">${b.v.toLocaleString()}</div><div style="font-size:10px;color:var(--t3);margin-top:4px;">${b.l}</div></div>`
+        ).join('')}
+      </div>
+    </div>`;
+  }
+
+  if (lse.pctScored < 30) {
+    html += `<div class="view-card" style="border-color:rgba(245,158,11,.3);"><div class="view-card-title" style="color:#f59e0b;">⚠️ Only ${lse.pctScored}% of Contacts Are Scored</div>
+      <p style="font-size:13px;color:var(--t2);line-height:1.7;margin:0;">Most contacts don't have a lead score. This usually means your scoring criteria is too narrow, or contacts aren't triggering the scoring properties. Expand your scoring model to cover behavioral signals (email opens, page views, form submissions) alongside demographic data.</p>
+    </div>`;
+  }
+
+  if (lse.highScoreCount > 0 && (DATA.portalInfo?.portalStats?.unownedLeads || 0) > 0) {
+    html += `<div class="view-card" style="border-color:rgba(239,68,68,.3);"><div class="view-card-title" style="color:#ef4444;">🚨 High-Score Contacts Without an Owner</div>
+      <p style="font-size:13px;color:var(--t2);line-height:1.7;margin:0;">Some contacts with high lead scores (50+) have no owner assigned. These are your hottest prospects — prioritized by the scoring model as MQL-ready — and nobody is working them. Assign owners immediately or create a workflow to auto-assign based on score threshold.</p>
+    </div>`;
   }
 
   el.innerHTML = html;

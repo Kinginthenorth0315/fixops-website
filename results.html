@@ -408,7 +408,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:cen
   <!-- Loading state -->
   <div id="loading-state" style="text-align:center;padding:100px 20px;">
     <div style="width:44px;height:44px;border-radius:50%;border:2px solid var(--b2);border-top-color:var(--v);animation:spin 1s linear infinite;margin:0 auto 16px;"></div>
-    <div style="font-size:15px;font-weight:600;color:var(--t2);margin-bottom:6px;">Running your 210-point audit…</div>
+    <div style="font-size:15px;font-weight:600;color:var(--t2);margin-bottom:6px;">Running your 235-point audit…</div>
     <div style="font-size:12px;color:var(--t3);">Analyzing contacts, pipeline, workflows, and more</div>
   </div>
 </div>
@@ -538,7 +538,7 @@ function showToast(icon, title, sub) {
         var task = result.currentTask || 'Scanning your portal…';
         document.getElementById('loading-state').innerHTML =
           '<div style="width:44px;height:44px;border-radius:50%;border:2px solid rgba(124,58,237,.2);border-top-color:#7c3aed;animation:spin 1s linear infinite;margin:0 auto 16px;"></div>' +
-          '<div style="font-size:15px;font-weight:600;color:var(--t1);margin-bottom:6px;">Running your 210-point audit…</div>' +
+          '<div style="font-size:15px;font-weight:600;color:var(--t1);margin-bottom:6px;">Running your 235-point audit…</div>' +
           (pct > 0 ? '<div style="width:200px;height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin:0 auto 8px;overflow:hidden;"><div style="height:100%;background:#7c3aed;border-radius:2px;width:'+pct+'%;transition:width .4s;"></div></div>' : '') +
           '<div style="font-size:12px;color:var(--t3);">' + esc(task) + '</div>' +
           '<div style="font-size:11px;color:var(--t3);margin-top:6px;">This usually takes 30–90 seconds</div>';
@@ -858,7 +858,7 @@ function showResults(data) {
 
   // ── PLAN TIER SYSTEM ─────────────────────────────────────────────────────
   // Free        = score + top 5 critical issues, no guides, hard CTA
-  // Diagnostic  = full 210-point scan, all issues, guides, fix-it, revenue leaks
+  // Diagnostic  = full 235-point scan, all issues, guides, fix-it, revenue leaks
   // Full Audit  = Diagnostic + all 48 views, AI queries, deal risk, workflow conflicts
   // Monitor/mo  = weekly rescans, alerts, 15 core views, Fix It For Me
   // Sentinel/mo = daily scans, all 48 views, unlimited AI, white-label
@@ -1358,7 +1358,7 @@ function buildReportingUpsellCTA(plan, waste, criticals, company) {
         '<div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px;">Weekly Monitoring + Daily Alerts</div>' +
         '<div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:20px;line-height:1.6;">Full audit every Monday. Daily sentinel checks watch for workflow errors, billing tier changes, and ghost seats in between.</div>' +
         '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px;">' +
-          ['Full 210-point scan — Sales, Marketing, Service, Automation, Data',
+          ['Full 235-point scan — Sales, Marketing, Service, Automation, Data',
            'Weekly automated re-scans every Monday at 9am',
            'Sentinel daily monitoring — workflow errors, billing tier, ghost seats',
            'Same-day email alerts on new critical issues',
@@ -2175,7 +2175,7 @@ function buildCertSection(auditId, ovr) {
   var company = (AUDIT_DATA && AUDIT_DATA.portalInfo && AUDIT_DATA.portalInfo.company) || 'Our HubSpot Portal';
   var linkedInText = encodeURIComponent(
     'We just ran our HubSpot portal through FixOps and scored ' + ovr + '/100 — ' + grade + '.\n\n' +
-    'FixOps audits 210 checkpoints across Sales, Marketing, Service, and Automation and surfaces exactly what\'s broken with dollar-impact estimates on every issue.\n\n' +
+    'FixOps audits 235 checkpoints across Sales, Marketing, Service, and Automation and surfaces exactly what\'s broken with dollar-impact estimates on every issue.\n\n' +
     'See the full certificate: ' + certUrl + '\n\n' +
     '#HubSpot #RevOps #CRM #SalesOps'
   );
