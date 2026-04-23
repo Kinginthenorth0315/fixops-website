@@ -1275,7 +1275,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     </div>
 
     <!-- MONTHLY PLANS -->
-    <div id="monthly-plans" class="r d1 v">
+    <div id="monthly-plans">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
 
         <div class="price-card">
@@ -1370,7 +1370,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     </div>
 
     <!-- ONE-TIME AUDITS -->
-    <div id="onetime-plans" class="r d1" style="display:none;">
+    <div id="onetime-plans" style="display:none;">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;">
 
         <div class="price-card">
@@ -2281,17 +2281,19 @@ function _revealPlanCards(sectionId) {
   var el = document.getElementById(sectionId);
   if (!el) return;
   el.style.display = 'block';
-  el.classList.add('v');
   el.style.opacity = '1';
   el.style.transform = 'none';
-  el.querySelectorAll('.r').forEach(function(c) {
-    c.classList.add('v');
-    c.style.opacity = '1';
-    c.style.transform = 'none';
+  el.style.visibility = 'visible';
+  // Force all children visible — remove any lingering animation state
+  el.querySelectorAll('*').forEach(function(c) {
+    if (c.style.opacity === '0') c.style.opacity = '1';
+    if (c.style.transform) c.style.transform = 'none';
   });
-  el.querySelectorAll('.price-card').forEach(function(c) {
+  // Explicitly unhide price cards
+  el.querySelectorAll('.price-card, .r, [class*="r "], [class="r"]').forEach(function(c) {
     c.style.opacity = '1';
     c.style.transform = 'none';
+    c.classList.add('v');
   });
 }
 function showMonthly() {
