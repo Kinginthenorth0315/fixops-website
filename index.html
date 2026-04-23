@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- FixOps v20260423210143 -->
+
 <html lang="en">
 <head>
 <!-- cf-email-obfuscation: disable -->
@@ -2463,6 +2465,7 @@ function submitSfEarly() {
 
 
 function switchTab(tab) {
+  console.log('[FixOps] switchTab called with:', tab);
   // Hide all sections completely
   ['monthly-plans','onetime-plans','agency-plans'].forEach(function(id) {
     var el = document.getElementById(id);
