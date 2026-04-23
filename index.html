@@ -295,6 +295,29 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     background: rgba(124,58,237,.18);
     color: #a78bfa;
   }
+
+/* ── Pricing tab system ─────────────────────────────── */
+#monthly-plans, #onetime-plans, #agency-plans {
+  display: none !important;
+}
+#monthly-plans.tab-active,
+#onetime-plans.tab-active,
+#agency-plans.tab-active {
+  display: block !important;
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+#monthly-plans.tab-active .price-card,
+#onetime-plans.tab-active .price-card,
+#agency-plans.tab-active .price-card,
+#monthly-plans.tab-active .r,
+#onetime-plans.tab-active .r,
+#agency-plans.tab-active .r {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
 </style>
 </head>
 <body>
@@ -2422,29 +2445,6 @@ function showAgency() {
 }
 .ag-opt:hover { border-color: #7c3aed; color: #fff; }
 .ag-opt.selected { background: rgba(124,58,237,.2); border-color: #7c3aed; color: #a78bfa; }
-
-/* ── Pricing tab system ─────────────────────────────── */
-#monthly-plans, #onetime-plans, #agency-plans {
-  display: none !important;
-}
-#monthly-plans.tab-active,
-#onetime-plans.tab-active,
-#agency-plans.tab-active {
-  display: block !important;
-  opacity: 1 !important;
-  transform: none !important;
-  visibility: visible !important;
-}
-#monthly-plans.tab-active .price-card,
-#onetime-plans.tab-active .price-card,
-#agency-plans.tab-active .price-card,
-#monthly-plans.tab-active .r,
-#onetime-plans.tab-active .r,
-#agency-plans.tab-active .r {
-  opacity: 1 !important;
-  transform: none !important;
-  visibility: visible !important;
-}
 </style>
 
 <script>
