@@ -1268,14 +1268,14 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <h2 class="h2">Start free. Scale when you're ready.</h2>
       <p style="font-size:15px;color:var(--t2);max-width:680px;margin:14px auto 44px;line-height:1.75;">Agencies charge $2,500–$11,000/mo for a human to do what FixOps automates in 15 minutes. A one-time manual audit costs $3,500–$6,000 and is outdated before you finish reading it. FixOps delivers more, monitors every week, and lets your team fix issues in one click. <strong style="color:rgba(255,255,255,.75);">No contracts. Cancel anytime.</strong></p>
       <div style="display:inline-flex;align-items:center;gap:0;background:#0c0c14;border:1px solid #22223a;border-radius:10px;padding:4px;margin:0 auto 48px;">
-        <button id="toggle-monthly" onclick="(function(){['monthly-plans','onetime-plans','agency-plans'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});var el=document.getElementById('monthly-plans');if(el){el.style.display='block';el.style.opacity='1';}['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(i){var b=document.getElementById(i);if(b){b.style.background='transparent';b.style.color='rgba(255,255,255,.45)';}});this.style.background='#7c3aed';this.style.color='#fff';})()"  style="padding:9px 22px;background:#7c3aed;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">Monthly Plans</button>
-        <button id="toggle-onetime" onclick="(function(btn){['monthly-plans','onetime-plans','agency-plans'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});var el=document.getElementById('onetime-plans');if(el){el.style.display='block';el.style.opacity='1';el.querySelectorAll('.price-card').forEach(function(c){c.style.opacity='1';c.style.transform='none';});}['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(i){var b=document.getElementById(i);if(b){b.style.background='transparent';b.style.color='rgba(255,255,255,.45)';}});btn.style.background='#7c3aed';btn.style.color='#fff';})(this)"  style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">One-Time Audits</button>
-        <button id="toggle-agency" onclick="(function(btn){['monthly-plans','onetime-plans','agency-plans'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});var el=document.getElementById('agency-plans');if(el){el.style.display='block';el.style.opacity='1';el.querySelectorAll('.price-card,[class]').forEach(function(c){c.style.opacity='1';c.style.transform='none';});}['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(i){var b=document.getElementById(i);if(b){b.style.background='transparent';b.style.color='rgba(255,255,255,.45)';}});btn.style.background='#7c3aed';btn.style.color='#fff';})(this)"  style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">For Agencies ✦</button>
+        <button id="toggle-monthly" onclick="switchTab('monthly')" style="padding:9px 22px;background:#7c3aed;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">Monthly Plans</button>
+        <button id="toggle-onetime" onclick="switchTab('onetime')" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">One-Time Audits</button>
+        <button id="toggle-agency" onclick="switchTab('agency')" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">For Agencies ✦</button>
       </div>
     </div>
 
     <!-- MONTHLY PLANS -->
-    <div id="monthly-plans">
+    <div id="monthly-plans" class="tab-active">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
 
         <div class="price-card">
@@ -1366,11 +1366,11 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         </div>
 
         </div>
-      <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · <span onclick="showAgency()" style="color:var(--brand2);cursor:pointer;font-weight:600;">Agency plans →</span></p>
+      <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · <span onclick="switchTab('agency')" style="color:var(--brand2);cursor:pointer;font-weight:600;">Agency plans →</span></p>
     </div>
 
     <!-- ONE-TIME AUDITS -->
-    <div id="onetime-plans" style="display:none;">
+    <div id="onetime-plans">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;">
 
         <div class="price-card">
@@ -1445,7 +1445,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     </div><!-- /onetime-plans -->
 
       <!-- ══ AGENCY PLANS ══ -->
-      <div id="agency-plans" style="display:none;">
+      <div id="agency-plans">
 
   <div style="max-width:900px;margin:0 auto;">
 
@@ -2422,6 +2422,29 @@ function showAgency() {
 }
 .ag-opt:hover { border-color: #7c3aed; color: #fff; }
 .ag-opt.selected { background: rgba(124,58,237,.2); border-color: #7c3aed; color: #a78bfa; }
+
+/* ── Pricing tab system ─────────────────────────────── */
+#monthly-plans, #onetime-plans, #agency-plans {
+  display: none !important;
+}
+#monthly-plans.tab-active,
+#onetime-plans.tab-active,
+#agency-plans.tab-active {
+  display: block !important;
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
+#monthly-plans.tab-active .price-card,
+#onetime-plans.tab-active .price-card,
+#agency-plans.tab-active .price-card,
+#monthly-plans.tab-active .r,
+#onetime-plans.tab-active .r,
+#agency-plans.tab-active .r {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+}
 </style>
 
 <script>
@@ -2521,6 +2544,21 @@ function submitSfEarly() {
   }
 }
 
+
+function switchTab(tab) {
+  ['monthly-plans','onetime-plans','agency-plans'].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.classList.remove('tab-active');
+  });
+  var target = document.getElementById(tab + '-plans');
+  if (target) target.classList.add('tab-active');
+  ['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(id) {
+    var b = document.getElementById(id);
+    if (b) { b.style.background='transparent'; b.style.color='rgba(255,255,255,.45)'; b.style.fontWeight='600'; }
+  });
+  var activeBtn = document.getElementById('toggle-' + tab);
+  if (activeBtn) { activeBtn.style.background='#7c3aed'; activeBtn.style.color='#fff'; activeBtn.style.fontWeight='700'; }
+}
 </script>
 
 <!-- ── Pre-Stripe Modal (one-time audits) ──────────────────────────────────── -->
