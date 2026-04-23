@@ -1268,9 +1268,9 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <h2 class="h2">Start free. Scale when you're ready.</h2>
       <p style="font-size:15px;color:var(--t2);max-width:680px;margin:14px auto 44px;line-height:1.75;">Agencies charge $2,500–$11,000/mo for a human to do what FixOps automates in 15 minutes. A one-time manual audit costs $3,500–$6,000 and is outdated before you finish reading it. FixOps delivers more, monitors every week, and lets your team fix issues in one click. <strong style="color:rgba(255,255,255,.75);">No contracts. Cancel anytime.</strong></p>
       <div style="display:inline-flex;align-items:center;gap:0;background:#0c0c14;border:1px solid #22223a;border-radius:10px;padding:4px;margin:0 auto 48px;">
-        <button id="toggle-monthly" onclick="showMonthly()" style="padding:9px 22px;background:#7c3aed;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">Monthly Plans</button>
-        <button id="toggle-onetime" onclick="showOnetime()" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">One-Time Audits</button>
-        <button id="toggle-agency" onclick="showAgency()" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">For Agencies ✦</button>
+        <button id="toggle-monthly" onclick="(function(){['monthly-plans','onetime-plans','agency-plans'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});var el=document.getElementById('monthly-plans');if(el){el.style.display='block';el.style.opacity='1';}['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(i){var b=document.getElementById(i);if(b){b.style.background='transparent';b.style.color='rgba(255,255,255,.45)';}});this.style.background='#7c3aed';this.style.color='#fff';})()"  style="padding:9px 22px;background:#7c3aed;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">Monthly Plans</button>
+        <button id="toggle-onetime" onclick="(function(btn){['monthly-plans','onetime-plans','agency-plans'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});var el=document.getElementById('onetime-plans');if(el){el.style.display='block';el.style.opacity='1';el.querySelectorAll('.price-card').forEach(function(c){c.style.opacity='1';c.style.transform='none';});}['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(i){var b=document.getElementById(i);if(b){b.style.background='transparent';b.style.color='rgba(255,255,255,.45)';}});btn.style.background='#7c3aed';btn.style.color='#fff';})(this)"  style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">One-Time Audits</button>
+        <button id="toggle-agency" onclick="(function(btn){['monthly-plans','onetime-plans','agency-plans'].forEach(function(i){var e=document.getElementById(i);if(e)e.style.display='none';});var el=document.getElementById('agency-plans');if(el){el.style.display='block';el.style.opacity='1';el.querySelectorAll('.price-card,[class]').forEach(function(c){c.style.opacity='1';c.style.transform='none';});}['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(i){var b=document.getElementById(i);if(b){b.style.background='transparent';b.style.color='rgba(255,255,255,.45)';}});btn.style.background='#7c3aed';btn.style.color='#fff';})(this)"  style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">For Agencies ✦</button>
       </div>
     </div>
 
@@ -1436,7 +1436,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>90-day prioritized fix roadmap (PDF deliverable)</div>
             <div class="pc-feat"><span>✓</span>Results stored 1 year</div>
             <div class="pc-feat"><span>✓</span>All 8 new checks: SPF/DKIM, dark funnel, workflow collisions, rep gaps</div>
-            <div class="pc-feat"><span>✓</span>Executive summary PDF + fix priority matrix + services page</div></div>
+            <div class="pc-feat"><span>✓</span>Executive summary PDF + fix priority matrix + services page</div>
           </div>
           <button class="pc-btn pcb-o" onclick="goStripe('pro_audit')">Get FixOps Full Audit — $499 →</button>
         </div>
@@ -1590,6 +1590,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       </div>
 
     </div>
+  </div>
   </div>
 </section>
 
