@@ -1275,7 +1275,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     </div>
 
     <!-- MONTHLY PLANS -->
-    <div id="monthly-plans" class="r d1">
+    <div id="monthly-plans" class="r d1 v">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
 
         <div class="price-card">
@@ -1947,6 +1947,10 @@ window.addEventListener('scroll',()=>{document.getElementById('nav').classList.t
 // Scroll reveal
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');});},{threshold:.1});
 document.querySelectorAll('.r').forEach(el=>obs.observe(el));
+// Re-run observer when pricing tabs are clicked (elements were hidden during initial scan)
+window._repriceObserve = function() {
+  document.querySelectorAll('#onetime-plans .r, #agency-plans .r').forEach(el=>obs.observe(el));
+};
 
 // FAQ
 function doFaq(btn){const it=btn.closest('.faq-item');const was=it.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!was)it.classList.add('open');}
@@ -2277,9 +2281,15 @@ function _revealPlanCards(sectionId) {
   var el = document.getElementById(sectionId);
   if (!el) return;
   el.style.display = 'block';
+  el.classList.add('v');
   el.style.opacity = '1';
   el.style.transform = 'none';
-  el.querySelectorAll('.price-card,.r').forEach(function(c) {
+  el.querySelectorAll('.r').forEach(function(c) {
+    c.classList.add('v');
+    c.style.opacity = '1';
+    c.style.transform = 'none';
+  });
+  el.querySelectorAll('.price-card').forEach(function(c) {
     c.style.opacity = '1';
     c.style.transform = 'none';
   });
@@ -2293,12 +2303,14 @@ function showMonthly() {
 function showOnetime() {
   _hideAllPlans();
   _revealPlanCards('onetime-plans');
+  if (window._repriceObserve) window._repriceObserve();
   var btn = document.getElementById('toggle-onetime');
   if (btn) { btn.style.background = '#7c3aed'; btn.style.color = '#fff'; }
 }
 function showAgency() {
   _hideAllPlans();
   _revealPlanCards('agency-plans');
+  if (window._repriceObserve) window._repriceObserve();
   var btn = document.getElementById('toggle-agency');
   if (btn) { btn.style.background = '#7c3aed'; btn.style.color = '#fff'; }
 }
