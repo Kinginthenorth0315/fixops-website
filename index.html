@@ -313,7 +313,7 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
     <li><a href="#services">Services</a></li>
     <li><a href="#pulse">Platform</a></li>
     <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#recommender">Find My Plan</a></li>
+    
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="setup.html">Setup Guide</a></li>
     <li><a href="#faq">FAQ</a></li>
@@ -1958,9 +1958,7 @@ window.addEventListener('scroll',()=>{document.getElementById('nav').classList.t
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');});},{threshold:.1});
 document.querySelectorAll('.r').forEach(el=>obs.observe(el));
 // Re-run observer when pricing tabs are clicked (elements were hidden during initial scan)
-window._repriceObserve = function() {
-  document.querySelectorAll('#onetime-plans .r, #agency-plans .r').forEach(el=>obs.observe(el));
-};
+;
 
 // FAQ
 function doFaq(btn){const it=btn.closest('.faq-item');const was=it.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!was)it.classList.add('open');}
@@ -2274,58 +2272,11 @@ function recReset() {
 }
 
 
-// ── Pricing tab functions ────────────────────────────────────────────────────
-function _hideAllPlans() {
-  ['monthly-plans','onetime-plans','agency-plans'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) el.style.display = 'none';
-  });
-  ['toggle-monthly','toggle-onetime','toggle-agency'].forEach(function(id) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    el.style.background = 'transparent';
-    el.style.color = 'rgba(255,255,255,.45)';
-  });
-}
-function _revealPlanCards(sectionId) {
-  var el = document.getElementById(sectionId);
-  if (!el) return;
-  el.style.display = 'block';
-  el.style.opacity = '1';
-  el.style.transform = 'none';
-  el.style.visibility = 'visible';
-  // Force all children visible — remove any lingering animation state
-  el.querySelectorAll('*').forEach(function(c) {
-    if (c.style.opacity === '0') c.style.opacity = '1';
-    if (c.style.transform) c.style.transform = 'none';
-  });
-  // Explicitly unhide price cards
-  el.querySelectorAll('.price-card, .r, [class*="r "], [class="r"]').forEach(function(c) {
-    c.style.opacity = '1';
-    c.style.transform = 'none';
-    c.classList.add('v');
-  });
-}
-function showMonthly() {
-  _hideAllPlans();
-  _revealPlanCards('monthly-plans');
-  var btn = document.getElementById('toggle-monthly');
-  if (btn) { btn.style.background = '#7c3aed'; btn.style.color = '#fff'; }
-}
-function showOnetime() {
-  _hideAllPlans();
-  _revealPlanCards('onetime-plans');
-  if (window._repriceObserve) window._repriceObserve();
-  var btn = document.getElementById('toggle-onetime');
-  if (btn) { btn.style.background = '#7c3aed'; btn.style.color = '#fff'; }
-}
-function showAgency() {
-  _hideAllPlans();
-  _revealPlanCards('agency-plans');
-  if (window._repriceObserve) window._repriceObserve();
-  var btn = document.getElementById('toggle-agency');
-  if (btn) { btn.style.background = '#7c3aed'; btn.style.color = '#fff'; }
-}
+
+
+
+
+
 </script>
 <!-- ── Agency Inquiry Modal ─────────────────────────────────────────────── -->
 <div id="agency-modal" class="audit-modal-wrap">
