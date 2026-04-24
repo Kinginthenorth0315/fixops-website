@@ -1275,13 +1275,10 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
 <section id="pricing" style="padding:80px 24px;position:relative;z-index:1;">
   <div style="max-width:1120px;margin:0 auto;">
 
-    <!-- Header -->
     <div style="text-align:center;margin-bottom:48px;">
       <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#a78bfa;font-family:monospace;padding:4px 14px;border-radius:999px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.35);margin-bottom:18px;">Pricing</span>
       <h2 style="font-size:clamp(36px,5vw,58px);font-weight:900;letter-spacing:-2.5px;color:#fff;line-height:1.02;margin-bottom:16px;">Start free. Scale when you're ready.</h2>
       <p style="font-size:15px;color:rgba(226,232,240,.6);max-width:680px;margin:0 auto 44px;line-height:1.75;">Agencies charge $2,500–$11,000/mo for a human to do what FixOps automates in 15 minutes. A one-time manual audit costs $3,500–$6,000 and is outdated before you finish reading it. FixOps delivers more, monitors every week, and lets your team fix issues in one click. <strong style="color:rgba(255,255,255,.75);">No contracts. Cancel anytime.</strong></p>
-
-      <!-- Tab buttons -->
       <div style="display:inline-flex;align-items:center;gap:0;background:#0c0c14;border:1px solid #22223a;border-radius:10px;padding:4px;">
         <button id="toggle-monthly" onclick="switchTab('monthly')" style="padding:9px 22px;background:#7c3aed;color:#fff;font-family:Outfit,sans-serif;font-size:13px;font-weight:700;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">Monthly Plans</button>
         <button id="toggle-onetime" onclick="switchTab('onetime')" style="padding:9px 22px;background:transparent;color:rgba(255,255,255,.45);font-family:Outfit,sans-serif;font-size:13px;font-weight:600;border:none;border-radius:7px;cursor:pointer;transition:all .2s;">One-Time Audits</button>
@@ -1289,7 +1286,6 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       </div>
     </div>
 
-    <!-- MONTHLY PLANS - visible by default -->
     <div id="monthly-plans" style="display:block;">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;">
 
@@ -1377,18 +1373,13 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
             <div class="pc-feat"><span>✓</span>Fix It For Me on any issue — scope &amp; quote in 24hrs</div>
             <div class="pc-feat" style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.2);border-radius:7px;padding:7px 10px;margin-top:6px;gap:7px;"><span style="color:#60a5fa;font-size:12px;">⚡</span> <span style="color:#60a5fa;font-weight:700;font-size:12px;">Coming Soon:</span> <span style="font-size:12px;color:rgba(255,255,255,.6);">AutoFix — one-click resolution for ghost seats, dead workflows &amp; contact tier bloat</span></div>
           </div>
-          <button class="pc-btn pcb-o" onclick="goStripe('pro')
+          <button class="pc-btn pcb-o" onclick="goStripe('pro')">Get FixOps Sentinel — $399/mo →</button>
         </div>
 
         </div>
       <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · <span onclick="switchTab('agency')" style="color:var(--brand2);cursor:pointer;font-weight:600;">Agency plans →</span></p>
     </div>
 
-    <!-- ONE-TIME AUDITS -->
-      <p class="price-note">Monthly plans priced per portal · cancel anytime · no contracts · any HubSpot tier · any portal size · <span onclick="switchTab('agency')" style="color:var(--brand2);cursor:pointer;font-weight:600;">Agency plans →</span></p>
-    </div>
-
-    <!-- ONE-TIME AUDITS - hidden by default -->
     <div id="onetime-plans" style="display:none;">
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:32px;">
 
@@ -1461,7 +1452,8 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
         </div>
 
       </div>
-    </div><!-- /onetime-plans -->
+      
+    </div>
 
     <div id="agency-plans" style="display:none;max-width:900px;margin:0 auto;">
       <div class="price-card best" style="border-color:rgba(124,58,237,.4);background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(37,99,235,.05));max-width:680px;margin:0 auto 24px;">
@@ -1504,8 +1496,14 @@ footer{background:var(--bg);border-top:1px solid var(--b1);padding:72px 52px 44p
       <button onclick="openAuditModal('command')" style="width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--font);">Get FixOps Command — $999/mo →</button>
       <div style="font-size:11px;color:var(--t3);text-align:center;margin-top:10px;">Invite-only · we onboard every agency personally · cancel anytime</div>
     </div>
-    </div>
-    </section>
+    
+
+  
+  </div>
+  </div>
+</section>
+
+
 
 
 
