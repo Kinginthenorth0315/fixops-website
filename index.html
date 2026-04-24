@@ -1955,6 +1955,7 @@ function requestSvc(name){toast(name,'Request received — we\'ll scope and quot
 let chosenPlan = '';
 
 function openAuditModal(e){
+  if (e === 'command' || e === 'agency') { openAgencyModal('command'); return; }
   if(e && typeof e === 'object' && e.preventDefault){
     e.preventDefault();
     e.stopPropagation();
@@ -2365,6 +2366,25 @@ function recReset() {
 </style>
 
 <script>
+// ── Stripe payment links ─────────────────────────────────────────────────────
+var STRIPE = {
+  'pulse':     'https://buy.stripe.com/eVqeVd9TYbncea89lr8Ra0d',
+  'pro':       'https://buy.stripe.com/5kQ3cvfei62S5DC0OV8Ra0e',
+  'deep':      'https://buy.stripe.com/7sYdR9feifDs4zy2X38Ra0b',
+  'pro_audit': 'https://buy.stripe.com/4gM9AT4zEgHwea89lr8Ra0c',
+  'command':   'https://buy.stripe.com/dRm28rd6a3UK0jidBH8Ra0f'
+};
+
+function goStripe(plan) {
+  var url = STRIPE[plan];
+  if (url) {
+    window.location.href = url;
+  } else {
+    console.warn('[FixOps] No Stripe URL for plan:', plan);
+  }
+}
+
+
 function openAgencyModal(plan) {
   // Store selected plan for form submission
   window._agencyPlanSelected = plan || 'command';
