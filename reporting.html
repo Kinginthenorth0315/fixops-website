@@ -2425,13 +2425,82 @@ function stat(label, value, sub, color) {
 // ── Demo mode helpers ────────────────────────────────────────────────────────
 function renderDashboard(data) {
   DATA = data;
+  // Hide loading, show views — same as loadData does
+  document.getElementById('loading-state').style.display = 'none';
+  document.getElementById('views').style.display = 'block';
+
+  var company = (DATA.portalInfo && DATA.portalInfo.company) || 'Your Portal';
+  var portalBadge = document.getElementById('portal-badge');
+  if (portalBadge) portalBadge.textContent = company + ' · Snapshot';
+  document.title = 'FixOps Intelligence — ' + company;
+
+  var tbCompany = document.getElementById('topbar-company');
+  if (tbCompany) tbCompany.textContent = company;
+
+  var auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || 'sentinel';
+  var isFree       = auditPlan === 'free' || !auditPlan;
+  var isDiagnostic = ['deep','diagnostic','deep-audit'].includes(auditPlan);
+  var isFullAudit  = ['pro-audit','full','full-audit'].includes(auditPlan);
+  var isMonitor    = ['pulse','monitor'].includes(auditPlan);
+  var isSentinel   = ['pro','sentinel'].includes(auditPlan);
+  var isAgency     = auditPlan === 'command';
+  var isOneTime    = isDiagnostic || isFullAudit;
+  var isMonthly    = isMonitor || isSentinel || isAgency;
+  var isProMonthly = isSentinel || isAgency;
+  var isDeep       = isDiagnostic;
+  var isProAudit   = isFullAudit;
+  var isPulse      = isMonitor;
+  var isProOrAbove   = isFullAudit || isSentinel || isAgency;
+  var isPulseOrAbove = !isFree;
+  var isDeepAudit    = isDiagnostic;
+  var hasBasic       = isPulseOrAbove;
+  var hasSentinel    = isFullAudit || isSentinel || isAgency;
+  var hasAI          = isSentinel || isAgency;
+  window.PLAN_TIER = {
+    isFree, isOneTime, isDeep, isProAudit,
+    isDiagnostic, isFullAudit, isMonitor, isSentinel,
+    isPulse, isProMonthly, isMonthly, isAgency,
+    isProOrAbove, isPulseOrAbove, isDeepAudit,
+    hasBasic, hasSentinel, hasAI, plan: auditPlan
+  };
+
+  var score = DATA.summary && DATA.summary.overallScore;
+  if (score !== undefined) {
+    var tbScore = document.getElementById('topbar-score');
+    if (tbScore) {
+      tbScore.textContent = score + '/100';
+      tbScore.style.display = 'inline-block';
+      tbScore.style.color = score>=80?'var(--green)':score>=60?'var(--amber)':'var(--red)';
+      tbScore.style.background = score>=80?'var(--green-bg)':score>=60?'var(--amber-bg)':'var(--red-bg)';
+      tbScore.style.border = '1px solid ' + (score>=80?'rgba(22,163,74,.2)':score>=60?'rgba(217,119,6,.2)':'rgba(220,38,38,.2)');
+      tbScore.style.padding = '2px 8px';
+      tbScore.style.borderRadius = '4px';
+      tbScore.style.fontFamily = 'var(--mono)';
+      tbScore.style.fontSize = '11px';
+      tbScore.style.fontWeight = '700';
+    }
+  }
+
+  var tbResults = document.getElementById('topbar-results-btn');
+  if (tbResults) { tbResults.href = 'results.html?id=demo'; tbResults.style.display = 'inline-flex'; }
+
+  var navBadge = document.getElementById('nav-plan-badge');
+  if (navBadge) {
+    navBadge.textContent = 'SENTINEL · $249/mo';
+    navBadge.style.color = '#16a34a';
+    navBadge.style.background = 'rgba(22,163,74,.12)';
+    navBadge.style.fontWeight = '600';
+    navBadge.style.display = 'inline-block';
+  }
+
   try { initAllViews(); } catch(e) { console.error('initAllViews demo:', e); }
   try { annotatePlanRequirements(); } catch(e) {}
-  // Show demo banner
+
+  // Demo banner at bottom
   var banner = document.createElement('div');
   banner.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999;background:linear-gradient(135deg,rgba(124,58,237,.95),rgba(37,99,235,.9));color:#fff;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 8px 30px rgba(124,58,237,.4);display:flex;align-items:center;gap:12px;';
   banner.innerHTML = '<span>👁 Sample Dashboard — Acme Corp (Demo)</span>' +
-    '<a href="results.html?id=demo" style="color:rgba(255,255,255,.8);font-weight:600;text-decoration:underline;font-size:12px;">← Back to Audit Report</a>' +
+    '<a href="results.html?id=demo" style="color:rgba(255,255,255,.8);font-weight:600;text-decoration:underline;font-size:12px;">← Back to Audit</a>' +
     '<a href="setup.html" style="background:rgba(255,255,255,.2);padding:6px 14px;border-radius:6px;color:#fff;text-decoration:none;font-size:12px;font-weight:700;">Run Free Audit →</a>';
   document.body.appendChild(banner);
 }
@@ -2705,7 +2774,7 @@ async function loadData() {
     };
     var navBadge = document.getElementById('nav-plan-badge');
     if (navBadge) {
-      var planLabels2 = {free:'FREE SNAPSHOT',pulse:'MONITOR · $199/mo',monitor:'MONITOR · $199/mo',pro:'SENTINEL · $399/mo',sentinel:'SENTINEL · $399/mo',command:'COMMAND · $999/mo','pro-audit':'FULL AUDIT · $499',full:'FULL AUDIT · $499','full-audit':'FULL AUDIT · $499',deep:'DIAGNOSTIC · $299',diagnostic:'DIAGNOSTIC · $299'};
+      var planLabels2 = {free:'FREE SNAPSHOT',pulse:'MONITOR · $99/mo',monitor:'MONITOR · $99/mo',pro:'SENTINEL · $249/mo',sentinel:'SENTINEL · $249/mo',command:'COMMAND · $999/mo','pro-audit':'FULL AUDIT · $499',full:'FULL AUDIT · $499','full-audit':'FULL AUDIT · $499',deep:'DIAGNOSTIC · $299',diagnostic:'DIAGNOSTIC · $299'};
       var planColors2 = {
         free:       '#6b7280',
         pulse:      '#2563eb',
@@ -2765,7 +2834,7 @@ async function loadFromToken(token) {
     // deep       = one-time full scan, basic views, premium views locked → sell monthly
     // pro-audit  = one-time full scan + advanced, basic+some views, AI locked → sell monthly
     // monitor    = monthly $199, core views (15), weekly scans, no AI/daily/advanced
-    // pro        = monthly $399, everything
+    // pro        = monthly $249, everything
     // command    = agency $999, everything + multi-portal
     const isFree       = auditPlan === 'free' || !auditPlan;
     const isOneTime    = ['deep','pro-audit'].includes(auditPlan);
@@ -2791,7 +2860,7 @@ async function loadFromToken(token) {
     // ── Nav badge ────────────────────────────────────────────────────────────
     const navPlanBadge = document.getElementById('nav-plan-badge');
     if (navPlanBadge) {
-      const planLabels = {free:'FREE SNAPSHOT',pulse:'MONITOR · $199/mo',pro:'SENTINEL · $399/mo',
+      const planLabels = {free:'FREE SNAPSHOT',pulse:'MONITOR · $99/mo',pro:'SENTINEL · $249/mo',
         command:'COMMAND · $999/mo','pro-audit':'FULL AUDIT','deep':'DIAGNOSTIC'};
       const planColors = {free:'#6b7280',pulse:'#3b82f6',pro:'#10b981',
         command:'#f59e0b','pro-audit':'#8b5cf6','deep':'#7c3aed'};
@@ -2811,14 +2880,14 @@ async function loadFromToken(token) {
               '<span style="font-size:18px;">⚡</span>' +
               '<div>' +
                 '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:2px;">Free Snapshot — up to 1,000 contacts · 5 issues shown</div>' +
-                '<div style="font-size:11px;color:var(--t3);">Upgrade to FixOps Diagnostic ($399 one-time) or FixOps Monitor ($199/mo) for the full portal scan, all issues, fix guides, and intelligence views.</div>' +
+                '<div style="font-size:11px;color:var(--t3);">Upgrade to FixOps Diagnostic ($249 one-time) or FixOps Monitor ($199/mo) for the full portal scan, all issues, fix guides, and intelligence views.</div>' +
               '</div>' +
             '</div>' +
             '<a href="https://fixops.io/#pricing" target="_blank" style="flex-shrink:0;padding:7px 16px;background:var(--brand);color:#fff;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">See Plans →</a>' +
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isDeep) {
-        // FixOps Diagnostic ($399): basic views only — reporting dashboard locked
+        // FixOps Diagnostic ($249): basic views only — reporting dashboard locked
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">' +
             '<div style="display:flex;align-items:center;gap:12px;">' +
@@ -2826,7 +2895,7 @@ async function loadFromToken(token) {
               '<div>' +
                 '<div style="font-size:12px;font-weight:700;color:var(--t1);margin-bottom:3px;">FixOps Diagnostic — Full one-time scan complete</div>' +
                 '<div style="font-size:11px;color:var(--t3);line-height:1.6;">Rep intelligence, contact decay, AI builder, audit history, and 14 other views are locked. ' +
-                  '<strong style="color:#10b981;">FixOps Monitor ($199/mo)</strong> unlocks weekly scans. <strong style="color:#10b981;">FixOps Sentinel ($399/mo)</strong> unlocks everything.</div>' +
+                  '<strong style="color:#10b981;">FixOps Monitor ($199/mo)</strong> unlocks weekly scans. <strong style="color:#10b981;">FixOps Sentinel ($249/mo)</strong> unlocks everything.</div>' +
               '</div>' +
             '</div>' +
             '<div style="display:flex;gap:8px;flex-shrink:0;">' +
@@ -2856,7 +2925,7 @@ async function loadFromToken(token) {
             '<div style="display:flex;align-items:center;gap:10px;">' +
               '<span style="font-size:16px;">📡</span>' +
               '<div style="font-size:13px;color:var(--t2);">FixOps Monitor — 15 core views active. <strong style="color:var(--t1);">17 intelligence views locked.</strong> ' +
-                '<a href="https://fixops.io/#pricing" style="color:#10b981;font-weight:700;">Upgrade to Sentinel ($399/mo)</a> ' +
+                '<a href="https://fixops.io/#pricing" style="color:#10b981;font-weight:700;">Upgrade to Sentinel ($249/mo)</a> ' +
                 'for rep intelligence, contact decay, deal risk, AI builder, and 12+ more advanced views.' +
               '</div>' +
             '</div>' +
@@ -2865,7 +2934,7 @@ async function loadFromToken(token) {
           '</div>';
         bannerEl.style.display = 'block';
       } else if (isProMonthly) {
-        // Sentinel ($399/mo): full access — show status + upgrade hook to Command
+        // Sentinel ($249/mo): full access — show status + upgrade hook to Command
         bannerEl.innerHTML =
           '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">' +
             '<div style="display:flex;align-items:center;gap:10px;">' +
@@ -2897,7 +2966,7 @@ async function loadFromToken(token) {
       'tickets','automation','team','lists','sequences','company',
       'products','customobjects','setup','engagement'];
 
-    // SENTINEL ($399/mo): Intelligence views — the "why" behind the health numbers
+    // SENTINEL ($249/mo): Intelligence views — the "why" behind the health numbers
     const SENTINEL_VIEWS = ['rep','decay','health','formfunnel','prophealth','source',
       'lifecycle','trends','roi','delta','billing','wfdeps',
       'utilization','enrichment','dealrisk','history','settings',
@@ -2922,7 +2991,7 @@ async function loadFromToken(token) {
         // Free: lock everything except overview
         if (viewName !== 'overview') item.classList.add('locked-sidebar');
       } else if (isDeepAudit) {
-        // Deep Diagnostic ($399): Basic views unlocked, Sentinel locked
+        // Deep Diagnostic ($249): Basic views unlocked, Sentinel locked
         if (SENTINEL_VIEWS.includes(viewName)) {
           item.classList.add('locked-sidebar');
           badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(16,185,129,.12);color:#10b981;border:1px solid rgba(16,185,129,.25);">SENTINEL</span>';
@@ -2938,7 +3007,7 @@ async function loadFromToken(token) {
           badge = '<span style="font-size:8px;font-weight:800;padding:1px 5px;border-radius:3px;margin-left:4px;background:rgba(167,139,250,.15);color:#a78bfa;border:1px solid rgba(167,139,250,.3);">PRO</span>';
         }
       } else if (isProMonthly || isAgency) {
-        // Sentinel ($399/mo) + Command ($999/mo): everything unlocked
+        // Sentinel ($249/mo) + Command ($999/mo): everything unlocked
         // PRO_VIEWS (AI, velocity, forecast, etc.) are included in Sentinel
         // Nothing locked for pro/command
       }
@@ -2975,7 +3044,7 @@ async function loadFromToken(token) {
           '<div class="view-lock-features">' + featHtml + '</div>' +
           '<div class="view-lock-compare">' +
             '<span class="vlc-pill" style="background:rgba(59,130,246,.15);color:#3b82f6;">Monitor $199/mo</span>' +
-            '<span class="vlc-pill" style="background:rgba(124,58,237,.15);color:#a78bfa;">Sentinel $399/mo</span>' +
+            '<span class="vlc-pill" style="background:rgba(124,58,237,.15);color:#a78bfa;">Sentinel $249/mo</span>' +
             '<span class="vlc-pill" style="background:rgba(245,158,11,.15);color:#f59e0b;">Command $999/mo</span>' +
           '</div>' +
           '<a href="' + ctaLink + '" target="_blank" class="view-lock-cta ' + (requiredPlan === 'sentinel' ? 'sentinel-cta' : 'monitor-cta') + '">' +
@@ -2986,7 +3055,7 @@ async function loadFromToken(token) {
       el.appendChild(overlay);
     }
 
-    // Lock Sentinel views for: free, deep ($399 diagnostic)
+    // Lock Sentinel views for: free, deep ($249 diagnostic)
     // pro-audit ($699) DOES get Sentinel — it's the full one-time version
     if (tier.isFree || tier.isDeepAudit) {
       var pulseFeatures = {
@@ -3028,7 +3097,7 @@ async function loadFromToken(token) {
       ];
       ['dealcoach','revopscoach','contacttier','autodoc','changeintel',
        'breeze','hubcost','methodology'].forEach(function(vName) {
-        lockView(vName, 'sentinel', 'SENTINEL', '#7c3aed', '$399/mo',
+        lockView(vName, 'sentinel', 'SENTINEL', '#7c3aed', '$249/mo',
           sentinelNewFeats, 'https://fixops.io/#pricing');
       });
     }
@@ -3042,7 +3111,7 @@ async function loadFromToken(token) {
         {title:'Workflow Conflict AI',desc:'AI finds conflicts and dependency risks automatically'},
       ];
       ['ai','velocity','forecast','funnel','contacts','conflicts'].forEach(function(vName) {
-        lockView(vName, 'sentinel', 'SENTINEL', '#7c3aed', '$399/mo',
+        lockView(vName, 'sentinel', 'SENTINEL', '#7c3aed', '$249/mo',
           proFeatures, 'https://fixops.io/#pricing');
       });
     }
@@ -3070,7 +3139,7 @@ async function loadFromToken(token) {
   }
 
   if (isDeepAudit) {
-    // Deep Diagnostic ($399): Build basic views only
+    // Deep Diagnostic ($249): Build basic views only
     // Sentinel views are locked with upgrade overlays from applyViewLocks
     safeRun(buildOverview); safeRun(buildPipeline); safeRun(buildRevenue);
     safeRun(buildMarketing); safeRun(buildService); safeRun(buildTickets);
@@ -3132,7 +3201,7 @@ function safeRun(fn) {
 // ── FULL-PAGE REPORTING WALL ────────────────────────────────────────────────
 function showReportingWall(plan) {
   var planLabel = plan === 'free' ? 'Free Snapshot' :
-                  plan === 'deep' ? 'FixOps Diagnostic ($399)' :
+                  plan === 'deep' ? 'FixOps Diagnostic ($249)' :
                   plan === 'pro-audit' ? 'FixOps Full Audit ($699)' : plan;
   var isOneTimePlan = ['deep','pro-audit'].includes(plan);
 
@@ -3693,7 +3762,7 @@ function upgradePrompt(feature, description, minPlan) {
   var isCommand = minPlan === 'command';
   var isSentinel = minPlan === 'pro' || minPlan === 'sentinel';
   var planLabel = isCommand ? 'FixOps Command ($999/mo)' :
-                  isSentinel ? 'FixOps Sentinel ($399/mo)' : 'FixOps Monitor ($199/mo)';
+                  isSentinel ? 'FixOps Sentinel ($249/mo)' : 'FixOps Monitor ($199/mo)';
   var planColor = isCommand ? '#a78bfa' : isSentinel ? '#10b981' : '#3b82f6';
   var planDesc  = isCommand ? 'Multi-portal management, white-label reports, and everything in Sentinel across 25 portals.' :
                   isSentinel ? 'Rep intelligence, contact decay, deal risk, AI builder, and 17 advanced intelligence views.' :
@@ -8056,7 +8125,7 @@ function buildContactTierOpt(id) {
       html += '</div></div>';
     });
     html += '</div>';
-    html += '<div style="padding:14px 16px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:10px;font-size:12px;color:var(--t2);">💡 <strong style="color:var(--t1);">Want us to handle this?</strong> Our Contact Database Rescue service runs the full cleanup — dedup, suppression, lifecycle staging, billing report. <a href="https://fixops.io/#services" target="_blank" style="color:var(--brand2);font-weight:700;">From $399 →</a></div>';
+    html += '<div style="padding:14px 16px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.2);border-radius:10px;font-size:12px;color:var(--t2);">💡 <strong style="color:var(--t1);">Want us to handle this?</strong> Our Contact Database Rescue service runs the full cleanup — dedup, suppression, lifecycle staging, billing report. <a href="https://fixops.io/#services" target="_blank" style="color:var(--brand2);font-weight:700;">From $249 →</a></div>';
     html += '</div>';
     el.innerHTML = html;
   })
