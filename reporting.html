@@ -4161,9 +4161,9 @@ function buildPipeline() {
         var days = d.daysStalled || 0;
         var dayCol = days > 30 ? 'color:var(--red);' : days > 14 ? 'color:var(--amber);' : '';
         return '<tr>' +
-          '<td style="font-weight:550;color:var(--t1);">' + (d.deal||d.name||'—') + '</td>' +
-          '<td>' + (d.stage||'—') + '</td>' +
-          '<td>' + (d.owner||'—') + '</td>' +
+          '<td style="font-weight:550;color:var(--t1);">' + (d.deal||d.name||d.properties?.dealname||'Unnamed Deal') + '</td>' +
+          '<td style="font-size:11px;color:var(--t2);">' + (d.stage||d.properties?.dealstage||'—') + '</td>' +
+          '<td style="font-size:11px;color:var(--t2);">' + (d.owner||'—') + '</td>' +
           '<td class="num" style="' + dayCol + '">' + days + 'd</td>' +
           '<td class="num">' + (d.value ? (typeof d.value === 'number' ? fmtMoney(d.value) : d.value) : '—') + '</td>' +
         '</tr>';
