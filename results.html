@@ -485,7 +485,7 @@ function fmt(n) { return Number(n||0).toLocaleString(); }
 function fmtMoney(n) {
   n = Number(n||0);
   if(n>=1000000) return '$'+Math.round(n/100000)/10+'M';
-  if(n>=1000) return '$'+Math.round(n/100)/10+'K';
+  if(n>=1000) return '$'+Math.round(n/1000).toLocaleString()+'K';
   return '$'+Math.round(n).toLocaleString();
 }
 function pct(a,b) { return b > 0 ? Math.round(a/b*100) : 0; }
@@ -1516,6 +1516,7 @@ function showResults(data) {
 
   // ── Fix Plan ─────────────────────────────────────────────────────────────
   try { buildFixPlan(data); } catch(e) { console.warn('fix plan:', e); }
+    buildRoadmap(ps, issues, waste);
 
   // CTA
   document.getElementById('cta-section').style.display = '';
@@ -2753,7 +2754,8 @@ async function loadDealRisk(auditId, plan) {
             '<div style="font-size:8px;font-weight:700;color:' + rc + ';letter-spacing:1px;text-transform:uppercase;">RISK</div>' +
           '</div>' +
           '<div style="flex:1;min-width:0;">' +
-            '<div style="font-size:13px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(deal.name) + '</div>' +
+            '<div style="font-size:13px;font-weight:700;color:var(--t1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(deal.name || deal.deal || 'Unnamed Deal') + '</div>' +
+            '<div style="font-size:10px;color:var(--t3);margin-top:1px;">ID: ' + (deal.id||deal.recordId||'') + '</div>' +
             '<div style="font-size:11px;color:var(--t3);margin-top:2px;">' + (deal.amount > 0 ? '$' + deal.amount.toLocaleString() + ' · ' : '') + esc(flags) + '</div>' +
           '</div>' +
           '<div style="font-size:10px;font-weight:700;color:' + rc + ';white-space:nowrap;background:rgba(' + (deal.riskLevel==='critical'?'244,63,94':'245,158,11') + ',.1);padding:4px 9px;border-radius:6px;">' +
@@ -3242,6 +3244,181 @@ function submitFeedback() {
       '</div>';
   }
 }
+
+  // ── 60-Day Roadmap Builder ─────────────────────────────────────────────────
+  function buildRoadmap(ps, issues, waste) {
+    var section = document.getElementById('roadmap-section');
+    if (!section) return;
+    section.style.display = 'block';
+
+    var critical = issues.filter(function(i) { return i.severity === 'critical'; });
+    var warnings = issues.filter(function(i) { return i.severity === 'warning'; });
+
+    // Week 1-2: Critical issues = stop the bleeding
+    var week1Items = [];
+
+    // Ghost seats
+    if ((ps.inactiveUserCount || 0) > 0) {
+      week1Items.push({
+        icon: '👻',
+        title: 'Deactivate ' + ps.inactiveUserCount + ' ghost seats',
+        impact: '$' + Math.round((ps.inactiveUserCount||0)*90).toLocaleString() + '/mo recovered immediately',
+        effort: '30 min',
+        how: 'Settings → Users & Teams → filter by Last Login → deactivate any user with no login in 90+ days'
+      });
+    }
+
+    // Workflow errors
+    if ((ps.erroredWorkflows || 0) > 0) {
+      week1Items.push({
+        icon: '⚙️',
+        title: 'Fix ' + ps.erroredWorkflows + ' workflows in error state',
+        impact: 'Contacts currently dropping silently — revenue impact unquantified',
+        effort: '1-2 hours',
+        how: 'Automation → Workflows → filter Status: Error → open each and fix the action causing the failure'
+      });
+    }
+
+    // Billing tier
+    if ((ps.billingTierEngine || {}).atRisk) {
+      var bte = ps.billingTierEngine;
+      week1Items.push({
+        icon: '💳',
+        title: 'Suppress ' + (bte.dupesRemovable||0) + ' duplicates before billing tier upgrade',
+        impact: 'Avoid $' + (bte.tierJumpCost||0).toLocaleString() + '/mo tier jump — ' + (bte.monthsToNextTier||'?') + ' months away at current growth',
+        effort: '2-3 hours',
+        how: 'Contacts → Actions → Manage Duplicates → merge or delete confirmed duplicates, starting with exact email matches'
+      });
+    }
+
+    // DMARC/email domain
+    var emailIssue = critical.find(function(i) { return i.title && i.title.toLowerCase().includes('dmarc'); });
+    if (emailIssue) {
+      week1Items.push({
+        icon: '📧',
+        title: 'Fix email deliverability — configure DMARC on sending domain',
+        impact: 'Every marketing email going to spam costs revenue and damages sender score',
+        effort: '1 hour (DNS access required)',
+        how: 'Add a DMARC record to your DNS: v=DMARC1; p=quarantine; rua=mailto:youremail@yourdomain.com — Settings → Domains → verify after adding'
+      });
+    }
+
+    // Week 3-4: Automation and pipeline
+    var week3Items = [];
+
+    // Dead workflows
+    if ((ps.deadWorkflowCount || 0) > 0) {
+      week3Items.push({
+        icon: '🔴',
+        title: 'Audit and clean up ' + ps.deadWorkflowCount + ' dead/inactive workflows',
+        impact: 'Reduce workflow clutter, API quota waste, and maintenance burden',
+        effort: '3-4 hours',
+        how: 'Automation → Workflows → sort by Enrolled Contacts → pause any workflow with 0 enrollments for 60+ days → archive if purpose is unclear'
+      });
+    }
+
+    // Stalled deals
+    if ((ps.stalledDeals || 0) > 0) {
+      week3Items.push({
+        icon: '🧊',
+        title: 'Work or disqualify ' + (ps.stalledDeals||0).toLocaleString() + ' stalled deals',
+        impact: '$' + Math.round(ps.stalledPipelineValue||0).toLocaleString() + ' in stalled pipeline — inflating your forecast',
+        effort: '4-8 hours (rep activity)',
+        how: 'CRM → Deals → filter Last Activity Date more than 21 days ago → assign follow-up tasks to deal owners → close lost or move forward within 72 hours'
+      });
+    }
+
+    // No sequences
+    if ((ps.sequenceCount || 0) === 0 && (ps.users||[]).length > 2) {
+      week3Items.push({
+        icon: '📨',
+        title: 'Set up sales sequences for outbound follow-up',
+        impact: 'Manual follow-up misses 60-70% of prospects — sequences ensure consistent outreach',
+        effort: '4-6 hours',
+        how: 'Sales → Sequences → Create a 5-step sequence: Day 1 intro email, Day 3 call task, Day 6 follow-up email, Day 10 LinkedIn task, Day 14 break-up email'
+      });
+    }
+
+    // Pipeline integrity
+    var zeroDeals = warnings.find(function(i) { return i.title && i.title.includes('$0'); });
+    if (zeroDeals) {
+      week3Items.push({
+        icon: '💰',
+        title: 'Add deal values to ' + (ps.zeroDollarDeals||0) + ' deals showing $0',
+        impact: 'Pipeline forecast accuracy meaningless without deal amounts',
+        effort: '2-3 hours',
+        how: 'CRM → Deals → filter Amount is unknown → assign realistic deal values based on product/service pricing'
+      });
+    }
+
+    // Week 5-8: Optimize and monitor
+    var week8Items = [];
+
+    // Contact lifecycle stages
+    week8Items.push({
+      icon: '🔄',
+      title: 'Audit and fix contact lifecycle stages',
+      impact: 'Incorrect lifecycle stages break lead scoring, segmentation, and attribution',
+      effort: '4-6 hours',
+      how: 'Contacts → filter Lifecycle Stage is unknown → create a workflow to set lifecycle stage based on deal stage, form submission, or manual review'
+    });
+
+    // Set up monitoring
+    week8Items.push({
+      icon: '📊',
+      title: 'Configure weekly automated monitoring (FixOps Sentinel)',
+      impact: 'Catch new issues the week they appear — not months later when they\'ve cost you revenue',
+      effort: '5 minutes',
+      how: 'Upgrade to FixOps Monitor or Sentinel — your portal re-audits every Monday, you get an email digest with new issues, delta from last week, and dollar impact'
+    });
+
+    // Enable notifications
+    week8Items.push({
+      icon: '🔔',
+      title: 'Turn on workflow error notifications in HubSpot',
+      impact: 'Know within hours when automation breaks — not when a rep asks where their leads went',
+      effort: '5 minutes',
+      how: 'Settings → Notifications → find Workflows → enable Enrollment errors and Action errors for all admins'
+    });
+
+    // Rep coaching
+    if ((ps.darkRepNames||[]).length > 0) {
+      week8Items.push({
+        icon: '👥',
+        title: 'Set up rep activity accountability system',
+        impact: 'Reps not logging activity means invisible pipeline — no data for coaching or forecasting',
+        effort: '2-3 hours',
+        how: 'Create a weekly workflow: if rep has 0 calls + 0 meetings logged in 7 days → create a task for their manager + send a reminder email to the rep'
+      });
+    }
+
+    function roadmapCard(item) {
+      return '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;">' +
+        '<div style="font-size:22px;flex-shrink:0;margin-top:2px;">' + item.icon + '</div>' +
+        '<div style="flex:1;">' +
+          '<div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;">' + esc(item.title) + '</div>' +
+          '<div style="font-size:12px;color:var(--t2);margin-bottom:6px;">' + esc(item.impact) + '</div>' +
+          '<div style="display:flex;gap:8px;flex-wrap:wrap;">' +
+            '<span style="background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.2);border-radius:5px;padding:2px 8px;font-size:11px;color:#a78bfa;">⏱ ' + esc(item.effort) + '</span>' +
+            '<span style="font-size:11px;color:var(--t3);padding:2px 0;">' + esc(item.how) + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    document.getElementById('roadmap-week1').innerHTML = week1Items.length > 0
+      ? week1Items.map(roadmapCard).join('')
+      : '<div style="color:var(--t3);font-size:13px;padding:8px;">No critical immediate issues — your portal is in relatively good shape</div>';
+
+    document.getElementById('roadmap-week3').innerHTML = week3Items.length > 0
+      ? week3Items.map(roadmapCard).join('')
+      : '<div style="color:var(--t3);font-size:13px;padding:8px;">No major automation or pipeline issues to fix this cycle</div>';
+
+    document.getElementById('roadmap-week8').innerHTML = week8Items.length > 0
+      ? week8Items.map(roadmapCard).join('')
+      : '<div style="color:var(--t3);font-size:13px;padding:8px;">Focus on maintaining the fixes from weeks 1-4</div>';
+  }
+
 </script>
 
 <!-- demo bottom CTA -->
@@ -3265,4 +3442,46 @@ function submitFeedback() {
 </div>
 
 </body>
-</html>
+</html
+
+  <!-- ── 60-Day Fix Roadmap ─────────────────────────────────────────────── -->
+  <div id="roadmap-section" style="display:none;margin-bottom:32px;">
+    <div class="section-title" style="margin-bottom:6px;">Your 60-Day Fix Roadmap</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:20px;">Based on your audit findings — prioritized by revenue impact. Fix these in order.</div>
+
+    <!-- Week 1-2: Stop the bleeding -->
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="background:#f43f5e;color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:5px;letter-spacing:1px;">WEEK 1–2</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">Stop the Bleeding — Confirmed Waste</div>
+      </div>
+      <div id="roadmap-week1" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- Week 3-4: Fix the automation -->
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="background:#f59e0b;color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:5px;letter-spacing:1px;">WEEK 3–4</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">Fix Automation & Pipeline</div>
+      </div>
+      <div id="roadmap-week3" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- Week 5-8: Build for growth -->
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+        <div style="background:#10b981;color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:5px;letter-spacing:1px;">WEEK 5–8</div>
+        <div style="font-size:14px;font-weight:700;color:#fff;">Build for Growth — Optimize & Monitor</div>
+      </div>
+      <div id="roadmap-week8" style="display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- Fix It For Me CTA -->
+    <div style="background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(37,99,235,.08));border:1px solid rgba(124,58,237,.25);border-radius:14px;padding:24px;margin-top:20px;text-align:center;">
+      <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:8px;">Want us to execute this roadmap for you?</div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:18px;max-width:560px;margin-left:auto;margin-right:auto;">Our team fixes HubSpot portals every day. We can work through this entire 60-day plan for you — faster, cleaner, and with zero disruption to your team.</div>
+      <button onclick="openAuditModal(event)" style="background:linear-gradient(135deg,#7c3aed,#2563eb);color:#fff;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--font);">Get a Fix It For Me Quote →</button>
+    </div>
+  </div>
+
+>
