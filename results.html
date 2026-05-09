@@ -1184,7 +1184,7 @@ function showResults(data) {
     { val: dealsDisplay,                          lbl: 'Pipeline',  warn: !!pipeReality },
     { val: fmt(ps.tickets||0) + ticketHealth,     lbl: 'Tickets',   warn: !!ticketHealth },
     { val: fmt(ps.workflows||0) + wfHealth,       lbl: 'Workflows', warn: !!wfHealth },
-    { val: fmt(ps.users||0) + userHealth,         lbl: 'Users/Seats', warn: !!userHealth },
+    { val: fmt(ps.totalUsers||ps.userCount||(Array.isArray(ps.users)?ps.users.length:ps.users)||0) + userHealth,         lbl: 'Users/Seats', warn: !!userHealth },
     { val: fmt(ps.forms||0),                      lbl: 'Forms',     warn: false },
     { val: fmt(ps.lists||0),                      lbl: 'Lists',     warn: false },
     { val: ps.marketingEmailCount > 0 ? fmt(ps.marketingEmailCount) + emailHealth : '—', lbl: 'Emails', warn: emailHealth.includes('⚠️') },
