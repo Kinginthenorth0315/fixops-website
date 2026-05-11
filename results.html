@@ -1035,6 +1035,26 @@ function showResults(data) {
 
   var portal   = data.portalInfo|| {};
   var ps       = portal.portalStats || {};
+
+  // ── Score Trends / Audit History ─────────────────────────────────────────
+  (function loadAuditHistory() {
+    var _pid = portal.portalId || ps.portalId || DATA.portalInfo?.portalId;
+    if (!_pid) return;
+    fetch(API + '/audit/history?portalId=' + encodeURIComponent(_pid) + '&limit=10')
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(h){
+        if (!h) return;
+        var tEl = document.getElementById('trends-section');
+        var pEl = document.getElementById('post-audit-trends');
+        if (pEl) pEl.style.display = 'block';
+        if (!tEl) return;
+        if (h.history && h.history.length >= 2) {
+          renderAuditTrends(h.history, h.trend);
+        } else {
+          tEl.innerHTML = '<div style="color:var(--t3);font-size:13px;padding:12px 0;">Run a second audit on this portal to see Score Trends and ROI tracking here.</div>';
+        }
+      }).catch(function(){});
+  })();
   var plan     = portal.plan    || 'free';
 
   var ovr      = summary.overallScore || 0;

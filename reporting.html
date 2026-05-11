@@ -2684,7 +2684,7 @@ async function loadData() {
                                     : pi.email   ? 'email='     + encodeURIComponent(pi.email)
                                     : null;
         if (!histParam) return;
-        var hr = await fetch(API + '/history?' + histParam, { cache: 'no-store' });
+        var hr = await fetch(API + '/audit/history?portalId=' + encodeURIComponent((DATA.portalInfo||{}).portalId || ''), { cache: 'no-store' });
         if (!hr.ok) return;
         var hd = await hr.json();
         if (hd && hd.history && hd.history.length > 0) {
@@ -2744,7 +2744,7 @@ async function loadData() {
       tbCert.href = 'https://fixops-api-production.up.railway.app/audit/certificate?id=' + (auditId || DATA.id);
       tbCert.style.display = 'inline-flex';
     }
-    var auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || 'free';
+    var auditPlan = (DATA.portalInfo && DATA.portalInfo.plan) || DATA.plan || (window.PLAN_TIER && window.PLAN_TIER.plan) || 'pro';
     // Plan codes: free | deep/diagnostic | pro-audit/full | pulse/monitor | pro/sentinel | command
     var isFree       = auditPlan === 'free' || !auditPlan;
     var isDiagnostic = ['deep','diagnostic','deep-audit'].includes(auditPlan);
@@ -4985,7 +4985,7 @@ function buildTeam() {
 function buildTrends() {
   // ── Plan gate: Monitor users see upgrade prompt ──
   var _plan = window.PLAN_TIER || {};
-  if (!_plan.hasSentinel) {
+  if (_plan.isFree) { // Only block free plan users from trends
     var _el = document.getElementById('trends-kpis') ||
               document.getElementById('trends-content') ||
               document.querySelector('#view-trends .view-header + div');
