@@ -2659,6 +2659,14 @@ async function loadData() {
   try {
     var ctrl = new AbortController();
     var tid = setTimeout(function(){ ctrl.abort(); }, 20000);
+    // Demo mode — load sample data without API call
+    if (auditId === 'demo') {
+      DATA = getDemoDataForReporting();
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('views').style.display = 'block';
+      initViews();
+      return;
+    }
     var r = await fetch(API + '/audit/status/' + auditId, { signal: ctrl.signal, cache: 'no-store' });
     clearTimeout(tid);
     if (!r.ok) throw new Error('Audit not found (HTTP ' + r.status + ')');
@@ -8177,7 +8185,8 @@ function runAutoDoc() {
         html += '<div style="background:var(--s1);border:1px solid var(--b1);border-radius:12px;padding:20px 24px;margin-bottom:12px;">';
         html += '<div style="font-size:14px;font-weight:700;color:var(--t1);margin-bottom:6px;">' + (sec.title||'') + '</div>';
         if (sec.status) {
-          var sColor = sec.status==='HEALTHY'?'#10b981':sec.status==='WARNING'?'#f59e0b':'#f43f5e';
+          var secSev = (sec.severity||sec.status||'').toLowerCase();
+          var sColor = (secSev==='good'||secSev==='healthy'||secSev==='pass')?'#10b981':(secSev==='warning')?'#f59e0b':'#f43f5e';
           html += '<div style="display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;color:'+sColor+';background:'+sColor+'15;border:1px solid '+sColor+'25;padding:2px 8px;border-radius:4px;margin-bottom:8px;font-family:var(--mono);text-transform:uppercase;">' + sec.status + '</div>';
         }
         html += '<div style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:8px;">' + (sec.description||'') + '</div>';
@@ -8205,7 +8214,8 @@ function runAutoDoc() {
         html += '<div style="display:flex;gap:14px;padding:14px 16px;background:var(--s1);border:1px solid var(--b1);border-radius:10px;margin-bottom:8px;">';
         html += '<div style="width:24px;height:24px;border-radius:50%;background:rgba(244,63,94,.2);color:#f43f5e;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + (i+1) + '</div>';
         html += '<div><div style="font-size:13px;font-weight:700;color:var(--t1);margin-bottom:3px;">' + (fix.title||fix||'') + '</div>';
-        if (fix.action) html += '<div style="font-size:12px;color:var(--t2);">' + fix.action + '</div>';
+        if (fix.impact) html += '<div style="font-size:12px;color:var(--t2);margin-top:2px;">' + fix.impact + '</div>';
+        if (fix.effort) html += '<span style="font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;background:rgba(124,58,237,.1);color:#a78bfa;margin-top:4px;display:inline-block;">' + fix.effort.toUpperCase() + ' EFFORT</span>';
         html += '</div></div>';
       });
       html += '</div>';
@@ -8216,7 +8226,10 @@ function runAutoDoc() {
       html += '<div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:12px;padding:20px 24px;margin-bottom:16px;">';
       html += '<div style="font-size:13px;font-weight:800;color:#10b981;margin-bottom:10px;">✓ Best Practices for This Portal</div>';
       doc.bestPractices.forEach(function(bp) {
-        html += '<div style="font-size:12px;color:var(--t2);padding:5px 0;border-top:1px solid rgba(16,185,129,.1);display:flex;gap:8px;"><span style="color:#10b981;flex-shrink:0;">→</span>' + (bp.recommendation||bp||'') + '</div>';
+        html += '<div style="font-size:12px;color:var(--t2);padding:5px 0;border-top:1px solid rgba(16,185,129,.1);display:flex;gap:8px;">' +
+          '<span style="color:#10b981;flex-shrink:0;">→</span>' +
+          (bp.check||bp.recommendation||bp||'') +
+          '</div>';
       });
       html += '</div>';
     }
@@ -8993,6 +9006,54 @@ function buildLeadScore() {
   }
 
   el.innerHTML = html;
+}
+
+
+// ── Demo data for reporting page ─────────────────────────────────────────────
+function getDemoDataForReporting() {
+  return {
+    status: 'complete',
+    plan: 'pro',
+    summary: { overallScore: 61, criticalCount: 4, warningCount: 9, issueCount: 18, monthlyWaste: 2840 },
+    scores: { dataIntegrity: 58, automationHealth: 44, pipelineIntegrity: 55, marketingHealth: 67, configSecurity: 72, reportingQuality: 51, teamAdoption: 63, serviceHealth: 69 },
+    issues: [
+      { dimension: 'Pipeline Integrity', severity: 'critical', title: '142 deals stalled for 21+ days — forecast inflation risk', impact: '$187K in stale pipeline', fix: 'CRM → Deals → filter Last Activity > 21 days' },
+      { dimension: 'Configuration & Security', severity: 'warning', title: '4 ghost seats costing $360/mo — inactive users with paid access', impact: '$360/mo wasted', fix: 'Settings → Users → deactivate users with no login in 90+ days' },
+      { dimension: 'Automation Health', severity: 'warning', title: '12 workflows with zero enrollments consuming quota', impact: 'Wasted automation capacity', fix: 'Automation → Workflows → pause zero-enrollment workflows' },
+    ],
+    portalInfo: {
+      portalId: 'demo-portal-123',
+      company: 'Demo Company',
+      plan: 'pro',
+      portalStats: {
+        contacts: 14820, deals: 2847, workflows: 42, forms: 38, tickets: 1205,
+        sequences: 8, campaigns: 15, lists: 24, users: 45, owners: 31, companies: 892,
+        totalContacts: 14820, totalWorkflows: 42, totalUsers: 45, totalForms: 38,
+        openDealsCount: 847, openPipelineValue: 2840000, stalledDeals: 142, stalledPipelineValue: 187000,
+        avgDealSize: 8400, ghostSeats: 4, ghostSeatWaste: 360, inactiveUserCount: 4,
+        erroredWorkflows: 3, deadWorkflowCount: 12,
+        inactiveUserNames: ['Sarah Jones', 'Mike Rodriguez', 'old.contractor@email.com', 'former.manager@company.com'],
+        avgOpenRate: 24, avgClickRate: 3.2, emailTotalSent: 48200,
+        billingTierEngine: { pctOfTier: 74, nextTierIn: 3900, monthsToNextTier: 4, atRisk: true, tierJumpCost: 180, dupesRemovable: 420 },
+        integrationHealthEngine: { total: 7, healthy: 5, errors: 2, grade: 'B', apiUsagePct: 34, integrationList: [{name:'Salesforce',status:'active'},{name:'Slack',status:'active'},{name:'Gmail',status:'error'},{name:'Stripe',status:'active'}] },
+        repIntelEngine: { darkRepCount: 3 },
+        propertyUsage: { total: 84, wellUsed: 31, underUsed: 28, bloat: 25, noDesc: 41, coverageScore: 58, duplicateGroupCount: 3, conflictPropCount: 5 },
+        hubUtilizationEngine: { utilizationPct: 58, grade: 'C', using: 14, notUsing: 9, total: 23, opportunities: [{name:'Sales Sequences',tip:'Set up sequences for automated outreach',how:'Sales → Sequences → Create'},{name:'Contact Lists',tip:'Create smart lists for segmentation',how:'Contacts → Lists → Create'}] },
+        revenueIntel: { monthlyRevenue: 22000, closedWonMtd: 68000, closedWonQtd: 182000, avgDealSize: 8400, pipelineVelocity: 24 },
+        unusedFeatures: ['Sequences (0 active)','Contact Lists (0 lists)','Meeting Links (8 reps missing)'],
+        dealList: [
+          { id: '32097615906', name: 'Enterprise Expansion — Acme Corp', ownerName: 'Jason Miller', amount: 48000, stage: 'Proposal Sent', daysStalled: 34, riskScore: 78 },
+          { id: '32097615907', name: 'New Logo — TechCo Inc', ownerName: 'Sarah Chen', amount: 22000, stage: 'Demo Scheduled', daysStalled: 12, riskScore: 45 },
+          { id: '32097615908', name: 'Renewal — GlobalRetail', ownerName: 'Marcus Webb', amount: 95000, stage: 'Contract Review', daysStalled: 8, riskScore: 31 },
+        ],
+        repScorecard: {
+          '101': { name: 'Jason Miller', calls: 24, meetings: 8, tasks: 15, staleDealCount: 3, pipeline: 187000 },
+          '102': { name: 'Sarah Chen', calls: 31, meetings: 12, tasks: 22, staleDealCount: 1, pipeline: 94000 },
+          '103': { name: 'Marcus Webb', calls: 8, meetings: 2, tasks: 4, staleDealCount: 6, pipeline: 42000 },
+        },
+      }
+    }
+  };
 }
 
 </script>

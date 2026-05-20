@@ -1021,7 +1021,50 @@ function getDemoData() {
         },
       },
     },
-  };
+    portalInfo: {
+      portalId: 'demo-portal-123',
+      plan: 'pro',
+      portalStats: {
+        contacts: 14820, deals: 2847, workflows: 42, forms: 38,
+        tickets: 1205, sequences: 8, campaigns: 15, lists: 24,
+        users: 45, owners: 31, companies: 892,
+        totalContacts: 14820, totalWorkflows: 42, totalUsers: 45, totalForms: 38,
+        openDealsCount: 847, openPipelineValue: 2840000,
+        stalledDeals: 142, stalledPipelineValue: 187000,
+        avgDealSize: 8400, ghostSeats: 4, ghostSeatWaste: 360,
+        inactiveUserCount: 4, erroredWorkflows: 3,
+        inactiveUserNames: ['Sarah Jones', 'Mike Rodriguez', 'old.contractor@email.com', 'former.manager@company.com'],
+        billingTierEngine: { pctOfTier: 74, nextTierIn: 3900, monthsToNextTier: 4, atRisk: true, tierJumpCost: 180, dupesRemovable: 420 },
+        integrationHealthEngine: { total: 7, healthy: 5, errors: 2, grade: 'B', apiUsagePct: 34 },
+        propertyUsage: { total: 84, wellUsed: 31, underUsed: 28, bloat: 25, noDesc: 41, coverageScore: 58, duplicateGroupCount: 3, conflictPropCount: 5 },
+        hubUtilizationEngine: { utilizationPct: 58, grade: 'C', using: 14, notUsing: 9, total: 23, opportunities: [{name:'Sales Sequences',tip:'Set up sequences for automated outreach',how:'Sales → Sequences → Create'},{name:'Contact Lists',tip:'Create smart lists for segmentation',how:'Contacts → Lists → Create'}] },
+        revenueIntel: { monthlyRevenue: 22000, closedWonMtd: 68000, closedWonQtd: 182000, avgDealSize: 8400 },
+        unusedFeatures: ['Sequences (0 active)','Contact Lists (0 lists)','Meeting Links (8 reps missing)'],
+        avgOpenRate: 24, avgClickRate: 3.2, emailTotalSent: 48200,
+        repIntelEngine: { darkRepCount: 3, lowActivityReps: 5 },
+      }
+    },
+    portalInfo: {
+      portalId: 'demo-portal-123',
+      company: 'Demo Company',
+      plan: 'pro',
+      portalStats: {
+        contacts: 14820, deals: 2847, workflows: 42, forms: 38, tickets: 1205,
+        sequences: 8, campaigns: 15, lists: 24, users: 45, owners: 31, companies: 892,
+        totalContacts: 14820, totalWorkflows: 42, totalUsers: 45, totalForms: 38,
+        openDealsCount: 847, openPipelineValue: 2840000, stalledDeals: 142,
+        stalledPipelineValue: 187000, avgDealSize: 8400, ghostSeats: 4, ghostSeatWaste: 360,
+        inactiveUserCount: 4, erroredWorkflows: 3,
+        inactiveUserNames: ['Sarah Jones', 'Mike Rodriguez', 'old.contractor@email.com', 'former.manager@company.com'],
+        avgOpenRate: 24, avgClickRate: 3.2, emailTotalSent: 48200,
+        billingTierEngine: { pctOfTier: 74, nextTierIn: 3900, monthsToNextTier: 4, atRisk: true, tierJumpCost: 180 },
+        integrationHealthEngine: { total: 7, healthy: 5, errors: 2, grade: 'B', apiUsagePct: 34, integrationList: [{name:'Salesforce',status:'active'},{name:'Gmail',status:'error'},{name:'Stripe',status:'active'}] },
+        propertyUsage: { total: 84, wellUsed: 31, underUsed: 28, bloat: 25, coverageScore: 58 },
+        hubUtilizationEngine: { utilizationPct: 58, grade: 'C', using: 14, notUsing: 9, total: 23, opportunities: [{name:'Sequences',tip:'Set up automated outreach',how:'Sales → Sequences → Create'},{name:'Contact Lists',tip:'Create smart lists',how:'Contacts → Lists → Create'}] },
+        revenueIntel: { monthlyRevenue: 22000, closedWonMtd: 68000, closedWonQtd: 182000, avgDealSize: 8400 },
+        unusedFeatures: ['Sequences (0 active)','Contact Lists (0 lists)','Meeting Links (8 reps missing)'],
+      }
+    }  };
 }
 
 function showResults(data) {
