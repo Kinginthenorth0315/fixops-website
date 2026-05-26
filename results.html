@@ -529,14 +529,23 @@ function showToast(icon, title, sub) {
   var timeout = setTimeout(function(){ ctrl.abort(); }, 20000);
 
   fetch(endpoint, { signal: ctrl.signal, cache: 'no-store' })
-    .then(function(r) { clearTimeout(timeout); return r.json(); })
+    .then(function(r) {
+      clearTimeout(timeout);
+      if (!r.ok) return r.json().then(function(e) { throw new Error(e.message || 'Server error ' + r.status); }).catch(function() { throw new Error('Server error ' + r.status); });
+      return r.json();
+    })
     .then(function(data) {
       console.log('[FixOps] Raw response:', JSON.stringify(data).substring(0,200));
       // /auth/verify returns {valid, latestResult} — unwrap it
       var result = data.latestResult || data;
       console.log('[FixOps] Result status:', result.status, '| issues:', (result.issues||[]).length);
       if (result.status === 'complete' || result.issues !== undefined || result.portalInfo) {
-        showResults(result);
+        try {
+          showResults(result);
+        } catch(renderErr) {
+          console.error('[FixOps] showResults error:', renderErr);
+          showAuditError('Results loaded but display failed: ' + renderErr.message);
+        }
       } else if (result.status === 'error') {
         showAuditError(result.message || 'Audit encountered an error.');
       } else if (result.status === 'running' || data.status === 'running') {
@@ -667,48 +676,122 @@ function getDemoData() {
       teamAdoption: 63, serviceHealth: 69,
     },
     issues: [
+      // ── CRITICAL ─────────────────────────────────────────────────
       { dimension: 'Pipeline Integrity', severity: 'critical',
-        title: '142 deals stalled for 21+ days — $187K forecast inflation',
-        description: 'These deals have had zero activity logged in over 3 weeks. They are inflating your pipeline and skewing forecast accuracy. Any deal without an activity in 21+ days is at serious risk of going cold.',
-        impact: '$187,000 in stale pipeline · forecast accuracy degraded by 34%',
-        fix: 'Filter CRM → Deals by Last Activity Date > 21 days. For each: log a call, set a follow-up task, or move to Closed Lost with a reason.',
-        guide: ['Filter deals: Last Activity > 21 days AND Is Closed = No', 'For each deal owner: assign a task to make contact within 48 hours', 'Any deal with no response in 7 days → move to Closed Lost or create a deal hold stage'],
+        title: '142 deals stalled 21+ days — $187K in forecast inflation',
+        description: 'These deals have had zero activity logged in over 3 weeks. They are silently inflating your pipeline and making your forecast meaningless. A rep not logging activity is indistinguishable from a deal that died.',
+        impact: '$187,000 in stale pipeline · forecast accuracy degraded by 34% · 3 reps with 6+ stalled deals each',
+        affectedNames: ['Jason Miller (6 stalled deals)', 'David Kim (8 stalled deals)', 'Marcus Webb (4 stalled deals)'],
+        fix: 'CRM → Deals → filter Last Activity > 21 days AND Is Closed = No. Assign a follow-up task to each deal owner. Any deal with no response in 7 days → Closed Lost with a reason.',
+        guide: ['Filter Deals: Last Activity > 21 days, Is Closed = No', 'Export list, assign to deal owner as a task', 'Set a workflow: if no activity in 21 days → notify owner + manager', 'Any deal open > 90 days with no activity → auto-move to Closed Lost'],
       },
       { dimension: 'Configuration & Security', severity: 'critical',
-        title: '4 ghost seats costing $360/mo — paid seats with zero activity',
-        description: '4 paid HubSpot seats have had zero login activity for 90+ days. These are likely former employees or contractors whose access was never revoked.',
-        impact: '$360/mo confirmed waste · security risk from open access',
-        affectedNames: ['Sarah Jones — sarah.jones@acmecorp.com', 'Mike Rodriguez — mike.r@acmecorp.com', 'contractor_2023@gmail.com', 'former.manager@company.com'],
-        fix: 'Go to Settings → Users & Teams. Sort by Last Login. Deactivate any user with no login in 90+ days. Their data, deals, and records stay intact — only login access is removed.',
-        guide: ['Settings → Users & Teams → sort by Last Login Date', 'Confirm with your team that users with no login in 90+ days are no longer active', 'Deactivate each user — seat is released and billing stops at next billing cycle'],
+        title: '4 paid seats with zero activity — $360/mo walking out the door',
+        description: 'Four paid HubSpot users have not logged in for 90+ days. These are almost certainly former employees or contractors whose access was never revoked. They represent an active security risk AND confirmed monthly waste.',
+        impact: '$360/mo confirmed waste · open access for departed employees · security audit risk',
+        affectedNames: ['Sarah Jones — sarah.jones@acmecorp.com (127 days inactive)', 'Mike Rodriguez — mike.r@acmecorp.com (94 days inactive)', 'old.contractor@gmail.com (214 days inactive)', 'former.manager@company.com (182 days inactive)'],
+        fix: 'Settings → Users & Teams → sort by Last Login. Deactivate each. Their records, deals, and data stay intact — only login is removed. Seat is released at next billing cycle.',
+        guide: ['Settings → Users & Teams → sort by Last Login Date', 'Identify any user with Last Login > 90 days ago', 'Confirm with HR or team lead that the user is no longer active', 'Click Deactivate — data preserved, seat released at billing cycle'],
       },
-      { dimension: 'Automation Health', severity: 'warning',
-        title: '12 workflows with zero enrollments consuming your automation quota',
-        description: 'These workflows are active and consuming API quota but have enrolled zero contacts. This usually means the enrollment trigger is broken, impossible to meet, or the workflow was built for a campaign that ended.',
-        impact: 'Wasted automation capacity · confusing to admins · 12 quota slots blocked',
-        fix: 'Automation → Workflows → sort by Enrolled Contacts ascending. Any active workflow with 0 enrollments for 30+ days should be paused and reviewed.',
-        guide: ['Automation → Workflows → filter Status: Active → sort Enrolled Contacts', 'For each zero-enrollment workflow: check the trigger criteria', 'If the trigger is valid but nothing meets it, pause the workflow and archive it'],
+      { dimension: 'Data Integrity', severity: 'critical',
+        title: '487 duplicate contacts — double-counting your database and inflating costs',
+        description: 'HubSpot is billing you for contacts that exist twice. Duplicates corrupt segmentation, trigger workflows twice, and make your MQL counts meaningless. Every campaign sent to a duplicate is half your list quality.',
+        impact: 'Billing tier inflated by ~487 contacts · campaigns double-hitting prospects · CRM trust destroyed',
+        fix: 'Contacts → Actions → Manage Duplicates. Run the bulk merge tool. Then build a workflow that checks for email match on new contact creation to prevent future duplicates.',
+        guide: ['Contacts → Actions → Manage Duplicates → Start Reviewing', 'Merge duplicates — the older contact becomes the primary', 'Create a workflow: On Contact Create → if duplicate email exists → flag for review', 'Run a list of contacts with no Last Name — common sign of junk imports'],
       },
-      { dimension: 'Data Integrity', severity: 'warning',
-        title: '68 deals with $0 amount — pipeline reporting is inaccurate',
-        description: 'These open deals have no dollar amount set, making pipeline forecasts, weighted pipeline, and revenue reporting meaningless.',
-        impact: 'Pipeline forecast unreliable · weighted pipeline understated',
-        fix: 'CRM → Deals → filter Amount is unknown → assign a realistic dollar value based on your product/service pricing.',
-        guide: ['Filter Deals: Amount is unknown AND Is Closed = No', 'Assign an amount based on your average deal size ($8,400) or pricing tier', 'Use a deal amount property workflow to auto-assign average amounts to new deals'],
+      { dimension: 'Automation Health', severity: 'critical',
+        title: '12 active workflows enrolling zero contacts — automation theatre',
+        description: 'These workflows show as Active in HubSpot but have enrolled zero contacts in the past 30 days. They are consuming API quota, confusing your team, and creating a false sense that automation is working.',
+        impact: 'API quota consumed · team confusion · 12 workflow slots blocked · leads falling through gaps',
+        fix: 'Automation → Workflows → sort by Enrolled Contacts ascending. Audit each zero-enrollment workflow. If the trigger is broken, fix it. If the campaign ended, pause and archive.',
+        guide: ['Automation → Workflows → sort by Enrolled (all time) ascending', 'For each zero-enrollment: check the enrollment trigger criteria', 'Check if contacts actually exist that match the trigger', 'Pause any workflow for a dead campaign → move to an Archive folder'],
+      },
+      // ── WARNINGS ─────────────────────────────────────────────────
+      { dimension: 'Pipeline Integrity', severity: 'warning',
+        title: '68 open deals with $0 amount — pipeline reporting is fiction',
+        description: 'Nearly 8% of your open deals have no dollar amount set. This makes your weighted pipeline, forecast accuracy, and revenue reports completely unreliable. Any deal without an amount cannot be forecasted.',
+        impact: 'Weighted pipeline understated · forecast accuracy broken · quota tracking impossible',
+        fix: 'Filter Deals: Amount is unknown AND Is Closed = No. Assign a realistic amount to each. Create a required field rule so future deals cannot be created without an amount.',
+        guide: ['CRM → Deals → filter Amount is unknown, Is Closed = No', 'Assign an amount based on pricing tier or average deal size ($8,400)', 'Settings → Properties → Deal Amount → set as required field', 'Create a workflow: if Deal Amount is empty on creation → notify deal owner'],
+      },
+      { dimension: 'Team Adoption', severity: 'warning',
+        title: 'David Kim has logged 0 calls and 0 meetings in 30 days — $28K pipeline unmanaged',
+        description: 'One rep on your team has $28,000 in open pipeline and zero logged activity in 30 days. Their deals are aging with no documented outreach. This is a management blind spot that CRM is supposed to prevent.',
+        impact: '$28,000 pipeline at high risk · no forecast signal · accountability gap',
+        affectedNames: ['David Kim — 0 calls, 0 meetings, 8 stalled deals, $28K pipeline'],
+        fix: 'Pull a rep activity report. Have a 1:1 with this rep. Check whether they are logging activity in HubSpot or working around the CRM. Set a minimum activity standard and enforce via workflow notification.',
+        guide: ['Reports → Sales → Sales Rep Overview → filter by David Kim', 'Check if activity exists in email but is not logged', 'Set a workflow: if rep has open deals with no activity in 7 days → notify manager', 'Establish minimum CRM activity requirements for all reps'],
       },
       { dimension: 'Marketing Health', severity: 'warning',
-        title: '3 marketing emails with bounce rate > 5% — sender reputation at risk',
-        description: 'Emails with bounce rates above 5% damage your sender score with Gmail and Outlook. Once your domain is flagged, all emails — including transactional — land in spam.',
-        impact: 'Email deliverability risk · sender reputation damage',
-        fix: 'Marketing → Email → sort by Bounce Rate. Suppress hard-bounced contacts immediately. Remove invalid addresses from all active lists.',
-        guide: ['Marketing → Email → sort by Bounce Rate descending', 'For each email with > 5% bounce: suppress all hard bounces', 'Run a list clean of contacts with invalid email format before next send'],
+        title: '3 marketing emails with bounce rate above 5% — sender reputation at risk',
+        description: 'Once your domain bounce rate crosses 5%, Gmail and Outlook will start filtering ALL your emails — including transactional confirmations and sales sequences. This is not a marketing problem, it\'s a business continuity risk.',
+        impact: 'Email deliverability risk for entire domain · sales sequences affected · transactional email risk',
+        fix: 'Marketing → Email → sort by Bounce Rate. For each high-bounce email: suppress hard bounces immediately. Remove invalid addresses from all active lists. Consider running email verification on your full database.',
+        guide: ['Marketing → Email → sort by Hard Bounce Rate descending', 'For each email > 5% bounce: Click email → Suppression → Suppress hard bounces', 'Run a list of contacts where Email Invalid = true → unsubscribe or delete', 'Use an email verification tool (NeverBounce, ZeroBounce) on your full database'],
+      },
+      { dimension: 'Configuration & Security', severity: 'warning',
+        title: 'No DMARC record on acmecorp.com — emails can be spoofed',
+        description: 'Your sending domain has no DMARC policy. This means anyone can send email pretending to be @acmecorp.com. It also means Gmail and Yahoo now require DMARC for bulk senders — without it, your deliverability will degrade.',
+        impact: 'Brand spoofing risk · deliverability impact for Gmail/Yahoo · compliance gap',
+        fix: 'Add a DMARC TXT record to your DNS: v=DMARC1; p=none; rua=mailto:dmarc@acmecorp.com. Start with p=none to monitor, then move to p=quarantine after 30 days of clean reports.',
+        guide: ['Log into your DNS provider (Cloudflare, Route53, GoDaddy)', 'Add a TXT record: Name=_dmarc, Value=v=DMARC1; p=none; rua=mailto:dmarc@yourdomain.com', 'Verify with MXToolbox.com → DMARC Lookup', 'After 30 days monitoring: change p=none to p=quarantine'],
+      },
+      { dimension: 'Data Integrity', severity: 'warning',
+        title: '1,240 contacts with no email address — unreachable and uncountable',
+        description: 'Over 8% of your contact database has no email address. These contacts cannot receive marketing, cannot be enrolled in sequences, and are actively inflating your contact tier billing. You are paying HubSpot for contacts you cannot market to.',
+        impact: 'Billing tier inflated · segments inaccurate · marketing list quality degraded',
+        fix: 'Create a list: Email Address is unknown. Attempt to enrich via LinkedIn or a data provider. Any contacts that cannot be enriched after 90 days should be deleted to preserve billing tier.',
+        guide: ['Contacts → Create List → Email Address is unknown → Save as static list', 'Export list → attempt enrichment via LinkedIn Sales Navigator or Apollo', 'Delete contacts that cannot be enriched after 60 days of effort', 'Create enrollment criteria for all lists: Email Address is known'],
+      },
+      { dimension: 'Automation Health', severity: 'warning',
+        title: 'All 42 workflows missing assigned owners — no accountability when things break',
+        description: 'Not a single workflow in your portal has an owner assigned. When a workflow breaks, there is no designated person to fix it. When a contact asks why they got an email, nobody owns the answer.',
+        impact: 'Zero accountability · broken workflows go unfixed · no audit trail',
+        fix: 'Automation → Workflows → for each workflow, click Settings → Assign an owner. Start with your 10 highest-enrollment workflows. Create a naming convention: [Owner Initials] — [Purpose] — [Trigger].',
+        guide: ['Automation → Workflows → sort by Enrollment descending', 'Click each workflow → Settings → Workflow Owner → assign a team member', 'Start with your top 10 by enrollment — these are highest risk', 'Create a workflow naming convention and enforce it on all new workflows'],
+      },
+      { dimension: 'Reporting Quality', severity: 'warning',
+        title: 'No lead scoring model configured — sales cannot prioritize inbound leads',
+        description: 'HubSpot includes lead scoring but yours is not configured. Without it, your sales team treats every inbound lead identically — spending as much time on unqualified prospects as on buyers who are ready to close.',
+        impact: 'Sales efficiency reduced · unqualified leads consuming rep time · pipeline cluttered',
+        fix: 'Settings → Lead Scoring → Create a Score property. Score positively for: demo requests (+30), pricing page visit (+20), 3+ page views in a session (+10), company size match (+15). Score negatively for: personal email domain (-20), student title (-25).',
+        guide: ['Settings → Properties → Contact Score → Enable Lead Scoring', 'Define positive attributes: actions, firmographic fit, engagement signals', 'Define negative attributes: disqualifying signals (wrong industry, wrong size)', 'Create a workflow: if Lead Score > 50 → assign to sales, notify rep'],
+      },
+      { dimension: 'Service Health', severity: 'warning',
+        title: '28 tickets unassigned — customers waiting with no owner',
+        description: '28 support tickets currently have no assigned rep. A ticket with no owner has no SLA, no accountability, and no ETA. In customer success, unassigned = ignored.',
+        impact: 'Customer experience risk · SLA violations · churn risk for open customers',
+        fix: 'Service Hub → Tickets → filter by Owner is unknown. Assign each to the correct rep. Then set up an automation: if ticket is created with no owner → assign to the on-call rep based on round robin.',
+        guide: ['Service → Tickets → filter Owner is unknown', 'Assign each ticket to an appropriate rep or queue', 'Create a workflow: Ticket Created → Owner is unknown → assign via round robin', 'Set SLA: all tickets must be assigned within 2 hours of creation'],
+      },
+      { dimension: 'Marketing Health', severity: 'info',
+        title: 'Meeting links missing for 8 of 12 reps — prospects cannot self-schedule',
+        description: 'Self-scheduling eliminates the back-and-forth email chain that kills deals. 8 of your reps do not have a HubSpot meeting link, meaning every meeting requires a manual scheduling conversation.',
+        impact: 'Lost meetings from friction · rep time wasted on scheduling · slower sales cycle',
+        fix: 'Sales → Meeting Links → Create. Each rep gets their own link with their calendar connected. Add the link to their email signature and sequence steps.',
+        guide: ['Sales → Meeting Links → Create Meeting Link for each rep', 'Connect rep\'s Google or Outlook calendar', 'Add meeting link to email signature template', 'Add meeting link CTA to all active sequences (Step 3 or 4)'],
+      },
+      { dimension: 'Pipeline Integrity', severity: 'info',
+        title: '31 deals missing close dates — pipeline forecasting is guesswork',
+        description: 'Without a close date, HubSpot cannot include these deals in forecast reports. They live in perpetual pipeline limbo — never closing, never converting, always cluttering your view.',
+        impact: 'Forecast reports inaccurate · pipeline view cluttered · deal aging invisible',
+        fix: 'Filter Deals: Close Date is unknown AND Is Closed = No. Add a realistic close date to each. Make Close Date a required field for all deals in the deal creation form.',
+        guide: ['Deals → filter Close Date is unknown, Is Closed = No', 'Assign a realistic close date based on deal age and typical sales cycle', 'Settings → Pipelines → Edit → set Close Date as required field', 'Create a workflow: if deal is in late stages with no close date → notify owner'],
+      },
+      { dimension: 'Configuration & Security', severity: 'info',
+        title: 'No HubSpot sandbox environment — changes go straight to production',
+        description: 'You have no sandbox account configured. Every workflow, property change, and integration test you run goes directly against your live database. One bad workflow enrollment can touch all 14,820 contacts.',
+        impact: 'Production risk for all changes · no safe testing environment · one mistake = 14K contacts affected',
+        fix: 'HubSpot Settings → Account → Sandbox → Create Sandbox. All new workflow testing, API integration work, and data model changes should be validated in sandbox before deploying to production.',
+        guide: ['Account Settings → Sandbox → Request sandbox (included in Pro/Enterprise)', 'Mirror your key workflows and properties in sandbox', 'Establish a change management rule: all workflows tested in sandbox first', 'Use sandbox for all new integration testing and API development'],
       },
     ],
     portalInfo: {
       portalId: 'demo-portal-123', company: 'Acme Corp', plan: 'pro',
       portalStats: {
         contacts: 14820, deals: 2847, workflows: 42, forms: 38, tickets: 1205,
-        sequences: 8, campaigns: 15, lists: 24, users: 45, owners: 31, companies: 892,
+        sequences: 8, campaigns: 15, lists: 24, listCount: 24, users: 45, owners: 31, companies: 892,
         totalContacts: 14820, totalDeals: 2847, totalWorkflows: 42,
         totalUsers: 45, userCount: 45, totalForms: 38, totalTickets: 1205,
         openDealsCount: 847, openPipelineValue: 2840000,
@@ -976,27 +1059,27 @@ function showResults(data) {
   }
   // New engine health indicators
   if (ps.workflowGovernanceEngine) {
-    var wge = ps.workflowGovernanceEngine;
+    var wge = ps.workflowGovernanceEngine || {};
     var wgeWarn = wge.noOwner > 0 || wge.staleActive > 3;
     snapItems.push({ val: wge.grade || 'OK', lbl: 'WF Governance', warn: wgeWarn });
   }
   if (ps.integrationHealthEngine) {
-    var ihe = ps.integrationHealthEngine;
+    var ihe = ps.integrationHealthEngine || {};
     var iheWarn = ihe.errors > 0 || ihe.stale > 0;
     snapItems.push({ val: ihe.grade || 'OK', lbl: 'Integrations', warn: iheWarn });
   }
   if (ps.importHealthEngine) {
-    var imhe = ps.importHealthEngine;
+    var imhe = ps.importHealthEngine || {};
     var imheWarn = imhe.failed > 0 || imhe.highError > 0;
     if (imhe.recent > 0) snapItems.push({ val: imhe.grade || 'OK', lbl: 'Import Health', warn: imheWarn });
   }
   if (ps.emailSenderEngine) {
-    var ese = ps.emailSenderEngine;
+    var ese = ps.emailSenderEngine || {};
     var eseWarn = ese.issues && ese.issues.length > 0;
     snapItems.push({ val: ese.issues && ese.issues.length > 0 ? ese.issues.length + ' issue' + (ese.issues.length !== 1 ? 's' : '') : 'Healthy', lbl: 'Email Health', warn: eseWarn });
   }
-  if (ps.apiRateLimitEngine && ps.apiRateLimitEngine.pct > 0) {
-    var arle = ps.apiRateLimitEngine;
+  if (ps.apiRateLimitEngine && ps.apiRateLimitEngine?.pct > 0) {
+    var arle = ps.apiRateLimitEngine || {};
     snapItems.push({ val: arle.pct + '% quota', lbl: 'API Usage', warn: arle.pct >= 70 });
   }
   if (ps.kbArticleCount > 0) snapItems.push({ val: fmt(ps.kbArticleCount), lbl: 'KB Articles' });
@@ -1325,22 +1408,21 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
   }
 
   // Marketing
-  if (ps.forms > 0 || ps.marketingEmailCount > 0 || ps.listCount > 0) {
+  if (ps.forms > 0 || ps.marketingEmailCount > 0 || ps.listCount||ps.lists||0 > 0) {
     var mktStat = ps.marketingEmailCount > 0 ? fmt(ps.marketingEmailCount)+' emails' : ps.forms+' forms';
     var hasEmailStats = ps.avgOpenRate > 0 || ps.avgClickRate > 0 || ps.avgBounceRate > 0;
     var mktDesc = hasEmailStats
       ? (ps.avgOpenRate > 0 ? ps.avgOpenRate+'% open' : '') +
         (ps.avgClickRate > 0 ? (ps.avgOpenRate > 0 ? ' · ' : '') + ps.avgClickRate+'% click' : '') +
         (ps.avgBounceRate > 0 ? ' · ' + ps.avgBounceRate+'% bounce' : '')
-      : (ps.emptyLists||ps.listCount||0) > 0 ? (ps.listCount||0)+' lists tracked' : (ps.forms||0)+' forms active';
+      : (ps.emptyLists||ps.listCount||ps.lists||0||0) > 0 ? (ps.listCount||ps.lists||0||0)+' lists tracked' : (ps.forms||0)+' forms active';
     var mktTag = ps.highBounceEmails > 0
       ? ps.highBounceEmails+' emails high bounce — domain risk'
       : ps.lowOpenEmails > 0
         ? ps.lowOpenEmails+' low open-rate emails'
         : ps.avgUnsubRate > 1
           ? ps.avgUnsubRate+'% unsub rate — above 1% threshold'
-          : ps.emptyLists > 0
-            ? ps.emptyLists+' empty lists'
+          : ps.emptyLists > 0 ? ps.emptyLists+' empty lists'
             : ps.staleDraftEmails > 0
               ? ps.staleDraftEmails+' stale draft emails'
               : ps.forms+' forms active';
@@ -1439,7 +1521,7 @@ function renderHubIntelligence(ps, scores, plan, waste, criticals) {
   }
 
   // Lead Response Time intel card
-  var lrt = (typeof ps.leadResponseTime === 'object') ? ps.leadResponseTime : null;
+  var lrt = (typeof ps.leadResponseTime === 'object') ? ps.leadResponseTime : (ps.leadResponseTime > 0 ? { recentContacts: ps.contacts, avgResponseHours: ps.leadResponseTime, slowResponsePct: ps.slowResponsePct||0 } : null);
   if (lrt && lrt.recentContacts > 5) {
     var lrtColor2 = lrt.slowResponsePct > 50 ? '#f43f5e' : lrt.slowResponsePct > 25 ? '#f59e0b' : '#10b981';
     var lrtTag    = lrt.slowResponsePct > 50 ? 'critical' : lrt.slowResponsePct > 25 ? 'warning' : 'healthy';
